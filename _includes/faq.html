@@ -1,0 +1,15 @@
+<div class="faq-list">
+  {% for item in site.data.faq %}
+    <details class="faq-item">
+      <summary class="faq-item__question">
+        <span class="faq-item__icon" aria-hidden="true"></span>
+        {{ item.question }}
+      </summary>
+      <div class="faq-item__answer">
+        {{ item.answer | markdownify }}
+      </div>
+    </details>
+  {% else %}
+    <p class="faq-empty">FAQ content hasn't been published yet — once the FAQ Google Doc is published, questions will appear here automatically.</p>
+  {% endfor %}
+</div>
