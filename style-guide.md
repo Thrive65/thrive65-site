@@ -51,9 +51,9 @@ It can span multiple lines.
 
 * Item 1  
 * Item 2  
-*   \- Nested item  
-*   \- Another nested  
-* \- Item 3
+  * Nested item  
+  * Another nested  
+* Item 3
 
 1. Item 1  
 2. Item 2  
