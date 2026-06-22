@@ -202,6 +202,9 @@ img { max-width: 100%; display: block; }
   margin-bottom: 1em;
 }
 .prose :is(h1,h2,h3) { margin-top: 1.25em; }
+.prose h1 { font-size: 1.75rem; }
+.prose h2 { font-size: 1.35rem; }
+.prose h3 { font-size: 1.1rem; }
 .prose ul, .prose ol { padding-left: 1.25em; }
 
 /* ==========================================================================

@@ -16,7 +16,8 @@ title: Home
   <div class="wrap">
     <h2 class="section__title">What we're working on</h2>
     <div class="prose">
-      {% include overview-content.md %}
+      {% capture overview_md %}{% include overview-content.md %}{% endcapture %}
+      {{ overview_md | markdownify }}
     </div>
   </div>
 </section>

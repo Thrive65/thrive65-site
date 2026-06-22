@@ -3,8 +3,8 @@ tagline: Community advocacy for District 65 schools
 description: >-
   Thrive65 is a coalition of Evanston/Skokie families, educators, and
   neighbors advocating for strong, well-resourced District 65 schools.
-url: "" # e.g. "https://thrive65.org" or "https://yourorg.github.io" -- set before launch
-baseurl: "" # leave blank for a custom domain or a user/org page; set to "/repo-name" for a project page
+url: "https://thrive65.github.io" # e.g. "https://thrive65.org" or "https://yourorg.github.io" -- set before launch
+baseurl: "thrive65-site" # leave blank for a custom domain or a user/org page; set to "/repo-name" for a project page
 
 # Contact / signup
 signup_form_action: "" # paste your email signup form's POST URL here (Mailchimp, Buttondown, Google Form, etc.)

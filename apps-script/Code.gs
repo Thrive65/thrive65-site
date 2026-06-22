@@ -171,10 +171,21 @@ function publishToWebsite() {
  * ========================================================================= */
 
 function exportDocAsMarkdown(docId) {
-  // Google Docs supports native Markdown export (the same format you get
-  // from File > Download > Markdown in the Docs UI).
-  const blob = DriveApp.getFileById(docId).getAs("text/markdown");
-  return blob.getDataAsString("UTF-8");
+  // Referencing DriveApp ensures Apps Script requests the Drive OAuth scope,
+  // which is required for the export API call below.
+  DriveApp.getFileById(docId);
+
+  // Use the Drive REST API export endpoint (not the browser-facing docs.google.com
+  // URL, which requires cookie auth and rejects Bearer tokens).
+  const url = `https://www.googleapis.com/drive/v3/files/${docId}/export?mimeType=text%2Fmarkdown`;
+  const resp = UrlFetchApp.fetch(url, {
+    headers: { Authorization: `Bearer ${ScriptApp.getOAuthToken()}` },
+    muteHttpExceptions: true,
+  });
+  if (resp.getResponseCode() !== 200) {
+    throw new Error(`Markdown export failed (${resp.getResponseCode()}): ${resp.getContentText()}`);
+  }
+  return resp.getContentText();
 }
 
 // Google's exporter sometimes backslash-escapes characters that don't need
