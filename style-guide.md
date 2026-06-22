@@ -5,11 +5,8 @@ title: "Style Guide"
 
 ## Headings
 
+In Google Docs, use **Heading 1** and **Heading 2** rather than “Title” and “Subtitle.”  
 ---
-
-# Title
-
-## Subtitle
 
 # Heading 1
 
@@ -25,25 +22,27 @@ title: "Style Guide"
 
 ## Text
 
+Regular Docs formatting works for all text except Underline, Superscript, and subscript. Add the \`html\` manually if needed.  
 ---
 
 Regular body copy  
 **Bold body copy**  
 *Italic body copy*  
 ***Bold and italic***  
-Underline  
-Superscript  
-subscript  
 ~~Strikethru text.~~  
-[Link text](https://thrive65.github.io/thrive65-site/)  
-Testing adding color in docs.
+[Link text](https://thrive65.github.io/thrive65-site/)
+
+\<u\>Underline\</u\>  
+\<sup\>Superscript\</sup\>  
+\<sub\>Subscript\</sub\>
 
 ## Blockquote
 
+There isn’t a proper “blockquote” in Google Docs. Add `>` before a line to add one.  
 ---
 
-This is a blockquote.   
-It can span multiple lines.
+\> This is a blockquote.   
+\> It can span multiple lines.
 
 ## Lists
 
@@ -63,6 +62,7 @@ It can span multiple lines.
 
 ## Table
 
+**Insert** \> **Table** in Google Docs  
 ---
 
 | Header 1 		 | Header 2 | Header 3 |
@@ -72,4 +72,5 @@ It can span multiple lines.
 
 ## Horizontal Rule
 
+**Insert** \> **Horizontal Line** in Google Docs  
 ---
