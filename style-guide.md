@@ -22,7 +22,8 @@ In Google Docs, use **Heading 1** and **Heading 2** rather than “Title” and 
 
 ## Text
 
-Regular Docs formatting works for all text except Underline, Superscript, and subscript. Add the \`html\` manually if needed.  
+Regular Docs formatting works for all text except Underline, Superscript, and subscript. Add the \`html\` manually if needed.
+
 ---
 
 Regular body copy  
@@ -38,7 +39,8 @@ Regular body copy
 
 ## Blockquote
 
-There isn’t a proper “blockquote” in Google Docs. Add `>` before a line to add one.  
+There isn’t a proper “blockquote” in Google Docs. Add `>` before a line to add one. 
+
 ---
 
 \> This is a blockquote.   
