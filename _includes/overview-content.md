@@ -1,3 +1,3 @@
-Thrive65 is a coalition of District 65 families, educators, and neighbors working to keep our public schools well-funded, well-staffed, and accountable to the community.
+## Who we are
 
-*(This text is a placeholder. Once the Overview Google Doc is published from the "🌻 Thrive65 Publishing" menu, this section updates automatically.)*
+Thrive65 is a community-based advocacy and engagement coalition dedicated to supporting a strong, equitable, and financially sustainable future for all students in District 65\. We bring together parents, caregivers, educators, community members, and stakeholders who believe that equitable, excellent schools require both bold vision and responsible stewardship.
