@@ -39,8 +39,7 @@ Regular body copy
 
 ## Blockquote
 
-There isn’t a proper “blockquote” in Google Docs. Add `>` before a line to add one. 
-
+There isn’t a proper “blockquote” in Google Docs. Add `>` before a line to add one.  
 ---
 
 \> This is a blockquote.   
@@ -74,5 +73,6 @@ There isn’t a proper “blockquote” in Google Docs. Add `>` before a line to
 
 ## Horizontal Rule
 
-**Insert** \> **Horizontal Line** in Google Docs  
+**Insert** \> **Horizontal Line** in Google Docs. Try adding an extra space before the line in Docs if the web page content doesn’t render correctly.
+
 ---
