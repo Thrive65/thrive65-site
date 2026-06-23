@@ -1,8 +1,8 @@
 ---
 layout: "page"
 title: "Style Guide"
-description: "Test page for displaying all the various Markdown to HTML elements."
-image: "/assets/images/test.jpg"
+description: "Text style guide displaying all the various Markdown to HTML elements."
+image: "https://pic.fish/#https%3A%2F%2Fthrive65.github.io%2Fthrive65-site%2Fstyle-guide%2F"
 ---
 
 ## Headings
