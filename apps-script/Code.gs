@@ -4,9 +4,14 @@
  * Paste this ENTIRE file into every Google Doc that should publish to the
  * website (Extensions > Apps Script > paste over Code.gs > Save).
  *
- * Then edit the CONFIG block below for that specific doc, and run
- * "Set up GitHub connection" once from the new menu that appears the next
- * time you open the doc.
+ * A new menu will load on page refresh. Run "Set up GitHub connection" once. 
+ * Then, add page metadata and target file in github via "📄 Page Properties" menu. 
+ *
+ * First-time setup per doc:
+ *   1. Paste this file, Save, reload the doc.
+ *   2. 🌻 Thrive65 Publishing → ⚙️ Set up GitHub connection  (once)
+ *   3. 🌻 Thrive65 Publishing → 📄 Page Properties           (once)
+ *   4. 🌻 Thrive65 Publishing → 🚀 Publish to website        (any time)
  *
  * What this does NOT handle yet (by design, to keep v1 simple):
  *   - Inline images pasted into the doc. Upload photos/logos directly to
@@ -17,26 +22,9 @@
  * =========================================================================
  */
 
-const CONFIG = {
-  // One of: 'overview' | 'faq' | 'page' | 'post'
-  //   overview -> writes into an "include" file that index.md pulls in
-  //   faq      -> parses the doc into Q&A pairs and writes _data/faq.yml
-  //   page     -> a standalone page (front matter added automatically)
-  //   post     -> a future op-ed; written to _posts/ with date-based filename
-  CONTENT_TYPE: "overview",
-
-  // Used by 'overview' and 'page' types. Ignored for 'faq' and 'post'.
-  //   Overview doc example: "_includes/overview-content.md"
-  //   A new standalone page example: "volunteer.md"
-  TARGET_PATH: "_includes/overview-content.md",
-
-  // Only used for 'post'. Leave blank to auto-generate a URL slug from the
-  // doc's title (e.g. "Why Funding Matters" -> "why-funding-matters").
-  POST_SLUG: "",
-
-  // Used to timestamp new op-ed posts.
-  TIMEZONE: "America/Chicago",
-};
+// Timezone used to timestamp new posts. Same for every doc, so it
+// stays here rather than in the per-doc Page Properties form.
+const TIMEZONE = "America/Chicago";
 
 /* =========================================================================
  * Menu
@@ -47,14 +35,16 @@ function onOpen() {
     .createMenu("🌻 Thrive65 Publishing")
     .addItem("🚀 Publish to website", "publishToWebsite")
     .addSeparator()
+    .addItem("📄 Page Properties", "showPageProperties")
     .addItem("⚙️ Set up GitHub connection", "setupGithubCredentials")
     .addToUi();
 }
 
 /* =========================================================================
  * One-time setup: store GitHub details in this script's Script Properties.
- * These are private to the script project and are never shown in the
- * document itself.
+ * The GitHub connection (token/owner/repo/branch) is the same wherever you
+ * publish, so it lives in Script Properties — separate from the per-page
+ * config in Page Properties below.
  * ========================================================================= */
 
 function setupGithubCredentials() {
@@ -102,6 +92,49 @@ function setupGithubCredentials() {
 }
 
 /* =========================================================================
+ * Page Properties: per-doc content routing + page metadata.
+ *
+ * Stored in DocumentProperties (scoped to THIS doc) so the same script can
+ * serve every page without code edits. Read back by publishToWebsite().
+ * ========================================================================= */
+
+function showPageProperties() {
+  const html = HtmlService.createHtmlOutput(pagePropertiesHtml_())
+    .setWidth(460)
+    .setHeight(600);
+  DocumentApp.getUi().showModalDialog(html, "📄 Page Properties");
+}
+
+// Called by the form to pre-populate fields. Returns current saved values
+// plus the doc name, which the form uses as the default title.
+function getPageProperties() {
+  const props = PropertiesService.getDocumentProperties();
+  return {
+    CONTENT_TYPE: props.getProperty("CONTENT_TYPE") || "",
+    TARGET_PATH: props.getProperty("TARGET_PATH") || "",
+    POST_SLUG: props.getProperty("POST_SLUG") || "",
+    META_TITLE: props.getProperty("META_TITLE") || "",
+    META_DESCRIPTION: props.getProperty("META_DESCRIPTION") || "",
+    META_IMAGE: props.getProperty("META_IMAGE") || "",
+    docName: DocumentApp.getActiveDocument().getName(),
+  };
+}
+
+// Called by the form on Save.
+function savePageProperties(form) {
+  const props = PropertiesService.getDocumentProperties();
+  props.setProperties({
+    CONTENT_TYPE: (form.CONTENT_TYPE || "").trim(),
+    TARGET_PATH: (form.TARGET_PATH || "").trim(),
+    POST_SLUG: (form.POST_SLUG || "").trim(),
+    META_TITLE: (form.META_TITLE || "").trim(),
+    META_DESCRIPTION: (form.META_DESCRIPTION || "").trim(),
+    META_IMAGE: (form.META_IMAGE || "").trim(),
+  });
+  return true;
+}
+
+/* =========================================================================
  * Main publish flow
  * ========================================================================= */
 
@@ -110,13 +143,26 @@ function publishToWebsite() {
   try {
     const doc = DocumentApp.getActiveDocument();
     const docId = doc.getId();
-    const title = doc.getName();
+    const props = PropertiesService.getDocumentProperties();
+
+    const contentType = props.getProperty("CONTENT_TYPE");
+    if (!contentType) {
+      throw new Error(
+        'This doc isn\'t configured yet. Open "📄 Page Properties" from the ' +
+          "menu, choose a content type, and Save before publishing."
+      );
+    }
+
+    // Form title wins; falls back to the doc's name.
+    const title = props.getProperty("META_TITLE") || doc.getName();
+    const description = props.getProperty("META_DESCRIPTION") || "";
+    const image = props.getProperty("META_IMAGE") || "";
 
     const rawMarkdown = cleanGoogleMarkdown(exportDocAsMarkdown(docId));
 
     let targetPath, content, commitMessage;
 
-    switch (CONFIG.CONTENT_TYPE) {
+    switch (contentType) {
       case "faq": {
         targetPath = "_data/faq.yml";
         content = faqArrayToYaml(parseFaqMarkdown(rawMarkdown));
@@ -124,34 +170,43 @@ function publishToWebsite() {
         break;
       }
 
-      case "overview": {
-        targetPath = CONFIG.TARGET_PATH;
+      case "section": {
+        targetPath = props.getProperty("TARGET_PATH");
+        if (!targetPath) {
+          throw new Error('Set a "Target path" in Page Properties for this section doc.');
+        }
         content = rawMarkdown.trim() + "\n";
-        commitMessage = `Publish overview update from "${title}"`;
+        commitMessage = `Publish section update from "${title}"`;
         break;
       }
 
       case "page": {
-        targetPath = CONFIG.TARGET_PATH;
-        content = buildFrontMatter({ layout: "page", title: title }) + rawMarkdown.trim() + "\n";
+        targetPath = props.getProperty("TARGET_PATH");
+        if (!targetPath) {
+          throw new Error('Set a "Target path" in Page Properties for this page (e.g. "volunteer.md").');
+        }
+        const fields = { layout: "page", title: title };
+        if (description) fields.description = description;
+        if (image) fields.image = image;
+        content = buildFrontMatter(fields) + rawMarkdown.trim() + "\n";
         commitMessage = `Publish page update from "${title}"`;
         break;
       }
 
       case "post": {
-        const slug = CONFIG.POST_SLUG || slugify(title);
-        const dateStr = Utilities.formatDate(new Date(), CONFIG.TIMEZONE, "yyyy-MM-dd");
+        const slug = props.getProperty("POST_SLUG") || slugify(title);
+        const dateStr = Utilities.formatDate(new Date(), TIMEZONE, "yyyy-MM-dd");
         targetPath = `_posts/${dateStr}-${slug}.md`;
-        content =
-          buildFrontMatter({ layout: "post", title: title, date: dateStr }) +
-          rawMarkdown.trim() +
-          "\n";
+        const fields = { layout: "post", title: title, date: dateStr };
+        if (description) fields.description = description;
+        if (image) fields.image = image;
+        content = buildFrontMatter(fields) + rawMarkdown.trim() + "\n";
         commitMessage = `Publish op-ed: "${title}"`;
         break;
       }
 
       default:
-        throw new Error('CONFIG.CONTENT_TYPE must be "overview", "faq", "page", or "post".');
+        throw new Error('Unknown content type "' + contentType + '". Re-open Page Properties and pick one.');
     }
 
     commitFileToGithub(targetPath, content, commitMessage);
@@ -313,4 +368,154 @@ function commitFileToGithub(path, content, commitMessage) {
     throw new Error(`GitHub commit failed (${code}): ${putResp.getContentText()}`);
   }
   return JSON.parse(putResp.getContentText());
+}
+
+/* =========================================================================
+ * Page Properties form (HTML for the modal dialog).
+ *
+ * Inlined here as a string so the whole tool stays a single file to paste.
+ * The form pre-populates from getPageProperties() and saves through
+ * savePageProperties(). Fields show/hide based on the chosen content type:
+ *
+ *   section  -> Target path
+ *   faq      -> (no extra fields; always writes _data/faq.yml)
+ *   page     -> Target path + Title/Description/Social image
+ *   post     -> URL slug (optional) + Title/Description/Social image
+ * ========================================================================= */
+
+function pagePropertiesHtml_() {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<style>
+  body { font-family: "Public Sans", Arial, sans-serif; color: #20251f; margin: 0; padding: 16px; font-size: 14px; }
+  h2 { margin: 0 0 4px; font-size: 16px; }
+  p.sub { margin: 0 0 16px; color: #5b5a52; font-size: 12px; }
+  label { display: block; font-weight: 600; margin: 14px 0 4px; }
+  .hint { font-weight: 400; color: #5b5a52; font-size: 12px; }
+  select, input[type=text], textarea {
+    width: 100%; box-sizing: border-box; padding: 8px 10px;
+    border: 1px solid #cdc6b4; border-radius: 8px; font: inherit;
+  }
+  textarea { resize: vertical; min-height: 60px; }
+  .field { display: none; }
+  .field.show { display: block; }
+  .actions { margin-top: 22px; display: flex; gap: 10px; align-items: center; }
+  button {
+    font: inherit; font-weight: 600; padding: 9px 18px; border-radius: 999px;
+    border: none; cursor: pointer; background: #2e7d52; color: #fff;
+  }
+  button.secondary { background: #ece6d5; color: #20251f; }
+  #status { font-size: 12px; color: #2e7d52; }
+</style>
+</head>
+<body>
+  <h2>Page Properties</h2>
+  <p class="sub">Stored privately with this document.</p>
+
+  <label for="CONTENT_TYPE">Content type</label>
+  <select id="CONTENT_TYPE" onchange="syncFields()">
+    <option value="">— choose —</option>
+    <option value="section">Homepage section</option>
+    <option value="faq">FAQ item</option>
+    <option value="page">Page</option>
+    <option value="post">Post</option>
+  </select>
+
+  <div class="field" id="f_target">
+    <label for="TARGET_PATH">Target path <span class="hint" id="target_hint"></span></label>
+    <input type="text" id="TARGET_PATH" placeholder="volunteer.md">
+  </div>
+
+  <div class="field" id="f_slug">
+    <label for="POST_SLUG">URL slug <span class="hint">optional — auto-generated from the title if blank</span></label>
+    <input type="text" id="POST_SLUG" placeholder="why-funding-matters">
+  </div>
+
+  <div class="field" id="f_meta">
+    <label for="META_TITLE">Title <span class="hint">used for the page title &amp; link previews</span></label>
+    <input type="text" id="META_TITLE">
+
+    <label for="META_DESCRIPTION">Description <span class="hint">~160 chars, for search results &amp; social cards</span></label>
+    <textarea id="META_DESCRIPTION"></textarea>
+
+    <label for="META_IMAGE">Social image <span class="hint">path or URL, e.g. /assets/images/volunteer.jpg</span></label>
+    <input type="text" id="META_IMAGE" placeholder="/assets/images/...">
+  </div>
+
+  <div class="actions">
+    <button onclick="save()">Save</button>
+    <button class="secondary" onclick="google.script.host.close()">Cancel</button>
+    <span id="status"></span>
+  </div>
+
+<script>
+  var DOC_NAME = "";
+
+  function syncFields() {
+    var type = document.getElementById("CONTENT_TYPE").value;
+    show("f_target", type === "section" || type === "page");
+    show("f_slug", type === "post");
+    show("f_meta", type === "page" || type === "post");
+
+    var hint = document.getElementById("target_hint");
+    if (type === "section") {
+      hint.textContent = "e.g. _includes/home-overview.md";
+    } else if (type === "page") {
+      hint.textContent = "e.g. volunteer.md";
+    } else {
+      hint.textContent = "";
+    }
+
+    // Default the title to the doc name when metadata is shown but empty.
+    var titleEl = document.getElementById("META_TITLE");
+    if ((type === "page" || type === "post") && !titleEl.value) {
+      titleEl.value = DOC_NAME;
+    }
+  }
+
+  function show(id, on) {
+    document.getElementById(id).className = "field" + (on ? " show" : "");
+  }
+
+  function save() {
+    var form = {
+      CONTENT_TYPE: document.getElementById("CONTENT_TYPE").value,
+      TARGET_PATH: document.getElementById("TARGET_PATH").value,
+      POST_SLUG: document.getElementById("POST_SLUG").value,
+      META_TITLE: document.getElementById("META_TITLE").value,
+      META_DESCRIPTION: document.getElementById("META_DESCRIPTION").value,
+      META_IMAGE: document.getElementById("META_IMAGE").value
+    };
+    if (!form.CONTENT_TYPE) { setStatus("Pick a content type first.", true); return; }
+    setStatus("Saving…", false);
+    google.script.run
+      .withSuccessHandler(function() { google.script.host.close(); })
+      .withFailureHandler(function(e) { setStatus(e.message || String(e), true); })
+      .savePageProperties(form);
+  }
+
+  function setStatus(msg, isError) {
+    var el = document.getElementById("status");
+    el.textContent = msg;
+    el.style.color = isError ? "#b3261e" : "#2e7d52";
+  }
+
+  // Load existing values on open.
+  google.script.run.withSuccessHandler(function(p) {
+    DOC_NAME = p.docName || "";
+    document.getElementById("CONTENT_TYPE").value = p.CONTENT_TYPE;
+    document.getElementById("TARGET_PATH").value = p.TARGET_PATH;
+    document.getElementById("POST_SLUG").value = p.POST_SLUG;
+    document.getElementById("META_TITLE").value = p.META_TITLE;
+    document.getElementById("META_DESCRIPTION").value = p.META_DESCRIPTION;
+    document.getElementById("META_IMAGE").value = p.META_IMAGE;
+    syncFields();
+  }).getPageProperties();
+</script>
+</body>
+</html>
+`;
 }

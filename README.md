@@ -39,7 +39,7 @@ Visit `http://localhost:4000`.
 |---|---|
 | `index.md` | Homepage: hero, overview, FAQ, signup |
 | `board-minutes.md` | Board Meeting Minutes archive page |
-| `_includes/overview-content.md` | Overview copy — overwritten by the "Overview" Doc's publish button |
+| `_includes/home-overview.md` | Homepage overview copy — overwritten by the "Overview" Doc's publish button |
 | `_data/faq.yml` | FAQ questions/answers — overwritten by the "FAQ" Doc's publish button |
 | `_data/board-minutes.yml` | Board minutes list — maintained by hand |
 | `_posts/` | Op-eds (future) — one file per published post |
@@ -52,7 +52,7 @@ Visit `http://localhost:4000`.
 ## Before launch
 
 - [ ] Set `url` and `signup_form_action` in `_config.yml`
-- [ ] Replace placeholder content in `_includes/overview-content.md` and `_data/faq.yml` by publishing the real Docs
+- [ ] Replace placeholder content in `_includes/home-overview.md` and `_data/faq.yml` by publishing the real Docs
 - [ ] Add real entries to `_data/board-minutes.yml` and their PDFs
 - [ ] Add a real favicon at `assets/images/favicon.svg`
 - [ ] Confirm GitHub Pages → Settings → Pages → Source is set to "GitHub Actions"

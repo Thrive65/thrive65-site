@@ -35,29 +35,45 @@ for "Overview", one for "FAQ", and later one per op-ed if you want a
 dedicated doc per post — or just duplicate a doc whenever you start a new
 op-ed).
 
+There is **no code editing per doc** — you paste the same script into every
+doc and configure it through a menu. (The old `CONFIG` block is gone; all
+per-page settings now live in **Page Properties**, stored privately with
+each document.)
+
 1. Open the Google Doc → **Extensions → Apps Script**.
 2. Delete any starter code in `Code.gs` and paste in the entire contents of
-   `apps-script/Code.gs` from this repo.
-3. At the top of the file, edit the `CONFIG` block for this specific doc:
-
-   | Doc | `CONTENT_TYPE` | `TARGET_PATH` |
-   |---|---|---|
-   | Overview | `"overview"` | `"_includes/overview-content.md"` |
-   | FAQ | `"faq"` | *(ignored — always writes `_data/faq.yml`)* |
-   | A new standalone page, e.g. "Volunteer" | `"page"` | `"volunteer.md"` |
-   | An op-ed | `"post"` | *(ignored — auto-generates a dated filename)* |
-
-4. Save the script (the floppy-disk icon, or `Cmd/Ctrl+S`). Give the Apps
+   `apps-script/Code.gs` from this repo. Don't edit it — just paste.
+3. Save the script (the floppy-disk icon, or `Cmd/Ctrl+S`). Give the Apps
    Script project a name like "Thrive65 Publish — Overview" if asked.
-5. Go back to the Google Doc and reload the tab. A new menu, **🌻 Thrive65
+4. Go back to the Google Doc and reload the tab. A new menu, **🌻 Thrive65
    Publishing**, appears next to Help.
-6. Click **🌻 Thrive65 Publishing → ⚙️ Set up GitHub connection** and follow
+5. Click **🌻 Thrive65 Publishing → ⚙️ Set up GitHub connection** and follow
    the four prompts (token, GitHub username/org, repo name, branch). This
    only needs to be done once per doc.
+6. Click **🌻 Thrive65 Publishing → 📄 Page Properties** and fill in the form
+   for this doc (details below). Save.
 7. The first time you run **Publish to website**, Google will ask you to
    authorize the script (it needs permission to read the doc and make
    external requests to GitHub). Review and accept — this is a one-time
    step per doc.
+
+### Filling in Page Properties
+
+Pick a **Content type**; the form then shows only the fields that type needs.
+
+| Content type | What it writes | Extra fields shown |
+|---|---|---|
+| **Section** | a homepage section include | Target path → `_includes/home-overview.md` |
+| **FAQ** | the accordion data file | *(none — always writes `_data/faq.yml`)* |
+| **Standalone page** | a full page, e.g. `volunteer.md` | Target path + Title / Description / Social image |
+| **Op-ed post** | a dated file in `_posts/` | URL slug (optional) + Title / Description / Social image |
+
+- **Title** defaults to the Google Doc's name but is editable; whatever you
+  type here is what gets published.
+- **Description** and **Social image** feed the page's SEO and link-preview
+  tags (via the `jekyll-seo-tag` plugin). They only apply to pages and posts.
+- **Social image** can be a repo path (`/assets/images/foo.jpg`) or a full
+  URL. Upload the image to `assets/images/` in the repo first.
 
 ## Publishing
 
@@ -80,6 +96,11 @@ accordion automatically:
 
 ## Known limitations (v1)
 
+- **You still paste the script once per new Doc.** Because it's a
+  container-bound script, each new Doc needs `Code.gs` pasted in one time.
+  You never *edit* it again (config is all in Page Properties), but the
+  initial paste remains. See "Eliminating the paste" below for the path to
+  zero-touch.
 - **Inline images** pasted into a Doc aren't extracted yet — they'd bloat
   the Markdown file as embedded data. For now, add images directly to
   `assets/images/` in the repo and reference them with a normal Markdown
@@ -88,4 +109,27 @@ accordion automatically:
   official PDFs, so they're added straight to `assets/board-minutes/` and
   listed in `_data/board-minutes.yml` by hand.
 
-Both are easy to add later if you want — just ask.
+These are easy to extend later if you want — just ask.
+
+## Eliminating the paste: publishing as an Editor Add-on (optional, future)
+
+To make the menu appear in *every* Doc automatically — no pasting at all —
+this script can be published as a Google Workspace **Editor Add-on**. It's a
+bigger, mostly one-time effort and isn't required for the workflow above to
+work. The broad steps:
+
+1. **Move the script to a standalone Apps Script project** (not bound to a
+   single Doc) and attach it to a **standard Google Cloud project**.
+2. **Configure the OAuth consent screen** in that Cloud project, listing the
+   scopes the script uses (read the active document, external requests to
+   GitHub, Drive export).
+3. **Add Editor Add-on deployment metadata** (`appsscript.json` with an
+   `addOns` section, a logo, and the `onOpen` homepage/menu trigger).
+4. **Distribute it.** For just your team this can stay **unlisted /
+   internal** to your Workspace org — no public review needed. Publishing it
+   publicly on the Marketplace would require Google's OAuth verification
+   (privacy policy, app review), which is why it's deferred.
+
+Once installed for your org, anyone with the add-on enabled gets the 🌻
+menu in any Doc with nothing to paste; Page Properties and the GitHub
+connection still work exactly as documented above.
