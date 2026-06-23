@@ -45,7 +45,7 @@ Visit `http://localhost:4000`.
 | `_posts/` | Op-eds (future) — one file per published post |
 | `assets/board-minutes/` | Board minutes PDFs |
 | `assets/images/` | Site images |
-| `apps-script/Code.gs` | The Google Apps Script — paste into each content Doc |
+| `apps-script/Code.gs` | The Google Apps Script — paste into each content Doc (no per-doc edits; configure via its 📄 Page Properties menu) |
 | `apps-script/SETUP.md` | Full setup instructions for the publishing workflow |
 | `.github/workflows/deploy.yml` | Builds and deploys the site on every push to `main` |
 
