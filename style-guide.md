@@ -1,6 +1,8 @@
 ---
 layout: "page"
 title: "Style Guide"
+description: "Test page for displaying all the various Markdown to HTML elements."
+image: "/assets/images/test.jpg"
 ---
 
 ## Headings
