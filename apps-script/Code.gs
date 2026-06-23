@@ -1,17 +1,19 @@
 /**
- * THRIVE65 — Google Docs → GitHub publishing script
+ * Docs CMS — Google Docs → GitHub publishing script
  * =========================================================================
- * Paste this ENTIRE file into every Google Doc that should publish to the
- * website (Extensions > Apps Script > paste over Code.gs > Save).
+ * This is a Google Workspace Editor Add-on. It is installed once from 
+ * script.google.com and then the 🌻 menu appears automatically in any Doc 
+ * inside the designated website Drive folder.
  *
- * A new menu will load on page refresh. Run "Set up GitHub connection" once. 
- * Then, add page metadata and target file in github via "📄 Page Properties" menu. 
- *
- * First-time setup per doc:
- *   1. Paste this file, Save, reload the doc.
- *   2. 🌻 Thrive65 Publishing → ⚙️ Set up GitHub connection  (once)
- *   3. 🌻 Thrive65 Publishing → 📄 Page Properties           (once)
- *   4. 🌻 Thrive65 Publishing → 🚀 Publish to website        (any time)
+ * One-time setup (see apps-script/SETUP.md for detailed instructions):
+ *   1. Create a standalone Apps Script project at script.google.com.
+ *   2. Paste Code.gs and appsscript.json into the editor. Save.
+ *   3. Link a Google Cloud project and configure the OAuth consent screen.
+ *   4. Deploy → New deployment → Add-on. Install via the test-deployment link.
+ *   5. Open any Doc in your website Drive folder → reload → run
+ *      🌻 Docs CMS → ⚙️ Set up GitHub connection  (once ever)
+ *   6. 🌻 Docs CMS → 📄 Page Properties           (once per doc)
+ *   7. 🌻 Docs CMS → 🚀 Publish to website        (any time)
  *
  * What this does NOT handle yet (by design, to keep v1 simple):
  *   - Inline images pasted into the doc. Upload photos/logos directly to
@@ -30,14 +32,39 @@ const TIMEZONE = "America/Chicago";
  * Menu
  * ========================================================================= */
 
-function onOpen() {
+function onOpen(e) {
+  // Only add the menu when the Doc lives inside the configured website folder.
+  // Docs outside that folder open normally with no menu added.
+  if (!isWebsiteDoc_()) return;
   DocumentApp.getUi()
-    .createMenu("🌻 Thrive65 Publishing")
+    .createMenu("🌻 Docs CMS")
     .addItem("🚀 Publish to website", "publishToWebsite")
     .addSeparator()
     .addItem("📄 Page Properties", "showPageProperties")
     .addItem("⚙️ Set up GitHub connection", "setupGithubCredentials")
     .addToUi();
+}
+
+// Returns true if the current document is inside the configured website
+// Drive folder. If no folder ID has been configured yet, returns true so the
+// menu is visible during initial setup.
+function isWebsiteDoc_() {
+  const folderId = PropertiesService.getScriptProperties().getProperty("DRIVE_FOLDER_ID");
+  if (!folderId) return true;
+  const docId = DocumentApp.getActiveDocument().getId();
+  // Cache per-document so the Drive API call only happens once per session.
+  const cache = CacheService.getDocumentCache();
+  const cached = cache.get("in_website_folder");
+  if (cached !== null) return cached === "1";
+  const parents = DriveApp.getFileById(docId).getParents();
+  while (parents.hasNext()) {
+    if (parents.next().getId() === folderId) {
+      cache.put("in_website_folder", "1", 3600);
+      return true;
+    }
+  }
+  cache.put("in_website_folder", "0", 3600);
+  return false;
 }
 
 /* =========================================================================
@@ -54,7 +81,7 @@ function setupGithubCredentials() {
   const tokenResp = ui.prompt(
     "GitHub setup (1/4)",
     "Paste your GitHub Personal Access Token.\n\n" +
-      "Use a fine-grained token scoped ONLY to your Thrive65 repo, with " +
+      "Use a fine-grained token scoped ONLY to your repo, with " +
       "'Contents: Read and write' permission. It's stored in this script's " +
       "properties, not in the document text.",
     ui.ButtonSet.OK_CANCEL
@@ -66,7 +93,7 @@ function setupGithubCredentials() {
 
   const ownerResp = ui.prompt(
     "GitHub setup (2/4)",
-    'GitHub username or organization that owns the repo (e.g. "thrive65"):',
+    'GitHub username or organization that owns the repo (e.g. "my-org"):',
     ui.ButtonSet.OK_CANCEL
   );
   if (ownerResp.getSelectedButton() !== ui.Button.OK) return;
@@ -74,21 +101,32 @@ function setupGithubCredentials() {
 
   const repoResp = ui.prompt(
     "GitHub setup (3/4)",
-    'Repository name (e.g. "thrive65-site"):',
+    'Repository name (e.g. "my-org-site"):',
     ui.ButtonSet.OK_CANCEL
   );
   if (repoResp.getSelectedButton() !== ui.Button.OK) return;
   props.setProperty("GITHUB_REPO", repoResp.getResponseText().trim());
 
   const branchResp = ui.prompt(
-    "GitHub setup (4/4)",
+    "GitHub setup (4/5)",
     'Branch to publish to (just click OK to use "main"):',
     ui.ButtonSet.OK_CANCEL
   );
   if (branchResp.getSelectedButton() !== ui.Button.OK) return;
   props.setProperty("GITHUB_BRANCH", branchResp.getResponseText().trim() || "main");
 
-  ui.alert("✅ Connected. You can now use \"Publish to website.\"");
+  const folderResp = ui.prompt(
+    "GitHub setup (5/5)",
+    "Drive folder ID for your website Docs (the menu will only appear in Docs inside this folder).\n\n" +
+      "Find it in the folder's URL: drive.google.com/drive/folders/FOLDER_ID_IS_HERE\n\n" +
+      "Leave blank to show the menu in all Docs:",
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (folderResp.getSelectedButton() !== ui.Button.OK) return;
+  const folderId = folderResp.getResponseText().trim();
+  if (folderId) props.setProperty("DRIVE_FOLDER_ID", folderId);
+
+  ui.alert("✅ Connected. You can now use \"Publish to website\" in any Doc inside your website folder.");
 }
 
 /* =========================================================================
