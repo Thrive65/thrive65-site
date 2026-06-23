@@ -170,13 +170,13 @@ function publishToWebsite() {
         break;
       }
 
-      case "overview": {
+      case "section": {
         targetPath = props.getProperty("TARGET_PATH");
         if (!targetPath) {
-          throw new Error('Set a "Target path" in Page Properties for this overview doc.');
+          throw new Error('Set a "Target path" in Page Properties for this section doc.');
         }
         content = rawMarkdown.trim() + "\n";
-        commitMessage = `Publish overview update from "${title}"`;
+        commitMessage = `Publish section update from "${title}"`;
         break;
       }
 
@@ -377,7 +377,7 @@ function commitFileToGithub(path, content, commitMessage) {
  * The form pre-populates from getPageProperties() and saves through
  * savePageProperties(). Fields show/hide based on the chosen content type:
  *
- *   overview -> Target path
+ *   section  -> Target path
  *   faq      -> (no extra fields; always writes _data/faq.yml)
  *   page     -> Target path + Title/Description/Social image
  *   post     -> URL slug (optional) + Title/Description/Social image
@@ -418,7 +418,7 @@ function pagePropertiesHtml_() {
   <label for="CONTENT_TYPE">Content type</label>
   <select id="CONTENT_TYPE" onchange="syncFields()">
     <option value="">— choose —</option>
-    <option value="overview">Overview (homepage include)</option>
+    <option value="section">Homepage section</option>
     <option value="faq">FAQ item</option>
     <option value="page">Page</option>
     <option value="post">Post</option>
@@ -456,13 +456,13 @@ function pagePropertiesHtml_() {
 
   function syncFields() {
     var type = document.getElementById("CONTENT_TYPE").value;
-    show("f_target", type === "overview" || type === "page");
+    show("f_target", type === "section" || type === "page");
     show("f_slug", type === "post");
     show("f_meta", type === "page" || type === "post");
 
     var hint = document.getElementById("target_hint");
-    if (type === "overview") {
-      hint.textContent = "e.g. _includes/overview-content.md";
+    if (type === "section") {
+      hint.textContent = "e.g. _includes/home-overview.md";
     } else if (type === "page") {
       hint.textContent = "e.g. volunteer.md";
     } else {

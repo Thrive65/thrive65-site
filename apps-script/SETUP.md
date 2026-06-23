@@ -63,7 +63,7 @@ Pick a **Content type**; the form then shows only the fields that type needs.
 
 | Content type | What it writes | Extra fields shown |
 |---|---|---|
-| **Overview** | the homepage include | Target path → `_includes/overview-content.md` |
+| **Section** | a homepage section include | Target path → `_includes/home-overview.md` |
 | **FAQ** | the accordion data file | *(none — always writes `_data/faq.yml`)* |
 | **Standalone page** | a full page, e.g. `volunteer.md` | Target path + Title / Description / Social image |
 | **Op-ed post** | a dated file in `_posts/` | URL slug (optional) + Title / Description / Social image |
