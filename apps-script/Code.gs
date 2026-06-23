@@ -4,11 +4,8 @@
  * Paste this ENTIRE file into every Google Doc that should publish to the
  * website (Extensions > Apps Script > paste over Code.gs > Save).
  *
- * There is NO per-doc code editing anymore. Everything that used to live in
- * a CONFIG block — what kind of content this is, where it gets written, and
- * the page's metadata — is now entered through the "📄 Page Properties" menu
- * and stored privately with this document. So the script below is identical
- * in every doc; you only ever paste it, never edit it.
+ * A new menu will load on page refresh. Run "Set up GitHub connection" once. 
+ * Then, add page metadata and target file in github via "📄 Page Properties" menu. 
  *
  * First-time setup per doc:
  *   1. Paste this file, Save, reload the doc.
@@ -25,7 +22,7 @@
  * =========================================================================
  */
 
-// Timezone used to timestamp new op-ed posts. Same for every doc, so it
+// Timezone used to timestamp new posts. Same for every doc, so it
 // stays here rather than in the per-doc Page Properties form.
 const TIMEZONE = "America/Chicago";
 
@@ -416,15 +413,15 @@ function pagePropertiesHtml_() {
 </head>
 <body>
   <h2>Page Properties</h2>
-  <p class="sub">Stored privately with this document. The same script runs every page — no code editing.</p>
+  <p class="sub">Stored privately with this document.</p>
 
   <label for="CONTENT_TYPE">Content type</label>
   <select id="CONTENT_TYPE" onchange="syncFields()">
     <option value="">— choose —</option>
     <option value="overview">Overview (homepage include)</option>
-    <option value="faq">FAQ (accordion data)</option>
-    <option value="page">Standalone page</option>
-    <option value="post">Op-ed post</option>
+    <option value="faq">FAQ item</option>
+    <option value="page">Page</option>
+    <option value="post">Post</option>
   </select>
 
   <div class="field" id="f_target">
