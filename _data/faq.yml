@@ -1,12 +1,6 @@
-# This file is generated automatically when someone publishes the FAQ Google Doc
-# (see apps-script/Code.gs). You normally won't edit this by hand.
-#
-# Format:
-# - question: "Question text"
-#   answer: |
-#     Answer text, can include **markdown** formatting and multiple paragraphs.
-
-- question: "What is Thrive65?"
+- question: "When did this structural deficit start and what caused it?"
   answer: |
-    Thrive65 is a community coalition advocating for strong, well-resourced District 65 schools.
-    This is placeholder content — publish the FAQ Google Doc to replace it with real questions and answers.
+    1776\. Capitalism.
+- question: "What has the district done about it?"
+  answer: |
+    Had some meetings. A lot of meetings.
