@@ -122,12 +122,13 @@ Pick a **Content type**; the form then shows only the fields that type needs
 | Content type | What it writes | Extra fields shown |
 |---|---|---|
 | **Homepage section** | a homepage section include | Target path → `_includes/section-content.md` |
-| **FAQ item** | the accordion data file | *(none — always writes `_data/faq.yml`)* |
+| **FAQ item** | the accordion data file (`_data/faq.yml`) | Title (the section heading) |
 | **Page** | a full page, e.g. `volunteer.md` | Target path + Title / Description / Social image |
 | **Post** | a dated file in `_posts/` | URL slug (optional) + Title / Description / Social image |
 
 - **Title** defaults to the Google Doc's name but is editable; whatever you
-  type here is what gets published.
+  type here is what gets published. For an **FAQ doc**, the Title becomes the
+  heading shown above the questions.
 - **Description** and **Social image** feed the page's SEO and link-preview
   tags (via the `jekyll-seo-tag` plugin). They only apply to pages and posts.
 - **Social image** can be a repo path (`/assets/images/foo.jpg`) or a full URL.
@@ -147,6 +148,7 @@ running, and the live site updates within a minute or two once it finishes.
 The FAQ doc uses a simple convention so the script can turn it into an
 accordion automatically:
 
+- The **Title** (in Page Properties) becomes the section heading above the questions.
 - Each question is a **Heading 2** in the Doc.
 - Everything below it, up to the next Heading 2, becomes that question's
   answer (you can use bold, links, lists, etc. — they'll carry over).

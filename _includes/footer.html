@@ -1,9 +1,6 @@
 <footer class="site-footer">
   <div class="wrap site-footer__inner">
-    <p class="site-footer__tagline">{{ site.tagline }}</p>
-    <p class="site-footer__meta">
-      Thrive65 is an independent community coalition and is not affiliated with or operated by District 65.
-    </p>
-    <p class="site-footer__meta">&copy; {{ 'now' | date: "%Y" }} Thrive65</p>
+    {% capture footer_md %}{% include footer-content.md %}{% endcapture %}
+    {{ footer_md | markdownify }}
   </div>
 </footer>

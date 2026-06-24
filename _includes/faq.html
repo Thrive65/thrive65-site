@@ -1,9 +1,12 @@
+{% if site.data.faq.title %}
+  <h2>{{ site.data.faq.title }}</h2>
+{% endif %}
 <div class="faq-list">
-  {% for item in site.data.faq %}
+  {% for item in site.data.faq.items %}
     <details class="faq-item">
       <summary class="faq-item__question">
         <span class="faq-item__icon" aria-hidden="true"></span>
-        {{ item.question }}
+        <h3>{{ item.question }}</h3>
       </summary>
       <div class="faq-item__answer">
         {{ item.answer | markdownify }}

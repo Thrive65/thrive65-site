@@ -205,10 +205,12 @@ img { max-width: 100%; display: block; }
    ========================================================================== */
 .section { padding: 3.5rem 0; }
 .section--alt { background: var(--color-paper-alt); }
-.section__title {
+.section__title,
+.section h2 {
   font-size: clamp(1.5rem, 3vw, 2rem);
   margin-bottom: 1em;
 }
+/* Prose can be used for Posts & pages. Need to revisit with CUBE css. */
 .prose :is(h1,h2,h3) { margin-top: 1.25em; }
 .prose h1 { font-size: 1.75rem; }
 .prose h2 { font-size: 1.35rem; }
@@ -238,6 +240,13 @@ img { max-width: 100%; display: block; }
   gap: 0.85em;
 }
 .faq-item__question::-webkit-details-marker { display: none; }
+.faq-item__question h3 {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
 .faq-item__icon {
   flex-shrink: 0;
   width: 1.4em;
@@ -327,7 +336,8 @@ img { max-width: 100%; display: block; }
   color: var(--color-slate);
   font-size: 0.9rem;
 }
-.site-footer__tagline {
+.site-footer__tagline,
+.site-footer strong {
   font-family: var(--font-display);
   font-weight: 600;
   color: var(--color-ink);

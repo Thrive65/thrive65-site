@@ -250,13 +250,17 @@ function buildPagePropertiesCard(type, values) {
     );
   }
 
-  if (type === "page" || type === "post") {
+  if (type === "page" || type === "post" || type === "faq") {
     sec.addWidget(
       CardService.newTextInput()
         .setFieldName("META_TITLE")
         .setTitle("Title")
         .setValue(values.META_TITLE || "")
+        .setHint(type === "faq" ? "Heading shown above the questions. Defaults to the doc name." : "")
     );
+  }
+
+  if (type === "page" || type === "post") {
     sec.addWidget(
       CardService.newTextInput()
         .setFieldName("META_DESCRIPTION")
@@ -277,8 +281,8 @@ function buildPagePropertiesCard(type, values) {
   if (type === "faq") {
     sec.addWidget(
       CardService.newTextParagraph().setText(
-        "FAQ docs write to <b>_data/faq.yml</b>. Each Heading 2 becomes a question; " +
-          "the text under it becomes the answer."
+        "FAQ docs write to <b>_data/faq.yml</b>. The Title above becomes the section " +
+          "heading; each Heading 2 becomes a question, and the text under it becomes the answer."
       )
     );
   }
@@ -354,7 +358,7 @@ function doPublish_() {
   switch (contentType) {
     case "faq": {
       targetPath = "_data/faq.yml";
-      content = faqArrayToYaml(parseFaqMarkdown(rawMarkdown));
+      content = faqArrayToYaml(title, parseFaqMarkdown(rawMarkdown));
       commitMessage = `Publish FAQ update from "${title}"`;
       break;
     }
@@ -498,16 +502,20 @@ function parseFaqMarkdown(markdown) {
   return faqs.map((f) => ({ question: f.question, answer: f.answer.trim() }));
 }
 
-function faqArrayToYaml(faqs) {
+function faqArrayToYaml(title, faqs) {
+  // The section heading (`title`) comes from the doc's Page Properties title,
+  // which falls back to the doc name — so the FAQ heading and its Q&A live in
+  // one Google Doc rather than a separate include.
+  let yaml = `title: ${yamlScalar(title)}\n`;
   if (faqs.length === 0) {
-    return "[]\n";
+    return yaml + "items: []\n";
   }
-  let yaml = "";
+  yaml += "items:\n";
   faqs.forEach((f) => {
-    yaml += `- question: ${yamlScalar(f.question)}\n`;
-    yaml += "  answer: |\n";
+    yaml += `  - question: ${yamlScalar(f.question)}\n`;
+    yaml += "    answer: |\n";
     f.answer.split("\n").forEach((line) => {
-      yaml += `    ${line}\n`;
+      yaml += `      ${line}\n`;
     });
   });
   return yaml;
