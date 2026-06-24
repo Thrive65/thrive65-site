@@ -1,12 +1,51 @@
-# This file is generated automatically when someone publishes the FAQ Google Doc
-# (see apps-script/Code.gs). You normally won't edit this by hand.
-#
-# Format:
-# - question: "Question text"
-#   answer: |
-#     Answer text, can include **markdown** formatting and multiple paragraphs.
-
-- question: "What is Thrive65?"
+- question: "When did this structural deficit start and what caused it?"
   answer: |
-    Thrive65 is a community coalition advocating for strong, well-resourced District 65 schools.
-    This is placeholder content — publish the FAQ Google Doc to replace it with real questions and answers.
+    1776\. Capitalism.
+- question: "What has the district done about it?"
+  answer: |
+    Had some meetings. A lot of meetings.
+- question: "Is our deficit because of Foster School’s construction?"
+  answer: |
+    No. Shut up. Just sit down and shutup.
+- question: "Why build a new school when we have a structural deficit?"
+  answer: |
+    Racism.
+- question: "Why are we spending so much on facilities?"
+  answer: |
+    Again, capitalism.
+- question: "Is lower enrollment at our schools a problem?"
+  answer: |
+    Uh yuh.
+- question: "Can’t we focus on bringing back kids in private schools?"
+  answer: |
+    Lorem ipsom.
+- question: "Shouldn’t we just cut more admin?"
+  answer: |
+    No. Shut up. Just sit down and shutup.
+- question: "What about all the community ideas I’ve heard about?"
+  answer: |
+    Wish in one hand and shit in the other, see which fills up first.
+- question: "Why not close JEH and put early childhood education in each school?"
+  answer: |
+    Lorem ipsom.
+- question: "Does closing a school really save that much?"
+  answer: |
+    Yes.
+- question: "What about transportation costs?"
+  answer: |
+    What about them?
+- question: "What did the special ed audit find?"
+  answer: |
+    Lorem ipsom.
+- question: "Why doesn’t the board get more input from the community?"
+  answer: |
+    Good plan.
+- question: "Are walkable schools a civil right? Am I in a school desert?"
+  answer: |
+    How large is your yard?
+- question: "Isn’t free and reduced lunch a scam?"
+  answer: |
+    Check out [archaeoastronomer.simplesite.com](http://archaeoastronomer.simplesite.com) for the truth…
+- question: "Why won’t Lindsey take responsibility for her children?"
+  answer: |
+    Tell me about it\!

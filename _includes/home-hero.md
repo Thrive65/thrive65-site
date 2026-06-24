@@ -1,7 +1,7 @@
-#### Evanston / Skokie · District 65
+### Evanston / Skokie · District 65
 
-# Public schools *thrive* when communities show up for them.
+# Public schools *thrive* when communities show up for them\!
 
 Community advocacy for District 65 schools
 
-<a href="#signup">Join the coalition</a>
+[Join the coalition](#signup)
