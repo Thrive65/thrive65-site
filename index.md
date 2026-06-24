@@ -5,10 +5,8 @@ title: Home
 
 <section class="hero">
   <div class="wrap hero__inner">
-    <p class="hero__eyebrow">Evanston / Skokie · District 65</p>
-    <h1 class="hero__title">Public schools <span>thrive</span> when communities show up for them.</h1>
-    <p class="hero__lede">{{ site.tagline }}</p>
-    <a class="button button--primary" href="#signup">Join the coalition</a>
+    {% capture hero_md %}{% include home-hero.md %}{% endcapture %}
+    {{ hero_md | markdownify }}
   </div>
 </section>
 
