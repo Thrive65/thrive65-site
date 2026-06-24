@@ -4,16 +4,20 @@ This connects your Google Docs to a "Publish to website" button that exports
 content as Markdown and commits it straight to your GitHub repo. GitHub Actions
 takes it from there and rebuilds the live site.
 
-The script runs as a **Google Workspace Editor Add-on** — installed once, it
-automatically adds the 🌻 Docs CMS menu to every Doc inside your website Drive 
-folder. No pasting a script into each Doc, no per-doc authorization.
+The script runs as a **Google Workspace Add-on** — installed once, it appears as
+a sidebar (the Docs CMS icon in the right-hand panel) in every Google Doc you
+open. No pasting a script into each Doc, no per-doc authorization. The UI is a
+sidebar built with CardService, not an Extensions menu.
 
 ## Step 1: Create a website folder in Google Drive
 
 Create (or designate) a single Drive folder that will hold all your website
 content Docs (Home, About, posts, etc.). You'll need its **folder ID** in
-Step 5 — find it in the URL when the folder is open:
+Step 9 — find it in the URL when the folder is open:
 `drive.google.com/drive/folders/THIS_PART_IS_THE_ID`
+
+(Publishing is restricted to docs in this folder; the sidebar itself appears in
+all docs.)
 
 ## Step 2: Create a GitHub Personal Access Token
 
@@ -39,6 +43,9 @@ Step 5 — find it in the URL when the folder is open:
 5. Click the gear icon (**Project Settings**) → check **Show "appsscript.json"
    manifest file in editor**. An `appsscript.json` tab will appear.
 6. Replace its entire contents with `apps-script/appsscript.json` from this repo.
+   (This manifest includes a `urlFetchWhitelist` — required for any Workspace
+   add-on that makes external requests, here GitHub's API and the Drive export
+   endpoint. Deployment fails without it.)
 7. Save (`Cmd/Ctrl+S`).
 
 ## Step 4: Create a Google Cloud project and link it
@@ -52,7 +59,17 @@ Apps Script add-ons require a linked Cloud project for the OAuth consent screen.
    **Google Cloud Platform (GCP) Project** → click **Change project** → paste
    the project number → click **Set project**.
 
-## Step 5: Configure the OAuth consent screen
+## Step 5: Enable the Google Drive API
+
+The add-on exports your Doc as Markdown through the Drive API, so that API must
+be **enabled in the Cloud project**. End-users can't enable it themselves, so
+you (the project owner) must do this once — otherwise publishing fails with
+`Permission denied while enabling APIs: drive`.
+
+1. In the Cloud Console (same project), go to **APIs & Services → Library**.
+2. Search for **Google Drive API** → click it → **Enable**.
+
+## Step 6: Configure the OAuth consent screen
 
 1. In the Cloud Console, go to **APIs & Services → OAuth consent screen**.
 2. User type: **External**. Click Create.
@@ -65,47 +82,49 @@ Apps Script add-ons require a linked Cloud project for the OAuth consent screen.
 5. Under **Test users** → add your Gmail address (and any other editors).
 6. Save and continue through the remaining screens.
 
-## Step 6: Deploy as an Add-on
-
-1. In the Apps Script editor → **Deploy → New deployment**.
-2. Click the gear icon next to "Select type" → choose **Add-on**.
-3. Description: `v1`. Click **Deploy**.
-4. Copy the **Deployment ID** shown — you'll need it in the next step.
-
-## Step 7: Install the Add-on
+## Step 7: Deploy as an Add-on
 
 1. In the Apps Script editor → **Deploy → Test deployments**.
-2. Click **Install** next to your deployment. Follow the prompts and grant the
-   requested permissions. This is the **one-time authorization** — you won't
-   be asked again per-doc.
+2. Make sure the type shows **Google Workspace Add-on** (it reads this from the
+   `addOns` block in the manifest).
+3. Click **Install** → **Done**. Test deployments run the latest saved code, so
+   you never need to re-deploy after editing — just reload the Doc.
 
-## Step 8: Run first-time connection setup
+## Step 8: Open the sidebar and authorize
 
-1. Open any Google Doc inside your website Drive folder and reload the tab.
-2. The **🌻 Docs CMS** menu will appear in the menu bar.
-3. Click **🌻 Docs CMS → ⚙️ Set up GitHub connection** and follow
-   the five prompts: GitHub token, org/username, repo name, branch, and your
-   **Drive folder ID** from Step 1.
-4. This only needs to be done **once** — the settings are shared across all Docs.
+1. Open any Google Doc and look at the **right-hand side panel** — click the
+   **Docs CMS** icon (the add-on logo) to open the sidebar.
+2. Authorization happens the first time the add-on needs a sensitive scope —
+   in practice, the first time you **Publish** (that's the first action that
+   touches Drive). Review and accept the "unverified app" consent. This is the
+   one-time authorization — you won't be asked again per-doc.
+
+## Step 9: Run first-time connection setup
+
+1. In the sidebar, click **Set up GitHub connection**.
+2. Fill in: GitHub token, owner (user/org), repository, branch, and your
+   **Drive folder ID** from Step 1. Click **Save**.
+3. This only needs to be done **once** — these settings are shared across all Docs.
 
 ## Per document: configure Page Properties
 
 Do this once for each Doc you want to publish (takes about 30 seconds):
 
-1. Open the Doc (it must be inside the website folder).
-2. Click **🌻 Docs CMS → 📄 Page Properties** and fill in the form.
-3. Click Save.
+1. Open the Doc and open the **Docs CMS** sidebar.
+2. Click **📄 Page Properties** and fill in the form.
+3. Click **Save**.
 
 ### Filling in Page Properties
 
-Pick a **Content type**; the form then shows only the fields that type needs.
+Pick a **Content type**; the form then shows only the fields that type needs
+(the sidebar refreshes when you change the dropdown).
 
 | Content type | What it writes | Extra fields shown |
 |---|---|---|
-| **Section** | a homepage section include | Target path → `_includes/section-content.md` |
-| **FAQ** | the accordion data file | *(none — always writes `_data/faq.yml`)* |
-| **Standalone page** | a full page, e.g. `volunteer.md` | Target path + Title / Description / Social image |
-| **Op-ed post** | a dated file in `_posts/` | URL slug (optional) + Title / Description / Social image |
+| **Homepage section** | a homepage section include | Target path → `_includes/section-content.md` |
+| **FAQ item** | the accordion data file | *(none — always writes `_data/faq.yml`)* |
+| **Page** | a full page, e.g. `volunteer.md` | Target path + Title / Description / Social image |
+| **Post** | a dated file in `_posts/` | URL slug (optional) + Title / Description / Social image |
 
 - **Title** defaults to the Google Doc's name but is editable; whatever you
   type here is what gets published.
@@ -116,8 +135,9 @@ Pick a **Content type**; the form then shows only the fields that type needs.
 
 ## Publishing
 
-Click **🌻 Docs CMS → 🚀 Publish to website** whenever the Doc is
-ready to go live. Nothing publishes automatically — it only happens on demand.
+In the sidebar, click **🚀 Publish to website** whenever the Doc is ready to go
+live. Publishing only works for docs inside your website folder. Nothing
+publishes automatically — it only happens on demand.
 
 After publishing, check the **Actions** tab on GitHub — you'll see a build
 running, and the live site updates within a minute or two once it finishes.
@@ -133,8 +153,13 @@ accordion automatically:
 
 ## Known limitations (v1)
 
-- **Docs must be directly inside the website folder** (one level deep). Docs
-  in sub-folders won't get the menu. This is easy to extend later if needed.
+- **The sidebar appears in all your Docs**, but publishing is restricted to
+  docs **directly inside the website folder** (one level deep). Docs in
+  sub-folders are blocked from publishing. This is easy to extend later.
+- **Unverified-app warning:** because the add-on uses sensitive scopes (Drive,
+  Docs) and isn't submitted for Google verification, you'll click through an
+  "unverified app" screen at first authorization. That's expected for a
+  test-deployment add-on used by its developer/test users.
 - **Inline images** pasted into a Doc aren't extracted yet — they'd bloat
   the Markdown file as embedded data. Add images directly to `assets/images/`
   in the repo and reference them with a Markdown image tag in the Doc:

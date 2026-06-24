@@ -9,17 +9,21 @@
     "https://www.googleapis.com/auth/script.external_request",
     "https://www.googleapis.com/auth/script.scriptapp"
   ],
+  "urlFetchWhitelist": [
+    "https://api.github.com/",
+    "https://www.googleapis.com/drive/"
+  ],
   "addOns": {
     "common": {
       "name": "Docs CMS",
       "logoUrl": "https://www.gstatic.com/images/branding/googleg/1x/googleg_standard_color_48dp.png",
       "homepageTrigger": {
-        "runFunction": "onOpen"
+        "runFunction": "onHomepage"
       }
     },
     "docs": {
       "homepageTrigger": {
-        "runFunction": "onOpen"
+        "runFunction": "onHomepage"
       }
     }
   }
