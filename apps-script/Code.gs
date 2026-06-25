@@ -17,9 +17,13 @@
  * What this does NOT handle yet (by design, to keep v1 simple):
  *   - Inline images pasted into the doc. Upload photos/logos directly to
  *     assets/images/ in the repo and reference them by path instead.
- *   - Board Meeting Minutes — those are official PDFs, not Doc content,
- *     so they're added directly to assets/board-minutes/ and listed in
- *     _data/board-minutes.yml.
+ *
+ * Post content type:
+ *   Category (required) — human-readable label, e.g. "Board Meeting Recaps" or "Opinion".
+ *   Drives the eyebrow label on the post page and the permalink subfolder.
+ *   Post date (required) — YYYY-MM-DD. Use the meeting date for recaps.
+ *   Based on Date switch — ON (default): /{category}/{year}/{M-D}/
+ *                          OFF: /{category}/{slug}/
  * =========================================================================
  */
 
@@ -188,14 +192,34 @@ function openPageProperties(e) {
 function onContentTypeChange(e) {
   const type = formVal_(e, "CONTENT_TYPE");
   const values = {
-    TARGET_PATH: formVal_(e, "TARGET_PATH"),
-    POST_SLUG: formVal_(e, "POST_SLUG"),
-    META_TITLE: formVal_(e, "META_TITLE"),
-    META_DESCRIPTION: formVal_(e, "META_DESCRIPTION"),
-    META_IMAGE: formVal_(e, "META_IMAGE"),
+    TARGET_PATH:         formVal_(e, "TARGET_PATH"),
+    POST_CATEGORY:       formVal_(e, "POST_CATEGORY"),
+    POST_DATE:           formVal_(e, "POST_DATE"),
+    POST_DATE_PERMALINK: formVal_(e, "POST_DATE_PERMALINK") === "true" ? "true" : "false",
+    POST_SLUG:           formVal_(e, "POST_SLUG"),
+    META_TITLE:          formVal_(e, "META_TITLE"),
+    META_DESCRIPTION:    formVal_(e, "META_DESCRIPTION"),
+    META_IMAGE:          formVal_(e, "META_IMAGE"),
   };
   return CardService.newActionResponseBuilder()
     .setNavigation(CardService.newNavigation().updateCard(buildPagePropertiesCard(type, values)))
+    .build();
+}
+
+// Rebuild the card when the date-permalink switch is toggled, preserving entered values.
+function onDatePermalinkToggle(e) {
+  const values = {
+    TARGET_PATH:         formVal_(e, "TARGET_PATH"),
+    POST_CATEGORY:       formVal_(e, "POST_CATEGORY"),
+    POST_DATE:           formVal_(e, "POST_DATE"),
+    POST_DATE_PERMALINK: formVal_(e, "POST_DATE_PERMALINK") === "true" ? "true" : "false",
+    POST_SLUG:           formVal_(e, "POST_SLUG"),
+    META_TITLE:          formVal_(e, "META_TITLE"),
+    META_DESCRIPTION:    formVal_(e, "META_DESCRIPTION"),
+    META_IMAGE:          formVal_(e, "META_IMAGE"),
+  };
+  return CardService.newActionResponseBuilder()
+    .setNavigation(CardService.newNavigation().updateCard(buildPagePropertiesCard("post", values)))
     .build();
 }
 
@@ -204,11 +228,14 @@ function buildPagePropertiesCard(type, values) {
   if (type === null || type === undefined) type = props.getProperty("CONTENT_TYPE") || "";
   if (!values) {
     values = {
-      TARGET_PATH: props.getProperty("TARGET_PATH") || "",
-      POST_SLUG: props.getProperty("POST_SLUG") || "",
-      META_TITLE: props.getProperty("META_TITLE") || "",
-      META_DESCRIPTION: props.getProperty("META_DESCRIPTION") || "",
-      META_IMAGE: props.getProperty("META_IMAGE") || "",
+      TARGET_PATH:         props.getProperty("TARGET_PATH")         || "",
+      POST_CATEGORY:       props.getProperty("POST_CATEGORY")       || "",
+      POST_DATE:           props.getProperty("POST_DATE")           || "",
+      POST_DATE_PERMALINK: props.getProperty("POST_DATE_PERMALINK") !== "false" ? "true" : "false",
+      POST_SLUG:           props.getProperty("POST_SLUG")           || "",
+      META_TITLE:          props.getProperty("META_TITLE")          || "",
+      META_DESCRIPTION:    props.getProperty("META_DESCRIPTION")    || "",
+      META_IMAGE:          props.getProperty("META_IMAGE")          || "",
     };
   }
   // Default the title to the doc's name when it hasn't been set yet.
@@ -241,26 +268,70 @@ function buildPagePropertiesCard(type, values) {
   }
 
   if (type === "post") {
+    const datePerm = (values.POST_DATE_PERMALINK !== "false");
     sec.addWidget(
       CardService.newTextInput()
-        .setFieldName("POST_SLUG")
-        .setTitle("URL slug (optional)")
-        .setValue(values.POST_SLUG || "")
-        .setHint("Auto-generated from the title if left blank.")
+        .setFieldName("POST_CATEGORY")
+        .setTitle("Category (required)")
+        .setValue(values.POST_CATEGORY || "")
+        .setHint('e.g. "Board Meeting Recaps" or "Opinion". Sets the eyebrow label and permalink folder.')
+    );
+    sec.addWidget(
+      CardService.newTextInput()
+        .setFieldName("POST_DATE")
+        .setTitle("Post date (YYYY-MM-DD, required)")
+        .setValue(values.POST_DATE || "")
+        .setHint("The date of the meeting or publication.")
+    );
+    sec.addWidget(
+      CardService.newDecoratedText()
+        .setText("Based on Date")
+        .setBottomLabel(
+          datePerm
+            ? "Permalink: /{category}/{year}/{M-D}/"
+            : "Permalink: /{category}/{slug}/"
+        )
+        .setSwitch(
+          CardService.newSwitch()
+            .setFieldName("POST_DATE_PERMALINK")
+            .setValue("true")
+            .setSelected(datePerm)
+            .setOnChangeAction(CardService.newAction().setFunctionName("onDatePermalinkToggle"))
+        )
+    );
+    if (!datePerm) {
+      sec.addWidget(
+        CardService.newTextInput()
+          .setFieldName("POST_SLUG")
+          .setTitle("URL slug")
+          .setValue(values.POST_SLUG || "")
+          .setHint("Auto-generated from the title if left blank.")
+      );
+    }
+    sec.addWidget(
+      CardService.newTextInput()
+        .setFieldName("META_DESCRIPTION")
+        .setTitle("Description")
+        .setMultiline(true)
+        .setValue(values.META_DESCRIPTION || "")
+        .setHint("~160 chars, for search results & social cards.")
+    );
+    sec.addWidget(
+      CardService.newTextInput()
+        .setFieldName("META_IMAGE")
+        .setTitle("Social image")
+        .setValue(values.META_IMAGE || "")
+        .setHint("Path or URL, e.g. /assets/images/photo.jpg")
     );
   }
 
-  if (type === "page" || type === "post" || type === "faq") {
+  if (type === "page") {
     sec.addWidget(
       CardService.newTextInput()
         .setFieldName("META_TITLE")
         .setTitle("Title")
         .setValue(values.META_TITLE || "")
-        .setHint(type === "faq" ? "Heading shown above the questions. Defaults to the doc name." : "")
     );
-  }
-
-  if (type === "page" || type === "post") {
     sec.addWidget(
       CardService.newTextInput()
         .setFieldName("META_DESCRIPTION")
@@ -279,6 +350,13 @@ function buildPagePropertiesCard(type, values) {
   }
 
   if (type === "faq") {
+    sec.addWidget(
+      CardService.newTextInput()
+        .setFieldName("META_TITLE")
+        .setTitle("Title")
+        .setValue(values.META_TITLE || "")
+        .setHint("Heading shown above the questions. Defaults to the doc name.")
+    );
     sec.addWidget(
       CardService.newTextParagraph().setText(
         "FAQ docs write to <b>_data/faq.yml</b>. The Title above becomes the section " +
@@ -305,12 +383,15 @@ function savePageProperties(e) {
   if (!type) return notify_("Pick a content type first.");
 
   PropertiesService.getDocumentProperties().setProperties({
-    CONTENT_TYPE: type,
-    TARGET_PATH: formVal_(e, "TARGET_PATH").trim(),
-    POST_SLUG: formVal_(e, "POST_SLUG").trim(),
-    META_TITLE: formVal_(e, "META_TITLE").trim(),
-    META_DESCRIPTION: formVal_(e, "META_DESCRIPTION").trim(),
-    META_IMAGE: formVal_(e, "META_IMAGE").trim(),
+    CONTENT_TYPE:        type,
+    TARGET_PATH:         formVal_(e, "TARGET_PATH").trim(),
+    POST_CATEGORY:       formVal_(e, "POST_CATEGORY").trim(),
+    POST_DATE:           formVal_(e, "POST_DATE").trim(),
+    POST_DATE_PERMALINK: formVal_(e, "POST_DATE_PERMALINK") === "true" ? "true" : "false",
+    POST_SLUG:           formVal_(e, "POST_SLUG").trim(),
+    META_TITLE:          formVal_(e, "META_TITLE").trim(),
+    META_DESCRIPTION:    formVal_(e, "META_DESCRIPTION").trim(),
+    META_IMAGE:          formVal_(e, "META_IMAGE").trim(),
   });
 
   return CardService.newActionResponseBuilder()
@@ -383,14 +464,32 @@ function doPublish_() {
     }
 
     case "post": {
-      const slug = props.getProperty("POST_SLUG") || slugify(title);
-      const dateStr = Utilities.formatDate(new Date(), TIMEZONE, "yyyy-MM-dd");
-      targetPath = `_posts/${dateStr}-${slug}.md`;
-      const fields = { layout: "post", title: title, date: dateStr };
+      const category = props.getProperty("POST_CATEGORY") || "";
+      if (!category) throw new Error('Set a "Category" in Page Properties before publishing.');
+
+      const manualDate = props.getProperty("POST_DATE") || "";
+      if (!manualDate || !/^\d{4}-\d{2}-\d{2}$/.test(manualDate)) {
+        throw new Error('Set a valid "Post date" (YYYY-MM-DD) in Page Properties before publishing.');
+      }
+      const dateStr = manualDate;
+      const base = slugify(category);
+      const datePerm = (props.getProperty("POST_DATE_PERMALINK") || "true") !== "false";
+
+      let permalink;
+      if (datePerm) {
+        const parts = dateStr.split("-");
+        permalink = `/${base}/${parts[0]}/${parseInt(parts[1])}-${parseInt(parts[2])}/`;
+      } else {
+        const slug = props.getProperty("POST_SLUG") || slugify(title);
+        permalink = `/${base}/${slug}/`;
+      }
+
+      targetPath = `_posts/${dateStr}-${slugify(title)}.md`;
+      const fields = { layout: "post", title: title, date: dateStr, category: category, permalink: permalink };
       if (description) fields.description = description;
-      if (image) fields.image = image;
+      if (image)       fields.image       = image;
       content = buildFrontMatter(fields) + rawMarkdown.trim() + "\n";
-      commitMessage = `Publish op-ed: "${title}"`;
+      commitMessage = `Publish post: "${title}"`;
       break;
     }
 

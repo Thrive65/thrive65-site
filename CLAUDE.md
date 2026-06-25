@@ -28,11 +28,13 @@ Files overwritten by the publishing add-on (do not edit by hand):
 - `_includes/home-overview.md` — Overview section copy (content type: "Homepage section")
 - `_data/faq.yml` — FAQ accordion data (content type: "FAQ item")
 
+Files published from Google Docs via the add-on (content type "Post"):
+- `_posts/YYYY-MM-DD-slug.md` — Board meeting recaps and other posts. In Page Properties, set **Category** (e.g. `Board Meeting Recaps`, `Opinion`), **Post date** (YYYY-MM-DD), and the **Based on Date** permalink switch (on = `/{category}/{year}/{M-D}/`, off = `/{category}/{slug}/`). The eyebrow label on the post page is the category value.
+
 Files edited by hand:
 - `_includes/home-hero.md` — Hero section
 - `_includes/home-signup.md` — Signup section
 - `_includes/footer-content.md` — Footer copy
-- `_data/board-minutes.yml` — Board minutes list (PDFs go in `assets/board-minutes/`)
 - `_config.yml` — Site-wide settings (URL, `signup_form_action`, etc.)
 
 ## Architecture
@@ -45,10 +47,14 @@ Files edited by hand:
 
 **Apps Script add-on (`apps-script/Code.gs`):** Runs as a Google Workspace Add-on (sidebar UI, not Extensions menu). Settings are split between Script Properties (GitHub token/owner/repo/branch, Drive folder ID — shared across docs) and Document Properties (content type, target path, metadata — per-doc). The `doPublish_()` function exports the Doc as Markdown via the Drive REST API, then commits to GitHub. FAQ docs are parsed by `parseFaqMarkdown()` into `faqArrayToYaml()`. See `apps-script/SETUP.md` for the full one-time setup.
 
+## Conventions
+
+- Name CSS classes, variables, and data structures for their generic UI role, not for specific content. Example: use `.post-list` not `.minutes-list`.
+
 ## Pre-launch checklist (from README)
 
 - Set `url` and `signup_form_action` in `_config.yml`
 - Publish real content from Google Docs to replace placeholder content
-- Add real entries to `_data/board-minutes.yml` and their PDFs
+- Publish the first board meeting recap from Google Docs to replace the sample post in `_posts/`
 - Add a real favicon at `assets/images/favicon.svg`
 - Confirm GitHub Pages source is set to "GitHub Actions" in repo Settings

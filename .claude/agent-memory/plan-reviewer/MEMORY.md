@@ -1,0 +1,2 @@
+- [CardService Switch OFF-state footgun](feedback_cardservice_switch_offstate.md) — `|| "true"` fallback in onChange/save handlers silently breaks Switch widgets; use `=== "true" ? "true" : "false"` instead
+- [Header nav must be updated on page renames](feedback_header_nav_on_page_rename.md) — `_includes/header.html` is hardcoded; any permalink or page name change requires an explicit header update step
