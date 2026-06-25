@@ -304,7 +304,7 @@ img { max-width: 100%; display: block; }
 /* ==========================================================================
    Standalone pages (Board Minutes, posts)
    ========================================================================== */
-.page, .post { padding: 3rem 0 4rem; }
+.page, .post { padding-block: 3rem 4rem; }
 .page__title { font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: 1em; }
 
 .post-list { list-style: none; padding: 0; margin: 0; }
