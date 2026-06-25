@@ -272,26 +272,26 @@ function buildPagePropertiesCard(type, values) {
     sec.addWidget(
       CardService.newTextInput()
         .setFieldName("POST_CATEGORY")
-        .setTitle("Category (required)")
+        .setTitle("Category*")
         .setValue(values.POST_CATEGORY || "")
         .setHint('e.g. "Board Meeting Recaps" or "Opinion". Sets the eyebrow label and permalink folder.')
     );
     sec.addWidget(
       CardService.newTextInput()
         .setFieldName("POST_DATE")
-        .setTitle("Post date (YYYY-MM-DD, required)")
+        .setTitle("Post date*")
         .setValue(values.POST_DATE || "")
-        .setHint("The date of the meeting or publication.")
+        .setHint("YYYY-MM-DD. Date of the meeting or publication.")
     );
     sec.addWidget(
       CardService.newDecoratedText()
-        .setText("Based on Date")
+        .setText("Date URL")
         .setBottomLabel(
           datePerm
-            ? "Permalink: /{category}/{year}/{M-D}/"
-            : "Permalink: /{category}/{slug}/"
+            ? "Permalink: /category/YYYY/M-D/"
+            : "Permalink: /category/slug-or-title/"
         )
-        .setSwitch(
+        .setSwitchControl(
           CardService.newSwitch()
             .setFieldName("POST_DATE_PERMALINK")
             .setValue("true")
