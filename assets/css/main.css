@@ -280,25 +280,67 @@ img { max-width: 100%; display: block; }
    Signup
    ========================================================================== */
 .section--signup { text-align: center; }
-.signup-form {
+
+/* EmailOctopus embed restyle.
+   The embed injects its own markup + tightly-scoped [data-form] styles, so we
+   scope under .section--signup and use !important to win the cascade. */
+.section--signup .emailoctopus-form-wrapper {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 1.5rem auto 0 !important;
+  max-width: 560px;
+}
+/* Lay the email field + button out inline, matching the old pill form. */
+.section--signup .emailoctopus-form .main-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.6rem;
   justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 1.5rem;
+  align-items: center;
 }
-.signup-form input[type="email"] {
-  font: inherit;
-  padding: 0.75em 1em;
-  border-radius: 999px;
-  border: 1px solid var(--color-line);
+.section--signup .emailoctopus-form .emailoctopus-form-row { margin: 0 !important; }
+/* The EO field label is redundant next to the placeholder — hide it accessibly. */
+.section--signup .emailoctopus-form label {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+.section--signup .emailoctopus-form .form-control {
+  font: inherit !important;
+  padding: 0.75em 1em !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--color-line) !important;
   min-width: 260px;
+  width: auto !important;
 }
-.signup-form__placeholder {
+.section--signup .emailoctopus-form input[type="submit"] {
+  font: inherit !important;
+  font-weight: 600 !important;
+  background: var(--color-marigold) !important;
+  color: var(--color-ink) !important;
+  border: none !important;
+  border-radius: 999px !important;
+  padding: 0.8em 1.6em !important;
+  width: auto !important; /* override EO's full-width .w-100 button */
+  cursor: pointer;
+}
+.section--signup .emailoctopus-form input[type="submit"]:hover {
+  background: var(--color-sun) !important;
+}
+.section--signup .emailoctopus-form-row-hp { display: none !important; }
+.section--signup .mastfoot { /* "Powered by EmailOctopus" */
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  opacity: 0.65;
+}
+.signup-form__note {
+  font-size: 0.85rem;
   color: var(--color-slate);
-  font-size: 0.95rem;
-  max-width: 50ch;
-  margin: 1.5rem auto 0;
+  margin-top: 0.75rem;
 }
 
 /* ==========================================================================

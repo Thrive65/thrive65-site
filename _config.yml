@@ -7,7 +7,8 @@ url: "https://thrive65.github.io" # e.g. "https://thrive65.org" or "https://your
 baseurl: "/thrive65-site" # leave blank for a custom domain or a user/org page; set to "/repo-name" for a project page
 
 # Contact / signup
-signup_form_action: "" # paste your email signup form's POST URL here (Mailchimp, Buttondown, Google Form, etc.)
+# The homepage embeds the EmailOctopus signup form directly in index.md (see the #signup section).
+signup_form_action: "" # (optional/unused) generic form POST URL — kept for reference only
 
 markdown: kramdown
 kramdown:

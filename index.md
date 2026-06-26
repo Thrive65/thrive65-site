@@ -28,17 +28,10 @@ title: Home
     {% capture signup_md %}{% include home-signup.md %}{% endcapture %}
     {{ signup_md | markdownify }}
 
-    {% if site.signup_form_action != "" %}
-      <form class="signup-form" action="{{ site.signup_form_action }}" method="post" target="_blank">
-        <label for="signup-email" class="visually-hidden">Email address</label>
-        <input id="signup-email" name="email" type="email" placeholder="you@example.com" required>
-        <button class="button button--primary" type="submit">Sign up</button>
-      </form>
-    {% else %}
-      <p class="signup-form__placeholder">
-        Email signup isn't connected yet — set <code>signup_form_action</code> in <code>_config.yml</code>
-        once you've picked a mailing list provider (Mailchimp, Buttondown, a Google Form, etc.).
-      </p>
-    {% endif %}
+    <div class="signup-embed">
+      {% comment %} EmailOctopus embed — submission handled by EO's script; restyled in main.css to match the site. {% endcomment %}
+      <script async src="https://eocampaign1.com/form/eb5a6d18-70fd-11f1-8645-112855d77aca.js" data-form="eb5a6d18-70fd-11f1-8645-112855d77aca"></script>
+    </div>
+    <p class="signup-form__note">No spam. Unsubscribe anytime. <a href="{{ site.baseurl }}/privacy/">Privacy policy</a></p>
   </div>
 </section>
