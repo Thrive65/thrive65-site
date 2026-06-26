@@ -49,11 +49,3 @@ Visit `http://localhost:4000`.
 | `apps-script/appsscript.json` | Add-on manifest (scopes, URL allowlist, sidebar triggers) |
 | `apps-script/SETUP.md` | Full setup instructions for the publishing workflow |
 | `.github/workflows/deploy.yml` | Builds and deploys the site on every push to `main` |
-
-## Before launch
-
-- [ ] Set `url` and `signup_form_action` in `_config.yml`
-- [ ] Replace placeholder content in `_includes/home-overview.md` and `_data/faq.yml` by publishing the real Docs
-- [ ] Add real entries to `_data/board-minutes.yml` and their PDFs
-- [ ] Add a real favicon at `assets/images/favicon.svg`
-- [ ] Confirm GitHub Pages → Settings → Pages → Source is set to "GitHub Actions"
