@@ -7,7 +7,7 @@ title: "Board Advocacy Guide"
 
 *Speak up. Show up. Help our D65 Thrive.*
 
-# **Why Engage the School Board?**
+## **Why Engage the School Board?**
 
 School boards make decisions that directly affect every student, teacher, and family in oour community. Everything from curriculum and budgets to safety policies and school hours. Board members are elected officials who are accountable to you. Your voice matters more than you may think.
 
