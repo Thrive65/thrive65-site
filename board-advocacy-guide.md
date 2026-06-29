@@ -172,7 +172,7 @@ Adapt this template to your specific issue. Fill in the bracketed sections with 
 | :---- | :---- |
 | **District website** | [https://www.district65.net/about/board-of-education/board-meetings](https://www.district65.net/about/board-of-education/board-meetings)  |
 | **Illinois State Board of Education** | [https://www.isbe.net/](https://www.isbe.net/)  |
-| **Open records** | Use [Freedom of Information Act](https://www.district65.net/community/foia-requests) (FOIA) law to request, communication records, budgets, contracts, and reports. |
+| **Open records** | Use [Freedom of Information Act](https://www.district65.net/community/foia-requests) (FOIA) law to request communication records, budgets, contracts, and reports. |
 
 ## **Advocacy Checklist**
 
@@ -188,4 +188,4 @@ Adapt this template to your specific issue. Fill in the bracketed sections with 
 
 * I know the next meeting date and have it on my calendar
 
-*Democracy works when communities show up. Every meeting you attend, every comment you make, and every neighbor you bring along strengthens the schools your community deserves.*
+*Democracy works when communities show up. Every meeting you attend, every comment you make, and every neighbor you bring along strengthens the schools our community deserves.*
