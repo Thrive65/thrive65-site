@@ -3,6 +3,8 @@ layout: "page"
 title: "Board Advocacy Guide"
 ---
 
+**District 65 School Board Advocacy Guide**
+
 *Speak up. Show up. Help D65 Thrive.*
 
 ## **Why Engage the School Board?**
