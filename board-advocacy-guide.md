@@ -3,9 +3,7 @@ layout: "page"
 title: "Board Advocacy Guide"
 ---
 
-**YOUR VOICE AT THE TABLE**
-
-*Speak up. Show up. Help our D65 Thrive.*
+*Speak up. Show up. Help D65 Thrive.*
 
 ## **Why Engage the School Board?**
 
