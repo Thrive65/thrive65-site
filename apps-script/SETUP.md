@@ -106,6 +106,38 @@ you (the project owner) must do this once — otherwise publishing fails with
    **Drive folder ID** from Step 1. Click **Save**.
 3. This only needs to be done **once** — these settings are shared across all Docs.
 
+## Adding more editors
+
+To let another person both **run the add-on** and **edit the content Docs**,
+grant two separate things:
+
+**1. Permission to use the add-on**
+
+1. **Add them as a test user.** Cloud Console → **APIs & Services → OAuth
+   consent screen → Test users → Add users** → their Google address. (While the
+   consent screen is in "Testing", only listed test users can run the add-on.)
+2. **Give them the add-on.** Share the Apps Script project with them (open the
+   project → **Share**, like any Drive file), then have them open it and go to
+   **Deploy → Test deployments → Install**. They'll click through the same
+   "unverified app" consent on first publish.
+   - They do **not** re-enter the GitHub connection — token/owner/repo/folder
+     live in shared Script Properties, so your setup carries over to them.
+   - They do **not** need access to the Cloud project; the Drive API is already
+     enabled on it at the project level.
+
+**2. Permission to edit the Drive files**
+
+- Share the **website Drive folder** with them as **Editor** (right-click the
+  folder → **Share** → add their address → Editor). That covers every Doc inside
+  it, and keeps them in the folder that publishing is scoped to.
+
+> **Note:** sharing the Apps Script project lets a collaborator view the saved
+> GitHub token in Script Properties. That's fine for a trusted teammate. If you'd
+> rather not expose it — or you're adding many people — publish the add-on
+> privately/unlisted through the Google Workspace Marketplace SDK instead, which
+> lets people install without any access to the script. That's a larger one-time
+> setup; ask if you want to go that route.
+
 ## Per document: configure Page Properties
 
 Do this once for each Doc you want to publish (takes about 30 seconds):

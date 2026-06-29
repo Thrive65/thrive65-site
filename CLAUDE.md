@@ -47,6 +47,44 @@ Files edited by hand:
 
 **Apps Script add-on (`apps-script/Code.gs`):** Runs as a Google Workspace Add-on (sidebar UI, not Extensions menu). Settings are split between Script Properties (GitHub token/owner/repo/branch, Drive folder ID — shared across docs) and Document Properties (content type, target path, metadata — per-doc). The `doPublish_()` function exports the Doc as Markdown via the Drive REST API, then commits to GitHub. FAQ docs are parsed by `parseFaqMarkdown()` into `faqArrayToYaml()`. See `apps-script/SETUP.md` for the full one-time setup.
 
+## CSS & HTML methodology (CUBE CSS)
+
+`assets/css/main.css` is organized with native cascade layers: `@layer reset, base, composition, block, utility, exception`.
+
+**Layer guide:**
+- **reset** — box-sizing, text-size-adjust, img block
+- **base** — global element styles (`body`, `h1–h3`, `p`, `a`, `:focus-visible`, `.skip-link`). Style HTML elements directly; reach for a class only when an element/contextual selector won't do.
+- **composition** — content-agnostic layout primitives with no color or decoration: `.wrapper`, `.region`, `.flow`, `.cluster`, `.repel`
+- **block** — components with short role names, no BEM `__`/`--` (`.site-header`, `.hero`, `.button`, `.faq-item`, `.site-footer`, `.post`, `.page`, `.post-list`). Children styled via scoped element selectors or applied composition/utility classes.
+- **utility** — single-purpose, function-named helpers: `.text-center`, `.bg-paper-alt`, `.text-slate`, `.nowrap`, `.flow-space-*`, `.mt-*`, `.visually-hidden`, etc. Utilities beat blocks because the utility layer comes last (before exception).
+- **exception** — third-party override block (EmailOctopus under `.signup`) where `!important` is the only option.
+
+**Fluid type & space — Utopia scale (320→1240 px, 16 px/1.2 minor-third → 19 px/1.25 major-third)**
+
+Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout spacing. Never hardcode `px`/`rem` rhythm values.
+
+| Token | Range | Role |
+|---|---|---|
+| `--step--2` | 0.69→0.76 rem | mastfoot, fine print |
+| `--step--1` | 0.83→0.95 rem | eyebrows, footer, signup note |
+| `--step-0`  | 1→1.19 rem | body, FAQ question |
+| `--step-1`  | 1.2→1.48 rem | brand, hero lede, h3 |
+| `--step-2`  | 1.44→1.86 rem | prose h2 (in post/page) |
+| `--step-3`  | 1.73→2.32 rem | global h1/h2, section headings, page/post title |
+| `--step-5`  | 2.49→3.62 rem | hero h1 |
+| `--space-xs…2xl` | 0.75→4.75 rem | layout rhythm |
+
+**Composition primitives** — use for layout instead of bespoke flex rules:
+- `.wrapper` — max-width container with fluid inline padding
+- `.region` — section with fluid block padding (`--space-xl`)
+- `.flow` — owl-operator spacing between children (`--flow-space` CSS var, overrideable)
+- `.cluster` — flex row, wrapping, centered, `--space-s` gap
+- `.repel` — cluster + `justify-content: space-between`
+
+**Variations/state** → utility classes (not data-attributes, not BEM modifiers). Keep the utility set focused — only add when a need recurs.
+
+**Published markdown** (home-overview, FAQ, posts) arrives classless → relies on base element styles + contextual block selectors. Do not add classes to published content files.
+
 ## Conventions
 
 - Name CSS classes, variables, and data structures for their generic UI role, not for specific content. Example: use `.post-list` not `.minutes-list`.
