@@ -56,8 +56,10 @@ Files edited by hand:
 - **base** — global element styles (`body`, `h1–h3`, `p`, `a`, `:focus-visible`, `.skip-link`). Style HTML elements directly; reach for a class only when an element/contextual selector won't do.
 - **composition** — content-agnostic layout primitives with no color or decoration: `.wrapper`, `.region`, `.flow`, `.cluster`, `.repel`
 - **block** — components with short role names, no BEM `__`/`--` (`.site-header`, `.hero`, `.button`, `.faq-item`, `.site-footer`, `.post`, `.page`, `.post-list`). Children styled via scoped element selectors or applied composition/utility classes.
-- **utility** — single-purpose, function-named helpers: `.text-center`, `.bg-paper-alt`, `.text-slate`, `.nowrap`, `.flow-space-*`, `.mt-*`, `.visually-hidden`, etc. Utilities beat blocks because the utility layer comes last (before exception).
+- **utility** — single-purpose, function-named helpers. Names are **semantic, not literal**: colors are `.bg-surface` / `.bg-surface-alt` / `.bg-brand` / `.bg-accent` / `.text-base` / `.text-deemphasized` / `.text-brand` (role, not `.bg-marigold`); type is `.text-meta` / `.text-eyebrow`; plus `.text-center`, `.nowrap`, `.flow-space-*`, `.mt-*`, `.visually-hidden`. Utilities beat blocks because the utility layer comes last (before exception).
 - **exception** — third-party override block (EmailOctopus under `.signup`) where `!important` is the only option.
+
+**Global heading scale.** Headings are sized once, globally: `h1` → `--step-3`, `h2` → `--step-2`, `h3` → `--step-1`. Don't re-declare a heading size that already matches the global value; the **hero** is the only context that overrides it (`h1` → `--step-5`, eyebrow `h3` → `--step--1`).
 
 **Fluid type & space — Utopia scale (320→1240 px, 16 px/1.2 minor-third → 19 px/1.25 major-third)**
 
@@ -66,13 +68,15 @@ Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout sp
 | Token | Range | Role |
 |---|---|---|
 | `--step--2` | 0.69→0.76 rem | mastfoot, fine print |
-| `--step--1` | 0.83→0.95 rem | eyebrows, footer, signup note |
+| `--step--1` | 0.83→0.95 rem | eyebrow, footer, nav, meta |
 | `--step-0`  | 1→1.19 rem | body, FAQ question |
 | `--step-1`  | 1.2→1.48 rem | brand, hero lede, h3 |
-| `--step-2`  | 1.44→1.86 rem | prose h2 (in post/page) |
-| `--step-3`  | 1.73→2.32 rem | global h1/h2, section headings, page/post title |
+| `--step-2`  | 1.44→1.86 rem | h2 |
+| `--step-3`  | 1.73→2.32 rem | h1 (page/post title) |
 | `--step-5`  | 2.49→3.62 rem | hero h1 |
 | `--space-xs…2xl` | 0.75→4.75 rem | layout rhythm |
+
+**Line height** is unitless (so leading stays fluid alongside the fluid type) and tied to size via `--lh-*` tokens — it tightens proportionally as text grows: `--lh-body` 1.6 → `--lh-lead` 1.5 → `--lh-heading` 1.15 → `--lh-display` 1.1. A new text-size utility should set its matching line-height.
 
 **Composition primitives** — use for layout instead of bespoke flex rules:
 - `.wrapper` — max-width container with fluid inline padding

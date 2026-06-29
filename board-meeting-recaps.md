@@ -11,7 +11,7 @@ Community-written recaps of District 65 Board of Education meetings, highlightin
   {% for post in recaps %}
     <li class="repel">
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-      <span class="text-slate nowrap">{{ post.date | date: "%B %-d, %Y" }}</span>
+      <span class="text-deemphasized nowrap">{{ post.date | date: "%B %-d, %Y" }}</span>
     </li>
   {% endfor %}
 </ul>

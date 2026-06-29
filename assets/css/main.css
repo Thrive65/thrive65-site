@@ -43,6 +43,13 @@
   --space-l:   clamp(2rem,     1.870rem + 0.652vw, 2.375rem);
   --space-xl:  clamp(3rem,     2.804rem + 0.978vw, 3.5625rem);
   --space-2xl: clamp(4rem,     3.739rem + 1.304vw, 4.750rem);
+
+  /* Line height — unitless, so leading stays fluid with the fluid type sizes.
+     Tightens proportionally as text grows: body loosest → display tightest. */
+  --lh-body:    1.6;   /* body / prose       (step-0)   */
+  --lh-lead:    1.5;   /* lede               (step-1)   */
+  --lh-heading: 1.15;  /* h1–h3              (step-1–3) */
+  --lh-display: 1.1;   /* oversized display  (step-5)   */
 }
 
 /* Intentionally no dark theme — warm paper background serves this community
@@ -63,18 +70,19 @@
     font-size: var(--step-0);
     color: var(--color-ink);
     background: var(--color-paper);
-    line-height: 1.6;
+    line-height: var(--lh-body);
   }
 
   h1, h2, h3 {
     font-family: var(--font-display);
     font-weight: 600;
-    line-height: 1.15;
+    line-height: var(--lh-heading);
     margin: 0 0 0.5em;
   }
-  /* Global defaults — blocks override for their context (e.g. .hero h1, .post h2) */
+  /* Global heading scale — descending steps. Override only where a context
+     genuinely differs (hero display); never re-declare a matching size. */
   h1 { font-size: var(--step-3); }
-  h2 { font-size: var(--step-3); }
+  h2 { font-size: var(--step-2); }
   h3 { font-size: var(--step-1); }
 
   p { margin: 0 0 1em; }
@@ -154,6 +162,7 @@
   }
   .site-header nav {
     font-weight: 500;
+    font-size: var(--step--1);
   }
   .site-header nav a {
     text-decoration: none;
@@ -185,7 +194,7 @@
   }
   .nav-cta:hover { background: var(--color-marigold); }
 
-  /* ─ Hero ─ */
+  /* ─ Hero ─ (the only context that overrides the global heading scale) */
   .hero {
     padding-block: var(--space-2xl) var(--space-xl);
     background:
@@ -193,7 +202,7 @@
       var(--color-paper);
     border-bottom: 1px solid var(--color-line);
   }
-  .hero h3 {
+  .hero h3 {  /* eyebrow — same treatment as the .text-eyebrow utility */
     font-family: var(--font-body);
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -204,6 +213,7 @@
   }
   .hero h1 {
     font-size: var(--step-5);
+    line-height: var(--lh-display);
     max-width: 16ch;
   }
   .hero h1 em {
@@ -212,6 +222,7 @@
   }
   .hero p {
     font-size: var(--step-1);
+    line-height: var(--lh-lead);
     color: var(--color-slate);
     max-width: 50ch;
     margin-bottom: 1.75em;
@@ -259,7 +270,7 @@
     gap: 0.85em;
   }
   .faq-item summary::-webkit-details-marker { display: none; }
-  .faq-item summary h3 {
+  .faq-item summary h3 {  /* match the summary size, not the global h3 step */
     margin: 0;
     font-size: inherit;
     font-weight: inherit;
@@ -297,27 +308,7 @@
     .faq-icon::after { transition: none; }
   }
 
-  /* ─ Signup note ─ */
-  .signup-note {
-    font-size: var(--step--1);
-    color: var(--color-slate);
-    margin-top: 0.75rem;
-  }
-
-  /* ─ Eyebrow label (post category, post date label) ─ */
-  .eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-size: var(--step--1);
-    font-weight: 600;
-    color: var(--color-leaf-dark);
-    margin: 0;
-  }
-
-  /* ─ Post / page prose ─ */
-  /* Scope h2/h3 down from the global step-3 default for prose reading contexts */
-  .post h2, .page h2 { font-size: var(--step-2); }
-  .post h3, .page h3 { font-size: var(--step-1); }
+  /* ─ Post / page prose ─ (headings inherit the global scale; only rhythm here) */
   .post :is(h2, h3),
   .page :is(h1, h2, h3) { margin-top: 1.25em; }
   .post ul, .post ol,
@@ -363,24 +354,47 @@
 
 /* ── utility ─────────────────────────────────────────────────────────────── */
 @layer utility {
+  /* Layout / alignment */
   .text-center    { text-align: center; }
-  .bg-paper-alt   { background: var(--color-paper-alt); }
-  .bg-marigold    { background: var(--color-marigold); }
-  .bg-leaf        { background: var(--color-leaf); }
-  .text-slate     { color: var(--color-slate); }
-  .text-ink       { color: var(--color-ink); }
-  .text-leaf-dark { color: var(--color-leaf-dark); }
-  .font-display   { font-family: var(--font-display); }
   .measure        { max-width: 50ch; }
   .measure-narrow { max-width: 16ch; }
   .nowrap         { white-space: nowrap; }
 
+  /* Semantic surface + text colors */
+  .bg-surface       { background: var(--color-paper); }
+  .bg-surface-alt   { background: var(--color-paper-alt); }
+  .bg-brand         { background: var(--color-marigold); }
+  .bg-accent        { background: var(--color-leaf); }
+  .text-base        { color: var(--color-ink); }
+  .text-deemphasized{ color: var(--color-slate); }
+  .text-brand       { color: var(--color-leaf-dark); }
+
+  /* Semantic type sizes (line-height paired to size, per the scale above) */
+  .text-meta {
+    font-size: var(--step--1);
+    line-height: var(--lh-body);
+  }
+  .text-eyebrow {  /* kicker/overline — sits tight above a heading */
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: var(--lh-heading);
+    color: var(--color-leaf-dark);
+    margin: 0;
+  }
+
+  .font-display   { font-family: var(--font-display); }
+
+  /* Flow rhythm + margin helpers */
   .flow-space-2xs { --flow-space: var(--space-2xs); }
   .flow-space-xs  { --flow-space: var(--space-xs); }
   .flow-space-s   { --flow-space: var(--space-s); }
   .flow-space-m   { --flow-space: var(--space-m); }
   .flow-space-l   { --flow-space: var(--space-l); }
 
+  .mt-xs { margin-block-start: var(--space-xs); }
   .mt-s  { margin-block-start: var(--space-s); }
   .mt-m  { margin-block-start: var(--space-m); }
   .mt-l  { margin-block-start: var(--space-l); }

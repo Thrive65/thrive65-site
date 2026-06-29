@@ -17,7 +17,7 @@ title: Home
   </div>
 </section>
 
-<section id="faq" class="region bg-paper-alt">
+<section id="faq" class="region bg-surface-alt">
   <div class="wrapper">
     {% include faq.html %}
   </div>
@@ -32,6 +32,6 @@ title: Home
       {% comment %} EmailOctopus embed — submission handled by EO's script; restyled in main.css to match the site. {% endcomment %}
       <script async src="https://eocampaign1.com/form/eb5a6d18-70fd-11f1-8645-112855d77aca.js" data-form="eb5a6d18-70fd-11f1-8645-112855d77aca"></script>
     </div>
-    <p class="signup-note">No spam. Unsubscribe anytime. <a href="{{ site.baseurl }}/privacy/">Privacy policy</a></p>
+    <p class="text-meta text-deemphasized mt-xs">No spam. Unsubscribe anytime. <a href="{{ site.baseurl }}/privacy/">Privacy policy</a></p>
   </div>
 </section>

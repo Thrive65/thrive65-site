@@ -3,9 +3,9 @@ layout: default
 ---
 <article class="post wrapper region">
   <header>
-    <p class="eyebrow">{{ page.category }}</p>
+    <p class="text-eyebrow">{{ page.category }}</p>
     <h1>{{ page.title }}</h1>
-    <p class="text-slate">{{ page.date | date: "%B %-d, %Y" }}</p>
+    <p class="text-deemphasized">{{ page.date | date: "%B %-d, %Y" }}</p>
   </header>
   <div class="flow">
     {{ content }}
