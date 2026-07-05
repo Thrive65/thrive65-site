@@ -1,6 +1,7 @@
 ---
 layout: "page"
 title: "Board Advocacy Guide"
+description: "Tips for sharing our message with the board"
 ---
 
 **District 65 School Board Advocacy Guide**
@@ -9,7 +10,7 @@ title: "Board Advocacy Guide"
 
 ## **Why Engage the School Board?**
 
-School boards make decisions that directly affect every student, teacher, and family in oour community. Everything from curriculum and budgets to safety policies and school hours. Board members are elected officials who are accountable to you. Your voice matters more than you may think.
+School boards make decisions that directly affect every student, teacher, and family in our community. Everything from curriculum and budgets to safety policies and school hours. Board members are elected officials who are accountable to you. Your voice matters more than you may think.
 
 Community members who show up consistently and speak clearly can shift board priorities, change votes, and build lasting relationships with decision-makers.
 
@@ -27,35 +28,33 @@ Our board has 7 elected members who set policy, approve budgets, and hire the su
 
 ## **Learn the Players**
 
-* **Superintendent** \- the district's top administrator, they and their cabinet often present at meetings
+**Superintendent** \- the district's top administrator, they and their cabinet often present at meetings
 
-  0. Interim is Eric Witherspoon, Board will be starting a search for a new permanent Superintendent
+* Interim is Eric Witherspoon, Board will be starting a search for a new permanent Superintendent
 
-* **Board President/Chair** \- runs the meetings, sets the agenda tone
+**Board President/Chair** \- runs the meetings, sets the agenda tone
 
-  0. Nichole Pinkard, has 3 years remaining on board term
+* Nichole Pinkard, has 3 years remaining on board term
 
-* **Vice Chair**: Fills in when Chair is absent
+**Vice Chair**: Fills in when Chair is absent
 
-  0. Chris Van Nostrand, last year of board term (due to board appointment to vacant seat)
+* Chris Van Nostrand, last year of board term (due to board appointment to vacant seat)
 
-* **Individual members** \- each may have a focus or committee role
+**Individual members** \- each may have a focus or committee role
 
-  0. Pat Anderson (former Chair), has 3 years remaining on board term
+* Pat Anderson (former Chair), has 3 years remaining on board term
 
-  1. Sergio Hernandez (former Chair) last year of board term
+  * Sergio Hernandez (former Chair), last year of board term
 
-  2. Maria Opdyke, has 3 years remaining on board term
+  * Maria Opdyke, has 3 years remaining on board term
 
-  3. Mya Wilkins last year of board term
+  * Mya Wilkins, last year of board term
 
-  4. Andrew Wymer, has 3 years remaining on board term
+  * Andrew Wymer, has 3 years remaining on board term
 
-* **Board Secretary** \- manages official documents and meeting logistics
+**Board Secretary** \- manages official documents and meeting logistics
 
-  0. Adeela Qureshi [**qureshia@district65.net**](mailto:qureshia@district65.net)
-
-  1. 
+* Adeela Qureshi [**qureshia@district65.net**](mailto:qureshia@district65.net)
 
 | Quick Tip [Search](https://meetings.boardbook.org/Public/Organization/1247) board meeting archives to see agendas, presentations, reports, and board minutes. This can help you understand what’s been discussed and to understand each member's priorities, voting history, and the issues they care most about before you approach them. |
 | :---- |
@@ -79,13 +78,13 @@ Public comment is your right to address elected officials directly. Most meeting
 | **0:20–1:00** | State your issue clearly — one focused topic is more powerful than many |
 | **1:00–1:45** | Provide evidence: data, personal story, or community impact |
 | **1:45–2:30** | Make a specific ask — what do you want the board to do? |
-| **2:30–3:00** | Thank the board and restate your name for the record |
+| **2:30–3:00** | Thank the board |
 
 The Meeting
 
-1. Arrive 15–20 minutes early. Depending on the topics of the meeting, seating fills up and sign-up lines can be long.
+1. Arrive 15-20 minutes early. Depending on the topics of the meeting, seating fills up and sign-up lines can be long.
 
-2. There will be a sign up sheet on a table right outside the meeting room, to the left when you walk in.
+2. There will be a sign-up sheet on a table right outside the meeting room, to the left when you walk in.
 
 3. After you add your name, you can go into the meeting room and take an open seat.
 
@@ -95,7 +94,7 @@ The Meeting
 
 6. Many people stay to listen to the rest of the meeting, but it is also okay to leave when you are done.
 
-Afterwards, send a copy of your comments to [schoolboard@district65.net](mailto:schoolboard@district65.net). 
+Afterward, send a copy of your comments to [schoolboard@district65.net](mailto:schoolboard@district65.net). 
 
 | Dos & Don'ts DO: speak calmly and respectfully, use "I" statements, stick to your time limit, and leave contact info. DON'T: attack individuals personally, go over time, bring props, or bring more issues than you can cover in your allotted minutes. |
 | :---- |
@@ -120,7 +119,7 @@ You don't have to speak in person to make an impact. Written communications, esp
 
 ## **Letters to the Board**
 
-Formal written letters submitted before a board meeting are entered into official minutes. A brief, factual letter from 10–20 or more community members on the same issue carries significant weight.
+Formal written letters submitted before a board meeting are entered into official minutes. A brief, factual letter from 10-20 or more community members on the same issue carries significant weight.
 
 | Power Move Organize a letter-writing campaign. Coordinate a group to send individual emails or letters about the same issue in the week before a key vote — volume signals community concern. |
 | :---- |
@@ -131,13 +130,13 @@ One-time appearances matter, but sustained engagement is what creates lasting ch
 
 ## **Show Up Consistently**
 
-* Attend as many meetings as is feasible for you.
+* Attend as many meetings as is feasible for you
 
 * Arrive even when your issue isn't on the agenda — presence signals engagement
 
 * Introduce yourself to board members before or after meetings
 
-* We recognize the time and location of board meetings makes it hard for many to attend. While in person speaking is powerful, there are many ways to make a difference.
+* We recognize the time and location of board meetings makes it hard for many to attend. While in-person speaking is powerful, there are many ways to make a difference
 
 ## **Build Community**
 
@@ -178,11 +177,11 @@ Adapt this template to your specific issue. Fill in the bracketed sections with 
 
 * I know my school board's meeting schedule and how to sign up for public comment
 
-* I have contact information for my board ([schoolboard@district65.net](mailto:schoolboard@district65.net).)
+* I have contact information for my board ([schoolboard@district65.net](mailto:schoolboard@district65.net))
 
 * I can state my issue and specific ask in 3 minutes or less
 
-* I have identified at least 2–3 others who share my concern
+* I have identified at least 2-3 others who share my concern
 
 * I have reviewed recent board minutes or agendas related to my issue
 
