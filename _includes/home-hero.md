@@ -4,4 +4,4 @@
 
 Community advocacy for District 65 schools
 
-[Join the coalition](#signup)
+[Stay informed](#signup)
