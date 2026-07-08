@@ -3,8 +3,16 @@
 <header class="site-header">
   <div class="wrapper repel">
     <a class="brand cluster" href="{{ '/' | relative_url }}">
-      <span class="brand-mark" aria-hidden="true"></span>
-      {{ site.title }}
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <polygon points="6,17 34,17 20,6" fill="var(--accent)" stroke="var(--edge)" stroke-width="2.5" stroke-linejoin="round"/>
+          <rect x="9" y="17" width="22" height="17" fill="var(--brand)" stroke="var(--edge)" stroke-width="2.5" stroke-linejoin="round"/>
+          <rect x="16.5" y="23" width="7" height="11" fill="var(--accent)" stroke="var(--edge)" stroke-width="2.5" stroke-linejoin="round"/>
+          <line x1="20" y1="6" x2="20" y2="1.5" stroke="var(--edge)" stroke-width="2.5" stroke-linecap="round"/>
+          <polygon points="20,1.5 28,3.5 20,6" fill="var(--accent)" stroke="var(--edge)" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="wordmark">Thrive<span class="wordmark-accent">65</span></span>
     </a>
     <nav class="cluster" aria-label="Primary">
       <a href="{{ '/' | relative_url }}#overview">Overview</a>

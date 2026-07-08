@@ -3,12 +3,14 @@ layout: default
 title: Home
 ---
 
-<section class="hero">
+<section class="hero hero-hue">
   <div class="wrapper">
     {% capture hero_md %}{% include home-hero.md %}{% endcapture %}
     {{ hero_md | markdownify }}
   </div>
 </section>
+
+<div class="wave" style="--wave-above: var(--hero-bg); --wave-below: var(--bg);" aria-hidden="true"></div>
 
 <section id="overview" class="region">
   <div class="wrapper">
@@ -17,13 +19,17 @@ title: Home
   </div>
 </section>
 
+<div class="wave" style="--wave-above: var(--bg); --wave-below: var(--band-alt);" aria-hidden="true"></div>
+
 <section id="faq" class="region bg-surface-alt">
   <div class="wrapper">
     {% include faq.html %}
   </div>
 </section>
 
-<section id="signup" class="signup region text-center">
+<div class="wave" style="--wave-above: var(--band-alt); --wave-below: var(--hero-bg);" aria-hidden="true"></div>
+
+<section id="signup" class="signup region hero-hue text-center">
   <div class="wrapper">
     {% capture signup_md %}{% include home-signup.md %}{% endcapture %}
     {{ signup_md | markdownify }}
@@ -35,3 +41,5 @@ title: Home
     <p class="text-meta text-deemphasized mt-xs">No spam. Unsubscribe anytime. <a href="{{ site.baseurl }}/privacy/">Privacy policy</a></p>
   </div>
 </section>
+
+<div class="wave" style="--wave-above: var(--hero-bg); --wave-below: var(--footer-bg);" aria-hidden="true"></div>
