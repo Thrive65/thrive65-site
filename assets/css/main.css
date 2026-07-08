@@ -139,27 +139,43 @@
    These override only the 8 hue tokens; everything else inherits from :root.
    ============================================================================ */
 .hue-lake-teal {                                   /* LIVE BRAND (same as :root default) */
-  --brand: #0F7A45; --brand-strong: #0A5C34; --link: #0F7A45;
-  --hero-bg: hsla(189, 65%, 46%, 1); --hero-ink: hsla(189, 65%, 9%, 1);
-  --hero-muted: hsla(189, 65%, 13%, 1); --hero-em: var(--accent);
+  --brand: #0F7A45; 
+  --brand-strong: #0A5C34; 
+  --link: #0F7A45;
+  --hero-bg: hsla(189, 65%, 46%, 1); 
+  --hero-ink: hsla(189, 65%, 9%, 1);
+  --hero-muted: hsla(189, 65%, 13%, 1); 
+  --hero-em: var(--accent);
   --band-alt: hsla(189, 30%, 92%, 1);
 }
 .hue-evergreen {
-  --brand: #0F7A45; --brand-strong: #0A5C34; --link: #0F7A45;
-  --hero-bg: #1CA05C; --hero-ink: #0B2417;
-  --hero-muted: #082A18; --hero-em: var(--accent);
+  --brand: #0F7A45; 
+  --brand-strong: #0A5C34; 
+  --link: #0F7A45;
+  --hero-bg: #1CA05C; 
+  --hero-ink: #0B2417;
+  --hero-muted: #082A18; 
+  --hero-em: var(--accent);
   --band-alt: hsla(150, 34%, 93%, 1);
 }
 .hue-electric-blue {
-  --brand: hsla(227, 90%, 42%, 1); --brand-strong: hsla(227, 90%, 30%, 1); --link: hsla(227, 90%, 42%, 1);
-  --hero-bg: hsla(227, 100%, 68%, 1); --hero-ink: hsla(227, 90%, 17%, 1);
-  --hero-muted: hsla(227, 90%, 17%, 1); --hero-em: #FFFFFF;
+  --brand: hsla(227, 90%, 42%, 1); 
+  --brand-strong: hsla(227,
+   90%, 30%, 1); --link: hsla(227, 90%, 42%, 1);
+  --hero-bg: hsla(227,
+   100%, 68%, 1); --hero-ink: hsla(227, 90%, 17%, 1);
+  --hero-muted: hsla(227,
+   90%, 17%, 1); --hero-em: #FFFFFF;
   --band-alt: #E7ECFF;
 }
 .hue-ultraviolet {
-  --brand: #7A18D4; --brand-strong: #57109C; --link: #7A18D4;
-  --hero-bg: #A75DEC; --hero-ink: #1B0E42;
-  --hero-muted: #1B0E42; --hero-em: #FFFFFF;
+  --brand: #7A18D4; 
+  --brand-strong: #57109C; 
+  --link: #7A18D4;
+  --hero-bg: #A75DEC; 
+  --hero-ink: #1B0E42;
+  --hero-muted: #1B0E42; 
+  --hero-em: #FFFFFF;
   --band-alt: #F1E6FF;
 }
 
@@ -167,27 +183,43 @@
    HUE WRAPPER CLASSES — DARK  (higher specificity than the light blocks above)
    ============================================================================ */
 [data-theme="dark"] .hue-lake-teal {
-  --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
-  --hero-bg: #1C7687; --hero-ink: #E6F3EF;
-  --hero-muted: #F0F9F5; --hero-em: #FFC44F;
+  --brand: #3FD9C0; 
+  --brand-strong: #74E8D6; 
+  --link: #3FD9C0;
+  --hero-bg: #1C7687; 
+  --hero-ink: #E6F3EF;
+  --hero-muted: #F0F9F5; 
+  --hero-em: #FFC44F;
   --band-alt: hsla(189, 50%, 9%, 1);
 }
 [data-theme="dark"] .hue-evergreen {
-  --brand: #4ED991; --brand-strong: #7BE8AE; --link: #4ED991;
-  --hero-bg: #16854F; --hero-ink: #E9F2E6;
-  --hero-muted: #A9CDB6; --hero-em: var(--accent);
+  --brand: #4ED991; 
+  --brand-strong: #7BE8AE; 
+  --link: #4ED991;
+  --hero-bg: #16854F; 
+  --hero-ink: #E9F2E6;
+  --hero-muted: #A9CDB6; 
+  --hero-em: var(--accent);
   --band-alt: hsla(150, 70%, 10%, 1);
 }
 [data-theme="dark"] .hue-electric-blue {
-  --brand: #7E9DFF; --brand-strong: #A9BEFF; --link: #7E9DFF;
-  --hero-bg: #0033EB; --hero-ink: #F2F5FF;
-  --hero-muted: #BFCCFF; --hero-em: var(--accent);
+  --brand: #7E9DFF; 
+  --brand-strong: #A9BEFF; 
+  --link: #7E9DFF;
+  --hero-bg: #0033EB; 
+  --hero-ink: #F2F5FF;
+  --hero-muted: #BFCCFF; 
+  --hero-em: var(--accent);
   --band-alt: hsla(227, 90%, 14%, 1);
 }
 [data-theme="dark"] .hue-ultraviolet {
-  --brand: #BE8CFF; --brand-strong: #D3B4FF; --link: #BE8CFF;
-  --hero-bg: #5B16C4; --hero-ink: #F6EEFF;
-  --hero-muted: #DCC0FF; --hero-em: var(--accent);
+  --brand: #BE8CFF; 
+  --brand-strong: #D3B4FF; 
+  --link: #BE8CFF;
+  --hero-bg: #5B16C4; 
+  --hero-ink: #F6EEFF;
+  --hero-muted: #DCC0FF; 
+  --hero-em: var(--accent);
   --band-alt: #1B0E42;
 }
 
