@@ -18,6 +18,22 @@
       <a href="{{ '/' | relative_url }}#overview">Overview</a>
       <a href="{{ '/' | relative_url }}#faq">FAQ</a>
       <a href="{{ '/board-meeting-recaps/' | relative_url }}">Board Meetings</a>
+      <button type="button" class="theme-toggle" aria-label="Toggle light/dark theme">
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="8" y1="0.8" x2="8" y2="2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="8" y1="13.4" x2="8" y2="15.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="0.8" y1="8" x2="2.6" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="13.4" y1="8" x2="15.2" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="2.9" y1="2.9" x2="4.2" y2="4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="11.8" y1="11.8" x2="13.1" y2="13.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="13.1" y1="2.9" x2="11.8" y2="4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="4.2" y1="11.8" x2="2.9" y2="13.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+      </button>
       <a class="nav-cta" href="{{ '/' | relative_url }}#signup">Join us</a>
     </nav>
   </div>

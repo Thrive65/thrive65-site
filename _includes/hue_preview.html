@@ -1,0 +1,12 @@
+<!-- TEMPORARY hue preview — for reviewing hue options only. Remove before launch (this file and its include in _layouts/default.html). -->
+<div class="hue-preview" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 100; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem 0.75rem; box-shadow: 0 8px 24px rgba(0,0,0,0.18); font-size: 0.85rem;">
+  <label style="display: flex; align-items: center; gap: 0.5em; font-weight: 600; margin: 0;">
+    Hue
+    <select aria-label="Preview color hue" onchange="document.body.className = document.body.className.replace(/hue-[a-z-]+/, 'hue-' + this.value);" style="font: inherit; padding: 0.25em 0.4em; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--ink);">
+      <option value="lake-teal">Lake Teal</option>
+      <option value="evergreen">Evergreen</option>
+      <option value="electric-blue">Electric Blue</option>
+      <option value="ultraviolet">Ultraviolet</option>
+    </select>
+  </label>
+</div>
