@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,700;0,800;1,800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; }
+
+/* ══════════════════════════════════════════════════════════════════
+   Common Ground — token system (single source of truth)
+   Structure: shared neutrals / accent / secondary / bloom / edge stay
+   constant; only the hue family (brand, brandStrong, hero*, bandAlt,
+   link) swaps across the four hues. Marigold accent is the constant.
+   ══════════════════════════════════════════════════════════════════ */
+.t65-root {
+  /* Typography — Archivo display, Public Sans body */
+  --font-display: 'Archivo', sans-serif;
+  --display-weight: 800;
+  --display-tracking: -0.01em;
+
+  /* Shared — surfaces, structure, ink, edge (LIGHT) */
+  --bg: #F7F5EC; --card: #FFFFFF; --tint: hsla(150, 30%, 91%, 1);
+  --line: hsla(150, 20%, 83%, 1); --ink: #14231B; --muted: hsla(150, 16%, 30%, 1);
+  --edge: #0B0B0B; --on-accent: #221B05; --focus: #0B0B0B;
+
+  /* Shared — accents (constant across hues) */
+  --secondary: hsla(189, 65%, 22%, 1);
+  --accent: #FFB01A; --accent-hover: #FFC44F; --bloom: #D42A56;
+
+  /* Shared — footer family (shared across themes) */
+  --footer-bg: #070E0A; --footer-head: #EDF5EE; --footer-ink: #B7CCBD;
+
+  /* Hue family — Lake Teal · LIGHT (live brand default) */
+  --brand: #0F7A45; --brand-strong: #0A5C34; --link: #0F7A45;
+  --hero-bg: hsla(189, 65%, 46%, 1); --hero-ink: hsla(189, 65%, 9%, 1);
+  --hero-muted: hsla(189, 65%, 13%, 1); --hero-em: var(--accent);
+  --band-alt: hsla(189, 30%, 92%, 1);
+
+  /* Illustration — remapped onto Common Ground tokens (resolve live) */
+  --art-line: var(--edge); --art-fill: var(--brand); --art-fill-2: var(--brand-strong);
+  --art-win: var(--accent); --art-pop: var(--bloom); --art-tree: var(--brand); --art-clock: var(--card);
+}
+
+/* ── Hue overrides · LIGHT ── */
+.t65-root[data-hue="evergreen"] {
+  --brand: #0F7A45; --brand-strong: #0A5C34; --link: #0F7A45;
+  --hero-bg: #1CA05C; --hero-ink: #0B2417; --hero-muted: #082A18; --hero-em: var(--accent);
+  --band-alt: hsla(150, 34%, 93%, 1);
+}
+.t65-root[data-hue="electric-blue"] {
+  --brand: hsla(227, 90%, 42%, 1); --brand-strong: hsla(227, 90%, 30%, 1); --link: hsla(227, 90%, 42%, 1);
+  --hero-bg: hsla(227, 100%, 68%, 1); --hero-ink: hsla(227, 90%, 17%, 1); --hero-muted: hsla(227, 90%, 17%, 1); --hero-em: #FFFFFF;
+  --band-alt: #E7ECFF;
+}
+.t65-root[data-hue="ultraviolet"] {
+  --brand: #7A18D4; --brand-strong: #57109C; --link: #7A18D4;
+  --hero-bg: #A75DEC; --hero-ink: #1B0E42; --hero-muted: #1B0E42; --hero-em: #FFFFFF;
+  --band-alt: #F1E6FF;
+}
+
+/* ── Shared DARK surfaces + Lake Teal DARK hue ── */
+.t65-root[data-mode="dark"] {
+  --bg: #0B1410; --card: #17251C; --tint: #123122;
+  --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD;
+  --edge: #0B0B0B; --on-accent: #221B05; --focus: #8CE7B7;
+  --secondary: hsla(189, 65%, 60%, 1);
+  --accent: #FFB01A; --accent-hover: #FFC44F; --bloom: #FF5D7B;
+  --footer-bg: #070E0A; --footer-head: #EDF5EE; --footer-ink: #B7CCBD;
+  /* Lake Teal · DARK */
+  --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
+  --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
+  --band-alt: hsla(189, 50%, 9%, 1);
+}
+
+/* ── Hue overrides · DARK ── */
+.t65-root[data-hue="evergreen"][data-mode="dark"] {
+  --brand: #4ED991; --brand-strong: #7BE8AE; --link: #4ED991;
+  --hero-bg: #16854F; --hero-ink: #E9F2E6; --hero-muted: #A9CDB6; --hero-em: var(--accent);
+  --band-alt: hsla(150, 70%, 10%, 1);
+}
+.t65-root[data-hue="electric-blue"][data-mode="dark"] {
+  --brand: #7E9DFF; --brand-strong: #A9BEFF; --link: #7E9DFF;
+  --hero-bg: #0033EB; --hero-ink: #F2F5FF; --hero-muted: #BFCCFF; --hero-em: var(--accent);
+  --band-alt: hsla(227, 90%, 14%, 1);
+}
+.t65-root[data-hue="ultraviolet"][data-mode="dark"] {
+  --brand: #BE8CFF; --brand-strong: #D3B4FF; --link: #BE8CFF;
+  --hero-bg: #5B16C4; --hero-ink: #F6EEFF; --hero-muted: #DCC0FF; --hero-em: var(--accent);
+  --band-alt: #1B0E42;
+}
+
+/* Link defaults (inline styles override where set) */
+.t65-root a { color: var(--link); }
+.t65-root a:hover { color: var(--brand-strong); }
+/* Focus rings — Common Ground: edge on light, #8CE7B7 on dark */
+.t65-root :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="t65-root" data-hue="{{ hue }}" data-mode="{{ modeResolved }}" style="font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: clamp(1rem, 0.935rem + 0.326vw, 1.1875rem); color: var(--ink); background: var(--bg); line-height: 1.6; min-height: 100vh; transition: background 0.25s ease, color 0.25s ease;">
+
+  <!-- ── Header ── -->
+  <header data-screen-label="Header" style="background: var(--bg); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40;">
+    <div style="max-width: 1040px; margin-inline: auto; padding-inline: clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem); padding-block: clamp(0.750rem, 0.701rem + 0.245vw, 0.891rem); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(1rem, 0.935rem + 0.326vw, 1.1875rem);">
+
+      <!-- Brand -->
+      <a href="#" style="display: flex; align-items: center; gap: 0.55em; text-decoration: none; color: var(--ink);">
+        <span aria-hidden="true" style="display: inline-flex; flex-shrink: 0;">
+          <svg width="38" height="38" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <polygon points="6,17 34,17 20,6" fill="var(--accent)" stroke="var(--edge)" stroke-width="2.5" stroke-linejoin="round"></polygon>
+            <rect x="9" y="17" width="22" height="17" fill="var(--brand)" stroke="var(--edge)" stroke-width="2.5" stroke-linejoin="round"></rect>
+            <rect x="16.5" y="23" width="7" height="11" fill="var(--accent)" stroke="var(--edge)" stroke-width="2.5" stroke-linejoin="round"></rect>
+            <line x1="20" y1="6" x2="20" y2="1.5" stroke="var(--edge)" stroke-width="2.5" stroke-linecap="round"></line>
+            <polygon points="20,1.5 28,3.5 20,6" fill="var(--accent)" stroke="var(--edge)" stroke-width="2" stroke-linejoin="round"></polygon>
+          </svg>
+        </span>
+        <span style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1;">Thrive<span style="color: var(--brand);">65</span></span>
+      </a>
+
+      <!-- Nav -->
+      <nav aria-label="Primary" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(1rem, 0.935rem + 0.326vw, 1.1875rem); font-weight: 600; font-size: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem);">
+        <a href="#overview" style="color: var(--ink); text-decoration: none; padding: 0.35em 0;" style-hover="color: var(--brand);">Overview</a>
+        <a href="#faq" style="color: var(--ink); text-decoration: none; padding: 0.35em 0;" style-hover="color: var(--brand);">FAQ</a>
+
+        <!-- Resources dropdown -->
+        <span data-dd="true" style="position: relative; display: inline-flex;">
+          <button onClick="{{ toggleResources }}" aria-expanded="{{ resourcesOpen }}" style="display: inline-flex; align-items: center; gap: 0.4em; background: none; border: none; cursor: pointer; font: inherit; font-weight: 600; color: var(--ink); padding: 0.35em 0;" style-hover="color: var(--brand);">
+            Resources
+            <svg width="10" height="7" viewBox="0 0 10 7" aria-hidden="true" style="transition: transform 0.15s ease; transform: {{ chevTransform }};"><polyline points="1,1.5 5,5.5 9,1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+          </button>
+          <sc-if value="{{ resourcesOpen }}" hint-placeholder-val="{{ false }}">
+            <div role="menu" style="position: absolute; top: calc(100% + 10px); right: 0; min-width: 230px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.14); padding: 0.5rem; display: flex; flex-direction: column; z-index: 50;">
+              <a href="#" onClick="{{ closeResources }}" role="menuitem" style="color: var(--ink); text-decoration: none; font-weight: 600; padding: 0.6em 0.8em; border-radius: 8px; white-space: nowrap;" style-hover="background: var(--tint); color: var(--brand);">Board Meeting Recaps</a>
+              <a href="#" onClick="{{ closeResources }}" role="menuitem" style="color: var(--ink); text-decoration: none; font-weight: 600; padding: 0.6em 0.8em; border-radius: 8px; white-space: nowrap;" style-hover="background: var(--tint); color: var(--brand);">Board Advocacy Guide</a>
+              <a href="#" onClick="{{ closeResources }}" role="menuitem" style="color: var(--ink); text-decoration: none; font-weight: 600; padding: 0.6em 0.8em; border-radius: 8px; white-space: nowrap;" style-hover="background: var(--tint); color: var(--brand);">Op-Eds &amp; Letters</a>
+            </div>
+          </sc-if>
+        </span>
+
+        <!-- Theme toggle -->
+        <button onClick="{{ toggleMode }}" aria-label="{{ modeToggleLabel }}" title="{{ modeToggleLabel }}" style="width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0;" style-hover="border-color: var(--brand); color: var(--brand);">
+          <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+          </sc-if>
+          <sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"></circle><line x1="8" y1="0.8" x2="8" y2="2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="8" y1="13.4" x2="8" y2="15.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="0.8" y1="8" x2="2.6" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="13.4" y1="8" x2="15.2" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="2.9" y1="2.9" x2="4.2" y2="4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="11.8" y1="11.8" x2="13.1" y2="13.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="13.1" y1="2.9" x2="11.8" y2="4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="4.2" y1="11.8" x2="2.9" y2="13.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line></svg>
+          </sc-if>
+        </button>
+
+        <a href="#signup" style="background: var(--accent); color: var(--on-accent); padding: 0.55em 1.2em; border-radius: 999px; text-decoration: none; font-weight: 700; border: 2px solid var(--edge);" style-hover="background: var(--accent-hover);">Join us</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ── Hero band ── -->
+    <section data-screen-label="Hero" style="background: var(--hero-bg); color: var(--hero-ink); position: relative; overflow: hidden; transition: background 0.25s ease;">
+      <div style="max-width: 1040px; margin-inline: auto; padding-left: clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem); display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: stretch;">
+        <div style="display: flex; flex-direction: column; justify-content: center; padding-block: clamp(3rem, 2.804rem + 0.978vw, 3.5625rem) clamp(2rem, 1.870rem + 0.652vw, 2.375rem); padding-right: clamp(2rem, 1.870rem + 0.652vw, 2.375rem);">
+          <h3 style="font-family: 'Public Sans', sans-serif; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem); color: var(--hero-muted); margin: 0 0 0.75em; line-height: 1.15;">Evanston / Skokie · District 65</h3>
+          <h1 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(2.488rem, 2.093rem + 1.975vw, 3.6238rem); line-height: 1.08; max-width: 16ch; margin: 0 0 0.5em;">Public schools <em style="color: var(--hero-em); font-style: italic;">thrive</em> when communities show up for them.</h1>
+          <p style="font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.5; color: var(--hero-muted); max-width: 42ch; margin: 0 0 1.75em;">Community advocacy for District 65 schools</p>
+          <a href="#signup" style="align-self: flex-start; display: inline-block; font-weight: 700; text-decoration: none; padding: 0.8em 1.7em; border-radius: 999px; background: var(--accent); color: var(--on-accent); cursor: pointer; border: 2.5px solid var(--edge);" style-hover="background: var(--accent-hover);">Stay informed</a>
+        </div>
+
+        <!-- Neighborhood line-art scene · full-bleed right, 100% height -->
+        <div style="position: relative; min-height: 300px; margin-right: calc(-1 * max(clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem), (100vw - 1040px) / 2));">
+        <svg viewBox="0 0 640 440" fill="none" aria-hidden="true" preserveAspectRatio="xMaxYMax meet" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block;">
+          <!-- sun (mirrored to the LEFT) -->
+          <circle cx="84" cy="64" r="26" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3"></circle>
+          <g stroke="var(--art-line)" stroke-width="3" stroke-linecap="round">
+            <line x1="50" y1="64" x2="38" y2="64"></line><line x1="130" y1="64" x2="118" y2="64"></line>
+            <line x1="84" y1="30" x2="84" y2="18"></line><line x1="84" y1="98" x2="84" y2="110"></line>
+            <line x1="60" y1="40" x2="51" y2="31"></line><line x1="117" y1="97" x2="108" y2="88"></line>
+            <line x1="60" y1="88" x2="51" y2="97"></line><line x1="117" y1="31" x2="108" y2="40"></line>
+          </g>
+          <!-- pennant string & flags (mirrored to the RIGHT) -->
+          <path d="M626 34 Q 510 92 388 84" stroke="var(--art-line)" stroke-width="3" fill="none" stroke-linecap="round"></path>
+          <polygon points="578,53 562,57 574,73" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="2.5" stroke-linejoin="round"></polygon>
+          <polygon points="528,72 512,74 522,91" fill="var(--art-pop)" stroke="var(--art-line)" stroke-width="2.5" stroke-linejoin="round"></polygon>
+          <polygon points="476,81 460,82 469,99" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="2.5" stroke-linejoin="round"></polygon>
+          <polygon points="426,84 410,84 418,101" fill="var(--art-pop)" stroke="var(--art-line)" stroke-width="2.5" stroke-linejoin="round"></polygon>
+          <!-- ground -->
+          <path d="M0 368 C 120 340 260 336 360 352 C 470 370 560 356 640 344 L 640 440 L 0 440 Z" fill="var(--art-fill-2)"></path>
+          <path d="M0 368 C 120 340 260 336 360 352 C 470 370 560 356 640 344" stroke="var(--art-line)" stroke-width="3" fill="none"></path>
+          <!-- left rowhouse -->
+          <rect x="56" y="250" width="112" height="114" fill="var(--art-fill)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"></rect>
+          <rect x="48" y="238" width="128" height="14" fill="var(--art-fill)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"></rect>
+          <rect x="74" y="272" width="32" height="36" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3"></rect>
+          <line x1="74" y1="290" x2="106" y2="290" stroke="var(--art-line)" stroke-width="2"></line>
+          <line x1="90" y1="272" x2="90" y2="308" stroke="var(--art-line)" stroke-width="2"></line>
+          <rect x="118" y="272" width="32" height="36" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3"></rect>
+          <line x1="118" y1="290" x2="150" y2="290" stroke="var(--art-line)" stroke-width="2"></line>
+          <line x1="134" y1="272" x2="134" y2="308" stroke="var(--art-line)" stroke-width="2"></line>
+          <rect x="96" y="322" width="32" height="42" fill="var(--art-pop)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"></rect>
+          <!-- school -->
+          <rect x="200" y="196" width="220" height="168" fill="var(--art-fill)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"></rect>
+          <polygon points="190,196 430,196 310,120" fill="var(--art-fill)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"></polygon>
+          <circle cx="310" cy="164" r="15" fill="var(--art-clock)" stroke="var(--art-line)" stroke-width="3"></circle>
+          <line x1="310" y1="164" x2="310" y2="155" stroke="var(--art-line)" stroke-width="2" stroke-linecap="round"></line>
+          <line x1="310" y1="164" x2="317" y2="164" stroke="var(--art-line)" stroke-width="2" stroke-linecap="round"></line>
+          <line x1="310" y1="120" x2="310" y2="72" stroke="var(--art-line)" stroke-width="3" stroke-linecap="round"></line>
+          <polygon points="310,72 352,81 310,91" fill="var(--art-pop)" stroke="var(--art-line)" stroke-width="2.5" stroke-linejoin="round"></polygon>
+          <rect x="222" y="222" width="40" height="44" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3"></rect>
+          <line x1="222" y1="244" x2="262" y2="244" stroke="var(--art-line)" stroke-width="2"></line>
+          <line x1="242" y1="222" x2="242" y2="266" stroke="var(--art-line)" stroke-width="2"></line>
+          <rect x="290" y="222" width="40" height="44" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3"></rect>
+          <line x1="290" y1="244" x2="330" y2="244" stroke="var(--art-line)" stroke-width="2"></line>
+          <line x1="310" y1="222" x2="310" y2="266" stroke="var(--art-line)" stroke-width="2"></line>
+          <rect x="358" y="222" width="40" height="44" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3"></rect>
+          <line x1="358" y1="244" x2="398" y2="244" stroke="var(--art-line)" stroke-width="2"></line>
+          <line x1="378" y1="222" x2="378" y2="266" stroke="var(--art-line)" stroke-width="2"></line>
+          <rect x="222" y="290" width="40" height="44" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3"></rect>
+          <line x1="222" y1="312" x2="262" y2="312" stroke="var(--art-line)" stroke-width="2"></line>
+          <line x1="242" y1="290" x2="242" y2="334" stroke="var(--art-line)" stroke-width="2"></line>
+          <rect x="358" y="290" width="40" height="44" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3"></rect>
+          <line x1="358" y1="312" x2="398" y2="312" stroke="var(--art-line)" stroke-width="2"></line>
+          <line x1="378" y1="290" x2="378" y2="334" stroke="var(--art-line)" stroke-width="2"></line>
+          <rect x="282" y="270" width="56" height="16" rx="3" fill="var(--art-clock)" stroke="var(--art-line)" stroke-width="2.5"></rect>
+          <text x="310" y="282.5" text-anchor="middle" font-size="12" font-weight="bold" fill="var(--art-line)" style="font-family: var(--font-display);">D65</text>
+          <rect x="288" y="296" width="44" height="68" rx="3" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"></rect>
+          <circle cx="298" cy="332" r="2.5" fill="var(--art-line)"></circle>
+          <!-- right building -->
+          <polygon points="460,262 596,262 528,214" fill="var(--art-fill)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"></polygon>
+          <rect x="468" y="262" width="120" height="100" fill="var(--art-fill)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"></rect>
+          <rect x="492" y="284" width="32" height="34" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3"></rect>
+          <line x1="492" y1="301" x2="524" y2="301" stroke="var(--art-line)" stroke-width="2"></line>
+          <line x1="508" y1="284" x2="508" y2="318" stroke="var(--art-line)" stroke-width="2"></line>
+          <rect x="536" y="284" width="32" height="34" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3"></rect>
+          <line x1="536" y1="301" x2="568" y2="301" stroke="var(--art-line)" stroke-width="2"></line>
+          <line x1="552" y1="284" x2="552" y2="318" stroke="var(--art-line)" stroke-width="2"></line>
+          <rect x="512" y="322" width="34" height="40" rx="3" fill="var(--art-win)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"></rect>
+          <!-- trees -->
+          <rect x="182" y="316" width="10" height="48" fill="var(--art-fill-2)" stroke="var(--art-line)" stroke-width="2.5"></rect>
+          <circle cx="187" cy="298" r="30" fill="var(--art-tree)" stroke="var(--art-line)" stroke-width="3"></circle>
+          <rect x="611" y="328" width="10" height="38" fill="var(--art-fill-2)" stroke="var(--art-line)" stroke-width="2.5"></rect>
+          <circle cx="616" cy="308" r="26" fill="var(--art-tree)" stroke="var(--art-line)" stroke-width="3"></circle>
+        </svg>
+        </div>
+      </div>
+    </section>
+    <!-- curve: hero → overview (sweeps down toward the left) -->
+    <svg viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true" style="display: block; width: 100%; height: clamp(32px, 5vw, 64px); margin-top: -1px;"><path d="M0,0 L1440,0 L1440,10 C980,24 320,62 0,44 Z" fill="var(--hero-bg)" style="transition: fill 0.25s ease;"></path></svg>
+
+    <!-- ── Overview ── -->
+    <section id="overview" data-screen-label="Overview" style="padding-block: clamp(2rem, 1.870rem + 0.652vw, 2.375rem) clamp(3rem, 2.804rem + 0.978vw, 3.5625rem);">
+      <div style="max-width: 920px; margin-inline: auto; padding-inline: clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem);">
+        <div style="font-family: 'Public Sans', sans-serif; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem); color: var(--secondary); margin: 0 0 0.6em;">The coalition</div>
+        <h1 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem); line-height: 1.15; margin: 0 0 0.5em;">Who we are</h1>
+        <p style="margin: 0 0 1em;">Thrive65 is a community-based advocacy and engagement coalition dedicated to supporting a strong, equitable, and financially sustainable future for all students in District 65. We bring together parents, caregivers, educators, community members, and stakeholders who believe that equitable, excellent schools require bold vision, expert implementation, and responsible stewardship.</p>
+
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.44rem, 1.295rem + 0.723vw, 1.8555rem); line-height: 1.15; margin: 1.25em 0 0.5em;">The current situation</h2>
+        <ul style="margin: 0 0 1em; padding-left: 1.4em;">
+          <li style="padding-left: 0.35em;">Enrollment down 25% since 2019</li>
+          <li style="padding-left: 0.35em;">Two elementary schools already closed and buildings still likely to run under 70% utilized</li>
+          <li style="padding-left: 0.35em;">$10 million in additional operating cuts required by FY30</li>
+          <li style="padding-left: 0.35em;">90 days cash on hand — bottom 5% of school districts statewide</li>
+          <li style="padding-left: 0.35em;">A board split on whether to act now or gather more feedback first</li>
+        </ul>
+
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.44rem, 1.295rem + 0.723vw, 1.8555rem); line-height: 1.15; margin: 1.25em 0 0.5em;">Our Pillars</h2>
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 1.25em 0 0.5em; color: var(--brand);">Equitable Excellence</h3>
+        <p style="margin: 0 0 1em;">Every student deserves access to an equitable, excellent education that addresses the unique needs of each individual student and the communities they represent. We believe that equity and excellence are not competing goals but mutually supportive commitments. By focusing on great teaching, strong programs, and the whole-child development of every student, we can make sure each of our schools is an environment where all children can thrive and reach their full potential.</p>
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 1.25em 0 0.5em; color: var(--brand);">Financial Responsibility</h3>
+        <p style="margin: 0 0 1em;">To thrive, our district needs maintained facilities, a strategically aligned budget, and stable reserves. Without it, we can't choose how to cultivate our kids, we just react to whatever crisis comes first. We need a budget that is balanced operationally and structurally- that means the increases in revenue or decreases in expenses to balance it are replicable each year. One-time influxes of revenue, refunds, or credits, are not acceptable in a truly balanced budget; those should be additive. A budget is not balanced if it reduces our annual commitment to building maintenance to avoid a loss.</p>
+        <p style="margin: 0 0 1em;">Financial health isn't at odds with our kids' interests. It's the foundation for them.</p>
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 1.25em 0 0.5em; color: var(--brand);">Humanizing and Valuing Our Educators</h3>
+        <p style="margin: 0 0 1em;">Uncertainty has a cost, and our educators have carried it alongside us for years. Any real plan must treat the people doing the work — not just the buildings they work in — with clarity, respect, and fairness. Teachers, support staff, administrators, and school employees are the foundation of student success, and their expertise, dedication, and well-being must be valued and supported. D65 needs policies and practices that attract, develop, and retain exceptional, culturally responsive educators through respect, collaboration, and professional growth. When educators are empowered and supported, students benefit from stronger relationships, more engaging learning experiences, and better outcomes.</p>
+      </div>
+    </section>
+
+    <!-- curve: overview → FAQ (sweeps down toward the right) -->
+    <svg viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true" style="display: block; width: 100%; height: clamp(32px, 5vw, 64px); background: var(--band-alt); transition: background 0.25s ease;"><path d="M0,0 L1440,0 L1440,44 C1120,62 460,24 0,10 Z" fill="var(--bg)" style="transition: fill 0.25s ease;"></path></svg>
+
+    <!-- ── FAQ ── -->
+    <section id="faq" data-screen-label="FAQ" style="padding-block: clamp(2rem, 1.870rem + 0.652vw, 2.375rem) clamp(3rem, 2.804rem + 0.978vw, 3.5625rem); background: var(--band-alt); transition: background 0.25s ease;">
+      <div style="max-width: 920px; margin-inline: auto; padding-inline: clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem);">
+        <div style="font-family: 'Public Sans', sans-serif; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem); color: var(--secondary); margin: 0 0 0.6em;">Questions</div>
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.44rem, 1.295rem + 0.723vw, 1.8555rem); line-height: 1.15; margin: 0 0 0.75em;">FAQs</h2>
+        <div style="display: flex; flex-direction: column; gap: clamp(0.750rem, 0.701rem + 0.245vw, 0.891rem);">
+          <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="6">
+            <details data-index="{{ $index }}" onToggle="{{ onFaqToggle }}" style="background: var(--card); border: 2px solid var(--edge); border-radius: 12px; overflow: hidden;">
+              <summary style="list-style: none; cursor: pointer; display: flex; align-items: center; gap: 0.85em; font-weight: 600; font-family: var(--font-display); font-size: clamp(1rem, 0.935rem + 0.326vw, 1.1875rem); padding: 1.1rem 1.4rem;">
+                <span aria-hidden="true" style="flex-shrink: 0; width: 1.4em; height: 1.4em; border-radius: 50%; background: var(--tint); position: relative; display: inline-block;">
+                  <span style="position: absolute; background: var(--brand); border-radius: 2px; left: 30%; right: 30%; top: 50%; height: 2px; transform: translateY(-50%);"></span>
+                  <span style="position: absolute; background: var(--brand); border-radius: 2px; top: 30%; bottom: 30%; left: 50%; width: 2px; transform: translateX(-50%); transition: opacity 0.15s ease; opacity: {{ item.vBar }};"></span>
+                </span>
+                <h3 style="margin: 0; font-size: inherit; font-weight: inherit; font-family: inherit; line-height: inherit;">{{ item.question }}</h3>
+              </summary>
+              <div style="padding: 0 1.4rem 1.3rem; color: var(--muted);">
+                <p style="margin: 0;">{{ item.answer }}</p>
+              </div>
+            </details>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- waves: FAQ → signup (flat edges, waves in the middle) -->
+    <svg viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true" style="display: block; width: 100%; height: clamp(28px, 4vw, 52px); background: var(--hero-bg); transition: background 0.25s ease;"><path d="M0,0 L1440,0 L1440,26 C1230,26 1160,46 1010,46 C870,46 830,16 710,16 C590,16 550,46 410,46 C260,46 200,26 0,26 Z" fill="var(--band-alt)" style="transition: fill 0.25s ease;"></path></svg>
+
+    <!-- ── Signup band ── -->
+    <section id="signup" data-screen-label="Signup" style="padding-block: clamp(2rem, 1.870rem + 0.652vw, 2.375rem) clamp(3rem, 2.804rem + 0.978vw, 3.5625rem); text-align: center; background: var(--hero-bg); color: var(--hero-ink); transition: background 0.25s ease;">
+      <div style="max-width: 920px; margin-inline: auto; padding-inline: clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem);">
+        <div style="font-family: 'Public Sans', sans-serif; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem); color: var(--hero-muted); margin: 0 0 0.6em;">Get involved</div>
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem); line-height: 1.15; margin: 0 0 0.5em;">Stay Informed</h2>
+        <p style="margin: 0 0 1em; color: var(--hero-muted); font-size: clamp(1rem, 0.935rem + 0.326vw, 1.1875rem);">Get occasional updates on board meetings, budget decisions, and ways to get involved.</p>
+        <form onSubmit="{{ onSignup }}" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; max-width: 560px; margin: 1.5rem auto 0;">
+          <input type="email" required placeholder="Email address" aria-label="Email address" style="box-sizing: border-box; font-family: 'Public Sans', sans-serif; font-size: clamp(1rem, 0.935rem + 0.326vw, 1.1875rem); line-height: 0.85; min-height: 44px; padding: 0.75em 1.1em; margin: 0; border-radius: 999px 0 0 999px; border: 2.5px solid var(--edge); border-right: none; background: var(--card); color: var(--ink); min-width: 260px; flex: 1; outline-offset: 2px;">
+          <input type="submit" value="Subscribe" style="box-sizing: border-box; font-family: 'Public Sans', sans-serif; font-size: clamp(1rem, 0.935rem + 0.326vw, 1.1875rem); line-height: 0.85; min-height: 44px; padding: 0.75em 1.3em; margin: 0; font-weight: 700; background: var(--accent); color: var(--on-accent); border: 2.5px solid var(--edge); border-radius: 0 999px 999px 0; cursor: pointer;" style-hover="background: var(--accent-hover);">
+        </form>
+        <p style="font-size: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem); color: var(--hero-muted); margin: clamp(0.750rem, 0.701rem + 0.245vw, 0.891rem) 0 0;">No spam. Unsubscribe anytime. <a href="#" style="color: var(--hero-ink); text-decoration-thickness: 2px; text-underline-offset: 0.15em;" style-hover="color: var(--accent);">Privacy policy</a></p>
+      </div>
+    </section>
+
+    <!-- curve: signup → footer (gentle centered arc) -->
+    <svg viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true" style="display: block; width: 100%; height: clamp(24px, 3.5vw, 48px); background: var(--footer-bg); transition: background 0.25s ease;"><path d="M0,0 L1440,0 L1440,14 Q720,64 0,14 Z" fill="var(--hero-bg)" style="transition: fill 0.25s ease;"></path></svg>
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer data-screen-label="Footer" style="background: var(--footer-bg); color: var(--footer-ink); padding-block: clamp(2rem, 1.870rem + 0.652vw, 2.375rem); font-size: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem); transition: background 0.25s ease;">
+    <div style="max-width: 1040px; margin-inline: auto; padding-inline: clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem);">
+      <p style="margin: 0 0 0.35em;"><span style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); color: var(--footer-head); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem);">Thrive<span style="color: var(--accent);">65</span></span></p>
+      <p style="margin: 0 0 1em; color: var(--footer-head); font-weight: 600;">Community advocacy for District 65 schools</p>
+      <p style="margin: 0 0 1em;">Thrive65 is an independent community coalition and is not affiliated with or operated by D65.</p>
+      <p style="margin: 0;">© 2026 Thrive65</p>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;hue&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;Lake Teal&quot;, &quot;options&quot;: [&quot;Lake Teal&quot;, &quot;Evergreen&quot;, &quot;Electric Blue&quot;, &quot;Ultraviolet&quot;], &quot;tsType&quot;: &quot;'Lake Teal' | 'Evergreen' | 'Electric Blue' | 'Ultraviolet'&quot;, &quot;section&quot;: &quot;Brand hue&quot; },
+  &quot;mode&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;auto&quot;, &quot;options&quot;: [&quot;auto&quot;, &quot;light&quot;, &quot;dark&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Theme&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    open: {},
+    resourcesOpen: false,
+    userMode: null,      // manual toggle override: 'light' | 'dark' | null
+    systemDark: false,
+  };
+
+  // Hue label (Tweaks) → data-hue slug. Lake Teal is the live-brand default
+  // and lives on the base .t65-root (no override block needed).
+  hueSlug(name) {
+    return {
+      "Lake Teal": "lake-teal",
+      "Evergreen": "evergreen",
+      "Electric Blue": "electric-blue",
+      "Ultraviolet": "ultraviolet",
+    }[name] || "lake-teal";
+  }
+
+  faqData = [
+    { question: "When did this structural deficit start and what caused it?", answer: "Lorem ipsom." },
+    { question: "What has the district done about it?", answer: "Lorem ipsom." },
+    { question: "Is our deficit because of Foster School\u2019s construction?", answer: "Lorem ipsom." },
+    { question: "Why build a new school when we have a structural deficit?", answer: "Lorem ipsom." },
+    { question: "Why are we spending so much on facilities?", answer: "Lorem ipsom." },
+    { question: "Is lower enrollment at our schools a problem?", answer: "Lorem ipsom." },
+    { question: "Can\u2019t we focus on bringing back kids in private schools?", answer: "Lorem ipsom." },
+    { question: "Shouldn\u2019t we just cut more admin?", answer: "Lorem ipsom." },
+    { question: "What about all the community ideas I\u2019ve heard about?", answer: "Lorem ipsom." },
+    { question: "Why not close JEH and put early childhood education in each school?", answer: "Lorem ipsom." },
+    { question: "Does closing a school really save that much?", answer: "Lorem ipsom." },
+    { question: "What about transportation costs?", answer: "Lorem ipsom." },
+    { question: "What did the special ed audit find?", answer: "Lorem ipsom." },
+    { question: "Why doesn\u2019t the board get more input from the community?", answer: "Lorem ipsom." },
+    { question: "Are walkable schools a civil right? Am I in a school desert?", answer: "Lorem ipsom." },
+    { question: "Isn\u2019t free and reduced lunch a scam?", answer: "Lorem ipsom." },
+    { question: "Why won\u2019t Lindsey take responsibility for her children?", answer: "Tell me about it!" },
+  ];
+
+  componentDidMount() {
+    this._mq = window.matchMedia("(prefers-color-scheme: dark)");
+    this._mqHandler = (e) => this.setState({ systemDark: e.matches });
+    this.setState({ systemDark: this._mq.matches });
+    this._mq.addEventListener("change", this._mqHandler);
+
+    this._docClick = (e) => {
+      if (this.state.resourcesOpen && !e.target.closest("[data-dd]")) {
+        this.setState({ resourcesOpen: false });
+      }
+    };
+    document.addEventListener("click", this._docClick);
+  }
+
+  componentWillUnmount() {
+    if (this._mq) this._mq.removeEventListener("change", this._mqHandler);
+    document.removeEventListener("click", this._docClick);
+  }
+
+  resolveMode() {
+    if (this.state.userMode) return this.state.userMode;
+    const prop = this.props.mode ?? "auto";
+    if (prop === "light" || prop === "dark") return prop;
+    return this.state.systemDark ? "dark" : "light";
+  }
+
+  renderVals() {
+    const mode = this.resolveMode();
+    const open = this.state.open;
+    return {
+      hue: this.hueSlug(this.props.hue ?? "Lake Teal"),
+      modeResolved: mode,
+      isDark: mode === "dark",
+      isLight: mode !== "dark",
+      modeToggleLabel: mode === "dark" ? "Switch to light mode" : "Switch to dark mode",
+      toggleMode: () => this.setState({ userMode: this.resolveMode() === "dark" ? "light" : "dark" }),
+
+      resourcesOpen: this.state.resourcesOpen,
+      chevTransform: this.state.resourcesOpen ? "rotate(180deg)" : "rotate(0deg)",
+      toggleResources: (e) => {
+        e.stopPropagation();
+        this.setState((s) => ({ resourcesOpen: !s.resourcesOpen }));
+      },
+      closeResources: (e) => {
+        e.preventDefault();
+        this.setState({ resourcesOpen: false });
+      },
+
+      faqItems: this.faqData.map((item, i) => ({
+        ...item,
+        vBar: open[i] ? 0 : 1,
+      })),
+      onFaqToggle: (e) => {
+        const idx = e.currentTarget.dataset.index;
+        this.setState((s) => ({ open: { ...s.open, [idx]: e.currentTarget.open } }));
+      },
+      onSignup: (e) => e.preventDefault(),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+/* ============================================================================
+   Common Ground — design tokens (Thrive65 redesign)
+   Single source of values for the redesign. Drop this into the CUBE CSS token
+   layer (replaces the old :root color block in assets/css/main.css).
+
+   ARCHITECTURE
+   ------------
+   :root                      Shared tokens that DON'T change per hue —
+                              surfaces, ink, edge, accent, secondary, bloom,
+                              footer, type scale, spacing scale, radii, borders
+                              — plus the DEFAULT hue (Lake Teal), LIGHT theme.
+
+   [data-theme="dark"]        Shared DARK surfaces + the default hue (Lake Teal)
+                              dark values. Set data-theme on <html>.
+
+   .hue-lake-teal /           HUE WRAPPER CLASSES. Each sets ONLY the 8 tokens
+   .hue-evergreen /           that vary by hue (brand, brand-strong, link,
+   .hue-electric-blue /       hero-bg, hero-ink, hero-muted, hero-em, band-alt).
+   .hue-ultraviolet           Add one to <body> to retint a whole page, or to
+                              any section wrapper to compare hues side-by-side.
+
+   Only those 8 tokens change per hue. Marigold `accent` is the constant flame
+   across every hue. Lake Teal is the LIVE brand; the other three are
+   exploration hues.
+
+   THEME (light/dark) and HUE (wrapper class) are independent — combine freely,
+   e.g. <html data-theme="dark"><body class="hue-ultraviolet">.
+
+   AUTO theme: set data-theme explicitly on <html> (see the init snippet in
+   README.md / CLAUDE.md) so "auto" resolves to a concrete light|dark value
+   before paint. A pure-CSS prefers-color-scheme fallback is at the bottom.
+   ============================================================================ */
+
+:root {
+  /* ---- Typography ------------------------------------------------------- */
+  --font-display: "Archivo", sans-serif;                 /* was Fraunces */
+  --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --display-weight: 800;
+  --display-tracking: -0.01em;
+
+  /* ---- Type scale — Utopia 320→1240px (UNCHANGED from old design) ------- */
+  --step--2: clamp(0.694rem, 0.672rem + 0.114vw, 0.760rem);
+  --step--1: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem);
+  --step-0:  clamp(1rem,     0.935rem + 0.326vw, 1.1875rem);
+  --step-1:  clamp(1.2rem,   1.101rem + 0.495vw, 1.4844rem);
+  --step-2:  clamp(1.44rem,  1.295rem + 0.723vw, 1.8555rem);
+  --step-3:  clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem);
+  --step-4:  clamp(2.074rem, 1.787rem + 1.436vw, 2.8992rem);
+  --step-5:  clamp(2.488rem, 2.093rem + 1.975vw, 3.6238rem);
+
+  /* ---- Spacing — Utopia (UNCHANGED from old design) --------------------- */
+  --space-2xs: clamp(0.500rem, 0.467rem + 0.163vw, 0.594rem);
+  --space-xs:  clamp(0.750rem, 0.701rem + 0.245vw, 0.891rem);
+  --space-s:   clamp(1rem,     0.935rem + 0.326vw, 1.1875rem);
+  --space-m:   clamp(1.5rem,   1.402rem + 0.489vw, 1.7813rem);
+  --space-l:   clamp(2rem,     1.870rem + 0.652vw, 2.375rem);
+  --space-xl:  clamp(3rem,     2.804rem + 0.978vw, 3.5625rem);
+  --space-2xl: clamp(4rem,     3.739rem + 1.304vw, 4.750rem);
+
+  /* ---- Line heights ----------------------------------------------------- */
+  --lh-body: 1.6;
+  --lh-lead: 1.5;
+  --lh-heading: 1.15;
+  --lh-display: 1.1;
+
+  /* ---- Borders & radii (NEW: framed 2px-edge look) ---------------------- */
+  --border-thin: 1px;
+  --border-bold: 2px;
+  --radius-card: 12px;
+  --radius-inner: 10px;      /* card inner link */
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+  --radius-callout: 0 12px 12px 0;
+
+  /* ---- Shared: surfaces & structure · LIGHT ----------------------------- */
+  --bg:    #F7F5EC;                 /* warm page surface */
+  --card:  #FFFFFF;                 /* raised surfaces */
+  --tint:  hsla(150, 30%, 91%, 1);  /* soft callout wash (Meadow Tint) */
+  --line:  hsla(150, 20%, 83%, 1);  /* 1px hairlines, dividers */
+  --ink:   #14231B;                 /* headings & body text */
+  --muted: hsla(150, 16%, 30%, 1);  /* secondary text */
+  --edge:  #0B0B0B;                 /* 2px frames; focus outline on light */
+  --on-accent: #221B05;             /* CTA label text (on Marigold) */
+  --focus: #0B0B0B;                 /* focus outline — edge on light */
+
+  /* ---- Shared: accents (CONSTANT across all hues) ----------------------- */
+  --secondary:    hsla(189, 65%, 22%, 1); /* Lakewater Teal — eyebrows, 2nd headings */
+  --accent:       #FFB01A;                 /* Marigold — primary CTA fill (constant) */
+  --accent-hover: #FFC44F;                 /* CTA hover */
+  --bloom:        #D42A56;                 /* Accent 2 — moment-of-change only */
+
+  /* ---- Shared: footer family (shared across themes) --------------------- */
+  --footer-bg:   #070E0A;
+  --footer-head: #EDF5EE;
+  --footer-ink:  #B7CCBD;
+
+  /* ---- DEFAULT HUE = Lake Teal · LIGHT (live brand) --------------------- */
+  --brand:        #0F7A45;
+  --brand-strong: #0A5C34;
+  --link:         #0F7A45;                 /* alias of brand */
+  --hero-bg:      hsla(189, 65%, 46%, 1);
+  --hero-ink:     hsla(189, 65%, 9%, 1);
+  --hero-muted:   hsla(189, 65%, 13%, 1);
+  --hero-em:      var(--accent);           /* "thrive" emphasis → accent */
+  --band-alt:     hsla(189, 30%, 92%, 1);
+
+  /* ---- Illustration aliases (auto-follow hue + theme; no separate art palette) */
+  --art-line:   var(--edge);
+  --art-fill:   var(--brand);
+  --art-fill-2: var(--brand-strong);
+  --art-win:    var(--accent);
+  --art-pop:    var(--bloom);
+  --art-tree:   var(--brand);
+  --art-clock:  var(--card);
+}
+
+/* ============================================================================
+   SHARED DARK surfaces + default hue (Lake Teal) DARK.
+   Set data-theme="dark" on <html>.
+   ============================================================================ */
+[data-theme="dark"] {
+  --bg:    #0B1410;
+  --card:  #17251C;
+  --tint:  #123122;
+  --line:  #283A2E;
+  --ink:   #E9F2EA;
+  --muted: #A9BBAD;
+  --edge:  #0B0B0B;                 /* shared */
+  --on-accent: #221B05;             /* shared */
+  --focus: #8CE7B7;                 /* focus outline — mint on dark */
+
+  --secondary:    hsla(189, 65%, 60%, 1);
+  --accent:       #FFB01A;          /* constant */
+  --accent-hover: #FFC44F;          /* constant */
+  --bloom:        #FF5D7B;
+
+  --footer-bg:   #070E0A;           /* shared */
+  --footer-head: #EDF5EE;           /* shared */
+  --footer-ink:  #B7CCBD;           /* shared */
+
+  /* default hue Lake Teal · DARK */
+  --brand:        #3FD9C0;
+  --brand-strong: #74E8D6;
+  --link:         #3FD9C0;
+  --hero-bg:      #1C7687;
+  --hero-ink:     #E6F3EF;
+  --hero-muted:   #F0F9F5;
+  --hero-em:      #FFC44F;
+  --band-alt:     hsla(189, 50%, 9%, 1);
+}
+
+/* ============================================================================
+   HUE WRAPPER CLASSES — LIGHT
+   Add to <body> (whole page) or any wrapper (section-level comparison).
+   These override only the 8 hue tokens; everything else inherits from :root.
+   ============================================================================ */
+.hue-lake-teal {                                   /* LIVE BRAND (same as :root default) */
+  --brand: #0F7A45; --brand-strong: #0A5C34; --link: #0F7A45;
+  --hero-bg: hsla(189, 65%, 46%, 1); --hero-ink: hsla(189, 65%, 9%, 1);
+  --hero-muted: hsla(189, 65%, 13%, 1); --hero-em: var(--accent);
+  --band-alt: hsla(189, 30%, 92%, 1);
+}
+.hue-evergreen {
+  --brand: #0F7A45; --brand-strong: #0A5C34; --link: #0F7A45;
+  --hero-bg: #1CA05C; --hero-ink: #0B2417;
+  --hero-muted: #082A18; --hero-em: var(--accent);
+  --band-alt: hsla(150, 34%, 93%, 1);
+}
+.hue-electric-blue {
+  --brand: hsla(227, 90%, 42%, 1); --brand-strong: hsla(227, 90%, 30%, 1); --link: hsla(227, 90%, 42%, 1);
+  --hero-bg: hsla(227, 100%, 68%, 1); --hero-ink: hsla(227, 90%, 17%, 1);
+  --hero-muted: hsla(227, 90%, 17%, 1); --hero-em: #FFFFFF;
+  --band-alt: #E7ECFF;
+}
+.hue-ultraviolet {
+  --brand: #7A18D4; --brand-strong: #57109C; --link: #7A18D4;
+  --hero-bg: #A75DEC; --hero-ink: #1B0E42;
+  --hero-muted: #1B0E42; --hero-em: #FFFFFF;
+  --band-alt: #F1E6FF;
+}
+
+/* ============================================================================
+   HUE WRAPPER CLASSES — DARK  (higher specificity than the light blocks above)
+   ============================================================================ */
+[data-theme="dark"] .hue-lake-teal {
+  --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
+  --hero-bg: #1C7687; --hero-ink: #E6F3EF;
+  --hero-muted: #F0F9F5; --hero-em: #FFC44F;
+  --band-alt: hsla(189, 50%, 9%, 1);
+}
+[data-theme="dark"] .hue-evergreen {
+  --brand: #4ED991; --brand-strong: #7BE8AE; --link: #4ED991;
+  --hero-bg: #16854F; --hero-ink: #E9F2E6;
+  --hero-muted: #A9CDB6; --hero-em: var(--accent);
+  --band-alt: hsla(150, 70%, 10%, 1);
+}
+[data-theme="dark"] .hue-electric-blue {
+  --brand: #7E9DFF; --brand-strong: #A9BEFF; --link: #7E9DFF;
+  --hero-bg: #0033EB; --hero-ink: #F2F5FF;
+  --hero-muted: #BFCCFF; --hero-em: var(--accent);
+  --band-alt: hsla(227, 90%, 14%, 1);
+}
+[data-theme="dark"] .hue-ultraviolet {
+  --brand: #BE8CFF; --brand-strong: #D3B4FF; --link: #BE8CFF;
+  --hero-bg: #5B16C4; --hero-ink: #F6EEFF;
+  --hero-muted: #DCC0FF; --hero-em: var(--accent);
+  --band-alt: #1B0E42;
+}
+
+/* ============================================================================
+   OPTIONAL pure-CSS auto dark (no JS). Only needed if you do NOT set
+   data-theme on <html>. Covers shared surfaces + the DEFAULT hue only; for
+   per-hue dark under system-auto, prefer the data-theme init script instead
+   (it makes every .hue-* dark block above apply automatically).
+   ============================================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --bg: #0B1410; --card: #17251C; --tint: #123122;
+    --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD; --focus: #8CE7B7;
+    --secondary: hsla(189, 65%, 60%, 1); --bloom: #FF5D7B;
+    --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
+    --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
+    --band-alt: hsla(189, 50%, 9%, 1);
+  }
+}
