@@ -360,11 +360,43 @@
   /* ─ Hero ─ (full-bleed colored band; the only context that overrides
      the global heading scale) */
   .hero {
-    padding-block: var(--space-2xl) var(--space-xl);
+    /* TODO: unneeded */
+    position: relative;
+    overflow: hidden;
   }
   .hero-hue {
     background: var(--hero-bg);
     color: var(--hero-ink);
+  }
+  /* Two-column: copy left, line-art scene bleeding to the right edge */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: stretch;
+    gap: var(--space-l);
+  }
+  .hero-grid.wrapper {
+    max-width: none;
+  }
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+  .hero-art {
+    position: relative;
+    /* pull the scene out to the viewport's right edge */
+    /* TODO: fix sizing of art */
+    min-height: 600px;
+    /* margin-right: calc(-1 * max(var(--space-m), (100vw - var(--wrap-width)) / 2)); */
+  }
+  .hero-art svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
   }
   /* Color for kicker/Eyebrows. Any first element that follows a heading */
   .hero-hue *:first-child:has(+ h1, + h2) { 
