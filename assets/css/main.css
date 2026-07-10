@@ -13,39 +13,66 @@
    ============================================================================ */
 
 :root {
+  /* ---- Fluid root — THE four knobs (plain numbers, think px) ------------ */
+  /* Text is --root-min px at --screen-min and below, --root-max px at
+     --screen-max and above, linear in between. Tweak any knob (live in
+     devtools works) and the whole system — rem type, rlh space — follows.
+     px at width w ≈ root-min + (root-max − root-min) × (w − screen-min) / (screen-max − screen-min)
+     Defaults: 16 @320 · ~17.6 @768 · ~19.3 @1240 · ~21.3 @1800 · 24 @2560+ */
+  --root-min: 16;
+  --root-max: 24;
+  --screen-min: 320;
+  --screen-max: 2560;
+
+  /* derived — do not edit. Sizes are % of the user's default (16px) so
+     browser font-size preferences still scale everything. */
+  --root-slope: calc((var(--root-max) - var(--root-min)) / (var(--screen-max) - var(--screen-min)));
+  font-size: clamp(
+    calc(var(--root-min) / 16 * 100%),
+    calc((var(--root-min) - var(--root-slope) * var(--screen-min)) / 16 * 100% + var(--root-slope) * 100vw),
+    calc(var(--root-max) / 16 * 100%)
+  );
+  line-height: 1.5; /* rlh unit = 1.5 × root font-size; body sets its own leading */
+
   /* ---- Typography ------------------------------------------------------- */
   --font-display: "Archivo", sans-serif;                 /* was Fraunces */
   --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --display-weight: 800;
   --display-tracking: -0.01em;
 
-  /* ---- Type scale — Utopia 320→1240px (UNCHANGED from old design) ------- */
-  --step--2: clamp(0.694rem, 0.672rem + 0.114vw, 0.760rem);
-  --step--1: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem);
-  --step-0:  clamp(1rem,     0.935rem + 0.326vw, 1.1875rem);
-  --step-1:  clamp(1.2rem,   1.101rem + 0.495vw, 1.4844rem);
-  --step-2:  clamp(1.44rem,  1.295rem + 0.723vw, 1.8555rem);
-  --step-3:  clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem);
-  --step-4:  clamp(2.074rem, 1.787rem + 1.436vw, 2.8992rem);
-  --step-5:  clamp(2.488rem, 2.093rem + 1.975vw, 3.6238rem);
+  /* ---- Type scale — proportional rem, minor third (1.2) ----------------- */
+  /* Plain rem: each step rides the fluid root, ratio stays constant. */
+  --step--2: 0.694rem;
+  --step--1: 0.833rem;
+  --step-0:  1rem;
+  --step-1:  1.2rem;
+  --step-2:  1.44rem;
+  --step-3:  1.728rem;
+  --step-4:  2.074rem;
+  --step-5:  2.488rem;
 
-  /* ---- Spacing — Utopia (UNCHANGED from old design) --------------------- */
-  --space-2xs: clamp(0.500rem, 0.467rem + 0.163vw, 0.594rem);
-  --space-xs:  clamp(0.750rem, 0.701rem + 0.245vw, 0.891rem);
-  --space-s:   clamp(1rem,     0.935rem + 0.326vw, 1.1875rem);
-  --space-m:   clamp(1.5rem,   1.402rem + 0.489vw, 1.7813rem);
-  --space-l:   clamp(2rem,     1.870rem + 0.652vw, 2.375rem);
-  --space-xl:  clamp(3rem,     2.804rem + 0.978vw, 3.5625rem);
-  --space-2xl: clamp(4rem,     3.739rem + 1.304vw, 4.750rem);
+  /* ---- Spacing — rlh line-counts (1rlh = one root line, 24px at min) ---- */
+  /* Doubles every two steps (s→l→2xl→4xl = 1·2·4·8, m→xl→3xl = 1.5·3·6). */
+  --space-2xs: 0.25rlh;   /* ¼ line   —   6px at min */
+  --space-xs:  0.5rlh;    /* ½ line   —  12px */
+  --space-s:   1rlh;      /* 1 line   —  24px */
+  --space-m:   1.5rlh;    /* 1½ lines —  36px */
+  --space-l:   2rlh;      /* 2 lines  —  48px */
+  --space-xl:  3rlh;      /* 3 lines  —  72px */
+  --space-2xl: 4rlh;      /* 4 lines  —  96px */
+  --space-3xl: 6rlh;      /* 6 lines  — 144px */
+  --space-4xl: 8rlh;      /* 8 lines  — 192px */
+
+  /* ---- Wrapper gutter — token-stepped, fully inside the rlh system ------ */
+  /* Steps up by token at each breakpoint; between steps it still scales
+     with the fluid root, so the font knobs above move the gutters too. */
+  --gutter: var(--space-s);  /* 1 line on small screens */
 
   /* ---- Line heights ----------------------------------------------------- */
   --lh-body: 1.6;
   --lh-lead: 1.5;
   --lh-heading: 1.15;
   --lh-display: 1.1;
-
-  /* ---- Structural ------------------------------------------------------- */
-  --wrap-width: 920px;
 
   /* ---- Borders & radii (framed 2px-edge look) ---------------------- */
   --border-thin: 1px;
@@ -217,6 +244,11 @@
   }
 }
 
+/* Gutter steps — token values only, so the type knobs keep control */
+@media (min-width: 720px)  { :root { --gutter: var(--space-l); } }   /* 2 lines */
+@media (min-width: 1200px) { :root { --gutter: var(--space-xl); } }  /* 3 lines */
+@media (min-width: 1800px) { :root { --gutter: var(--space-2xl); } } /* 4 lines */
+
 /* ── reset ──────────────────────────────────────────────────────────────── */
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
@@ -228,11 +260,21 @@
 @layer base {
   body {
     margin: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
     font-family: var(--font-body);
     font-size: var(--step-0);
     color: var(--ink);
     background: var(--bg);
     line-height: var(--lh-body);
+  }
+
+  /* Grow main to fill the viewport so the footer sits at the bottom
+     when page content is too short to push it there. */
+  #main {
+    flex: 1 0 auto;
   }
 
   h1, h2, h3 {
@@ -278,18 +320,17 @@
 /* ── composition ─────────────────────────────────────────────────────────── */
 @layer composition {
   .wrapper {
-    max-width: var(--wrap-width);
     margin-inline: auto;
-    padding-inline: var(--space-m);
+    padding-inline: var(--gutter);
   }
 
   .region {
     padding-block: var(--space-xl);
   }
 
-  /* Lobotomised owl — spacing between flow children */
+  /* Lobotomised owl — spacing between flow children (default: one line) */
   .flow > * + * {
-    margin-block-start: var(--flow-space, var(--space-m));
+    margin-block-start: var(--flow-space, var(--space-s));
   }
 
   .cluster {
@@ -403,9 +444,6 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     align-items: stretch;
     gap: var(--space-l);
-  }
-  .hero-grid.wrapper {
-    max-width: none;
   }
   .hero-copy {
     display: flex;

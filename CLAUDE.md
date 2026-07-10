@@ -65,25 +65,27 @@ Files edited by hand:
 
 **Global heading scale.** Headings are sized once, globally: `h1` → `--step-3`, `h2` → `--step-2`, `h3` → `--step-1`. Don't re-declare a heading size that already matches the global value; the **hero** is the only context that overrides it (`h1` → `--step-5`, eyebrow `h3` → `--step--1`).
 
-**Fluid type & space — Utopia scale (320→1240 px, 16 px/1.2 minor-third → 19 px/1.25 major-third)**
+**Fully fluid type & space — root knobs + proportional rem + rlh**
 
-Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout spacing. Never hardcode `px`/`rem` rhythm values.
+The **only** `clamp()` lives on `:root`'s `font-size`, driven by four plain-number knobs (think px): `--root-min: 16`, `--root-max: 24`, `--screen-min: 320`, `--screen-max: 2560`. The slope is *derived* from all four, so changing any knob reshapes the whole ramp (px at width w ≈ root-min + (root-max − root-min) × (w − screen-min)/(screen-max − screen-min); defaults give ~19.3 px @1240, ~21.3 px @1800). Everything else is proportional: `--step-*` tokens are plain rem at a fixed 1.2 minor-third ratio, and `--space-*` tokens are `rlh` line-counts (`:root` line-height is 1.5, so 1rlh = 1.5 × root size = 24 px at the 320 px minimum). Wrapper gutters use `--gutter`, which steps between spacing tokens at 720/1200/1800 px breakpoints (1 → 2 → 3 → 4 lines) and therefore also follows the font knobs.
 
-| Token | Range | Role |
+Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout spacing. Never hardcode `px` rhythm values or add new per-token clamps.
+
+| Token | Value | Role |
 |---|---|---|
-| `--step--2` | 0.69→0.76 rem | mastfoot, fine print |
-| `--step--1` | 0.83→0.95 rem | eyebrow, footer, nav, meta |
-| `--step-0`  | 1→1.19 rem | body, FAQ question |
-| `--step-1`  | 1.2→1.48 rem | brand, hero lede, h3 |
-| `--step-2`  | 1.44→1.86 rem | h2 |
-| `--step-3`  | 1.73→2.32 rem | h1 (page/post title) |
-| `--step-5`  | 2.49→3.62 rem | hero h1 |
-| `--space-xs…2xl` | 0.75→4.75 rem | layout rhythm |
+| `--step--2` | 0.694 rem | mastfoot, fine print |
+| `--step--1` | 0.833 rem | eyebrow, footer, nav, meta |
+| `--step-0`  | 1 rem | body, FAQ question |
+| `--step-1`  | 1.2 rem | brand, hero lede, h3 |
+| `--step-2`  | 1.44 rem | h2 |
+| `--step-3`  | 1.728 rem | h1 (page/post title) |
+| `--step-5`  | 2.488 rem | hero h1 |
+| `--space-2xs…4xl` | ¼, ½, 1, 1½, 2, 3, 4, 6, 8 rlh | layout rhythm in lines of text; doubles every two steps |
 
 **Line height** is unitless (so leading stays fluid alongside the fluid type) and tied to size via `--lh-*` tokens — it tightens proportionally as text grows: `--lh-body` 1.6 → `--lh-lead` 1.5 → `--lh-heading` 1.15 → `--lh-display` 1.1. A new text-size utility should set its matching line-height.
 
 **Composition primitives** — use for layout instead of bespoke flex rules:
-- `.wrapper` — max-width container with fluid inline padding
+- `.wrapper` — full-width container with token-stepped gutters (`padding-inline: var(--gutter)`); there is no site max-width
 - `.region` — section with fluid block padding (`--space-xl`)
 - `.flow` — owl-operator spacing between children (`--flow-space` CSS var, overrideable)
 - `.cluster` — flex row, wrapping, centered, `--space-s` gap
