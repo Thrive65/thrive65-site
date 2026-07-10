@@ -3,7 +3,7 @@
 <head>
   {% include head.html %}
 </head>
-<body>
+<body class="hue-{{ page.hue | default: 'lake-teal' }}">
   {% include header.html %}
 
   <main id="main">
@@ -11,5 +11,7 @@
   </main>
 
   {% include footer.html %}
+
+  {% include hue_preview.html %}
 </body>
 </html>
