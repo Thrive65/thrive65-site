@@ -5,27 +5,21 @@
 
 @layer reset, base, composition, block, utility, exception;
 
-/* ── Design tokens ─────────────────────────────────────────────────────── */
+/* ============================================================================
+   Common Ground — design tokens (Thrive65 redesign)
+   :root = shared tokens + DEFAULT hue (Lake Teal), LIGHT theme.
+   [data-theme="dark"] = shared dark + default hue dark.
+   .hue-* = the 8 tokens that vary per hue (light + dark).
+   ============================================================================ */
+
 :root {
-  /* Brand palette */
-  --color-marigold: #f2a900;
-  --color-sun: #ffd166;
-  --color-leaf: #2e7d52;
-  --color-leaf-dark: #1f5538;
-  --color-ink: #20251f;
-  --color-paper: #fffaf0;
-  --color-paper-alt: #fff1d6;
-  --color-slate: #5b5a52;
-  --color-line: #e8ddc4;
-
-  --font-display: "Fraunces", Georgia, serif;
+  /* ---- Typography ------------------------------------------------------- */
+  --font-display: "Archivo", sans-serif;                 /* was Fraunces */
   --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --display-weight: 800;
+  --display-tracking: -0.01em;
 
-  --radius: 14px;
-  --wrap-width: 920px;
-
-  /* Fluid type — Utopia (320→1240 px, 16 px/1.2 minor-third → 19 px/1.25 major-third)
-     https://utopia.fyi/type/calculator/                                      */
+  /* ---- Type scale — Utopia 320→1240px (UNCHANGED from old design) ------- */
   --step--2: clamp(0.694rem, 0.672rem + 0.114vw, 0.760rem);
   --step--1: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem);
   --step-0:  clamp(1rem,     0.935rem + 0.326vw, 1.1875rem);
@@ -35,7 +29,7 @@
   --step-4:  clamp(2.074rem, 1.787rem + 1.436vw, 2.8992rem);
   --step-5:  clamp(2.488rem, 2.093rem + 1.975vw, 3.6238rem);
 
-  /* Fluid space — same base, Utopia T-shirt multipliers */
+  /* ---- Spacing — Utopia (UNCHANGED from old design) --------------------- */
   --space-2xs: clamp(0.500rem, 0.467rem + 0.163vw, 0.594rem);
   --space-xs:  clamp(0.750rem, 0.701rem + 0.245vw, 0.891rem);
   --space-s:   clamp(1rem,     0.935rem + 0.326vw, 1.1875rem);
@@ -44,16 +38,184 @@
   --space-xl:  clamp(3rem,     2.804rem + 0.978vw, 3.5625rem);
   --space-2xl: clamp(4rem,     3.739rem + 1.304vw, 4.750rem);
 
-  /* Line height — unitless, so leading stays fluid with the fluid type sizes.
-     Tightens proportionally as text grows: body loosest → display tightest. */
-  --lh-body:    1.6;   /* body / prose       (step-0)   */
-  --lh-lead:    1.5;   /* lede               (step-1)   */
-  --lh-heading: 1.15;  /* h1–h3              (step-1–3) */
-  --lh-display: 1.1;   /* oversized display  (step-5)   */
+  /* ---- Line heights ----------------------------------------------------- */
+  --lh-body: 1.6;
+  --lh-lead: 1.5;
+  --lh-heading: 1.15;
+  --lh-display: 1.1;
+
+  /* ---- Structural ------------------------------------------------------- */
+  --wrap-width: 920px;
+
+  /* ---- Borders & radii (framed 2px-edge look) ---------------------- */
+  --border-thin: 1px;
+  --border-bold: 2px;
+  --radius-card: 12px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+  --radius-callout: 0 12px 12px 0;
+
+  /* ---- Shared: surfaces & structure · LIGHT ----------------------------- */
+  --bg:    #F7F5EC;                 /* warm page surface */
+  --card:  #FFFFFF;                 /* raised surfaces */
+  --tint:  hsla(150, 30%, 91%, 1);  /* soft callout wash (Meadow Tint) */
+  --line:  hsla(150, 20%, 83%, 1);  /* 1px hairlines, dividers */
+  --ink:   #14231B;                 /* headings & body text */
+  --muted: hsla(150, 16%, 30%, 1);  /* secondary text */
+  --edge:  #0B0B0B;                 /* 2px frames; focus outline on light */
+  --on-accent: #221B05;             /* CTA label text (on Marigold) */
+  --focus: #0B0B0B;                 /* focus outline — edge on light */
+
+  /* ---- Shared: accents (CONSTANT across all hues) ----------------------- */
+  --secondary:    hsla(189, 65%, 22%, 1); /* Lakewater Teal — eyebrows, 2nd headings */
+  --accent:       #FFB01A;                 /* Marigold — primary CTA fill (constant) */
+  --accent-hover: #FFC44F;                 /* CTA hover */
+  --bloom:        #D42A56;                 /* Accent 2 — moment-of-change only */
+
+  /* ---- Shared: footer family (shared across themes) --------------------- */
+  --footer-bg:   #070E0A;
+  --footer-head: #EDF5EE;
+  --footer-ink:  #B7CCBD;
+
+  /* ---- Illustration aliases (auto-follow hue + theme; no separate art palette) */
+  --art-line:   var(--edge);
+  --art-fill:   var(--brand);
+  --art-fill-2: var(--brand-strong);
+  --art-win:    var(--accent);
+  --art-pop:    var(--bloom);
+  --art-tree:   var(--brand);
+  --art-clock:  var(--card);
 }
 
-/* Intentionally no dark theme — warm paper background serves this community
-   site best regardless of system theme. Reduced-motion handled below. */
+/* ============================================================================
+   SHARED DARK surfaces + default hue (Lake Teal) DARK.
+   Set data-theme="dark" on <html>.
+   ============================================================================ */
+[data-theme="dark"] {
+  --bg:    #0B1410;
+  --card:  #17251C;
+  --tint:  #123122;
+  --line:  #283A2E;
+  --ink:   #E9F2EA;
+  --muted: #A9BBAD;
+  --edge:  #0B0B0B;                 /* shared */
+  --on-accent: #221B05;             /* shared */
+  --focus: #8CE7B7;                 /* focus outline — mint on dark */
+
+  --secondary:    hsla(189, 65%, 60%, 1);
+  --accent:       #FFB01A;          /* constant */
+  --accent-hover: #FFC44F;          /* constant */
+  --bloom:        #FF5D7B;
+
+  --footer-bg:   #070E0A;           /* shared */
+  --footer-head: #EDF5EE;           /* shared */
+  --footer-ink:  #B7CCBD;           /* shared */
+}
+
+/* ============================================================================
+   HUE WRAPPER CLASSES — LIGHT
+   Add to <body> (whole page) or any wrapper (section-level comparison).
+   These override only the 8 hue tokens; everything else inherits from :root.
+   ============================================================================ */
+.hue-lake-teal {                                   /* LIVE BRAND (same as :root default) */
+  --brand: #0F7A45; 
+  --brand-strong: #0A5C34; 
+  --link: #0F7A45;
+  --hero-bg: hsla(189, 65%, 46%, 1); 
+  --hero-ink: hsla(189, 65%, 9%, 1);
+  --hero-muted: hsla(189, 65%, 13%, 1); 
+  --hero-em: var(--accent);
+  --band-alt: hsla(189, 30%, 92%, 1);
+}
+.hue-evergreen {
+  --brand: #0F7A45; 
+  --brand-strong: #0A5C34; 
+  --link: #0F7A45;
+  --hero-bg: #1CA05C; 
+  --hero-ink: #0B2417;
+  --hero-muted: #082A18; 
+  --hero-em: var(--accent);
+  --band-alt: hsla(150, 34%, 93%, 1);
+}
+.hue-electric-blue {
+  --brand: hsla(227, 90%, 42%, 1); 
+  --brand-strong: hsla(227,
+   90%, 30%, 1); --link: hsla(227, 90%, 42%, 1);
+  --hero-bg: hsla(227,
+   100%, 68%, 1); --hero-ink: hsla(227, 90%, 17%, 1);
+  --hero-muted: hsla(227,
+   90%, 17%, 1); --hero-em: #FFFFFF;
+  --band-alt: #E7ECFF;
+}
+.hue-ultraviolet {
+  --brand: #7A18D4; 
+  --brand-strong: #57109C; 
+  --link: #7A18D4;
+  --hero-bg: #A75DEC; 
+  --hero-ink: #1B0E42;
+  --hero-muted: #1B0E42; 
+  --hero-em: #FFFFFF;
+  --band-alt: #F1E6FF;
+}
+
+/* ============================================================================
+   HUE WRAPPER CLASSES — DARK  (higher specificity than the light blocks above)
+   ============================================================================ */
+[data-theme="dark"] .hue-lake-teal {
+  --brand: #3FD9C0; 
+  --brand-strong: #74E8D6; 
+  --link: #3FD9C0;
+  --hero-bg: #1C7687; 
+  --hero-ink: #E6F3EF;
+  --hero-muted: #F0F9F5; 
+  --hero-em: #FFC44F;
+  --band-alt: hsla(189, 50%, 9%, 1);
+}
+[data-theme="dark"] .hue-evergreen {
+  --brand: #4ED991; 
+  --brand-strong: #7BE8AE; 
+  --link: #4ED991;
+  --hero-bg: #16854F; 
+  --hero-ink: #E9F2E6;
+  --hero-muted: #A9CDB6; 
+  --hero-em: var(--accent);
+  --band-alt: hsla(150, 70%, 10%, 1);
+}
+[data-theme="dark"] .hue-electric-blue {
+  --brand: #7E9DFF; 
+  --brand-strong: #A9BEFF; 
+  --link: #7E9DFF;
+  --hero-bg: #0033EB; 
+  --hero-ink: #F2F5FF;
+  --hero-muted: #BFCCFF; 
+  --hero-em: var(--accent);
+  --band-alt: hsla(227, 90%, 14%, 1);
+}
+[data-theme="dark"] .hue-ultraviolet {
+  --brand: #BE8CFF; 
+  --brand-strong: #D3B4FF; 
+  --link: #BE8CFF;
+  --hero-bg: #5B16C4; 
+  --hero-ink: #F6EEFF;
+  --hero-muted: #DCC0FF; 
+  --hero-em: var(--accent);
+  --band-alt: #1B0E42;
+}
+
+/* ============================================================================
+   OPTIONAL pure-CSS auto dark (no JS). Only needed if you do NOT set
+   data-theme on <html>. Covers shared surfaces + the DEFAULT hue only.
+   ============================================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --bg: #0B1410; --card: #17251C; --tint: #123122;
+    --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD; --focus: #8CE7B7;
+    --secondary: hsla(189, 65%, 60%, 1); --bloom: #FF5D7B;
+    --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
+    --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
+    --band-alt: hsla(189, 50%, 9%, 1);
+  }
+}
 
 /* ── reset ──────────────────────────────────────────────────────────────── */
 @layer reset {
@@ -68,14 +230,15 @@
     margin: 0;
     font-family: var(--font-body);
     font-size: var(--step-0);
-    color: var(--color-ink);
-    background: var(--color-paper);
+    color: var(--ink);
+    background: var(--bg);
     line-height: var(--lh-body);
   }
 
   h1, h2, h3 {
     font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
     line-height: var(--lh-heading);
     margin: 0 0 0.5em;
   }
@@ -88,14 +251,14 @@
   p { margin: 0 0 1em; }
 
   a {
-    color: var(--color-leaf-dark);
+    color: var(--link);
     text-decoration-thickness: 2px;
     text-underline-offset: 0.15em;
   }
-  a:hover { color: var(--color-marigold); }
+  a:hover { color: var(--brand-strong); }
 
   :focus-visible {
-    outline: 3px solid var(--color-leaf);
+    outline: 3px solid var(--focus);
     outline-offset: 2px;
   }
 
@@ -103,8 +266,8 @@
     position: absolute;
     left: -999px;
     top: 0;
-    background: var(--color-ink);
-    color: var(--color-paper);
+    background: var(--ink);
+    color: var(--bg);
     padding: 0.75em 1.25em;
     z-index: 100;
     border-radius: 0 0 8px 0;
@@ -150,113 +313,179 @@
 
   /* ─ Site header ─ */
   .site-header {
-    border-bottom: 1px solid var(--color-line);
-    background: var(--color-paper);
+    border-bottom: var(--border-thin) solid var(--line);
+    background: var(--bg);
     position: sticky;
     top: 0;
     z-index: 10;
   }
   /* Add block padding to the repel wrapper inside the header */
   .site-header .wrapper {
-    padding-block: var(--space-s);
+    padding-block: var(--space-xs);
   }
   .site-header nav {
-    font-weight: 500;
+    font-weight: 600;
     font-size: var(--step--1);
   }
   .site-header nav a {
+    color: var(--ink);
     text-decoration: none;
+    padding-block: 0.35em;
   }
+  .site-header nav a:hover { color: var(--brand); }
 
   /* Brand link — .cluster on the element supplies the flex display */
   .brand {
     font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
     font-size: var(--step-1);
-    color: var(--color-ink);
+    color: var(--ink);
     text-decoration: none;
-    gap: 0.5em; /* tighter than .cluster default */
+    gap: 0.55em; /* tighter than .cluster default */
   }
+  .brand .wordmark { line-height: 1; }
+  .brand .wordmark-accent { color: var(--brand); }
 
   .brand-mark {
-    width: 1.4em;
-    height: 1.4em;
-    border-radius: 50%;
-    background: conic-gradient(from 200deg, var(--color-marigold), var(--color-sun), var(--color-leaf), var(--color-marigold));
+    display: inline-flex;
     flex-shrink: 0;
   }
+  .brand-mark svg {
+    display: block;
+    width: 2em;
+    height: 2em;
+  }
 
+  /* Primary CTA pill — the one Marigold accent per view (framed) */
   .nav-cta {
-    background: var(--color-leaf);
-    color: #fff !important;
-    padding: 0.5em 1.1em;
-    border-radius: 999px;
+    background: var(--accent);
+    color: var(--on-accent) !important;
+    font-weight: 700;
+    padding: 0.55em 1.2em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
   }
-  .nav-cta:hover { background: var(--color-marigold); }
+  .nav-cta:hover { background: var(--accent-hover); color: var(--on-accent) !important; }
 
-  /* ─ Hero ─ (the only context that overrides the global heading scale) */
-  .hero {
-    padding-block: var(--space-2xl) var(--space-xl);
-    background:
-      radial-gradient(ellipse 60% 80% at 85% -10%, rgba(255,209,102,0.55), transparent),
-      var(--color-paper);
-    border-bottom: 1px solid var(--color-line);
+  .theme-toggle {
+    width: 2.4em;
+    height: 2.4em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
   }
-  .hero h3 {  /* eyebrow — same treatment as the .text-eyebrow utility */
+  .theme-toggle:hover { border-color: var(--brand); color: var(--brand); }
+  .theme-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .theme-toggle .icon-moon { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: inline; }
+
+  /* ─ Hero ─ (full-bleed colored band; the only context that overrides
+     the global heading scale) */
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-hue {
+    background: var(--hero-bg);
+    color: var(--hero-ink);
+  }
+  /* Two-column: copy left, line-art scene bleeding to the right edge */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: stretch;
+    gap: var(--space-l);
+  }
+  .hero-grid.wrapper {
+    max-width: none;
+  }
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+  .hero-art {
+    position: relative;
+    /* intrinsic size so the absolutely-positioned SVG has a box;
+       art scales down when the grid stacks on mobile */
+    aspect-ratio: 4 / 3;
+  }
+  .hero-art svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  /* Color for kicker/Eyebrows. Any first element that follows a heading */
+  .hero-hue *:first-child:has(+ h1, + h2) { 
+    color: var(--hero-muted); 
+  }
+  .hero h3 {  /* eyebrow */
     font-family: var(--font-body);
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     font-size: var(--step--1);
-    color: var(--color-leaf-dark);
+    line-height: var(--lh-heading);
     margin: 0 0 0.75em;
   }
   .hero h1 {
     font-size: var(--step-5);
     line-height: var(--lh-display);
+    color: var(--hero-ink);
     max-width: 16ch;
   }
   .hero h1 em {
-    color: var(--color-marigold);
+    color: var(--hero-em);
     font-style: italic;
   }
   .hero p {
     font-size: var(--step-1);
     line-height: var(--lh-lead);
-    color: var(--color-slate);
-    max-width: 50ch;
+    color: var(--hero-muted);
+    max-width: 42ch;
     margin-bottom: 1.75em;
   }
   .hero a {
     display: inline-block;
-    font-weight: 600;
+    font-weight: 700;
     text-decoration: none;
-    padding: 0.8em 1.6em;
-    border-radius: 999px;
-    border: none;
+    padding: 0.8em 1.7em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
     cursor: pointer;
-    background: var(--color-marigold);
-    color: var(--color-ink) !important;
+    background: var(--accent);
+    color: var(--on-accent) !important;
   }
-  .hero a:hover { background: var(--color-sun); }
+  .hero a:hover { background: var(--accent-hover); }
 
   /* ─ Button (base; use utility classes for color variations) ─ */
   .button {
     display: inline-block;
-    font-weight: 600;
+    font-weight: 700;
     text-decoration: none;
     padding: 0.8em 1.6em;
-    border-radius: 999px;
-    border: none;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
     cursor: pointer;
     font-size: var(--step-0);
   }
 
   /* ─ FAQ accordion (native <details>/<summary> — no JS required) ─ */
   .faq-item {
-    background: #fff;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius);
+    background: var(--card);
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-card);
     overflow: hidden;
   }
   /* .cluster on the <summary> element supplies display:flex; override gap here */
@@ -283,14 +512,14 @@
     width: 1.4em;
     height: 1.4em;
     border-radius: 50%;
-    background: var(--color-paper-alt);
+    background: var(--tint);
     position: relative;
   }
   .faq-icon::before,
   .faq-icon::after {
     content: "";
     position: absolute;
-    background: var(--color-leaf-dark);
+    background: var(--brand);
     border-radius: 2px;
     transition: transform 0.15s ease;
   }
@@ -300,7 +529,7 @@
 
   .faq-answer {
     padding: 0 1.4rem 1.3rem;
-    color: var(--color-slate);
+    color: var(--muted);
   }
   .faq-answer :last-child { margin-bottom: 0; }
 
@@ -323,22 +552,64 @@
   /* .repel on each <li> handles flex layout; add spacing + divider here */
   .post-list li {
     padding: 0.9rem 0;
-    border-bottom: 1px solid var(--color-line);
+    border-bottom: var(--border-thin) solid var(--line);
   }
 
   /* ─ Site footer ─ */
   .site-footer {
-    border-top: 1px solid var(--color-line);
+    background: var(--footer-bg);
     padding-block: var(--space-l);
-    margin-top: var(--space-l);
-    color: var(--color-slate);
+    color: var(--footer-ink);
     font-size: var(--step--1);
   }
-  .site-footer strong {
+  .site-footer .wordmark {
     font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
+    color: var(--footer-head);
+    font-size: var(--step-1);
+    margin: 0 0 0.35em;
+  }
+  .site-footer .wordmark-accent { color: var(--accent); }
+  .site-footer strong {
+    color: var(--footer-head);
     font-weight: 600;
-    color: var(--color-ink);
-    font-size: var(--step-0);
+  }
+  .site-footer a { color: var(--footer-head); }
+
+  /* ─ Signup band (colored hero band; matches the reference) ─ */
+  .signup {
+    background: var(--hero-bg);
+    color: var(--hero-ink);
+  }
+  .signup h2 { color: var(--hero-ink); }
+  .signup p { color: var(--hero-muted); }
+  .signup .text-deemphasized { color: var(--hero-muted); }
+  .signup a { color: var(--hero-ink); }
+  .signup a:hover { color: var(--accent); }
+
+  /* ─ Section eyebrow ─ kicker above a section heading. Classless: the first
+     <p> in a section's content, when it directly precedes the heading. Authored
+     as the first line of the published Markdown (Overview, Signup) or the FAQ
+     include, so it survives a Google-Docs re-publish without needing a class. */
+  section p:first-child:has(+ h1, + h2) {
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: var(--step--1);
+    line-height: var(--lh-heading);
+    margin: 0 0 0.6em;
+    color: var(--secondary);
+  }
+
+  /* ─ Brand sub-headings ─ when a region's content holds a group of sibling
+     h3s (e.g. the Overview pillars), color them with the brand. Classless and
+     generic: keys off the sibling h3 structure, not off any content-specific
+     class. Single lone h3s (and the FAQ question h3s, which aren't siblings)
+     stay in the default ink. */
+  .region .wrapper:has(h3 ~ h3) h3 {
+    color: var(--brand);
   }
 
   /* ─ Responsive: header stacks on narrow viewports ─ */
@@ -361,13 +632,13 @@
   .nowrap         { white-space: nowrap; }
 
   /* Semantic surface + text colors */
-  .bg-surface       { background: var(--color-paper); }
-  .bg-surface-alt   { background: var(--color-paper-alt); }
-  .bg-brand         { background: var(--color-marigold); }
-  .bg-accent        { background: var(--color-leaf); }
-  .text-base        { color: var(--color-ink); }
-  .text-deemphasized{ color: var(--color-slate); }
-  .text-brand       { color: var(--color-leaf-dark); }
+  .bg-surface       { background: var(--bg); }
+  .bg-surface-alt   { background: var(--band-alt); }
+  .bg-brand         { background: var(--brand); }
+  .bg-accent        { background: var(--accent); }
+  .text-base        { color: var(--ink); }
+  .text-deemphasized{ color: var(--muted); }
+  .text-brand       { color: var(--brand); }
 
   /* Semantic type sizes (line-height paired to size, per the scale above) */
   .text-meta {
@@ -378,10 +649,10 @@
     font-family: var(--font-body);
     font-size: var(--step--1);
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     line-height: var(--lh-heading);
-    color: var(--color-leaf-dark);
+    color: var(--secondary);
     margin: 0;
   }
 
@@ -407,11 +678,52 @@
     clip: rect(0,0,0,0);
     white-space: nowrap;
   }
+
+  /* ─ Show / hide ─ generic helpers to toggle an element in/out of layout.
+     .hidden removes it entirely; .visible restores its default display. */
+  .hidden { display: none !important; }
+  .visible { display: revert !important; }
+
+  /* ─ Wave / curve divider ─ a full-bleed transition placed between two bands.
+     Set the two adjacent band colors per instance:
+       <div class="wave" style="--wave-above: var(--hero-bg); --wave-below: var(--bg);"></div>
+     The element paints the lower band's color; the ::before paints the upper
+     band's color, masked to a curve so the lower color shows through the cut.
+     Shape varies automatically by position — a single .wave class yields three
+     alternating silhouettes via :nth-of-type(). Masks are token-blind, so the
+     curve retints with hue + theme for free. */
+  .wave {
+    --wave-above: var(--hero-bg);
+    --wave-below: var(--bg);
+    /* default silhouette (also used by :nth-of-type(3n+1)) — sweeps left */
+    --wave-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 64' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L1440,0 L1440,10 C980,24 320,62 0,44 Z' fill='%23000'/%3E%3C/svg%3E");
+    position: relative;
+    height: clamp(28px, 4vw, 56px);
+    background: var(--wave-below);
+  }
+  .wave::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--wave-above);
+    -webkit-mask: var(--wave-shape) center / 100% 100% no-repeat;
+            mask: var(--wave-shape) center / 100% 100% no-repeat;
+  }
+  /* :nth-of-type cycles the silhouette every three waves for variety */
+  .wave:nth-of-type(3n+2) {  /* sweeps right */
+    --wave-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 64' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L1440,0 L1440,44 C1120,62 460,24 0,10 Z' fill='%23000'/%3E%3C/svg%3E");
+  }
+  .wave:nth-of-type(3n) {    /* waves through the middle */
+    --wave-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 64' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L1440,0 L1440,26 C1230,26 1160,46 1010,46 C870,46 830,16 710,16 C590,16 550,46 410,46 C260,46 200,26 0,26 Z' fill='%23000'/%3E%3C/svg%3E");
+  }
 }
 
 /* ── exception ───────────────────────────────────────────────────────────── */
 @layer exception {
   /* EmailOctopus embed restyle — scoped under .signup; !important overrides injected styles */
+  .signup .inline-container {
+    margin-inline: auto;
+  }
   .signup .emailoctopus-form-wrapper {
     background: transparent !important;
     border: 0 !important;
@@ -423,7 +735,6 @@
   .signup .emailoctopus-form .main-form {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
     justify-content: center;
     align-items: center;
   }
@@ -435,32 +746,42 @@
     overflow: hidden; clip: rect(0 0 0 0);
     white-space: nowrap; border: 0;
   }
+  /* common input styles */
+  .signup .emailoctopus-form input[type="submit"],
   .signup .emailoctopus-form .form-control {
-    font: inherit !important;
+    font: var(--font-body) !important;
+    line-height: .85 !important;
+    min-height: 40px !important;
     padding: 0.75em 1em !important;
-    border-radius: 999px !important;
-    border: 1px solid var(--color-line) !important;
-    min-width: 260px;
-    width: auto !important;
+    margin: 0 !important;
   }
+  /* signup input */
+  .signup .emailoctopus-form .form-control {
+    border-radius:  999px 0 0 999px !important;
+    border: var(--border-bold) solid var(--edge) !important;
+    border-right: none !important;
+    background: var(--card) !important;
+    color: var(--ink) !important;
+    min-width: 260px;
+    width: 100% !important;
+  }
+  /* signup submit button */
   .signup .emailoctopus-form input[type="submit"] {
-    font: inherit !important;
-    font-weight: 600 !important;
-    background: var(--color-marigold) !important;
-    color: var(--color-ink) !important;
-    border: none !important;
-    border-radius: 999px !important;
-    padding: 0.8em 1.6em !important;
+    font-weight: 700 !important;
+    background: var(--accent) !important;
+    color: var(--on-accent) !important;
+    border: var(--border-bold) solid var(--edge) !important;
+    border-radius: 0 999px 999px 0 !important;
     width: auto !important;
-    cursor: pointer;
+    cursor: pointer !important;
   }
   .signup .emailoctopus-form input[type="submit"]:hover {
-    background: var(--color-sun) !important;
+    background: var(--accent-hover) !important;
   }
-  .signup .emailoctopus-form-row-hp { display: none !important; }
-  .signup .mastfoot {
-    margin-top: 0.75rem;
-    font-size: var(--step--2);
-    opacity: 0.65;
+
+  /* EO "powered by" */
+  .signup .mastfoot { 
+    display: none !important; 
   }
+  
 }

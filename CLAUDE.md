@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A Jekyll 4 site for Thrive65 (community advocacy for District 65 schools), deployed to GitHub Pages via GitHub Actions. Content for the homepage overview and FAQ sections is authored in Google Docs and published via a custom Google Workspace Add-on (`apps-script/Code.gs`), not edited by hand.
 
+## Design artifacts
+
+Cross-agent handoffs, design specs, and reusable prompts live in `.claude/design-artifacts/` (see its `README.md` for the index). The active brand system is the **Common Ground** redesign under `design_handoff_common_ground/` — read its `CLAUDE.md` for the ordered work plan and token source of truth.
+
 ## Local development
 
 ```bash
