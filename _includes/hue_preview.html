@@ -1,5 +1,6 @@
-<!-- TEMPORARY hue preview — for reviewing hue options only. Remove before launch (this file and its include in _layouts/default.html). -->
-<div class="hue-preview" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 100; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem 0.75rem; box-shadow: 0 8px 24px rgba(0,0,0,0.18); font-size: 0.85rem;">
+<!-- Hue preview — for reviewing hue options. Hidden by default; type the keys
+     "h", "u", "e" in sequence anywhere on the page to show or hide this menu. -->
+<div class="hue-preview hidden" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 100; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem 0.75rem; box-shadow: 0 8px 24px rgba(0,0,0,0.18); font-size: 0.85rem;">
   <label style="display: flex; align-items: center; gap: 0.5em; font-weight: 600; margin: 0;">
     Hue
     <select aria-label="Preview color hue" onchange="document.body.className = document.body.className.replace(/hue-[a-z-]+/, 'hue-' + this.value);" style="font: inherit; padding: 0.25em 0.4em; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--ink);">
@@ -10,3 +11,21 @@
     </select>
   </label>
 </div>
+<script>
+  (function () {
+    var target = 'hue', buffer = '';
+    document.addEventListener('keydown', function (e) {
+      // Ignore modifier chords and typing inside form fields.
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      var el = e.target;
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable)) return;
+      if (!e.key || e.key.length !== 1) return;
+      buffer = (buffer + e.key.toLowerCase()).slice(-target.length);
+      if (buffer === target) {
+        var menu = document.querySelector('.hue-preview');
+        if (menu) menu.classList.toggle('hidden');
+        buffer = '';
+      }
+    });
+  })();
+</script>

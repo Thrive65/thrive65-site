@@ -47,11 +47,10 @@
   /* ---- Structural ------------------------------------------------------- */
   --wrap-width: 920px;
 
-  /* ---- Borders & radii (NEW: framed 2px-edge look) ---------------------- */
+  /* ---- Borders & radii (framed 2px-edge look) ---------------------- */
   --border-thin: 1px;
   --border-bold: 2px;
   --radius-card: 12px;
-  --radius-inner: 10px;      /* card inner link */
   --radius-sm: 8px;
   --radius-pill: 999px;
   --radius-callout: 0 12px 12px 0;
@@ -77,16 +76,6 @@
   --footer-bg:   #070E0A;
   --footer-head: #EDF5EE;
   --footer-ink:  #B7CCBD;
-
-  /* ---- DEFAULT HUE = Lake Teal · LIGHT (live brand) --------------------- */
-  --brand:        #0F7A45;
-  --brand-strong: #0A5C34;
-  --link:         #0F7A45;                 /* alias of brand */
-  --hero-bg:      hsla(189, 65%, 46%, 1);
-  --hero-ink:     hsla(189, 65%, 9%, 1);
-  --hero-muted:   hsla(189, 65%, 13%, 1);
-  --hero-em:      var(--accent);           /* "thrive" emphasis → accent */
-  --band-alt:     hsla(189, 30%, 92%, 1);
 
   /* ---- Illustration aliases (auto-follow hue + theme; no separate art palette) */
   --art-line:   var(--edge);
@@ -121,16 +110,6 @@
   --footer-bg:   #070E0A;           /* shared */
   --footer-head: #EDF5EE;           /* shared */
   --footer-ink:  #B7CCBD;           /* shared */
-
-  /* default hue Lake Teal · DARK */
-  --brand:        #3FD9C0;
-  --brand-strong: #74E8D6;
-  --link:         #3FD9C0;
-  --hero-bg:      #1C7687;
-  --hero-ink:     #E6F3EF;
-  --hero-muted:   #F0F9F5;
-  --hero-em:      #FFC44F;
-  --band-alt:     hsla(189, 50%, 9%, 1);
 }
 
 /* ============================================================================
@@ -411,7 +390,6 @@
   /* ─ Hero ─ (full-bleed colored band; the only context that overrides
      the global heading scale) */
   .hero {
-    /* TODO: unneeded */
     position: relative;
     overflow: hidden;
   }
@@ -437,10 +415,9 @@
   }
   .hero-art {
     position: relative;
-    /* pull the scene out to the viewport's right edge */
-    /* TODO: fix sizing of art */
-    min-height: 600px;
-    /* margin-right: calc(-1 * max(var(--space-m), (100vw - var(--wrap-width)) / 2)); */
+    /* intrinsic size so the absolutely-positioned SVG has a box;
+       art scales down when the grid stacks on mobile */
+    aspect-ratio: 4 / 3;
   }
   .hero-art svg {
     position: absolute;
@@ -615,7 +592,7 @@
      <p> in a section's content, when it directly precedes the heading. Authored
      as the first line of the published Markdown (Overview, Signup) or the FAQ
      include, so it survives a Google-Docs re-publish without needing a class. */
-  p:first-child:has(+ h1, + h2) {
+  section p:first-child:has(+ h1, + h2) {
     font-family: var(--font-body);
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -701,6 +678,11 @@
     clip: rect(0,0,0,0);
     white-space: nowrap;
   }
+
+  /* ─ Show / hide ─ generic helpers to toggle an element in/out of layout.
+     .hidden removes it entirely; .visible restores its default display. */
+  .hidden { display: none !important; }
+  .visible { display: revert !important; }
 
   /* ─ Wave / curve divider ─ a full-bleed transition placed between two bands.
      Set the two adjacent band colors per instance:
