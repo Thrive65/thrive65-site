@@ -5,7 +5,15 @@
     <a class="brand cluster" href="{{ '/' | relative_url }}">
       <span class="wordmark">Thrive<span class="wordmark-accent">65</span></span>
     </a>
-    <nav class="cluster" aria-label="Primary">
+    <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
+      <span class="nav-toggle-box" aria-hidden="true">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </span>
+    </button>
+    <div class="nav-backdrop" hidden></div>
+    <nav id="primary-nav" class="cluster" aria-label="Primary">
       <a href="{{ '/' | relative_url }}#overview">Overview</a>
       <a href="{{ '/' | relative_url }}#faq">FAQ</a>
       <a href="{{ '/board-meeting-recaps/' | relative_url }}">Board Meetings</a>
@@ -24,6 +32,7 @@
         <svg class="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
           <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
         </svg>
+        <span class="theme-toggle-text" aria-hidden="true"></span>
       </button>
       <a class="nav-cta" href="{{ '/' | relative_url }}#signup">Join us</a>
     </nav>

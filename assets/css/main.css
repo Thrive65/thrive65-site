@@ -93,6 +93,9 @@
   --radius-pill: 999px;
   --radius-callout: 0 12px 12px 0;
 
+  /* ---- Toggle geometry ---------------------- */
+  --toggle-size: 2.6em; /* theme toggle and hamburger menu */
+
   /* ---- Shared: surfaces & structure · LIGHT ----------------------------- */
   --bg:    #F7F5EC;                 /* warm page surface */
   --card:  #FFFFFF;                 /* raised surfaces */
@@ -419,12 +422,11 @@
   .nav-cta:hover { background: var(--accent-hover); color: var(--on-accent) !important; }
 
   .theme-toggle {
-    width: 2.4em;
-    height: 2.4em;
+    min-width: var(--toggle-size);
+    min-height: var(--toggle-size);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
     border: var(--border-thin) solid var(--line);
     border-radius: var(--radius-pill);
     background: var(--card);
@@ -436,6 +438,61 @@
   .theme-toggle .icon-moon { display: none; }
   [data-theme="dark"] .theme-toggle .icon-sun { display: none; }
   [data-theme="dark"] .theme-toggle .icon-moon { display: inline; }
+  /* Text label — hidden on desktop (icon-only), shown in the mobile nav panel.
+     Names the action, i.e. the theme it switches TO. */
+  .theme-toggle-text { display: none; }
+  .theme-toggle-text::after { content: "Light mode"; }
+  [data-theme="dark"] .theme-toggle-text::after { content: "Dark mode"; }
+
+  /* Hamburger button — hidden on desktop, shown in the mobile media query */
+  .nav-toggle {
+    display: none;
+    width: var(--toggle-size);
+    height: var(--toggle-size);
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+    z-index: 30;
+  }
+  .nav-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .nav-toggle-box {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 1.15em;
+    height: 0.85em;
+  }
+  .nav-toggle-bar {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.2s ease;
+  }
+  /* Morph the three bars into an X when the menu is open.
+     Box is 0.85em tall with three 2px bars spaced by space-between, so the
+     outer bars sit 1px in from each edge — translate each exactly to the box
+     centre ((0.85em − 2px) / 2) before rotating so the strokes cross cleanly. */
+  .nav-open .nav-toggle-bar:nth-child(1) { transform: translateY(calc(0.425em - 1px)) rotate(45deg); }
+  .nav-open .nav-toggle-bar:nth-child(2) { opacity: 0; }
+  .nav-open .nav-toggle-bar:nth-child(3) { transform: translateY(calc(-0.425em + 1px)) rotate(-45deg); }
+
+  /* Backdrop behind the slide-in panel (mobile only) */
+  .nav-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: 15;
+  }
 
   /* ─ Hero ─ (full-bleed colored band; the only context that overrides
      the global heading scale) */
@@ -549,9 +606,12 @@
     font-size: var(--step-0);
     padding: var(--space-xs);
     gap: 0.85em;
+    flex-wrap: nowrap;      /* keep the + icon on the same line as the question */
+    align-items: start;
   }
   .faq-item summary::-webkit-details-marker { display: none; }
   .faq-item summary h3 {  /* match the summary size, not the global h3 step */
+    min-width: 0;  /* allow the question to shrink/wrap beside the icon */
     margin: 0;
     font-size: inherit;
     font-weight: inherit;
@@ -597,8 +657,8 @@
   .page h3 { margin-block-start: var(--space-s); }
   .post > *:first-child,
   .page > *:first-child { margin-block-start: 0; }
-  .post ul, .post ol,
-  .page ul, .page ol  { padding-left: 1.25em; }
+  .post ul:not(.post-list), .post ol,
+  .page ul:not(.post-list), .page ol  { padding-left: 1.25em; }
 
   /* ─ Post list ─ */
   .post-list {
@@ -669,14 +729,63 @@
     color: var(--brand);
   }
 
-  /* ─ Responsive: header stacks on narrow viewports ─ */
+  /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
   @media (max-width: 640px) {
-    .site-header .wrapper {
+    .nav-toggle { display: inline-flex; }
+
+    /* Nav becomes a panel that slides in from the right edge */
+    .site-header nav {
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: 90vw;
       flex-direction: column;
       align-items: flex-start;
-      gap: var(--space-s);
+      justify-content: flex-start;
+      gap: 0;
+      padding: calc(var(--space-xl) + env(safe-area-inset-top)) var(--space-m) var(--space-l);
+      background: var(--bg);
+      border-left: var(--border-thin) solid var(--line);
+      box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
+      transform: translateX(100%);
+      transition: transform 0.28s ease;
+      z-index: 20;
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
-    .site-header nav { gap: var(--space-xs); }
+    .site-header.nav-open nav { transform: translateX(0); }
+
+    /* Even top/bottom padding gives each link a balanced tap target,
+       and drives the vertical rhythm instead of a gap on the parent. */
+    .site-header nav a:not(.nav-cta) {
+      font-size: var(--step-1);
+      padding-block: var(--space-xs);
+    }
+    .site-header nav .nav-cta { 
+      font-size: var(--step-0);
+      margin-block-start: var(--space-xs); 
+    }
+
+    /* Theme toggle reads as a labelled row in the panel, not a lone icon */
+    .site-header nav .theme-toggle {
+      width: auto;
+      gap: 0.55em;
+      position: absolute;
+      top: var(--space-xs);
+      right: var(--space-xl);
+    }
+    .site-header nav .theme-toggle:hover { color: var(--brand); }
+    .site-header nav .theme-toggle-text { display: inline; }
+
+    /* Show + fade the backdrop while the panel is open */
+    .site-header.nav-open .nav-backdrop {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Trim the empty space above the hero on mobile */
+    .hero-copy {
+      padding-block: var(--space-l);
+    }
   }
 }
 
@@ -789,13 +898,35 @@
     margin: var(--space-s) auto 0 !important;
     max-width: 560px;
   }
+  /* EmailOctopus nests the email input inside an unnamed <div>, with the
+     submit button as its sibling — both direct children of .main-form.
+     Make .main-form the flex row so they sit on one line. */
   .signup .emailoctopus-form .main-form {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+    display: flex !important;
+    flex-wrap: nowrap !important;   /* keep the input and Subscribe button on one line */
+    justify-content: center !important;
+    align-items: stretch !important;
   }
   .signup .emailoctopus-form .emailoctopus-form-row { margin: 0 !important; }
+  /* the input's wrapper grows to fill; the submit button stays its natural width */
+  .signup .emailoctopus-form .main-form > div {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    /* Flex container so the stretch cascades to the nested input, matching
+       the (intrinsically taller) submit button's height exactly. */
+    display: flex !important;
+    align-items: stretch !important;
+  }
+  .signup .emailoctopus-form .emailoctopus-form-row {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex !important;
+    align-items: stretch !important;
+  }
+  .signup .emailoctopus-form .main-form > input[type="submit"] {
+    flex: 0 0 auto !important;
+    width: auto !important;   /* override EmailOctopus's .w-100 */
+  }
   .signup .emailoctopus-form label {
     position: absolute !important;
     width: 1px; height: 1px;
@@ -806,7 +937,11 @@
   /* common input styles */
   .signup .emailoctopus-form input[type="submit"],
   .signup .emailoctopus-form .form-control {
-    font: var(--font-body) !important;
+    /* Set family AND size explicitly — `font: var(--font-body)` is an invalid
+       shorthand (no size) and was dropped, letting the input and button fall
+       back to different UA font sizes and thus mismatched heights. */
+    font-family: var(--font-body) !important;
+    font-size: var(--step-0) !important;
     line-height: .85 !important;
     min-height: 40px !important;
     padding: 0.75em 1em !important;
@@ -819,8 +954,12 @@
     border-right: none !important;
     background: var(--card) !important;
     color: var(--ink) !important;
-    min-width: 260px;
+    min-width: 0;
     width: 100% !important;
+    /* Chrome renders text inputs a few px shorter than buttons and won't
+       stretch them via align-items; the flex row has a definite height (set by
+       the taller button), so fill it explicitly to match the button exactly. */
+    height: 100% !important;
   }
   /* signup submit button */
   .signup .emailoctopus-form input[type="submit"] {

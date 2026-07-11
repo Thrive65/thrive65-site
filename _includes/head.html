@@ -25,6 +25,32 @@
     document.documentElement.setAttribute("data-theme", next);
     localStorage.setItem("theme", next);
   });
+
+  // Mobile nav — hamburger toggles a slide-in panel (delegated)
+  function closeNav() {
+    var header = document.querySelector(".site-header");
+    if (!header) return;
+    header.classList.remove("nav-open");
+    var t = header.querySelector(".nav-toggle");
+    if (t) t.setAttribute("aria-expanded", "false");
+  }
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest) return;
+    var toggle = e.target.closest(".nav-toggle");
+    if (toggle) {
+      var header = toggle.closest(".site-header");
+      var open = header.classList.toggle("nav-open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      return;
+    }
+    // Close when tapping the backdrop or following a nav link
+    if (e.target.closest(".nav-backdrop") || e.target.closest(".site-header nav a")) {
+      closeNav();
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeNav();
+  });
 </script>
 
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
