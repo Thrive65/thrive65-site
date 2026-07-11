@@ -4,21 +4,29 @@
 ------------------------
 
 ### Functional
-- ![ ] Choose email/newsletter provider, set up form (`url` and `signup_form_action` in `_config.yml`)
+- Make nav editable from GDoc, add "Resources" dropdown from claude design
 - ![ ] Spanish translations / i18n
-- [ ] dark/light mode
 - [ ] Handling images in posts/pages
 
 ### Design
-- ! Make it prettier, actual design, logo, favicon (`assets/images/favicon.svg`)
-- Update CSS to use CUBE css methods; scalable type, 1lh for spacing
-- Theme-based colors, tailwind? Possibly not needed
+- Internal page design (sections, heading colors, tables, callouts, section curves)
+- fix form styles
+- Charts! Need JS charts.
+- full sweep of basic element margins & padding. (e.g. ul, ul > li). Reset defaults, convert all spacing to fluid --space vars.
+- more margins. We have defaults (using em, on specific elements) and .flow (lobotomized owl) - need to align these different systems. Use one everywhere, make it fluid, remove the old one.
+- pick theme/hue
+- logo, favicon (`assets/images/favicon.svg`)
+- hero art
+
+## pre launch
+------------------------
+- Google analytics?
+- Domain
 
 ## Docs CMS
 ------------------------
 
 ### Functional
-- ! Check how to add others as editor; Google Cloud as a tester?
 - Allow publishing and showing of Docs CMS in docs within subfolders of the configured website folder. (i.e. thrive65-site/posts/)
 - Overall review of Code.gs to confirm it is generic. Create Plan to convert to standalone Add-On.
 

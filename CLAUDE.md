@@ -67,7 +67,9 @@ Files edited by hand:
 
 **Fully fluid type & space — root knobs + proportional rem + rlh**
 
-The **only** `clamp()` lives on `:root`'s `font-size`, driven by four plain-number knobs (think px): `--root-min: 16`, `--root-max: 24`, `--screen-min: 320`, `--screen-max: 2560`. The slope is *derived* from all four, so changing any knob reshapes the whole ramp (px at width w ≈ root-min + (root-max − root-min) × (w − screen-min)/(screen-max − screen-min); defaults give ~19.3 px @1240, ~21.3 px @1800). Everything else is proportional: `--step-*` tokens are plain rem at a fixed 1.2 minor-third ratio, and `--space-*` tokens are `rlh` line-counts (`:root` line-height is 1.5, so 1rlh = 1.5 × root size = 24 px at the 320 px minimum). Wrapper gutters use `--gutter`, which steps between spacing tokens at 720/1200/1800 px breakpoints (1 → 2 → 3 → 4 lines) and therefore also follows the font knobs.
+The **only** `clamp()` lives on `:root`'s `font-size`, driven by four plain-number knobs (think px): `--root-min: 16`, `--root-max: 24`, `--screen-min: 320`, `--screen-max: 2560`. The slope is *derived* from all four, so changing any knob reshapes the whole ramp (px at width w ≈ root-min + (root-max − root-min) × (w − screen-min)/(screen-max − screen-min); defaults give ~19.3 px @1240, ~21.3 px @1800). Everything else is proportional: `--step-*` tokens are plain rem at a fixed 1.2 minor-third ratio, and `--space-*` tokens are `rlh` line-counts (`:root` line-height is 1.5, so 1rlh = 1.5 × root size = 24 px at the 320 px minimum).
+
+**Measure & gutter.** `.wrapper` is capped for readability by `inline-size: min(100% - 2 · var(--gutter), var(--measure))`. `--measure` is `41rem` (≈ 68ch of body text, the 50–75ch sweet spot). It's deliberately in **rem, not ch**: rem tracks the root font size so the cap is identical in every context, whereas a `ch` cap resolves against each element's own font size and would make the smaller-type footer narrower than the body. rem still rides the fluid root, so the character count stays constant across viewports. Below the cap (~660 px) the `100% - 2·gutter` term wins and `--gutter` (`--space-s`, one line) reads as side padding; above it, `--measure` wins and the leftover space becomes centring auto-margins — so no breakpoint gutter steps are needed. Multi-column layouts that need more room (the hero) opt up to `--measure-wide` (`78rem`) via a `.hero-grid.wrapper` override in the block layer.
 
 Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout spacing. Never hardcode `px` rhythm values or add new per-token clamps.
 
@@ -85,7 +87,7 @@ Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout sp
 **Line height** is unitless (so leading stays fluid alongside the fluid type) and tied to size via `--lh-*` tokens — it tightens proportionally as text grows: `--lh-body` 1.6 → `--lh-lead` 1.5 → `--lh-heading` 1.15 → `--lh-display` 1.1. A new text-size utility should set its matching line-height.
 
 **Composition primitives** — use for layout instead of bespoke flex rules:
-- `.wrapper` — full-width container with token-stepped gutters (`padding-inline: var(--gutter)`); there is no site max-width
+- `.wrapper` — centred container capped at `--measure` (readable line length) with `--gutter` side spacing below the cap; folded into one `inline-size: min(100% - 2·var(--gutter), var(--measure))`
 - `.region` — section with fluid block padding (`--space-xl`)
 - `.flow` — owl-operator spacing between children (`--flow-space` CSS var, overrideable)
 - `.cluster` — flex row, wrapping, centered, `--space-s` gap

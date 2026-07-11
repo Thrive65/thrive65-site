@@ -63,10 +63,21 @@
   --space-3xl: 6rlh;      /* 6 lines  — 144px */
   --space-4xl: 8rlh;      /* 8 lines  — 192px */
 
-  /* ---- Wrapper gutter — token-stepped, fully inside the rlh system ------ */
-  /* Steps up by token at each breakpoint; between steps it still scales
-     with the fluid root, so the font knobs above move the gutters too. */
-  --gutter: var(--space-s);  /* 1 line on small screens */
+  /* ---- Wrapper gutter — side padding on narrow screens ------------------ */
+  /* Only governs layout below the measure cap (~660px). Above that the
+     --measure cap wins and the leftover space becomes auto margins, so the
+     old desktop gutter steps were superfluous and were removed. */
+  --gutter: var(--space-s);  /* 1 line of breathing room at the edges */
+
+  /* ---- Measure — optimal line length, caps every .wrapper -------------- */
+  /* Anchored in rem, not ch: rem tracks the ROOT font size, so the cap is
+     identical in every context. (A ch cap would resolve against each
+     element's OWN font size, making the smaller-type footer narrower than
+     the body.) rem still rides the fluid root, so ~68 chars of body text —
+     the 50–75ch readability sweet spot — hold at every viewport.
+     41rem ≈ 68ch of body text (Public Sans "0" ≈ 0.605rem wide). */
+  --measure:      41rem;  /* body prose, header, footer — the default cap */
+  --measure-wide: 66rem;  /* escape hatch for multi-column layouts (hero) */
 
   /* ---- Line heights ----------------------------------------------------- */
   --lh-body: 1.6;
@@ -244,11 +255,6 @@
   }
 }
 
-/* Gutter steps — token values only, so the type knobs keep control */
-@media (min-width: 720px)  { :root { --gutter: var(--space-l); } }   /* 2 lines */
-@media (min-width: 1200px) { :root { --gutter: var(--space-xl); } }  /* 3 lines */
-@media (min-width: 1800px) { :root { --gutter: var(--space-2xl); } } /* 4 lines */
-
 /* ── reset ──────────────────────────────────────────────────────────────── */
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
@@ -319,9 +325,12 @@
 
 /* ── composition ─────────────────────────────────────────────────────────── */
 @layer composition {
+  /* Measure + gutter in one: below the cap, `100% - 2·gutter` wins and the
+     gutter reads as side padding; above it, `--measure` wins and the leftover
+     space becomes the auto margins that centre the content. */
   .wrapper {
+    inline-size: min(100% - 2 * var(--gutter), var(--measure));
     margin-inline: auto;
-    padding-inline: var(--gutter);
   }
 
   .region {
@@ -445,6 +454,11 @@
     align-items: stretch;
     gap: var(--space-l);
   }
+  /* The two-column hero needs room the prose measure can't give it, so it
+     opts up to the wide cap (block layer beats .wrapper in composition). */
+  .hero-grid.wrapper {
+    inline-size: min(100% - 2 * var(--gutter), var(--measure-wide));
+  }
   .hero-copy {
     display: flex;
     flex-direction: column;
@@ -533,7 +547,7 @@
     font-weight: 600;
     font-family: var(--font-display);
     font-size: var(--step-0);
-    padding: 1.1rem 1.4rem;
+    padding: var(--space-xs);
     gap: 0.85em;
   }
   .faq-item summary::-webkit-details-marker { display: none; }
@@ -566,7 +580,8 @@
   .faq-item[open] .faq-icon::after { transform: translateX(-50%) rotate(90deg) scaleX(0); }
 
   .faq-answer {
-    padding: 0 1.4rem 1.3rem;
+    padding-block: 0 var(--space-s);
+    padding-inline: var(--space-l) var(--space-s);
     color: var(--muted);
   }
   .faq-answer :last-child { margin-bottom: 0; }
@@ -576,8 +591,12 @@
   }
 
   /* ─ Post / page prose ─ (headings inherit the global scale; only rhythm here) */
-  .post :is(h2, h3),
-  .page :is(h1, h2, h3) { margin-top: 1.25em; }
+  .post h2,
+  .page :is(h1, h2) { margin-block-start: var(--space-m); }
+  .post h3,
+  .page h3 { margin-block-start: var(--space-s); }
+  .post > *:first-child,
+  .page > *:first-child { margin-block-start: 0; }
   .post ul, .post ol,
   .page ul, .page ol  { padding-left: 1.25em; }
 
@@ -589,7 +608,7 @@
   }
   /* .repel on each <li> handles flex layout; add spacing + divider here */
   .post-list li {
-    padding: 0.9rem 0;
+    padding: var(--space-xs) 0;
     border-bottom: var(--border-thin) solid var(--line);
   }
 
@@ -655,9 +674,9 @@
     .site-header .wrapper {
       flex-direction: column;
       align-items: flex-start;
-      gap: 0.75rem;
+      gap: var(--space-s);
     }
-    .site-header nav { gap: 0.9rem; }
+    .site-header nav { gap: var(--space-xs); }
   }
 }
 
@@ -767,7 +786,7 @@
     border: 0 !important;
     box-shadow: none !important;
     padding: 0 !important;
-    margin: 1.5rem auto 0 !important;
+    margin: var(--space-s) auto 0 !important;
     max-width: 560px;
   }
   .signup .emailoctopus-form .main-form {
