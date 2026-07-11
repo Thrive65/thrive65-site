@@ -31,6 +31,7 @@
     var header = document.querySelector(".site-header");
     if (!header) return;
     header.classList.remove("nav-open");
+    document.body.classList.remove("nav-open");
     var t = header.querySelector(".nav-toggle");
     if (t) t.setAttribute("aria-expanded", "false");
   }
@@ -40,6 +41,7 @@
     if (toggle) {
       var header = toggle.closest(".site-header");
       var open = header.classList.toggle("nav-open");
+      document.body.classList.toggle("nav-open", open);
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
       return;
     }

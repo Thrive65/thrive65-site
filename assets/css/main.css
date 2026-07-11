@@ -94,7 +94,7 @@
   --radius-callout: 0 12px 12px 0;
 
   /* ---- Toggle geometry ---------------------- */
-  --toggle-size: 2.6em; /* theme toggle and hamburger menu */
+  --toggle-size: 3.3em; /* theme toggle and hamburger menu, ~44px */
 
   /* ---- Shared: surfaces & structure · LIGHT ----------------------------- */
   --bg:    #F7F5EC;                 /* warm page surface */
@@ -371,6 +371,7 @@
     position: sticky;
     top: 0;
     z-index: 10;
+    box-shadow: 0px -1.5rem 2rem 1px var(--footer-bg);
   }
   /* Add block padding to the repel wrapper inside the header */
   .site-header .wrapper {
@@ -492,6 +493,11 @@
     opacity: 0;
     transition: opacity 0.25s ease;
     z-index: 15;
+  }
+
+  /* Lock page scroll behind the open slide-in panel (class toggled in head.html) */
+  body.nav-open {
+    overflow: hidden;
   }
 
   /* ─ Hero ─ (full-bleed colored band; the only context that overrides
@@ -768,7 +774,8 @@
     /* Theme toggle reads as a labelled row in the panel, not a lone icon */
     .site-header nav .theme-toggle {
       width: auto;
-      gap: 0.55em;
+      gap: var(--space-2xs);
+      padding-inline: var(--space-xs);
       position: absolute;
       top: var(--space-xs);
       right: var(--space-xl);
