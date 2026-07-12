@@ -1,10 +1,8 @@
 ---
 layout: "page"
-title: "Board Advocacy Guide"
+title: "District 65 School Board Advocacy Guide"
 description: "Tips for sharing our message with the board"
 ---
-
-**District 65 School Board Advocacy Guide**
 
 *Speak up. Show up. Help D65 Thrive.*
 
@@ -14,9 +12,9 @@ School boards make decisions that directly affect every student, teacher, and fa
 
 Community members who show up consistently and speak clearly can shift board priorities, change votes, and build lasting relationships with decision-makers.
 
-# **Know Our School Board**
+## **Know Our School Board**
 
-## **How Boards Work**
+### How Boards Work
 
 Our board has 7 elected members who set policy, approve budgets, and hire the superintendent. They typically meet around twice a month in public sessions. One meeting is the Committee of the Whole, where all members of the board meet as a single committee to discuss topics in depth without taking final action, and the other is the formal Board Meeting where more formal actions take place. Both have time allotted for public comments at the beginning of the meeting.
 
@@ -26,7 +24,7 @@ Our board has 7 elected members who set policy, approve budgets, and hire the su
 | **Location** | JEH Early Childhood Center 1500 McDaniel Ave, Evanston, IL 60201 |
 | **Online** | Meetings are livestreamed here if you cannot attend in person.  [https://www.youtube.com/@district6541/streams](https://www.youtube.com/@district6541/streams)  |
 
-## **Learn the Players**
+### Learn the Players
 
 **Superintendent** \- the district's top administrator, they and their cabinet often present at meetings
 
@@ -59,11 +57,11 @@ Our board has 7 elected members who set policy, approve budgets, and hire the su
 | Quick Tip [Search](https://meetings.boardbook.org/Public/Organization/1247) board meeting archives to see agendas, presentations, reports, and board minutes. This can help you understand what’s been discussed and to understand each member's priorities, voting history, and the issues they care most about before you approach them. |
 | :---- |
 
-# **Speaking at Public Comment**
+## **Speaking at Public Comment**
 
 Public comment is your right to address elected officials directly. Most meetings allow 3 minutes per speaker. If there are a lot of speakers, they will pro-rate to keep comments to an hour. The shortest amount of time offered is around 90 seconds. Here's how to make every second count.
 
-## **Before You Go**
+### Before You Go
 
 1. Review the [agenda](https://meetings.boardbook.org/Public/Organization/1247), Click on the word “agenda” to open that meeting’s document. You can comment on agenda items or general matters.
 
@@ -71,7 +69,7 @@ Public comment is your right to address elected officials directly. Most meeting
 
 3. Know that the board members will listen, but not provide comment or engage in dialogue with you during your comments. 
 
-## **Structure Your Statement**
+### Structure Your Statement
 
 | 0:00–0:20 | Introduce yourself: name, your connection to the district (parent, teacher, resident, student) |
 | :---- | :---- |
@@ -80,7 +78,7 @@ Public comment is your right to address elected officials directly. Most meeting
 | **1:45–2:30** | Make a specific ask — what do you want the board to do? |
 | **2:30–3:00** | Thank the board |
 
-The Meeting
+### The Meeting
 
 1. Arrive 15-20 minutes early. Depending on the topics of the meeting, seating fills up and sign-up lines can be long.
 
@@ -99,11 +97,11 @@ Afterward, send a copy of your comments to [schoolboard@district65.net](mailto:s
 | Dos & Don'ts DO: speak calmly and respectfully, use "I" statements, stick to your time limit, and leave contact info. DON'T: attack individuals personally, go over time, bring props, or bring more issues than you can cover in your allotted minutes. |
 | :---- |
 
-# **Written Advocacy**
+## **Written Advocacy**
 
 You don't have to speak in person to make an impact. Written communications, especially when submitted before a vote, are read and logged into the official record. Send your comments to [schoolboard@district65.net](mailto:schoolboard@district65.net), which will reach all board members and the board secretary. 
 
-## **Email Best Practices**
+### Email Best Practices
 
 * Subject line: Be specific "Support for Expanded Mental Health Counselors — Board Meeting June 10"
 
@@ -117,18 +115,18 @@ You don't have to speak in person to make an impact. Written communications, esp
 
 * Follow up if you don't hear back within two weeks
 
-## **Letters to the Board**
+### Letters to the Board
 
 Formal written letters submitted before a board meeting are entered into official minutes. A brief, factual letter from 10-20 or more community members on the same issue carries significant weight.
 
 | Power Move Organize a letter-writing campaign. Coordinate a group to send individual emails or letters about the same issue in the week before a key vote — volume signals community concern. |
 | :---- |
 
-# **Building Long-Term Influence**
+## **Building Long-Term Influence**
 
 One-time appearances matter, but sustained engagement is what creates lasting change. The most effective advocates treat the school board like a long-term relationship, not a single transaction.
 
-## **Show Up Consistently**
+### Show Up Consistently
 
 * Attend as many meetings as is feasible for you
 
@@ -138,7 +136,7 @@ One-time appearances matter, but sustained engagement is what creates lasting ch
 
 * We recognize the time and location of board meetings makes it hard for many to attend. While in-person speaking is powerful, there are many ways to make a difference
 
-## **Build Community**
+### Build Community
 
 * Connect with parent-teacher organizations, neighborhood associations, and civic groups
 
@@ -148,7 +146,7 @@ One-time appearances matter, but sustained engagement is what creates lasting ch
 
 * Organize carpools or childcare so more community members can attend
 
-## **Work the System**
+### Work the System
 
 * Request meetings with individual board members between public sessions, they may respond
 
@@ -158,14 +156,14 @@ One-time appearances matter, but sustained engagement is what creates lasting ch
 
 * Apply to serve on board advisory committees when opportunities arise, it puts you in the room earlier
 
-# **Sample Public Comment Script**
+## **Sample Public Comment Script**
 
 Adapt this template to your specific issue. Fill in the bracketed sections with your own details.
 
 | Sample Script *"Good evening. My name is [Your Name], and I am a [parent/resident/teacher] in D65.* *I'm here tonight to speak about [specific issue]. This matters to me because [brief personal connection or community impact].* *[Share one data point, story, or example that illustrates the problem or opportunity.]* *I'm asking the board to [specific, actionable request] by [realistic timeframe].* *Thank you for your service to our schools.*  |
 | :---- |
 
-# **Quick Reference & Resources**
+## **Quick Reference & Resources**
 
 | Advocacy Guides & Toolkits | There are a lot out there, here’s a few\! [https://www.clccrul.org/education-equity](https://www.clccrul.org/education-equity)   [www.naacp.org/resources](http://www.naacp.org/resources)  [https://www.nea.org/resource-library/toolkit-ideas-organize-locally-protect-students-and-public-schools](https://www.nea.org/resource-library/toolkit-ideas-organize-locally-protect-students-and-public-schools)  |
 | :---- | :---- |
@@ -173,7 +171,7 @@ Adapt this template to your specific issue. Fill in the bracketed sections with 
 | **Illinois State Board of Education** | [https://www.isbe.net/](https://www.isbe.net/)  |
 | **Open records** | Use [Freedom of Information Act](https://www.district65.net/community/foia-requests) (FOIA) law to request communication records, budgets, contracts, and reports. |
 
-## **Advocacy Checklist**
+### Advocacy Checklist
 
 * I know my school board's meeting schedule and how to sign up for public comment
 
