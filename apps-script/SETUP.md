@@ -192,12 +192,16 @@ Google Docs has no blockquote, so to add a highlighted callout card, use a
 single-cell table into a Markdown blockquote, which renders as a tinted,
 framed callout on the page.
 
-- **Bold the first words** to give the callout a label. `**Quick Tip**` at the
-  start of the cell becomes the small uppercase label line; the rest of the
-  cell becomes the body. Without a bold opener, the whole cell becomes the
-  callout body.
+- **Put the label on its own line** to give the callout a heading. Inside the
+  one-cell table, type the label (e.g. `Quick Tip`), press **Enter**, then type
+  the body on the next line. On publish the first short line becomes the small
+  uppercase label and the rest becomes the body. (Don't rely on **bold** for
+  the label — Google Docs drops bold from the top row of a table, which is all
+  a one-cell table is. A separate line is what survives the export.)
+- If everything is on a single line, the whole cell just becomes the callout
+  body with no label.
 - Multi-cell tables (2+ columns) are left alone — they publish as normal
-  tables (framed, with the first row and first column shaded as labels).
+  definition tables (framed, with the first **column** shaded as labels).
 
 ## Known limitations (v1)
 

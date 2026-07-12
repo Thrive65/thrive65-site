@@ -585,9 +585,17 @@ function cleanGoogleMarkdown(markdown) {
  * Move, sample scripts) as one-cell tables. A single-cell table is a
  * `| … |` content row (no interior pipe) immediately followed by a
  * one-column separator row (`| :---- |`, `|---|`, …). Rewrite each into a
- * Markdown blockquote so it renders as a callout card. If the cell opens
- * with a bold run (`**Quick Tip** rest…`), that run becomes the callout's
- * label line; otherwise the whole cell becomes the quote body.
+ * Markdown blockquote so it renders as a callout card.
+ *
+ * Recovering the label: Google Docs strips bold from a single-cell table (the
+ * cell IS the header row) and flattens the cell's internal line breaks into
+ * runs of 2+ spaces. So a two-line cell —
+ *     Dos & Don'ts
+ *     DO: speak calmly…
+ * exports as `Dos & Don'ts  DO: speak calmly…`. Split on those runs: if the
+ * first line is a short phrase, treat it as the callout's bold label line and
+ * the remaining lines as body paragraphs. A surviving `**bold**` opener is
+ * honored too. With no short first line, the whole cell is the quote body.
  * ========================================================================= */
 
 function singleCellTablesToBlockquotes(markdown) {
@@ -609,13 +617,30 @@ function singleCellTablesToBlockquotes(markdown) {
 }
 
 function cellToBlockquote(cell) {
-  const labelMatch = cell.match(/^\*\*(.+?)\*\*\s*(.*)$/);
-  if (labelMatch) {
-    const label = labelMatch[1].trim();
-    const body = labelMatch[2].trim();
-    return body ? [`> **${label}**`, ">", `> ${body}`] : [`> **${label}**`];
+  // In-cell line breaks arrive as runs of 2+ spaces; split them back into lines.
+  let lines = cell.split(/\s{2,}/).map((s) => s.trim()).filter((s) => s.length);
+  if (lines.length === 0) return [`> ${cell.trim()}`];
+
+  let label = null;
+  const boldOpener = lines[0].match(/^\*\*(.+?)\*\*\s*(.*)$/);
+  if (boldOpener) {
+    // A surviving bold opener (e.g. from a body-row cell) is the label.
+    label = boldOpener[1].trim();
+    const rest = boldOpener[2].trim();
+    lines = rest ? [rest, ...lines.slice(1)] : lines.slice(1);
+  } else if (lines.length >= 2 && lines[0].length <= 40) {
+    // A short first line reads as the label; the rest is body.
+    label = lines[0];
+    lines = lines.slice(1);
   }
-  return [`> ${cell}`];
+
+  const out = [];
+  if (label) out.push(`> **${label}**`);
+  lines.forEach((line) => {
+    if (out.length) out.push(">");
+    out.push(`> ${line}`);
+  });
+  return out.length ? out : [`> ${cell.trim()}`];
 }
 
 /* =========================================================================

@@ -665,11 +665,17 @@
   .page > *:first-child { margin-block-start: 0; }
   .post ul:not(.post-list), .post ol,
   .page ul:not(.post-list), .page ol  { padding-left: 1.25em; }
+  .post :is(ul:not(.post-list), ol) li + li,
+  .page :is(ul:not(.post-list), ol) li + li { margin-block-start: var(--space-2xs); }
+  /* Google Docs sometimes wraps a list item's content in a <p>; drop its
+     inherited paragraph margin so it doesn't inflate item spacing. */
+  .post li > p,
+  .page li > p { margin-block: 0; }
 
   /* ─ Page-header band ─ intro strip under the site header. Background comes
      from the .bg-surface-alt utility; only the layout + h1 override live here. */
   .page-header .wrapper {
-    padding-block: var(--space-l) var(--space-m);
+    padding-block: var(--space-xl) var(--space-m); /* less bottom space for wave */ 
   }
   .page-header h1 {
     font-size: var(--step-4);
@@ -696,8 +702,12 @@
     color: var(--muted);
   }
 
-  /* ─ Framed definition tables ─ classless; the promoted header row and each
-     first-column cell shade as labels, matching the FAQ card frame. */
+  /* ─ Framed tables ─ classless, matching the FAQ card frame. These are
+     definition tables: the first column holds labels. GFM always promotes the
+     first row to <th> and Google Docs strips that row's bold, so a <strong>
+     can't mark the top-left label — position does. The label column is shaded
+     and bold; the base rule clears the <th> user-agent bold so the value
+     column (including the promoted header-row cell) reads plainly. */
   .page table,
   .post table {
     width: 100%;
@@ -712,14 +722,16 @@
     padding: 0.9em 1.1em;
     text-align: left;
     vertical-align: top;
+    font-weight: normal;
     border-bottom: var(--border-thin) solid var(--line);
   }
   .page tr:last-child :is(th, td),
   .post tr:last-child :is(th, td) { border-bottom: 0; }
-  .page :is(th, td:first-child),
-  .post :is(th, td:first-child) {
+  .page :is(th, td):first-child,
+  .post :is(th, td):first-child {
     background: var(--tint);
     font-weight: 700;
+    white-space: nowrap;
   }
 
   /* ─ Callouts ─ blockquotes render as tinted framed cards. A lone bold run in
@@ -734,8 +746,8 @@
   }
   .page blockquote :last-child,
   .post blockquote :last-child { margin-bottom: 0; }
-  .page blockquote p:first-child,
-  .post blockquote p:first-child {
+  .page blockquote p:first-child:has(> strong:only-child),
+  .post blockquote p:first-child:has(> strong:only-child) {
     display: block;
     font-family: var(--font-body);
     font-weight: 700;
@@ -747,28 +759,24 @@
   }
 
   /* ─ Checklist ─ kramdown task lists (`- [ ]`): brand-outlined boxes replace
-     bullets and native checkboxes; no authoring markup needed. */
+     bullets and native checkboxes. kramdown wraps each item's content in a <p>
+     (`<li><p><input>text</p></li>`), so the checkbox is inline before the text
+     — space it with its own margin rather than a flex gap. */
   .page .task-list,
   .post .task-list {
     list-style: none;
     padding-left: 0;
   }
-  .page .task-list-item,
-  .post .task-list-item {
-    display: flex;
-    gap: 0.7em;
-    align-items: baseline;
-  }
   .page .task-list-item-checkbox,
   .post .task-list-item-checkbox {
     appearance: none;
     -webkit-appearance: none;
-    flex-shrink: 0;
     width: 1em;
     height: 1em;
+    margin-inline-end: 0.5em;
     border: var(--border-bold) solid var(--brand);
-    border-radius: var(--radius-sm);
-    align-self: center;
+    border-radius: 0.25em;
+    vertical-align: -0.1em;
   }
 
   /* ─ Post list ─ */
