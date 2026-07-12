@@ -666,6 +666,111 @@
   .post ul:not(.post-list), .post ol,
   .page ul:not(.post-list), .page ol  { padding-left: 1.25em; }
 
+  /* ─ Page-header band ─ intro strip under the site header. Background comes
+     from the .bg-surface-alt utility; only the layout + h1 override live here. */
+  .page-header .wrapper {
+    padding-block: var(--space-l) var(--space-m);
+  }
+  .page-header h1 {
+    font-size: var(--step-4);
+    color: var(--ink);
+    margin-block: 0.1em 0;
+  }
+
+  /* ─ Brand-colored section headings ─ h2 marks a new major section and
+     retints per hue automatically. h3 stays neutral ink (no rule needed). */
+  .page h2,
+  .post h2 { color: var(--brand); }
+
+  /* ─ Standfirst / sign-off ─ a fully-italic opening or closing paragraph
+     (single <em> child) reads as a lead-in or a closing line. */
+  .page p:first-child:has(> em:only-child),
+  .post p:first-child:has(> em:only-child) {
+    font-size: var(--step-1);
+    font-style: italic;
+    color: var(--muted);
+  }
+  .page p:last-child:has(> em:only-child),
+  .post p:last-child:has(> em:only-child) {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  /* ─ Framed definition tables ─ classless; the promoted header row and each
+     first-column cell shade as labels, matching the FAQ card frame. */
+  .page table,
+  .post table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+  .page :is(th, td),
+  .post :is(th, td) {
+    padding: 0.9em 1.1em;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: var(--border-thin) solid var(--line);
+  }
+  .page tr:last-child :is(th, td),
+  .post tr:last-child :is(th, td) { border-bottom: 0; }
+  .page :is(th, td:first-child),
+  .post :is(th, td:first-child) {
+    background: var(--tint);
+    font-weight: 700;
+  }
+
+  /* ─ Callouts ─ blockquotes render as tinted framed cards. A lone bold run in
+     the first paragraph (`> **Label**`) becomes an eyebrow label line. */
+  .page blockquote,
+  .post blockquote {
+    margin: 0;
+    background: var(--tint);
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-card);
+    padding: var(--space-s);
+  }
+  .page blockquote :last-child,
+  .post blockquote :last-child { margin-bottom: 0; }
+  .page blockquote p:first-child,
+  .post blockquote p:first-child {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: var(--step--2);
+    color: var(--secondary);
+    margin-bottom: var(--space-2xs);
+  }
+
+  /* ─ Checklist ─ kramdown task lists (`- [ ]`): brand-outlined boxes replace
+     bullets and native checkboxes; no authoring markup needed. */
+  .page .task-list,
+  .post .task-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  .page .task-list-item,
+  .post .task-list-item {
+    display: flex;
+    gap: 0.7em;
+    align-items: baseline;
+  }
+  .page .task-list-item-checkbox,
+  .post .task-list-item-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+    border: var(--border-bold) solid var(--brand);
+    border-radius: var(--radius-sm);
+    align-self: center;
+  }
+
   /* ─ Post list ─ */
   .post-list {
     list-style: none;
@@ -722,17 +827,8 @@
     text-transform: uppercase;
     font-size: var(--step--1);
     line-height: var(--lh-heading);
-    margin: 0 0 0.6em;
+    margin-bottom: var(--space-2xs);
     color: var(--secondary);
-  }
-
-  /* ─ Brand sub-headings ─ when a region's content holds a group of sibling
-     h3s (e.g. the Overview pillars), color them with the brand. Classless and
-     generic: keys off the sibling h3 structure, not off any content-specific
-     class. Single lone h3s (and the FAQ question h3s, which aren't siblings)
-     stay in the default ink. */
-  .region .wrapper:has(h3 ~ h3) h3 {
-    color: var(--brand);
   }
 
   /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */

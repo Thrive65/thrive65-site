@@ -1,0 +1,174 @@
+/* ============================================================================
+   Common Ground — internal page components
+   (page header/opening band, colored subheadings, callouts, tables, checklist)
+
+   Depends on the base tokens in tokens.css (bg, card, tint, line, ink, muted,
+   edge, secondary, brand, band-alt, focus, font-display, display-weight,
+   display-tracking). Load tokens.css FIRST, this file second.
+
+   Scope: Jekyll "page" layout (board-advocacy-guide.md and similar internal
+   pages) — long-form doc content, not the home page's marketing sections.
+   ============================================================================ */
+
+/* ---- 1. Opening / page-header band -------------------------------------- */
+/* Sits directly under the site header, above the article. Full-width band in
+   --band-alt with a max-width inner column matching the article measure. */
+.page-header {
+  background: var(--band-alt);
+  transition: background 0.25s ease;
+}
+.page-header__inner {
+  max-width: 760px;
+  margin-inline: auto;
+  padding-inline: var(--space-m, clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem));
+  padding-block: var(--space-l, clamp(2rem, 1.870rem + 0.652vw, 2.375rem))
+                 var(--space-m, clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem));
+}
+.page-header__eyebrow {
+  font-family: "Public Sans", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: var(--step--1, clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem));
+  color: var(--secondary);
+  margin: 0 0 0.6em;
+}
+.page-header__title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  font-size: var(--step-4, clamp(2.074rem, 1.787rem + 1.436vw, 2.8992rem));
+  line-height: 1.1;
+  margin: 0 0 0.4em;
+  color: var(--ink);
+}
+.page-header__subtitle {
+  margin: 0 0 0.3em;
+  font-weight: 700;
+  color: var(--ink);
+}
+.page-header__standfirst {
+  margin: 0;
+  font-style: italic;
+  color: var(--muted);
+  font-size: var(--step-1, clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem));
+}
+
+/* ---- 2. Article shell + colored subheadings ------------------------------ */
+.doc {
+  padding-block: var(--space-l, clamp(2rem, 1.870rem + 0.652vw, 2.375rem))
+                 var(--space-xl, clamp(3rem, 2.804rem + 0.978vw, 3.5625rem));
+}
+.doc__inner {
+  max-width: 760px;
+  margin-inline: auto;
+  padding-inline: var(--space-m, clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs, clamp(0.750rem, 0.701rem + 0.245vw, 0.891rem));
+  color: var(--ink);
+}
+.doc h1, .doc h2, .doc h3 {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  line-height: 1.15;
+}
+/* Section heads (h2): brand-colored — the signal that a new major section starts */
+.doc h2 {
+  font-size: var(--step-3, clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem));
+  color: var(--brand);
+  margin: 0.75em 0 0.1em;
+}
+/* The very first h2 in the article can sit closer to the page-header band */
+.doc h2:first-child { margin-top: 0.5em; }
+/* Sub-heads (h3): neutral ink, one step down */
+.doc h3 {
+  font-size: var(--step-1, clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem));
+  color: var(--ink);
+  margin: 0.75em 0 0.1em;
+}
+.doc p { margin: 0; }
+.doc a { color: var(--link); text-decoration-thickness: 1.5px; text-underline-offset: 0.15em; }
+.doc a:hover { color: var(--brand-strong); }
+.doc ul, .doc ol { margin: 0; padding-left: 1.4em; }
+.doc li { padding-left: 0.35em; margin-bottom: 0.4em; }
+.doc li:last-child { margin-bottom: 0; }
+
+/* ---- 3. Styled tables ------------------------------------------------------
+   Two-column "definition" tables (label | value). Framed 2px --edge card,
+   first column / header cells shaded --tint and bold. Use a real <table>;
+   wrap it in .doc-table for the frame. */
+.doc-table {
+  border: 2px solid var(--edge);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 0.4em 0;
+}
+.doc-table table { width: 100%; border-collapse: collapse; }
+.doc-table th, .doc-table td {
+  padding: 0.9em 1.1em;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+.doc-table tr:last-child th, .doc-table tr:last-child td { border-bottom: none; }
+/* label cell (th, or first td in a headless row) */
+.doc-table th, .doc-table td:first-child {
+  background: var(--tint);
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ---- 4. Callouts (single-cell "tables" in the legacy markdown) ----------
+   Rendered as a bordered note card — NOT a real table. Use for "Quick tip",
+   "Dos & don'ts", "Power move", "Sample script", etc. Label comes from a
+   small uppercase eyebrow in --secondary; body text below it. */
+.callout {
+  background: var(--tint);
+  border: 2px solid var(--edge);
+  border-radius: 12px;
+  padding: 1.1rem 1.4rem;
+  margin: 0.4em 0;
+}
+.callout__label {
+  font-family: "Public Sans", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: var(--step--2, clamp(0.694rem, 0.672rem + 0.114vw, 0.760rem));
+  color: var(--secondary);
+  margin: 0 0 0.5em;
+}
+.callout p { margin: 0; }
+.callout--script p { font-style: italic; }
+
+/* ---- 5. Checklist --------------------------------------------------------
+   Plain list, no bullets; each item gets a brand-colored checkbox glyph
+   (drawn once as inline SVG per item — see markup in README). */
+.checklist {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+.checklist li {
+  display: flex;
+  gap: 0.7em;
+  align-items: flex-start;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+.checklist svg { flex-shrink: 0; margin-top: 0.2em; }
+.checklist svg rect { fill: none; stroke: var(--brand); stroke-width: 2; }
+.checklist svg path { fill: none; stroke: var(--brand); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---- 6. Closing line (italic sign-off paragraph at article end) --------- */
+.doc__closing {
+  margin: 0.75em 0 0;
+  font-style: italic;
+  color: var(--muted);
+}

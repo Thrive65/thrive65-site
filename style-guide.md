@@ -49,6 +49,17 @@ There isn’t a proper “blockquote” in Google Docs. Add `>` before a line to
 \> This is a blockquote.   
 \> It can span multiple lines.
 
+Blockquotes render as tinted, framed **callout cards**. Bold the first line on
+its own to give the callout an uppercase label:
+
+> **Quick Tip**
+>
+> Bold the first line by itself and it becomes the callout's label; the rest is
+> the body.
+
+In Google Docs, use a one-cell table for a callout (Docs has no blockquote) —
+the publisher converts it automatically. See `apps-script/SETUP.md`.
+
 ## Lists
 
 ---
@@ -64,6 +75,13 @@ There isn’t a proper “blockquote” in Google Docs. Add `>` before a line to
    1. Nested item  
    2. Another nested  
 3. Item 3
+
+A **checklist** uses task-list syntax (`- [ ]`) and renders with brand-outlined
+boxes instead of bullets:
+
+- [ ] First thing to do
+- [ ] Second thing to do
+- [ ] Third thing to do
 
 ## Table
 

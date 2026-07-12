@@ -574,7 +574,48 @@ function exportDocAsMarkdown(docId) {
 // If you notice other formatting artifacts after publishing, check the live
 // page and tell Claude — this function is easy to extend.
 function cleanGoogleMarkdown(markdown) {
-  return markdown.replace(/\\([_*\[\]])/g, "$1").trim();
+  const unescaped = markdown.replace(/\\([_*\[\]])/g, "$1").trim();
+  return singleCellTablesToBlockquotes(unescaped);
+}
+
+/* =========================================================================
+ * Single-cell tables → blockquote callouts
+ *
+ * Google Docs has no blockquote, so authors mark asides (Quick Tip, Power
+ * Move, sample scripts) as one-cell tables. A single-cell table is a
+ * `| … |` content row (no interior pipe) immediately followed by a
+ * one-column separator row (`| :---- |`, `|---|`, …). Rewrite each into a
+ * Markdown blockquote so it renders as a callout card. If the cell opens
+ * with a bold run (`**Quick Tip** rest…`), that run becomes the callout's
+ * label line; otherwise the whole cell becomes the quote body.
+ * ========================================================================= */
+
+function singleCellTablesToBlockquotes(markdown) {
+  const lines = markdown.split("\n");
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const cellMatch = lines[i].match(/^\s*\|(.+)\|\s*$/);
+    const sepMatch = lines[i + 1] && lines[i + 1].match(/^\s*\|\s*:?-+:?\s*\|\s*$/);
+    // One column only: the content row has no interior pipe, and the row
+    // below it is a single-column separator.
+    if (cellMatch && sepMatch && cellMatch[1].indexOf("|") === -1) {
+      out.push.apply(out, cellToBlockquote(cellMatch[1].trim()));
+      i++; // consume the separator row
+      continue;
+    }
+    out.push(lines[i]);
+  }
+  return out.join("\n");
+}
+
+function cellToBlockquote(cell) {
+  const labelMatch = cell.match(/^\*\*(.+?)\*\*\s*(.*)$/);
+  if (labelMatch) {
+    const label = labelMatch[1].trim();
+    const body = labelMatch[2].trim();
+    return body ? [`> **${label}**`, ">", `> ${body}`] : [`> **${label}**`];
+  }
+  return [`> ${cell}`];
 }
 
 /* =========================================================================

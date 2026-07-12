@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,700;0,800;1,800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; }
+
+/* ══════════════════════════════════════════════════════════════════
+   Common Ground — token system (single source of truth)
+   Structure: shared neutrals / accent / secondary / bloom / edge stay
+   constant; only the hue family (brand, brandStrong, hero*, bandAlt,
+   link) swaps across the four hues. Marigold accent is the constant.
+   ══════════════════════════════════════════════════════════════════ */
+.t65-root {
+  /* Typography — Archivo display, Public Sans body */
+  --font-display: 'Archivo', sans-serif;
+  --display-weight: 800;
+  --display-tracking: -0.01em;
+
+  /* Shared — surfaces, structure, ink, edge (LIGHT) */
+  --bg: #F7F5EC; --card: #FFFFFF; --tint: hsla(150, 30%, 91%, 1);
+  --line: hsla(150, 20%, 83%, 1); --ink: #14231B; --muted: hsla(150, 16%, 30%, 1);
+  --edge: #0B0B0B; --on-accent: #221B05; --focus: #0B0B0B;
+
+  /* Shared — accents (constant across hues) */
+  --secondary: hsla(189, 65%, 22%, 1);
+  --accent: #FFB01A; --accent-hover: #FFC44F; --bloom: #D42A56;
+
+  /* Shared — footer family (shared across themes) */
+  --footer-bg: #070E0A; --footer-head: #EDF5EE; --footer-ink: #B7CCBD;
+
+  /* Hue family — Lake Teal · LIGHT (live brand default) */
+  --brand: #0F7A45; --brand-strong: #0A5C34; --link: #0F7A45;
+  --hero-bg: hsla(189, 65%, 46%, 1); --hero-ink: hsla(189, 65%, 9%, 1);
+  --hero-muted: hsla(189, 65%, 13%, 1); --hero-em: var(--accent);
+  --band-alt: hsla(189, 30%, 92%, 1);
+}
+
+/* ── Hue overrides · LIGHT ── */
+.t65-root[data-hue="evergreen"] {
+  --brand: #0F7A45; --brand-strong: #0A5C34; --link: #0F7A45;
+  --hero-bg: #1CA05C; --hero-ink: #0B2417; --hero-muted: #082A18; --hero-em: var(--accent);
+  --band-alt: hsla(150, 34%, 93%, 1);
+}
+.t65-root[data-hue="electric-blue"] {
+  --brand: hsla(227, 90%, 42%, 1); --brand-strong: hsla(227, 90%, 30%, 1); --link: hsla(227, 90%, 42%, 1);
+  --hero-bg: hsla(227, 100%, 68%, 1); --hero-ink: hsla(227, 90%, 17%, 1); --hero-muted: hsla(227, 90%, 17%, 1); --hero-em: #FFFFFF;
+  --band-alt: #E7ECFF;
+}
+.t65-root[data-hue="ultraviolet"] {
+  --brand: #7A18D4; --brand-strong: #57109C; --link: #7A18D4;
+  --hero-bg: #A75DEC; --hero-ink: #1B0E42; --hero-muted: #1B0E42; --hero-em: #FFFFFF;
+  --band-alt: #F1E6FF;
+}
+
+/* ── Shared DARK surfaces + Lake Teal DARK hue ── */
+.t65-root[data-mode="dark"] {
+  --bg: #0B1410; --card: #17251C; --tint: #123122;
+  --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD;
+  --edge: #0B0B0B; --on-accent: #221B05; --focus: #8CE7B7;
+  --secondary: hsla(189, 65%, 60%, 1);
+  --accent: #FFB01A; --accent-hover: #FFC44F; --bloom: #FF5D7B;
+  --footer-bg: #070E0A; --footer-head: #EDF5EE; --footer-ink: #B7CCBD;
+  /* Lake Teal · DARK */
+  --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
+  --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
+  --band-alt: hsla(189, 50%, 9%, 1);
+}
+
+/* ── Hue overrides · DARK ── */
+.t65-root[data-hue="evergreen"][data-mode="dark"] {
+  --brand: #4ED991; --brand-strong: #7BE8AE; --link: #4ED991;
+  --hero-bg: #16854F; --hero-ink: #E9F2E6; --hero-muted: #A9CDB6; --hero-em: var(--accent);
+  --band-alt: hsla(150, 70%, 10%, 1);
+}
+.t65-root[data-hue="electric-blue"][data-mode="dark"] {
+  --brand: #7E9DFF; --brand-strong: #A9BEFF; --link: #7E9DFF;
+  --hero-bg: #0033EB; --hero-ink: #F2F5FF; --hero-muted: #BFCCFF; --hero-em: var(--accent);
+  --band-alt: hsla(227, 90%, 14%, 1);
+}
+.t65-root[data-hue="ultraviolet"][data-mode="dark"] {
+  --brand: #BE8CFF; --brand-strong: #D3B4FF; --link: #BE8CFF;
+  --hero-bg: #5B16C4; --hero-ink: #F6EEFF; --hero-muted: #DCC0FF; --hero-em: var(--accent);
+  --band-alt: #1B0E42;
+}
+
+/* Link defaults (inline styles override where set) */
+.t65-root a { color: var(--link); }
+.t65-root a:hover { color: var(--brand-strong); }
+/* Focus rings — Common Ground: edge on light, #8CE7B7 on dark */
+.t65-root :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* Article prose + table styling (doc-page specific) */
+.t65-doc table { width: 100%; border-collapse: collapse; }
+.t65-doc table td, .t65-doc table th { padding: 0.9em 1.1em; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+.t65-doc table tr:last-child td, .t65-doc table tr:last-child th { border-bottom: none; }
+.t65-doc table th, .t65-doc table td:first-child { background: var(--tint); font-weight: 700; white-space: nowrap; }
+.t65-doc a { text-decoration-thickness: 1.5px; text-underline-offset: 0.15em; }
+</style>
+</helmet>
+
+<div class="t65-root" data-hue="{{ hue }}" data-mode="{{ modeResolved }}" style="font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: clamp(1rem, 0.935rem + 0.326vw, 1.1875rem); color: var(--ink); background: var(--bg); line-height: 1.6; min-height: 100vh; transition: background 0.25s ease, color 0.25s ease;">
+
+  <!-- ── Header (shared with home) ── -->
+  <header data-screen-label="Header" style="background: var(--bg); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 40;">
+    <div style="max-width: 1040px; margin-inline: auto; padding-inline: clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem); padding-block: clamp(0.750rem, 0.701rem + 0.245vw, 0.891rem); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(1rem, 0.935rem + 0.326vw, 1.1875rem);">
+
+      <a href="Redesign Home.dc.html" style="display: flex; align-items: center; gap: 0.55em; text-decoration: none; color: var(--ink);">
+        <span aria-hidden="true" style="display: inline-flex; flex-shrink: 0;">
+          <svg width="38" height="38" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <polygon points="6,17 34,17 20,6" fill="var(--accent)" stroke="var(--edge)" stroke-width="2.5" stroke-linejoin="round"></polygon>
+            <rect x="9" y="17" width="22" height="17" fill="var(--brand)" stroke="var(--edge)" stroke-width="2.5" stroke-linejoin="round"></rect>
+            <rect x="16.5" y="23" width="7" height="11" fill="var(--accent)" stroke="var(--edge)" stroke-width="2.5" stroke-linejoin="round"></rect>
+            <line x1="20" y1="6" x2="20" y2="1.5" stroke="var(--edge)" stroke-width="2.5" stroke-linecap="round"></line>
+            <polygon points="20,1.5 28,3.5 20,6" fill="var(--accent)" stroke="var(--edge)" stroke-width="2" stroke-linejoin="round"></polygon>
+          </svg>
+        </span>
+        <span style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1;">Thrive<span style="color: var(--brand);">65</span></span>
+      </a>
+
+      <nav aria-label="Primary" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(1rem, 0.935rem + 0.326vw, 1.1875rem); font-weight: 600; font-size: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem);">
+        <a href="Redesign Home.dc.html#overview" style="color: var(--ink); text-decoration: none; padding: 0.35em 0;" style-hover="color: var(--brand);">Overview</a>
+        <a href="Redesign Home.dc.html#faq" style="color: var(--ink); text-decoration: none; padding: 0.35em 0;" style-hover="color: var(--brand);">FAQ</a>
+
+        <span data-dd="true" style="position: relative; display: inline-flex;">
+          <button onClick="{{ toggleResources }}" aria-expanded="{{ resourcesOpen }}" style="display: inline-flex; align-items: center; gap: 0.4em; background: none; border: none; cursor: pointer; font: inherit; font-weight: 600; color: var(--brand); padding: 0.35em 0;">
+            Resources
+            <svg width="10" height="7" viewBox="0 0 10 7" aria-hidden="true" style="transition: transform 0.15s ease; transform: {{ chevTransform }};"><polyline points="1,1.5 5,5.5 9,1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+          </button>
+          <sc-if value="{{ resourcesOpen }}" hint-placeholder-val="{{ false }}">
+            <div role="menu" style="position: absolute; top: calc(100% + 10px); right: 0; min-width: 230px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.14); padding: 0.5rem; display: flex; flex-direction: column; z-index: 50;">
+              <a href="#" onClick="{{ closeResources }}" role="menuitem" style="color: var(--ink); text-decoration: none; font-weight: 600; padding: 0.6em 0.8em; border-radius: 8px; white-space: nowrap;" style-hover="background: var(--tint); color: var(--brand);">Board Meeting Recaps</a>
+              <a href="Board Advocacy Guide.dc.html" onClick="{{ closeResources }}" role="menuitem" style="color: var(--brand); background: var(--tint); text-decoration: none; font-weight: 600; padding: 0.6em 0.8em; border-radius: 8px; white-space: nowrap;">Board Advocacy Guide</a>
+              <a href="#" onClick="{{ closeResources }}" role="menuitem" style="color: var(--ink); text-decoration: none; font-weight: 600; padding: 0.6em 0.8em; border-radius: 8px; white-space: nowrap;" style-hover="background: var(--tint); color: var(--brand);">Op-Eds &amp; Letters</a>
+            </div>
+          </sc-if>
+        </span>
+
+        <button onClick="{{ toggleMode }}" aria-label="{{ modeToggleLabel }}" title="{{ modeToggleLabel }}" style="width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0;" style-hover="border-color: var(--brand); color: var(--brand);">
+          <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+          </sc-if>
+          <sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"></circle><line x1="8" y1="0.8" x2="8" y2="2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="8" y1="13.4" x2="8" y2="15.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="0.8" y1="8" x2="2.6" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="13.4" y1="8" x2="15.2" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="2.9" y1="2.9" x2="4.2" y2="4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="11.8" y1="11.8" x2="13.1" y2="13.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="13.1" y1="2.9" x2="11.8" y2="4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line><line x1="4.2" y1="11.8" x2="2.9" y2="13.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></line></svg>
+          </sc-if>
+        </button>
+
+        <a href="Redesign Home.dc.html#signup" style="background: var(--accent); color: var(--on-accent); padding: 0.55em 1.2em; border-radius: 999px; text-decoration: none; font-weight: 700; border: 2px solid var(--edge);" style-hover="background: var(--accent-hover);">Join us</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ── Page header band ── -->
+    <section data-screen-label="Page header" style="background: var(--band-alt); transition: background 0.25s ease;">
+      <div style="max-width: 760px; margin-inline: auto; padding-inline: clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem); padding-block: clamp(2rem, 1.870rem + 0.652vw, 2.375rem) clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem);">
+        <div style="font-family: 'Public Sans', sans-serif; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem); color: var(--secondary); margin: 0 0 0.6em;">Resources</div>
+        <h1 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(2.074rem, 1.787rem + 1.436vw, 2.8992rem); line-height: 1.1; margin: 0 0 0.4em;">Board Advocacy Guide</h1>
+        <p style="margin: 0 0 0.3em; font-weight: 700;">District 65 School Board Advocacy Guide</p>
+        <p style="margin: 0; font-style: italic; color: var(--muted); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem);">Speak up. Show up. Help D65 Thrive.</p>
+      </div>
+    </section>
+
+    <!-- ── Article body ── -->
+    <article class="t65-doc" data-screen-label="Guide body" style="padding-block: clamp(2rem, 1.870rem + 0.652vw, 2.375rem) clamp(3rem, 2.804rem + 0.978vw, 3.5625rem);">
+      <div style="max-width: 760px; margin-inline: auto; padding-inline: clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem); display: flex; flex-direction: column; gap: clamp(0.750rem, 0.701rem + 0.245vw, 0.891rem);">
+
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem); line-height: 1.15; margin: 0.5em 0 0.1em;">Why Engage the School Board?</h2>
+        <p style="margin: 0;">School boards make decisions that directly affect every student, teacher, and family in our community — everything from curriculum and budgets to safety policies and school hours. Board members are elected officials who are accountable to you. Your voice matters more than you may think.</p>
+        <p style="margin: 0;">Community members who show up consistently and speak clearly can shift board priorities, change votes, and build lasting relationships with decision-makers.</p>
+
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem); line-height: 1.15; margin: 0.75em 0 0.1em; color: var(--brand);">Know Our School Board</h2>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">How Boards Work</h3>
+        <p style="margin: 0;">Our board has 7 elected members who set policy, approve budgets, and hire the superintendent. They typically meet around twice a month in public sessions. One meeting is the Committee of the Whole, where all members discuss topics in depth without taking final action; the other is the formal Board Meeting where more formal actions take place. Both have time allotted for public comments at the beginning of the meeting.</p>
+
+        <div style="border: 2px solid var(--edge); border-radius: 12px; overflow: hidden; margin: 0.4em 0;">
+          <table>
+            <tbody>
+              <tr><th>Board website</th><td><a href="https://www.district65.net/about/board-of-education/board-meetings" style="color: var(--link);">district65.net/board-meetings</a></td></tr>
+              <tr><th>Meeting schedule</th><td>Usually Monday evenings, starting at 5 or 6pm (depending on whether there's a closed session — noted on the agenda). To receive an email notice when agendas are posted, contact Adeela Qureshi, Board Secretary, at (847) 859-8111 or <a href="mailto:qureshia@district65.net" style="color: var(--link);">qureshia@district65.net</a>.</td></tr>
+              <tr><th>Location</th><td>JEH Early Childhood Center, 1500 McDaniel Ave, Evanston, IL 60201</td></tr>
+              <tr><th>Online</th><td>Meetings are livestreamed if you can't attend in person: <a href="https://www.youtube.com/@district6541/streams" style="color: var(--link);">youtube.com/@district6541/streams</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">Learn the Players</h3>
+        <ul style="margin: 0; padding-left: 1.4em;">
+          <li style="padding-left: 0.35em; margin-bottom: 0.5em;"><strong>Superintendent</strong> — the district's top administrator; they and their cabinet often present at meetings. Interim is Eric Witherspoon; the board will start a search for a permanent superintendent.</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.5em;"><strong>Board President/Chair</strong> — runs the meetings, sets the agenda tone. Nichole Pinkard, 3 years remaining on term.</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.5em;"><strong>Vice Chair</strong> — fills in when Chair is absent. Chris Van Nostrand, last year of term (board-appointed to a vacant seat).</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.5em;"><strong>Individual members</strong> — each may have a focus or committee role: Pat Anderson (former Chair, 3 yrs remaining), Sergio Hernandez (former Chair, last year), Maria Opdyke (3 yrs remaining), Mya Wilkins (last year), Andrew Wymer (3 yrs remaining).</li>
+          <li style="padding-left: 0.35em;"><strong>Board Secretary</strong> — manages official documents and meeting logistics. Adeela Qureshi, <a href="mailto:qureshia@district65.net" style="color: var(--link);">qureshia@district65.net</a>.</li>
+        </ul>
+
+        <div style="background: var(--tint); border: 2px solid var(--edge); border-radius: 12px; padding: 1.1rem 1.4rem; margin: 0.4em 0;">
+          <div style="font-family: 'Public Sans', sans-serif; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: clamp(0.694rem, 0.672rem + 0.114vw, 0.760rem); color: var(--secondary); margin: 0 0 0.5em;">Quick tip</div>
+          <p style="margin: 0;"><a href="https://meetings.boardbook.org/Public/Organization/1247" style="color: var(--link);">Search board meeting archives</a> to see agendas, presentations, reports, and minutes — it helps you understand what's been discussed and each member's priorities before you approach them.</p>
+        </div>
+
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem); line-height: 1.15; margin: 0.75em 0 0.1em; color: var(--brand);">Speaking at Public Comment</h2>
+        <p style="margin: 0;">Public comment is your right to address elected officials directly. Most meetings allow 3 minutes per speaker; if there are a lot of speakers, they'll pro-rate to keep comments to an hour (as short as ~90 seconds). Here's how to make every second count.</p>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">Before You Go</h3>
+        <ol style="margin: 0; padding-left: 1.4em;">
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Review the <a href="https://meetings.boardbook.org/Public/Organization/1247" style="color: var(--link);">agenda</a> — you can comment on agenda items or general matters.</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Prepare your remarks in writing. 3 minutes is roughly 330–450 words; practice out loud.</li>
+          <li style="padding-left: 0.35em;">Know that board members will listen but won't comment or engage in dialogue during your remarks.</li>
+        </ol>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">Structure Your Statement</h3>
+        <div style="border: 2px solid var(--edge); border-radius: 12px; overflow: hidden; margin: 0.4em 0;">
+          <table>
+            <tbody>
+              <tr><th>0:00–0:20</th><td>Introduce yourself: name, your connection to the district (parent, teacher, resident, student)</td></tr>
+              <tr><th>0:20–1:00</th><td>State your issue clearly — one focused topic is more powerful than many</td></tr>
+              <tr><th>1:00–1:45</th><td>Provide evidence: data, personal story, or community impact</td></tr>
+              <tr><th>1:45–2:30</th><td>Make a specific ask — what do you want the board to do?</td></tr>
+              <tr><th>2:30–3:00</th><td>Thank the board</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">The Meeting</h3>
+        <ol style="margin: 0; padding-left: 1.4em;">
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Arrive 15–20 minutes early — seating and sign-up lines can fill up.</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Sign up on the sheet on a table right outside the meeting room, to the left as you walk in.</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">After signing, go in and take an open seat.</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">After a few minutes of business, the board secretary reads off groups of names. When yours is called, line up behind the podium.</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">When it's your turn, the secretary starts the timer. If you finish early, return to your seat; if the timer goes off, wrap up the last sentence or two.</li>
+          <li style="padding-left: 0.35em;">Many people stay to hear the rest of the meeting — it's also fine to leave once you're done.</li>
+        </ol>
+        <p style="margin: 0;">Afterward, send a copy of your comments to <a href="mailto:schoolboard@district65.net" style="color: var(--link);">schoolboard@district65.net</a>.</p>
+
+        <div style="background: var(--tint); border: 2px solid var(--edge); border-radius: 12px; padding: 1.1rem 1.4rem; margin: 0.4em 0;">
+          <div style="font-family: 'Public Sans', sans-serif; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: clamp(0.694rem, 0.672rem + 0.114vw, 0.760rem); color: var(--secondary); margin: 0 0 0.5em;">Dos &amp; don'ts</div>
+          <p style="margin: 0;"><strong>Do:</strong> speak calmly and respectfully, use "I" statements, stick to your time limit, leave contact info.<br><strong>Don't:</strong> attack individuals personally, go over time, bring props, or bring more issues than you can cover in your allotted minutes.</p>
+        </div>
+
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem); line-height: 1.15; margin: 0.75em 0 0.1em; color: var(--brand);">Written Advocacy</h2>
+        <p style="margin: 0;">You don't have to speak in person to make an impact. Written communications, especially submitted before a vote, are read and logged into the official record. Send comments to <a href="mailto:schoolboard@district65.net" style="color: var(--link);">schoolboard@district65.net</a>, which reaches all board members and the board secretary.</p>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">Email Best Practices</h3>
+        <ul style="margin: 0; padding-left: 1.4em;">
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Subject line: be specific — "Support for Expanded Mental Health Counselors — Board Meeting June 10"</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Open with your connection to the district and the specific issue</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Keep it around 300 words — busy board members may skim long emails</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">End with a clear ask and your contact information</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">CC the superintendent or other relevant cabinet members for added visibility</li>
+          <li style="padding-left: 0.35em;">Follow up if you don't hear back within two weeks</li>
+        </ul>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">Letters to the Board</h3>
+        <p style="margin: 0;">Formal written letters submitted before a board meeting are entered into official minutes. A brief, factual letter from 10–20 or more community members on the same issue carries significant weight.</p>
+
+        <div style="background: var(--tint); border: 2px solid var(--edge); border-radius: 12px; padding: 1.1rem 1.4rem; margin: 0.4em 0;">
+          <div style="font-family: 'Public Sans', sans-serif; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: clamp(0.694rem, 0.672rem + 0.114vw, 0.760rem); color: var(--secondary); margin: 0 0 0.5em;">Power move</div>
+          <p style="margin: 0;">Organize a letter-writing campaign. Coordinate a group to send individual emails or letters about the same issue in the week before a key vote — volume signals community concern.</p>
+        </div>
+
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem); line-height: 1.15; margin: 0.75em 0 0.1em; color: var(--brand);">Building Long-Term Influence</h2>
+        <p style="margin: 0;">One-time appearances matter, but sustained engagement is what creates lasting change. The most effective advocates treat the school board like a long-term relationship, not a single transaction.</p>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">Show Up Consistently</h3>
+        <ul style="margin: 0; padding-left: 1.4em;">
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Attend as many meetings as is feasible for you</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Show up even when your issue isn't on the agenda — presence signals engagement</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Introduce yourself to board members before or after meetings</li>
+          <li style="padding-left: 0.35em;">We recognize meeting time and location make it hard for many to attend — in-person speaking is powerful, but there are many other ways to make a difference</li>
+        </ul>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">Build Community</h3>
+        <ul style="margin: 0; padding-left: 1.4em;">
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Connect with parent-teacher organizations, neighborhood associations, and civic groups</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Partner with others — a coalition of voices is harder to ignore than one</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Share meeting dates, agendas, and your comments widely in community networks and social media</li>
+          <li style="padding-left: 0.35em;">Organize carpools or childcare so more community members can attend</li>
+        </ul>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">Work the System</h3>
+        <ul style="margin: 0; padding-left: 1.4em;">
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Request meetings with individual board members between public sessions — they may respond</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;"><a href="https://www.district65.net/community/foia-requests" style="color: var(--link);">Submit public records requests</a> (FOIA) for budgets, contracts, or reports that inform your advocacy</li>
+          <li style="padding-left: 0.35em; margin-bottom: 0.4em;">Participate in board-sponsored community surveys and input sessions</li>
+          <li style="padding-left: 0.35em;">Apply to serve on board advisory committees when opportunities arise — it puts you in the room earlier</li>
+        </ul>
+
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem); line-height: 1.15; margin: 0.75em 0 0.1em; color: var(--brand);">Sample Public Comment Script</h2>
+        <p style="margin: 0;">Adapt this template to your specific issue. Fill in the bracketed sections with your own details.</p>
+
+        <div style="background: var(--tint); border: 2px solid var(--edge); border-radius: 12px; padding: 1.1rem 1.4rem; margin: 0.4em 0;">
+          <div style="font-family: 'Public Sans', sans-serif; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: clamp(0.694rem, 0.672rem + 0.114vw, 0.760rem); color: var(--secondary); margin: 0 0 0.5em;">Sample script</div>
+          <p style="margin: 0; font-style: italic;">"Good evening. My name is [Your Name], and I am a [parent/resident/teacher] in D65. I'm here tonight to speak about [specific issue]. This matters to me because [brief personal connection or community impact]. [Share one data point, story, or example that illustrates the problem or opportunity.] I'm asking the board to [specific, actionable request] by [realistic timeframe]. Thank you for your service to our schools."</p>
+        </div>
+
+        <h2 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.728rem, 1.523rem + 1.028vw, 2.3194rem); line-height: 1.15; margin: 0.75em 0 0.1em; color: var(--brand);">Quick Reference &amp; Resources</h2>
+        <div style="border: 2px solid var(--edge); border-radius: 12px; overflow: hidden; margin: 0.4em 0;">
+          <table>
+            <tbody>
+              <tr><th>Advocacy guides &amp; toolkits</th><td>There are a lot out there — here's a few: <a href="https://www.clccrul.org/education-equity" style="color: var(--link);">clccrul.org/education-equity</a>, <a href="http://www.naacp.org/resources" style="color: var(--link);">naacp.org/resources</a>, <a href="https://www.nea.org/resource-library/toolkit-ideas-organize-locally-protect-students-and-public-schools" style="color: var(--link);">nea.org — local organizing toolkit</a></td></tr>
+              <tr><th>District website</th><td><a href="https://www.district65.net/about/board-of-education/board-meetings" style="color: var(--link);">district65.net/board-meetings</a></td></tr>
+              <tr><th>Illinois State Board of Education</th><td><a href="https://www.isbe.net/" style="color: var(--link);">isbe.net</a></td></tr>
+              <tr><th>Open records</th><td>Use the <a href="https://www.district65.net/community/foia-requests" style="color: var(--link);">Freedom of Information Act</a> (FOIA) to request communication records, budgets, contracts, and reports.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem); line-height: 1.15; margin: 0.75em 0 0.1em;">Advocacy Checklist</h3>
+        <ul style="margin: 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 0.6em;">
+          <li style="display: flex; gap: 0.7em; align-items: flex-start;"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" style="flex-shrink: 0; margin-top: 0.2em;"><rect x="1" y="1" width="18" height="18" rx="4" fill="none" stroke="var(--brand)" stroke-width="2"></rect><path d="M5 10.5 L8.5 14 L15 6.5" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>I know my school board's meeting schedule and how to sign up for public comment</li>
+          <li style="display: flex; gap: 0.7em; align-items: flex-start;"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" style="flex-shrink: 0; margin-top: 0.2em;"><rect x="1" y="1" width="18" height="18" rx="4" fill="none" stroke="var(--brand)" stroke-width="2"></rect><path d="M5 10.5 L8.5 14 L15 6.5" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>I have contact information for my board (<a href="mailto:schoolboard@district65.net" style="color: var(--link);">schoolboard@district65.net</a>)</li>
+          <li style="display: flex; gap: 0.7em; align-items: flex-start;"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" style="flex-shrink: 0; margin-top: 0.2em;"><rect x="1" y="1" width="18" height="18" rx="4" fill="none" stroke="var(--brand)" stroke-width="2"></rect><path d="M5 10.5 L8.5 14 L15 6.5" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>I can state my issue and specific ask in 3 minutes or less</li>
+          <li style="display: flex; gap: 0.7em; align-items: flex-start;"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" style="flex-shrink: 0; margin-top: 0.2em;"><rect x="1" y="1" width="18" height="18" rx="4" fill="none" stroke="var(--brand)" stroke-width="2"></rect><path d="M5 10.5 L8.5 14 L15 6.5" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>I have identified at least 2–3 others who share my concern</li>
+          <li style="display: flex; gap: 0.7em; align-items: flex-start;"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" style="flex-shrink: 0; margin-top: 0.2em;"><rect x="1" y="1" width="18" height="18" rx="4" fill="none" stroke="var(--brand)" stroke-width="2"></rect><path d="M5 10.5 L8.5 14 L15 6.5" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>I have reviewed recent board minutes or agendas related to my issue</li>
+          <li style="display: flex; gap: 0.7em; align-items: flex-start;"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" style="flex-shrink: 0; margin-top: 0.2em;"><rect x="1" y="1" width="18" height="18" rx="4" fill="none" stroke="var(--brand)" stroke-width="2"></rect><path d="M5 10.5 L8.5 14 L15 6.5" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>I know the next meeting date and have it on my calendar</li>
+        </ul>
+
+        <p style="margin: 0.75em 0 0; font-style: italic; color: var(--muted);">Democracy works when communities show up. Every meeting you attend, every comment you make, and every neighbor you bring along strengthens the schools our community deserves.</p>
+      </div>
+    </article>
+
+    <!-- curve: article → footer -->
+    <svg viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true" style="display: block; width: 100%; height: clamp(24px, 3.5vw, 48px); background: var(--footer-bg); transition: background 0.25s ease;"><path d="M0,0 L1440,0 L1440,14 Q720,64 0,14 Z" fill="var(--bg)" style="transition: fill 0.25s ease;"></path></svg>
+  </main>
+
+  <!-- ── Footer (shared with home) ── -->
+  <footer data-screen-label="Footer" style="background: var(--footer-bg); color: var(--footer-ink); padding-block: clamp(2rem, 1.870rem + 0.652vw, 2.375rem); font-size: clamp(0.833rem, 0.792rem + 0.203vw, 0.950rem); transition: background 0.25s ease;">
+    <div style="max-width: 1040px; margin-inline: auto; padding-inline: clamp(1.5rem, 1.402rem + 0.489vw, 1.7813rem);">
+      <p style="margin: 0 0 0.35em;"><span style="font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); color: var(--footer-head); font-size: clamp(1.2rem, 1.101rem + 0.495vw, 1.4844rem);">Thrive<span style="color: var(--accent);">65</span></span></p>
+      <p style="margin: 0 0 1em; color: var(--footer-head); font-weight: 600;">Community advocacy for District 65 schools</p>
+      <p style="margin: 0 0 1em;">Thrive65 is an independent community coalition and is not affiliated with or operated by D65.</p>
+      <p style="margin: 0;">© 2026 Thrive65</p>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;hue&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;Lake Teal&quot;, &quot;options&quot;: [&quot;Lake Teal&quot;, &quot;Evergreen&quot;, &quot;Electric Blue&quot;, &quot;Ultraviolet&quot;], &quot;tsType&quot;: &quot;'Lake Teal' | 'Evergreen' | 'Electric Blue' | 'Ultraviolet'&quot;, &quot;section&quot;: &quot;Brand hue&quot; },
+  &quot;mode&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;auto&quot;, &quot;options&quot;: [&quot;auto&quot;, &quot;light&quot;, &quot;dark&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Theme&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    resourcesOpen: false,
+    userMode: null,
+    systemDark: false,
+  };
+
+  hueSlug(name) {
+    return {
+      "Lake Teal": "lake-teal",
+      "Evergreen": "evergreen",
+      "Electric Blue": "electric-blue",
+      "Ultraviolet": "ultraviolet",
+    }[name] || "lake-teal";
+  }
+
+  componentDidMount() {
+    this._mq = window.matchMedia("(prefers-color-scheme: dark)");
+    this._mqHandler = (e) => this.setState({ systemDark: e.matches });
+    this.setState({ systemDark: this._mq.matches });
+    this._mq.addEventListener("change", this._mqHandler);
+
+    this._docClick = (e) => {
+      if (this.state.resourcesOpen && !e.target.closest("[data-dd]")) {
+        this.setState({ resourcesOpen: false });
+      }
+    };
+    document.addEventListener("click", this._docClick);
+  }
+
+  componentWillUnmount() {
+    if (this._mq) this._mq.removeEventListener("change", this._mqHandler);
+    document.removeEventListener("click", this._docClick);
+  }
+
+  resolveMode() {
+    if (this.state.userMode) return this.state.userMode;
+    const prop = this.props.mode ?? "auto";
+    if (prop === "light" || prop === "dark") return prop;
+    return this.state.systemDark ? "dark" : "light";
+  }
+
+  renderVals() {
+    const mode = this.resolveMode();
+    return {
+      hue: this.hueSlug(this.props.hue ?? "Lake Teal"),
+      modeResolved: mode,
+      isDark: mode === "dark",
+      isLight: mode !== "dark",
+      modeToggleLabel: mode === "dark" ? "Switch to light mode" : "Switch to dark mode",
+      toggleMode: () => this.setState({ userMode: this.resolveMode() === "dark" ? "light" : "dark" }),
+
+      resourcesOpen: this.state.resourcesOpen,
+      chevTransform: this.state.resourcesOpen ? "rotate(180deg)" : "rotate(0deg)",
+      toggleResources: (e) => {
+        e.stopPropagation();
+        this.setState((s) => ({ resourcesOpen: !s.resourcesOpen }));
+      },
+      closeResources: (e) => {
+        e.preventDefault();
+        this.setState({ resourcesOpen: false });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
