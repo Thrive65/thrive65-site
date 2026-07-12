@@ -30,7 +30,9 @@ Our board has 7 elected members who set policy, approve budgets, and hire the su
 * **Individual members** \- each may have a focus or committee role: Pat Anderson (former Chair, 3 years remaining), Sergio Hernandez (former Chair, last year of board term), Maria Opdyke (3 years remaining), Mya Wilkins (last year), Andrew Wymer (3 years remaining)  
 * **Board Secretary** \- manages official documents and meeting logistics. Adeela Qureshi, [qureshia@district65.net](mailto:qureshia@district65.net) 
 
-> Quick Tip  [Search board meeting archives](https://meetings.boardbook.org/Public/Organization/1247) to see agendas, presentations, reports, and board minutes. This can help you understand what’s been discussed and to understand each member's priorities, voting history, and the issues they care most about before you approach them.
+> **Quick Tip**
+>
+> [Search board meeting archives](https://meetings.boardbook.org/Public/Organization/1247) to see agendas, presentations, reports, and board minutes. This can help you understand what’s been discussed and to understand each member's priorities, voting history, and the issues they care most about before you approach them.
 
 ## **Speaking at Public Comment**
 
@@ -61,7 +63,11 @@ Public comment is your right to address elected officials directly. Most meeting
 6. Many people stay to listen to the rest of the meeting, but it is also okay to leave when you are done.   
 7. Afterward, send a copy of your comments to [schoolboard@district65.net](mailto:schoolboard@district65.net).
 
-> Dos & Don'ts  DO: speak calmly and respectfully, use "I" statements, stick to your time limit, and leave contact info.   DON'T: attack individuals personally, go over time, bring props, or bring more issues than you can cover in your allotted minutes.
+> **Dos & Don'ts**
+>
+> DO: speak calmly and respectfully, use "I" statements, stick to your time limit, and leave contact info.
+>
+> DON'T: attack individuals personally, go over time, bring props, or bring more issues than you can cover in your allotted minutes.
 
 ## **Written Advocacy**
 
@@ -109,7 +115,9 @@ One-time appearances matter, but sustained engagement is what creates lasting ch
 
 Adapt this template to your specific issue. Fill in the bracketed sections with your own details. 
 
-> Sample Script  “Good evening. My name is [Your Name], and I am a [parent/resident/teacher] in D65. I'm here tonight to speak about [specific issue]. This matters to me because [brief personal connection or community impact]. [Share one data point, story, or example that illustrates the problem or opportunity.] I'm asking the board to [specific, actionable request] by [realistic timeframe]. Thank you for your service to our schools.”
+> **Sample Script**
+>
+> “Good evening. My name is [Your Name], and I am a [parent/resident/teacher] in D65. I'm here tonight to speak about [specific issue]. This matters to me because [brief personal connection or community impact]. [Share one data point, story, or example that illustrates the problem or opportunity.] I'm asking the board to [specific, actionable request] by [realistic timeframe]. Thank you for your service to our schools.”
 
 ## **Quick Reference & Resources**
 
