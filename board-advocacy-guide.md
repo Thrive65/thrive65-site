@@ -165,24 +165,23 @@ Adapt this template to your specific issue. Fill in the bracketed sections with 
 
 ## **Quick Reference & Resources**
 
-| Advocacy Guides & Toolkits | There are a lot out there, here’s a few\! [https://www.clccrul.org/education-equity](https://www.clccrul.org/education-equity)   [www.naacp.org/resources](http://www.naacp.org/resources)  [https://www.nea.org/resource-library/toolkit-ideas-organize-locally-protect-students-and-public-schools](https://www.nea.org/resource-library/toolkit-ideas-organize-locally-protect-students-and-public-schools)  |
+| Advocacy Guides & Toolkits | There are a lot out there, here’s a few\! [clccrul.org/education-equity](https://www.clccrul.org/education-equity),   [naacp.org/resources](http://www.naacp.org/resources), [nea.org \- local organizing toolkit](https://www.nea.org/resource-library/toolkit-ideas-organize-locally-protect-students-and-public-schools) |
 | :---- | :---- |
-| **District website** | [https://www.district65.net/about/board-of-education/board-meetings](https://www.district65.net/about/board-of-education/board-meetings)  |
-| **Illinois State Board of Education** | [https://www.isbe.net/](https://www.isbe.net/)  |
+| **District website** | [district65.net/board-meetings](https://www.district65.net/about/board-of-education/board-meetings)  |
+| **Illinois State Board of Education** | [isbe.net](https://www.isbe.net/)  |
 | **Open records** | Use [Freedom of Information Act](https://www.district65.net/community/foia-requests) (FOIA) law to request communication records, budgets, contracts, and reports. |
 
 ### Advocacy Checklist
 
-* I know my school board's meeting schedule and how to sign up for public comment
+- [ ] I know my school board's meeting schedule and how to sign up for public comment  
+- [ ] I have contact information for my board ([schoolboard@district65.net](mailto:schoolboard@district65.net))  
+- [ ] I can state my issue and specific ask in 3 minutes or less  
+- [ ] I have identified at least 2-3 others who share my concern  
+- [ ] I have reviewed recent board minutes or agendas related to my issue  
+- [ ] I know the next meeting date and have it on my calendar
 
-* I have contact information for my board ([schoolboard@district65.net](mailto:schoolboard@district65.net))
+(mkdwn test)
 
-* I can state my issue and specific ask in 3 minutes or less
-
-* I have identified at least 2-3 others who share my concern
-
-* I have reviewed recent board minutes or agendas related to my issue
-
-* I know the next meeting date and have it on my calendar
+[ ] I know my school board's meeting schedule and how to sign up for public comment
 
 *Democracy works when communities show up. Every meeting you attend, every comment you make, and every neighbor you bring along strengthens the schools our community deserves.*
