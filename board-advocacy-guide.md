@@ -180,8 +180,4 @@ Adapt this template to your specific issue. Fill in the bracketed sections with 
 - [ ] I have reviewed recent board minutes or agendas related to my issue  
 - [ ] I know the next meeting date and have it on my calendar
 
-(mkdwn test)
-
-[ ] I know my school board's meeting schedule and how to sign up for public comment
-
 *Democracy works when communities show up. Every meeting you attend, every comment you make, and every neighbor you bring along strengthens the schools our community deserves.*
