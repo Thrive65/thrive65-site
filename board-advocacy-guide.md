@@ -18,9 +18,9 @@ Our board has 7 elected members who set policy, approve budgets, and hire the su
 
 | Board website | [https://www.district65.net/about/board-of-education/board-meetings](https://www.district65.net/about/board-of-education/board-meetings)  |
 | :---- | :---- |
-| Meeting schedule | Usually on Monday evenings, starting at 5 or 6 (depending on if there is a closed session portion. This should be noted on the agenda.  To receive an email notice when meeting agendas are posted, please contact Adeela Qureshi, Board Secretary, at (847) 859-8111 or at [qureshia@district65.net](mailto:qureshia@district65.net). |
-| Location | JEH Early Childhood Center 1500 McDaniel Ave, Evanston, IL 60201 |
-| Online | Meetings are livestreamed here if you cannot attend in person.  [https://www.youtube.com/@district6541/streams](https://www.youtube.com/@district6541/streams)  |
+| **Meeting schedule** | Usually on Monday evenings, starting at 5 or 6 (depending on if there is a closed session portion. This should be noted on the agenda.  To receive an email notice when meeting agendas are posted, please contact Adeela Qureshi, Board Secretary, at (847) 859-8111 or at [qureshia@district65.net](mailto:qureshia@district65.net). |
+| **Location** | JEH Early Childhood Center 1500 McDaniel Ave, Evanston, IL 60201 |
+| **Online** | Meetings are livestreamed here if you cannot attend in person.  [https://www.youtube.com/@district6541/streams](https://www.youtube.com/@district6541/streams)  |
 
 ### Learn the Players
 
@@ -30,7 +30,7 @@ Our board has 7 elected members who set policy, approve budgets, and hire the su
 * **Individual members** \- each may have a focus or committee role: Pat Anderson (former Chair, 3 years remaining), Sergio Hernandez (former Chair, last year of board term), Maria Opdyke (3 years remaining), Mya Wilkins (last year), Andrew Wymer (3 years remaining)  
 * **Board Secretary** \- manages official documents and meeting logistics. Adeela Qureshi, [qureshia@district65.net](mailto:qureshia@district65.net) 
 
-> Quick Tip [Search](https://meetings.boardbook.org/Public/Organization/1247) board meeting archives to see agendas, presentations, reports, and board minutes. This can help you understand what’s been discussed and to understand each member's priorities, voting history, and the issues they care most about before you approach them.
+> Quick Tip  [Search board meeting archives](https://meetings.boardbook.org/Public/Organization/1247) to see agendas, presentations, reports, and board minutes. This can help you understand what’s been discussed and to understand each member's priorities, voting history, and the issues they care most about before you approach them.
 
 ## **Speaking at Public Comment**
 
@@ -46,10 +46,10 @@ Public comment is your right to address elected officials directly. Most meeting
 
 | 0:00–0:20 | Introduce yourself: name, your connection to the district (parent, teacher, resident, student) |
 | :---- | :---- |
-| 0:20–1:00 | State your issue clearly — one focused topic is more powerful than many |
-| 1:00–1:45 | Provide evidence: data, personal story, or community impact |
-| 1:45–2:30 | Make a specific ask — what do you want the board to do? |
-| 2:30–3:00 | Thank the board |
+| **0:20–1:00** | State your issue clearly — one focused topic is more powerful than many |
+| **1:00–1:45** | Provide evidence: data, personal story, or community impact |
+| **1:45–2:30** | Make a specific ask — what do you want the board to do? |
+| **2:30–3:00** | Thank the board |
 
 ### The Meeting
 
@@ -61,7 +61,7 @@ Public comment is your right to address elected officials directly. Most meeting
 6. Many people stay to listen to the rest of the meeting, but it is also okay to leave when you are done.   
 7. Afterward, send a copy of your comments to [schoolboard@district65.net](mailto:schoolboard@district65.net).
 
-> Dos & Don'ts DO: speak calmly and respectfully, use "I" statements, stick to your time limit, and leave contact info.  DON'T: attack individuals personally, go over time, bring props, or bring more issues than you can cover in your allotted minutes.
+> Dos & Don'ts  DO: speak calmly and respectfully, use "I" statements, stick to your time limit, and leave contact info.   DON'T: attack individuals personally, go over time, bring props, or bring more issues than you can cover in your allotted minutes.
 
 ## **Written Advocacy**
 
@@ -69,25 +69,20 @@ You don't have to speak in person to make an impact. Written communications, esp
 
 ### Email Best Practices
 
-* Subject line: Be specific "Support for Expanded Mental Health Counselors — Board Meeting June 10"
-
-* Open with your connection to the district and the specific issue
-
-* Keep it around 300 words — busy board members may skim long emails
-
-* End with a clear ask and your contact information
-
-* CC the superintendent or other relevant cabinet members for added visibility
-
+* Subject line: Be specific "Support for Expanded Mental Health Counselors — Board Meeting June 10"  
+* Open with your connection to the district and the specific issue  
+* Keep it around 300 words — busy board members may skim long emails  
+* End with a clear ask and your contact information  
+* CC the superintendent or other relevant cabinet members for added visibility  
 * Follow up if you don't hear back within two weeks Letters to the Board
 
 ### Letters to the Board
 
-Formal written letters submitted before a board meeting are entered into official minutes. A brief, factual letter from 10-20 or more community members on the same issue carries significant weight. 
+Formal written letters submitted before a board meeting are entered into official minutes. A brief, factual letter from 10-20 or more community members on the same issue carries significant weight.
 
 > Power Move Organize a letter-writing campaign. Coordinate a group to send individual emails or letters about the same issue in the week before a key vote — volume signals community concern.
 
-## **Building Long-Term Influence**
+### Building Long-Term Influence
 
 One-time appearances matter, but sustained engagement is what creates lasting change. The most effective advocates treat the school board like a long-term relationship, not a single transaction.
 
@@ -114,15 +109,15 @@ One-time appearances matter, but sustained engagement is what creates lasting ch
 
 Adapt this template to your specific issue. Fill in the bracketed sections with your own details. 
 
-> Sample Script “Good evening. My name is [Your Name], and I am a [parent/resident/teacher] in D65. I'm here tonight to speak about [specific issue]. This matters to me because [brief personal connection or community impact]. [Share one data point, story, or example that illustrates the problem or opportunity.] I'm asking the board to [specific, actionable request] by [realistic timeframe]. Thank you for your service to our schools.”
+> Sample Script  “Good evening. My name is [Your Name], and I am a [parent/resident/teacher] in D65. I'm here tonight to speak about [specific issue]. This matters to me because [brief personal connection or community impact]. [Share one data point, story, or example that illustrates the problem or opportunity.] I'm asking the board to [specific, actionable request] by [realistic timeframe]. Thank you for your service to our schools.”
 
 ## **Quick Reference & Resources**
 
 | Advocacy Guides & Toolkits | There are a lot out there, here’s a few\! [clccrul.org/education-equity](https://www.clccrul.org/education-equity), [naacp.org/resources](http://www.naacp.org/resources), [nea.org \- local organizing toolkit](https://www.nea.org/resource-library/toolkit-ideas-organize-locally-protect-students-and-public-schools) |
 | :---- | :---- |
-| District website | [district65.net/board-meetings](https://www.district65.net/about/board-of-education/board-meetings)  |
-| Illinois State Board of Education | [isbe.net](https://www.isbe.net/)  |
-| Open records | Use [Freedom of Information Act](https://www.district65.net/community/foia-requests) (FOIA) law to request communication records, budgets, contracts, and reports. |
+| **District website** | [district65.net/board-meetings](https://www.district65.net/about/board-of-education/board-meetings)  |
+| **Illinois State Board of Education** | [isbe.net](https://www.isbe.net/)  |
+| **Open records** | Use [Freedom of Information Act](https://www.district65.net/community/foia-requests) (FOIA) law to request communication records, budgets, contracts, and reports. |
 
 ### Advocacy Checklist
 
