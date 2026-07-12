@@ -574,7 +574,73 @@ function exportDocAsMarkdown(docId) {
 // If you notice other formatting artifacts after publishing, check the live
 // page and tell Claude — this function is easy to extend.
 function cleanGoogleMarkdown(markdown) {
-  return markdown.replace(/\\([_*\[\]])/g, "$1").trim();
+  const unescaped = markdown.replace(/\\([_*\[\]])/g, "$1").trim();
+  return singleCellTablesToBlockquotes(unescaped);
+}
+
+/* =========================================================================
+ * Single-cell tables → blockquote callouts
+ *
+ * Google Docs has no blockquote, so authors mark asides (Quick Tip, Power
+ * Move, sample scripts) as one-cell tables. A single-cell table is a
+ * `| … |` content row (no interior pipe) immediately followed by a
+ * one-column separator row (`| :---- |`, `|---|`, …). Rewrite each into a
+ * Markdown blockquote so it renders as a callout card.
+ *
+ * Recovering the label: Google Docs strips bold from a single-cell table (the
+ * cell IS the header row) and flattens the cell's internal line breaks into
+ * runs of 2+ spaces. So a two-line cell —
+ *     Dos & Don'ts
+ *     DO: speak calmly…
+ * exports as `Dos & Don'ts  DO: speak calmly…`. Split on those runs: if the
+ * first line is a short phrase, treat it as the callout's bold label line and
+ * the remaining lines as body paragraphs. A surviving `**bold**` opener is
+ * honored too. With no short first line, the whole cell is the quote body.
+ * ========================================================================= */
+
+function singleCellTablesToBlockquotes(markdown) {
+  const lines = markdown.split("\n");
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const cellMatch = lines[i].match(/^\s*\|(.+)\|\s*$/);
+    const sepMatch = lines[i + 1] && lines[i + 1].match(/^\s*\|\s*:?-+:?\s*\|\s*$/);
+    // One column only: the content row has no interior pipe, and the row
+    // below it is a single-column separator.
+    if (cellMatch && sepMatch && cellMatch[1].indexOf("|") === -1) {
+      out.push.apply(out, cellToBlockquote(cellMatch[1].trim()));
+      i++; // consume the separator row
+      continue;
+    }
+    out.push(lines[i]);
+  }
+  return out.join("\n");
+}
+
+function cellToBlockquote(cell) {
+  // In-cell line breaks arrive as runs of 2+ spaces; split them back into lines.
+  let lines = cell.split(/\s{2,}/).map((s) => s.trim()).filter((s) => s.length);
+  if (lines.length === 0) return [`> ${cell.trim()}`];
+
+  let label = null;
+  const boldOpener = lines[0].match(/^\*\*(.+?)\*\*\s*(.*)$/);
+  if (boldOpener) {
+    // A surviving bold opener (e.g. from a body-row cell) is the label.
+    label = boldOpener[1].trim();
+    const rest = boldOpener[2].trim();
+    lines = rest ? [rest, ...lines.slice(1)] : lines.slice(1);
+  } else if (lines.length >= 2 && lines[0].length <= 40) {
+    // A short first line reads as the label; the rest is body.
+    label = lines[0];
+    lines = lines.slice(1);
+  }
+
+  const out = [];
+  if (label) out.push(`> **${label}**`);
+  lines.forEach((line) => {
+    if (out.length) out.push(">");
+    out.push(`> ${line}`);
+  });
+  return out.length ? out : [`> ${cell.trim()}`];
 }
 
 /* =========================================================================

@@ -185,6 +185,24 @@ accordion automatically:
 - Everything below it, up to the next Heading 2, becomes that question's
   answer (you can use bold, links, lists, etc. — they'll carry over).
 
+## Callouts (Quick Tip, Power Move, sample scripts)
+
+Google Docs has no blockquote, so to add a highlighted callout card, use a
+**one-cell table** (Insert → Table → 1×1). On publish the script rewrites any
+single-cell table into a Markdown blockquote, which renders as a tinted,
+framed callout on the page.
+
+- **Put the label on its own line** to give the callout a heading. Inside the
+  one-cell table, type the label (e.g. `Quick Tip`), press **Enter**, then type
+  the body on the next line. On publish the first short line becomes the small
+  uppercase label and the rest becomes the body. (Don't rely on **bold** for
+  the label — Google Docs drops bold from the top row of a table, which is all
+  a one-cell table is. A separate line is what survives the export.)
+- If everything is on a single line, the whole cell just becomes the callout
+  body with no label.
+- Multi-cell tables (2+ columns) are left alone — they publish as normal
+  definition tables (framed, with the first **column** shaded as labels).
+
 ## Known limitations (v1)
 
 - **The sidebar appears in all your Docs**, but publishing is restricted to

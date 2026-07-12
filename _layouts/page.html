@@ -1,7 +1,14 @@
 ---
 layout: default
 ---
-<article class="page wrapper region">
-  <h1>{{ page.title }}</h1>
+<section class="page-header bg-surface-alt">
+  <div class="wrapper">
+    {% if page.eyebrow %}<p class="text-eyebrow">{{ page.eyebrow }}</p>{% endif %}
+    <h1>{{ page.title }}</h1>
+    {% if page.description %}<p class="text-deemphasized">{{ page.description }}</p>{% endif %}
+  </div>
+</section>
+<div class="wave" style="--wave-above: var(--band-alt); --wave-below: var(--bg);"></div>
+<article class="page wrapper region flow">
   {{ content }}
 </article>
