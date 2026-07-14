@@ -389,8 +389,9 @@
   .site-header nav a:hover { color: var(--brand); }
 
   /* Markdown-driven link list (from _includes/site-nav.md) — a flex row of
-     items that sits in the nav cluster alongside the toggle and CTA. */
-  .site-header nav ul {
+     items that sits in the nav cluster alongside the toggle and CTA. Scoped
+     to the top-level list (`> ul`) so nested dropdown lists don't inherit it. */
+  .site-header nav > ul {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -402,8 +403,9 @@
   .site-header nav li { position: relative; }
 
   /* Dropdown: a list item that nests a list. JS replaces the label text node
-     with this button (chevron follows the text colour via currentColor); the
-     nested list is the menu, shown while the button is expanded. */
+     with this button (chevron follows the text colour via currentColor) and
+     manages the nested list as a Disclosure region (shown via the `hidden`
+     attribute — see head.html). */
   .site-header nav .nav-dropdown-toggle {
     display: inline-flex;
     align-items: center;
@@ -419,22 +421,31 @@
   .site-header nav .nav-dropdown-toggle:focus-visible { color: var(--brand); }
   .site-header nav .nav-dropdown-toggle svg { transition: transform 0.15s ease; }
   .site-header nav .nav-dropdown-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+  /* Nested list. Un-enhanced (no JS) it degrades to a plain indented sub-list
+     that stays visible and reachable; the floating-panel treatment is gated on
+     `html.js`, and the `[hidden]` utility hides it while collapsed. */
   .site-header nav li ul {
-    position: absolute;
-    top: calc(100% + var(--space-2xs));
-    inset-inline-start: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    padding-inline-start: var(--space-s);
+    display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
+  }
+  html.js .site-header nav li ul {
+    position: absolute;
+    top: calc(100% + var(--space-2xs));
+    inset-inline-start: 0;
     min-width: max-content;
     padding: var(--space-2xs);
     background: var(--tint);
     border: var(--border-thin) solid var(--line);
     border-radius: var(--radius-card);
     z-index: 20;
-    display: none;
   }
-  .site-header nav .nav-dropdown-toggle[aria-expanded="true"] + ul { display: flex; }
   .site-header nav li ul a {
     display: block;
     padding: var(--space-2xs) var(--space-xs);
@@ -915,9 +926,11 @@
 
     /* Nav link list stacks; dropdown menu opens inline (indented) rather than
        as a floating panel — visibility still driven by the toggle. */
-    .site-header nav ul { flex-direction: column; align-items: flex-start; gap: 0; width: 100%; }
+    .site-header nav > ul { flex-direction: column; align-items: flex-start; gap: 0; width: 100%; }
     .site-header nav li { width: 100%; }
-    .site-header nav li ul {
+    /* Same `html.js` specificity as the desktop floating-panel rule, so this
+       inline treatment wins here regardless of source order. */
+    html.js .site-header nav li ul {
       position: static;
       padding: 0;
       padding-inline-start: var(--space-s);
@@ -1024,7 +1037,11 @@
   }
 
   /* ─ Show / hide ─ generic helpers to toggle an element in/out of layout.
-     .hidden removes it entirely; .visible restores its default display. */
+     .hidden removes it entirely; .visible restores its default display.
+     [hidden] makes the native attribute authoritative over component display
+     rules, so the Disclosure controller (see head.html) can reliably collapse
+     any region by toggling it. */
+  [hidden] { display: none !important; }
   .hidden { display: none !important; }
   .visible { display: revert !important; }
 

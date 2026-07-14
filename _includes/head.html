@@ -11,6 +11,9 @@
 
 <script>
   (function () {
+    // Progressive-enhancement flag: components that collapse content only do
+    // so once JS can reveal it again (see the `html.js` guards in main.css).
+    document.documentElement.classList.add("js");
     var t = localStorage.getItem("theme") || "auto";
     var dark = t === "dark" ||
       (t === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
@@ -26,8 +29,76 @@
     localStorage.setItem("theme", next);
   });
 
-  // Dropdown menus — enhance each nested nav list into an aria button toggle
-  // (progressive enhancement: the label text node becomes the button label).
+  // ---------------------------------------------------------------------- //
+  // Disclosure — a generic show/hide controller for any trigger + region.
+  //
+  // Mark a trigger with these attributes and it just works (dropdowns, menus,
+  // modals, …); no per-widget wiring:
+  //   aria-controls="REGION_ID"  the element it shows/hides
+  //   aria-expanded="false"      current state (the controller keeps it live)
+  //   data-disclosure="GROUP"    identifies it as a disclosure; a non-empty
+  //                              GROUP makes same-group triggers exclusive
+  //   data-dismiss="outside esc focusout"  space list of auto-close rules
+  //                              (optional; defaults to "outside esc")
+  //
+  // The region is shown/hidden via the `hidden` attribute, so un-enhanced
+  // markup (no JS) stays visible and reachable. Closing via Escape returns
+  // focus to the trigger.
+  // ---------------------------------------------------------------------- //
+  var Disclosure = (function () {
+    function region(trigger) { return document.getElementById(trigger.getAttribute("aria-controls")); }
+    function isOpen(trigger) { return trigger.getAttribute("aria-expanded") === "true"; }
+    function triggers() { return Array.prototype.slice.call(document.querySelectorAll("[data-disclosure]")); }
+    function openTriggers() { return triggers().filter(isOpen); }
+    function dismiss(trigger) { return (trigger.getAttribute("data-dismiss") || "outside esc").split(/\s+/); }
+
+    function set(trigger, open, returnFocus) {
+      if (!trigger || isOpen(trigger) === open) return;
+      if (open) closeGroup(trigger);
+      trigger.setAttribute("aria-expanded", open ? "true" : "false");
+      var r = region(trigger);
+      if (r) r.hidden = !open;
+      if (!open && returnFocus) trigger.focus();
+    }
+    function closeGroup(except) {
+      var group = except.getAttribute("data-disclosure");
+      if (!group) return;
+      triggers().forEach(function (t) {
+        if (t !== except && t.getAttribute("data-disclosure") === group) set(t, false);
+      });
+    }
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest) return;
+      var trigger = e.target.closest("[data-disclosure]");
+      if (trigger) { set(trigger, !isOpen(trigger)); return; }
+      // A click outside an open region closes triggers that opt into "outside".
+      openTriggers().forEach(function (t) {
+        var r = region(t);
+        if (dismiss(t).indexOf("outside") !== -1 && r && !r.contains(e.target)) set(t, false);
+      });
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      openTriggers().forEach(function (t) {
+        if (dismiss(t).indexOf("esc") !== -1) set(t, false, true);
+      });
+    });
+    document.addEventListener("focusout", function (e) {
+      var to = e.relatedTarget; // element gaining focus (null when leaving the page)
+      openTriggers().forEach(function (t) {
+        if (dismiss(t).indexOf("focusout") === -1) return;
+        var r = region(t);
+        if (to && (t.contains(to) || (r && r.contains(to)))) return;
+        set(t, false);
+      });
+    });
+
+    return { set: set };
+  })();
+
+  // Nav dropdowns — enhance each nested nav list into a disclosure button
+  // (the leading label text node of the <li> becomes the button label).
   document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".site-header nav li > ul").forEach(function (menu, i) {
       var li = menu.parentNode, label = "", node = li.firstChild;
@@ -36,23 +107,20 @@
         if (node.nodeType === 3) { label += node.textContent; li.removeChild(node); }
         node = next;
       }
-      menu.id = "nav-menu-" + i;
+      menu.id = menu.id || "nav-menu-" + i;
+      menu.hidden = true;
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "nav-dropdown-toggle";
       btn.setAttribute("aria-expanded", "false");
-      btn.setAttribute("aria-haspopup", "true");
       btn.setAttribute("aria-controls", menu.id);
+      btn.setAttribute("data-disclosure", "nav");            // exclusive group
+      btn.setAttribute("data-dismiss", "outside esc focusout");
       btn.innerHTML = label.trim() +
         ' <svg width="10" height="7" viewBox="0 0 10 7" aria-hidden="true"><polyline points="1,1.5 5,5.5 9,1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       li.insertBefore(btn, menu);
     });
   });
-  function closeDropdowns(except) {
-    document.querySelectorAll(".nav-dropdown-toggle[aria-expanded='true']").forEach(function (b) {
-      if (b !== except) b.setAttribute("aria-expanded", "false");
-    });
-  }
 
   // Mobile nav — hamburger toggles a slide-in panel (delegated)
   function closeNav() {
@@ -73,23 +141,16 @@
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
       return;
     }
-    // Dropdown toggle — flip its own state, close any others
-    var dd = e.target.closest(".nav-dropdown-toggle");
-    if (dd) {
-      var wasOpen = dd.getAttribute("aria-expanded") === "true";
-      closeDropdowns(dd);
-      dd.setAttribute("aria-expanded", wasOpen ? "false" : "true");
-      return;
-    }
-    // A click anywhere else closes open dropdowns (unless inside their menu)
-    if (!e.target.closest(".site-header nav li ul")) closeDropdowns();
     // Close the mobile panel when tapping the backdrop or following a nav link
+    // (dropdown toggles are buttons, so they don't match and don't close it).
     if (e.target.closest(".nav-backdrop") || e.target.closest(".site-header nav a")) {
       closeNav();
     }
   });
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") { closeDropdowns(); closeNav(); }
+    // Dropdowns handle their own Escape (via the Disclosure controller); this
+    // closes the mobile slide-in panel.
+    if (e.key === "Escape") closeNav();
   });
 </script>
 
