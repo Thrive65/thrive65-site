@@ -4,7 +4,7 @@ title: Home
 ---
 
 <section class="hero hero-hue">
-  <div class="wrapper hero-grid">
+  <div class="wide wrapper hero-grid">
     <div class="hero-copy">
       {% capture hero_md %}{% include home-hero.md %}{% endcapture %}
       {{ hero_md | markdownify }}

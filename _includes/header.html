@@ -1,7 +1,7 @@
 <a class="skip-link" href="#main">Skip to main content</a>
 
 <header class="site-header">
-  <div class="wrapper repel">
+  <div class="wrapper repel wide">
     <a class="brand cluster" href="{{ '/' | relative_url }}">
       <span class="wordmark">Thrive<span class="wordmark-accent">65</span></span>
     </a>
@@ -14,9 +14,7 @@
     </button>
     <div class="nav-backdrop" hidden></div>
     <nav id="primary-nav" class="cluster" aria-label="Primary">
-      <a href="{{ '/' | relative_url }}#overview">Overview</a>
-      <a href="{{ '/' | relative_url }}#faq">FAQ</a>
-      <a href="{{ '/board-meeting-recaps/' | relative_url }}">Board Meetings</a>
+      {% capture site_nav %}{% include site-nav.md %}{% endcapture %}{{ site_nav | markdownify }}
       <button type="button" class="theme-toggle" aria-label="Toggle light/dark theme">
         <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
           <circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>

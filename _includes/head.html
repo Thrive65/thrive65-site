@@ -26,6 +26,34 @@
     localStorage.setItem("theme", next);
   });
 
+  // Dropdown menus — enhance each nested nav list into an aria button toggle
+  // (progressive enhancement: the label text node becomes the button label).
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".site-header nav li > ul").forEach(function (menu, i) {
+      var li = menu.parentNode, label = "", node = li.firstChild;
+      while (node && node !== menu) {
+        var next = node.nextSibling;
+        if (node.nodeType === 3) { label += node.textContent; li.removeChild(node); }
+        node = next;
+      }
+      menu.id = "nav-menu-" + i;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "nav-dropdown-toggle";
+      btn.setAttribute("aria-expanded", "false");
+      btn.setAttribute("aria-haspopup", "true");
+      btn.setAttribute("aria-controls", menu.id);
+      btn.innerHTML = label.trim() +
+        ' <svg width="10" height="7" viewBox="0 0 10 7" aria-hidden="true"><polyline points="1,1.5 5,5.5 9,1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      li.insertBefore(btn, menu);
+    });
+  });
+  function closeDropdowns(except) {
+    document.querySelectorAll(".nav-dropdown-toggle[aria-expanded='true']").forEach(function (b) {
+      if (b !== except) b.setAttribute("aria-expanded", "false");
+    });
+  }
+
   // Mobile nav — hamburger toggles a slide-in panel (delegated)
   function closeNav() {
     var header = document.querySelector(".site-header");
@@ -45,13 +73,23 @@
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
       return;
     }
-    // Close when tapping the backdrop or following a nav link
+    // Dropdown toggle — flip its own state, close any others
+    var dd = e.target.closest(".nav-dropdown-toggle");
+    if (dd) {
+      var wasOpen = dd.getAttribute("aria-expanded") === "true";
+      closeDropdowns(dd);
+      dd.setAttribute("aria-expanded", wasOpen ? "false" : "true");
+      return;
+    }
+    // A click anywhere else closes open dropdowns (unless inside their menu)
+    if (!e.target.closest(".site-header nav li ul")) closeDropdowns();
+    // Close the mobile panel when tapping the backdrop or following a nav link
     if (e.target.closest(".nav-backdrop") || e.target.closest(".site-header nav a")) {
       closeNav();
     }
   });
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closeNav();
+    if (e.key === "Escape") { closeDropdowns(); closeNav(); }
   });
 </script>
 

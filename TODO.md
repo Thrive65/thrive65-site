@@ -4,19 +4,16 @@
 ------------------------
 
 ### Functional
-- Make nav editable from GDoc, add "Resources" dropdown from claude design
 - ![ ] Spanish translations / i18n
 - [ ] Handling images in posts/pages
 
 ### Design
-- Internal page design (sections, heading colors, tables, callouts, section curves)
-- fix form styles
 - Charts! Need JS charts.
 - full sweep of basic element margins & padding. (e.g. ul, ul > li). Reset defaults, convert all spacing to fluid --space vars.
-- more margins. We have defaults (using em, on specific elements) and .flow (lobotomized owl) - need to align these different systems. Use one everywhere, make it fluid, remove the old one.
+    - more margins. We have defaults (using em, on specific elements) and .flow (lobotomized owl) - need to align these different systems. Use one everywhere, make it fluid, remove the old one.
 - pick theme/hue
 - logo, favicon (`assets/images/favicon.svg`)
-- hero art
+- hero art - colorize/tokenize
 
 ## pre launch
 ------------------------

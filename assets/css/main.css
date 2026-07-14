@@ -388,6 +388,60 @@
   }
   .site-header nav a:hover { color: var(--brand); }
 
+  /* Markdown-driven link list (from _includes/site-nav.md) — a flex row of
+     items that sits in the nav cluster alongside the toggle and CTA. */
+  .site-header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s);
+  }
+  .site-header nav li { position: relative; }
+
+  /* Dropdown: a list item that nests a list. JS replaces the label text node
+     with this button (chevron follows the text colour via currentColor); the
+     nested list is the menu, shown while the button is expanded. */
+  .site-header nav .nav-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding-block: 0.35em;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .site-header nav .nav-dropdown-toggle:hover,
+  .site-header nav .nav-dropdown-toggle:focus-visible { color: var(--brand); }
+  .site-header nav .nav-dropdown-toggle svg { transition: transform 0.15s ease; }
+  .site-header nav .nav-dropdown-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .site-header nav li ul {
+    position: absolute;
+    top: calc(100% + var(--space-2xs));
+    inset-inline-start: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    min-width: max-content;
+    padding: var(--space-2xs);
+    background: var(--tint);
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-card);
+    z-index: 20;
+    display: none;
+  }
+  .site-header nav .nav-dropdown-toggle[aria-expanded="true"] + ul { display: flex; }
+  .site-header nav li ul a {
+    display: block;
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+  }
+
   /* Brand link — .cluster on the element supplies the flex display */
   .brand {
     font-family: var(--font-display);
@@ -516,11 +570,6 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     align-items: stretch;
     gap: var(--space-l);
-  }
-  /* The two-column hero needs room the prose measure can't give it, so it
-     opts up to the wide cap (block layer beats .wrapper in composition). */
-  .hero-grid.wrapper {
-    inline-size: min(100% - 2 * var(--gutter), var(--measure-wide));
   }
   .hero-copy {
     display: flex;
@@ -864,9 +913,22 @@
     }
     .site-header.nav-open nav { transform: translateX(0); }
 
+    /* Nav link list stacks; dropdown menu opens inline (indented) rather than
+       as a floating panel — visibility still driven by the toggle. */
+    .site-header nav ul { flex-direction: column; align-items: flex-start; gap: 0; width: 100%; }
+    .site-header nav li { width: 100%; }
+    .site-header nav li ul {
+      position: static;
+      padding: 0;
+      padding-inline-start: var(--space-s);
+      background: none;
+      border: 0;
+    }
+
     /* Even top/bottom padding gives each link a balanced tap target,
        and drives the vertical rhythm instead of a gap on the parent. */
-    .site-header nav a:not(.nav-cta) {
+    .site-header nav a:not(.nav-cta),
+    .site-header nav .nav-dropdown-toggle {
       font-size: var(--step-1);
       padding-block: var(--space-xs);
     }
@@ -947,6 +1009,11 @@
   .mt-m  { margin-block-start: var(--space-m); }
   .mt-l  { margin-block-start: var(--space-l); }
   .mt-xl { margin-block-start: var(--space-xl); }
+
+  /* wide cap wrapper */
+  .wide.wrapper {
+    inline-size: min(100% - 2 * var(--gutter), var(--measure-wide));
+  }
 
   .visually-hidden {
     position: absolute;
