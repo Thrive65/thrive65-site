@@ -1,4 +1,6 @@
-* [FAQ]({{ '/' | relative_url }}#faq)
-* Resources
-  * [Board Advocacy Guide]({{ '/board-advocacy-guide/' | relative_url }})
-* [Board Meeting Recaps]({{ '/board-meeting-recaps/' | relative_url }})
+* [About](#who-we-are)  
+* [FAQ](#faq)  
+* Analysis  
+* Resources  
+  * [Board Advocacy Guide](https://thrive65.github.io/thrive65-site/board-advocacy-guide/)  
+  * [Board Meeting Recaps](https://thrive65.github.io/thrive65-site/board-meeting-recaps/)
