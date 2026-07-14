@@ -19,6 +19,8 @@ bundle exec jekyll serve --baseurl ""
 
 Visit `http://localhost:4000`. The `--baseurl ""` override is needed locally because `_config.yml` sets `baseurl: "/thrive65-site"` for the GitHub Pages project-page URL.
 
+**A dev server is always running on `http://localhost:4000/` — assume it's live.** Just reload the page to verify a change (Jekyll `--watch` rebuilds automatically); don't start, kill, or rebuild the server to check your work. If a change genuinely needs a full rebuild, run it but leave the server serving on `:4000` afterward.
+
 ## How content flows
 
 ```
