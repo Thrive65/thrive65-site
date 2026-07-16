@@ -118,14 +118,13 @@
   --footer-head: #EDF5EE;
   --footer-ink:  #B7CCBD;
 
-  /* ---- Illustration aliases (auto-follow hue + theme; no separate art palette) */
-  --art-line:   var(--edge);
-  --art-fill:   var(--brand);
-  --art-fill-2: var(--brand-strong);
-  --art-win:    var(--accent);
-  --art-pop:    var(--bloom);
-  --art-tree:   var(--brand);
-  --art-clock:  var(--card);
+  /* ---- Illustration — constants (same across all hues) ------------------ */
+  --art-sky:   transparent;         /* hero-bg shows through */
+  --art-warm:  hsl(39 100% 55%);    /* marigold */
+  --art-pop:   hsl(339 70% 50%);    /* rose */
+  --art-clock: hsl(185 40% 97%);    /* near-white */
+  --art-line:  hsl(190 45% 10%);    /* near-black */
+  --art-ink:   hsl(190 38% 18%);    /* near-black */
 }
 
 /* ============================================================================
@@ -151,6 +150,12 @@
   --footer-bg:   #070E0A;           /* shared */
   --footer-head: #EDF5EE;           /* shared */
   --footer-ink:  #B7CCBD;           /* shared */
+
+  --art-warm:  hsl(42 100% 60%);
+  --art-pop:   hsl(342 90% 68%);
+  --art-clock: hsl(185 25% 93%);
+  --art-line:  hsl(190 45% 8%);
+  --art-ink:   hsl(190 42% 12%);
 }
 
 /* ============================================================================
@@ -167,6 +172,9 @@
   --hero-muted: hsla(189, 65%, 13%, 1); 
   --hero-em: var(--accent);
   --band-alt: hsla(189, 30%, 92%, 1);
+  --art-cloud: hsl(191 40% 96%); --art-wall-2: hsl(185 26% 91%); --art-wall: hsl(200 30% 76%);
+  --art-roof: hsl(189 62% 27%); --art-foliage: hsl(150 55% 33%); --art-foliage-2: hsl(158 50% 55%);
+  --art-warm-2: hsl(189 85% 90%); --art-warm-3: hsl(9 90% 85%); --art-ground: hsl(193 16% 85%);
 }
 .hue-evergreen {
   --brand: #0F7A45; 
@@ -177,6 +185,9 @@
   --hero-muted: #082A18; 
   --hero-em: var(--accent);
   --band-alt: hsla(150, 34%, 93%, 1);
+  --art-cloud: hsl(151 40% 96%); --art-wall-2: hsl(145 24% 91%); --art-wall: hsl(162 28% 76%);
+  --art-roof: hsl(149 58% 24%); --art-foliage: hsl(150 60% 22%); --art-foliage-2: hsl(140 48% 46%);
+  --art-warm-2: hsl(150 65% 84%); --art-warm-3: hsl(315 75% 85%); --art-ground: hsl(153 16% 85%);
 }
 .hue-electric-blue {
   --brand: hsla(227, 90%, 42%, 1); 
@@ -187,6 +198,9 @@
   --hero-muted: hsla(227,
    90%, 17%, 1); --hero-em: #FFFFFF;
   --band-alt: #E7ECFF;
+  --art-cloud: hsl(229 45% 97%); --art-wall-2: hsl(223 26% 92%); --art-wall: hsl(238 30% 78%);
+  --art-roof: hsl(227 62% 40%); --art-foliage: hsl(210 50% 40%); --art-foliage-2: hsl(202 48% 58%);
+  --art-warm-2: hsl(224 90% 90%); --art-warm-3: hsl(30 95% 85%); --art-ground: hsl(231 18% 86%);
 }
 .hue-ultraviolet {
   --brand: #7A18D4; 
@@ -197,50 +211,65 @@
   --hero-muted: #1B0E42; 
   --hero-em: #FFFFFF;
   --band-alt: #F1E6FF;
+  --art-cloud: hsl(273 45% 97%); --art-wall-2: hsl(267 26% 92%); --art-wall: hsl(282 30% 78%);
+  --art-roof: hsl(271 60% 40%); --art-foliage: hsl(285 45% 40%); --art-foliage-2: hsl(266 45% 50%);
+  --art-warm-2: hsl(271 80% 90%); --art-warm-3: hsl(95 68% 85%); --art-ground: hsl(275 18% 86%);
 }
 
 /* ============================================================================
    HUE WRAPPER CLASSES — DARK  (higher specificity than the light blocks above)
    ============================================================================ */
 [data-theme="dark"] .hue-lake-teal {
-  --brand: #3FD9C0; 
-  --brand-strong: #74E8D6; 
+  --brand: #3FD9C0;
+  --brand-strong: #74E8D6;
   --link: #3FD9C0;
-  --hero-bg: #1C7687; 
+  --hero-bg: #1C7687;
   --hero-ink: #E6F3EF;
-  --hero-muted: #F0F9F5; 
+  --hero-muted: #F0F9F5;
   --hero-em: #FFC44F;
   --band-alt: hsla(189, 50%, 9%, 1);
+  --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
+  --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
+  --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
 }
 [data-theme="dark"] .hue-evergreen {
-  --brand: #4ED991; 
-  --brand-strong: #7BE8AE; 
+  --brand: #4ED991;
+  --brand-strong: #7BE8AE;
   --link: #4ED991;
-  --hero-bg: #16854F; 
+  --hero-bg: #16854F;
   --hero-ink: #E9F2E6;
-  --hero-muted: #A9CDB6; 
+  --hero-muted: #A9CDB6;
   --hero-em: var(--accent);
   --band-alt: hsla(150, 70%, 10%, 1);
+  --art-cloud: hsl(153 30% 48%); --art-wall: hsl(150 22% 42%); --art-wall-2: hsl(162 24% 52%);
+  --art-roof: hsl(149 50% 26%); --art-foliage: hsl(150 55% 40%); --art-foliage-2: hsl(140 50% 58%);
+  --art-warm-2: hsl(150 60% 50%); --art-warm-3: hsl(315 80% 66%); --art-ground: hsl(152 26% 20%);
 }
 [data-theme="dark"] .hue-electric-blue {
-  --brand: #7E9DFF; 
-  --brand-strong: #A9BEFF; 
+  --brand: #7E9DFF;
+  --brand-strong: #A9BEFF;
   --link: #7E9DFF;
-  --hero-bg: #0033EB; 
+  --hero-bg: #0033EB;
   --hero-ink: #F2F5FF;
-  --hero-muted: #BFCCFF; 
+  --hero-muted: #BFCCFF;
   --hero-em: var(--accent);
   --band-alt: hsla(227, 90%, 14%, 1);
+  --art-cloud: hsl(229 40% 62%); --art-wall: hsl(227 26% 55%); --art-wall-2: hsl(236 28% 66%);
+  --art-roof: hsl(227 60% 34%); --art-foliage: hsl(208 50% 52%); --art-foliage-2: hsl(200 50% 66%);
+  --art-warm-2: hsl(222 92% 72%); --art-warm-3: hsl(32 95% 60%); --art-ground: hsl(228 30% 24%);
 }
 [data-theme="dark"] .hue-ultraviolet {
-  --brand: #BE8CFF; 
-  --brand-strong: #D3B4FF; 
+  --brand: #BE8CFF;
+  --brand-strong: #D3B4FF;
   --link: #BE8CFF;
-  --hero-bg: #5B16C4; 
+  --hero-bg: #5B16C4;
   --hero-ink: #F6EEFF;
-  --hero-muted: #DCC0FF; 
+  --hero-muted: #DCC0FF;
   --hero-em: var(--accent);
   --band-alt: #1B0E42;
+  --art-cloud: hsl(273 35% 62%); --art-wall: hsl(271 26% 55%); --art-wall-2: hsl(282 28% 65%);
+  --art-roof: hsl(271 55% 34%); --art-foliage: hsl(285 48% 50%); --art-foliage-2: hsl(276 48% 64%);
+  --art-warm-2: hsl(271 82% 70%); --art-warm-3: hsl(98 60% 54%); --art-ground: hsl(274 30% 22%);
 }
 
 /* ============================================================================
@@ -255,6 +284,11 @@
     --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
     --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
     --band-alt: hsla(189, 50%, 9%, 1);
+    --art-warm: hsl(42 100% 60%); --art-pop: hsl(342 90% 68%); --art-clock: hsl(185 25% 93%);
+    --art-line: hsl(190 45% 8%); --art-ink: hsl(190 42% 12%);
+    --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
+    --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
+    --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
   }
 }
 
@@ -591,8 +625,9 @@
   .hero-art {
     position: relative;
     /* intrinsic size so the absolutely-positioned SVG has a box;
-       art scales down when the grid stacks on mobile */
-    aspect-ratio: 4 / 3;
+       art scales down when the grid stacks on mobile.
+       Matches the illustration's 768×800 viewBox so it doesn't letterbox. */
+    aspect-ratio: 768 / 800;
   }
   .hero-art svg {
     position: absolute;
