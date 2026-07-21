@@ -691,12 +691,72 @@
     font-size: var(--step-0);
   }
 
+  /* ─ Heading copy-link anchors (GitHub-style) ─
+     Hover/focus reveals a chain icon in the left gutter; clicking copies an
+     absolute deep link (JS in head.html). The anchor is injected for prose
+     headings and server-rendered for FAQ items. */
+  main :is(h2, h3, h4):has(> .heading-anchor) { position: relative; }
+  .heading-anchor {
+    position: absolute;
+    right: 100%;
+    margin-right: var(--space-2xs);
+    display: inline-flex;
+    align-items: center;
+    height: 1em;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.12s ease;
+  }
+  .heading-anchor svg { width: 1em; height: 1em; }
+  .heading-anchor:hover { color: var(--brand); }
+  :is(h2, h3, h4):hover > .heading-anchor,
+  :is(h2, h3, h4):focus-within > .heading-anchor,
+  .faq-item:hover > summary > .faq-anchor,
+  .faq-item:focus-within > summary > .faq-anchor,
+  .heading-anchor:focus-visible { opacity: 1; }
+  /* Touch devices have no hover — keep anchors visible. */
+  @media (hover: none) {
+    .heading-anchor { opacity: 1; }
+  }
+
+  /* ─ "Link copied" toast ─ bottom-center, single reusable node. */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: var(--space-m);
+    transform: translate(-50%, 1rem);
+    z-index: 100;
+    padding: var(--space-2xs) var(--space-s);
+    border-radius: var(--radius-pill);
+    background: var(--ink);
+    color: var(--bg);
+    font-size: var(--step--1);
+    font-weight: 600;
+    box-shadow: 0 4px 16px hsla(0, 0%, 0%, 0.2);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .toast { transition: opacity 0.2s ease, transform 0.2s ease; }
+  }
+
   /* ─ FAQ accordion (native <details>/<summary> — no JS required) ─ */
   .faq-item {
     background: var(--card);
     border: var(--border-bold) solid var(--edge);
     border-radius: var(--radius-card);
-    overflow: hidden;
+    /* overflow visible so the gutter copy-link anchor (right:100%) isn't
+       clipped; children stay rectangular within the rounded frame anyway. */
+    position: relative;   /* gutter anchor positioning */
+  }
+  .faq-anchor {
+    /* summary is padded; center vertically against that first line */
+    top: calc(var(--space-xs) + 0.5em);
+    transform: translateY(-50%);
   }
   /* .cluster on the <summary> element supplies display:flex; override gap here */
   .faq-item summary {
@@ -722,6 +782,7 @@
 
   .faq-icon {
     flex-shrink: 0;
+    margin-inline-start: auto;   /* pin the +/− to the right edge */
     width: 1.4em;
     height: 1.4em;
     border-radius: 50%;
@@ -742,7 +803,7 @@
 
   .faq-answer {
     padding-block: 0 var(--space-s);
-    padding-inline: var(--space-l) var(--space-s);
+    padding-inline: var(--space-xs) var(--space-s);
     color: var(--muted);
   }
   .faq-answer :last-child { margin-bottom: 0; }

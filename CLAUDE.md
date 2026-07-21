@@ -53,6 +53,11 @@ Files edited by hand:
 
 **Apps Script add-on (`apps-script/Code.gs`):** Runs as a Google Workspace Add-on (sidebar UI, not Extensions menu). Settings are split between Script Properties (GitHub token/owner/repo/branch, Drive folder ID — shared across docs) and Document Properties (content type, target path, metadata — per-doc). The `doPublish_()` function exports the Doc as Markdown via the Drive REST API, then commits to GitHub. FAQ docs are parsed by `parseFaqMarkdown()` into `faqArrayToYaml()`. See `apps-script/SETUP.md` for the full one-time setup.
 
+**Heading copy-link anchors (`_includes/head.html` IIFE):** Content headings get a GitHub-style hover-revealed chain icon that copies an absolute deep link and shows a `.toast` ("Link copied"). It's a progressive-enhancement IIFE (styles in the CSS `block` layer):
+- **Prose headings** — on `DOMContentLoaded` the JS injects an `<a class="heading-anchor">` into every `main :is(h2, h3, h4)[id]` (kramdown emits the `id`s), skipping `.page-header` titles. So any new content heading is covered automatically — but only if it's an `h2`/`h3`/`h4` *with an id*. Don't use a heading element for decorative eyebrow/kicker text (use a `<p>`); an `id`'d heading there would wrongly get an anchor, and it breaks the document outline besides.
+- **FAQ items** — `_includes/faq.html` gives each `<details>` an `id="faq-{{ question | slugify }}"` and server-renders a `.faq-anchor` inside the `<summary>`. The shared click handler copies the link (and calls `stopPropagation()` so it doesn't toggle the accordion); a separate open-on-hash routine expands and scrolls to a `.faq-item` whose id matches `location.hash`, on load and on `hashchange`.
+  - **Caveat — FAQ deep links are not stable:** `#faq-<slug>` is derived from the question text via Jekyll's `slugify`, so **rewording a question (re-published from Google Docs) changes its link** and old links 404 to that item. Acceptable for now; revisit only if stable FAQ permalinks become a requirement (would need an explicit per-item id in the Doc/YAML instead of a text-derived slug).
+
 ## CSS & HTML methodology (CUBE CSS)
 
 `assets/css/main.css` is organized with native cascade layers: `@layer reset, base, composition, block, utility, exception`.

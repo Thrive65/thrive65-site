@@ -154,6 +154,100 @@
     // closes the mobile slide-in panel.
     if (e.key === "Escape") closeNav();
   });
+
+  // ---------------------------------------------------------------------- //
+  // Heading anchors — GitHub-style copy-link on content headings + FAQ items.
+  //
+  // Prose headings with an id get a hover-revealed chain icon that copies an
+  // absolute deep link and shows a "Link copied" toast. FAQ items ship the
+  // anchor server-side (see faq.html); the shared click handler and the
+  // open-on-hash routine handle the accordion case too.
+  // ---------------------------------------------------------------------- //
+  (function () {
+    var ANCHOR_SVG =
+      '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0Z"/></svg>';
+
+    var toastEl, toastTimer;
+    function toast() {
+      if (!toastEl) {
+        toastEl = document.createElement("div");
+        toastEl.className = "toast";
+        toastEl.setAttribute("role", "status");
+        toastEl.setAttribute("aria-live", "polite");
+        toastEl.textContent = "Link copied";
+        document.body.appendChild(toastEl);
+      }
+      // Force reflow so re-triggering restarts the transition.
+      toastEl.classList.remove("is-visible");
+      void toastEl.offsetWidth;
+      toastEl.classList.add("is-visible");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toastEl.classList.remove("is-visible"); }, 2000);
+    }
+
+    function copy(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(toast, fallback);
+      } else {
+        fallback();
+      }
+      function fallback() {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "absolute";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); } catch (err) {}
+        document.body.removeChild(ta);
+        toast();
+      }
+    }
+
+    // Inject copy-link anchors into prose headings that carry an id (kramdown
+    // emits these). FAQ anchors are server-rendered, so skip anything already
+    // holding one.
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll("main :is(h2, h3, h4)[id]").forEach(function (h) {
+        if (h.closest(".page-header") || h.querySelector(".heading-anchor")) return;
+        var a = document.createElement("a");
+        a.className = "heading-anchor";
+        a.href = "#" + h.id;
+        a.setAttribute("aria-label", "Copy link to section: " + h.textContent.trim());
+        a.innerHTML = ANCHOR_SVG;
+        h.insertBefore(a, h.firstChild);
+      });
+      openHash();
+    });
+
+    // Shared click handler for every .heading-anchor (prose + FAQ).
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest) return;
+      var a = e.target.closest(".heading-anchor");
+      if (!a) return;
+      e.preventDefault();
+      e.stopPropagation(); // keep FAQ <summary> from toggling the accordion
+      var id = a.getAttribute("href").slice(1);
+      copy(location.origin + location.pathname + a.getAttribute("href"));
+      history.replaceState(null, "", "#" + id);
+      var item = document.getElementById(id);
+      if (item && item.classList.contains("faq-item")) item.open = true;
+    });
+
+    // Expand and reveal a FAQ item when its id is the URL fragment.
+    function openHash() {
+      var id = location.hash.slice(1);
+      if (!id) return;
+      var el = document.getElementById(id);
+      if (el && el.classList.contains("faq-item")) {
+        el.open = true;
+        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      }
+    }
+    window.addEventListener("hashchange", openHash);
+  })();
 </script>
 
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
