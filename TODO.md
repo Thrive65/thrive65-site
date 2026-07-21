@@ -23,8 +23,8 @@
 
 ## pre launch
 ------------------------
-- site map
 - social media images/links
+- branded 404
 - link headings
 - a11y scan
 - Google analytics
