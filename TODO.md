@@ -23,8 +23,14 @@
 
 ## pre launch
 ------------------------
-- Google analytics?
+- site map
+- social media images/links
+- link headings
+- a11y scan
+- Google analytics
 - Domain
+- google translate
+- colorblind/dyslexia support
 
 ## Docs CMS
 ------------------------
