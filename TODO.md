@@ -23,8 +23,15 @@
 
 ## pre launch
 ------------------------
-- social media images/links
-- branded 404
+- social media images/links ✅ scaffolded — replace PLACEHOLDER assets & set real handles/links:
+    - [ ] `assets/images/og-default.png` — real 1200×630 social share image (currently placeholder)
+    - [ ] `assets/images/logo.png` — real square brand mark (currently placeholder)
+    - [ ] `assets/images/favicon.ico` + `apple-touch-icon.png` — real favicons (currently placeholder)
+    - [ ] `_config.yml` → `twitter.username` — set real X/Twitter handle (uncomment)
+    - [ ] `_config.yml` → `social.links` — add real profile URLs (Facebook, X, Instagram…)
+- branded 404 ✅ (`404.html`)
+- [ ] Google Search Console verification → `_config.yml` `webmaster_verifications: { google: <token> }`
+- [ ] `theme-color` meta tag (mobile browser chrome tint) in `_includes/head.html`
 - link headings
 - a11y scan
 - Google analytics

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Home
+title: Thrive65 | Community advocacy for District 65 schools
 ---
 
 <section class="hero hero-hue">
