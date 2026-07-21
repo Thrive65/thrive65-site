@@ -1,4 +1,4 @@
-### Evanston / Skokie · District 65
+Evanston / Skokie · District 65
 
 # Our schools *thrive* when communities show up for them.
 
