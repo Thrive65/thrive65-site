@@ -93,6 +93,14 @@
   --radius-pill: 999px;
   --radius-callout: 0 12px 12px 0;
 
+  /* ---- Motion (transition timing + easing) ----------------------
+     Three durations cover every UI transition; existing values were
+     rounded to the nearest to keep the set minimal. */
+  --ease: ease;
+  --transition-fast: 150ms;   /* hover reveals, icon rotations */
+  --transition-base: 200ms;   /* fades, toast */
+  --transition-slow: 300ms;   /* panel slide, larger transforms */
+
   /* ---- Toggle geometry ---------------------- */
   --toggle-size: 3.3em; /* theme toggle and hamburger menu, ~44px */
 
@@ -453,7 +461,7 @@
   }
   .site-header nav .nav-dropdown-toggle:hover,
   .site-header nav .nav-dropdown-toggle:focus-visible { color: var(--brand); }
-  .site-header nav .nav-dropdown-toggle svg { transition: transform 0.15s ease; }
+  .site-header nav .nav-dropdown-toggle svg { transition: transform var(--transition-fast) var(--ease); }
   .site-header nav .nav-dropdown-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
 
   /* Nested list. Un-enhanced (no JS) it degrades to a plain indented sub-list
@@ -573,7 +581,7 @@
     width: 100%;
     background: currentColor;
     border-radius: 2px;
-    transition: transform 0.25s ease, opacity 0.2s ease;
+    transition: transform var(--transition-slow) var(--ease), opacity var(--transition-base) var(--ease);
   }
   /* Morph the three bars into an X when the menu is open.
      Box is 0.85em tall with three 2px bars spaced by space-between, so the
@@ -590,7 +598,7 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
     opacity: 0;
-    transition: opacity 0.25s ease;
+    transition: opacity var(--transition-slow) var(--ease);
     z-index: 15;
   }
 
@@ -700,14 +708,20 @@
     position: absolute;
     right: 100%;
     margin-right: var(--space-2xs);
+    /* Span the heading's first line (1lh inherits the heading's font-size +
+       line-height) so align-items:center vertically centers the icon against
+       the heading text, whatever its step. */
+    top: 0;
+    height: 1lh;
     display: inline-flex;
     align-items: center;
-    height: 1em;
     color: var(--muted);
     opacity: 0;
-    transition: opacity 0.12s ease;
+    transition: opacity var(--transition-fast) var(--ease);
   }
-  .heading-anchor svg { width: 1em; height: 1em; }
+  /* Icon sized with a fixed step (not 1em) so it's consistent across heading
+     levels and stays small enough for the narrow mobile gutter. */
+  .heading-anchor svg { width: var(--step-0); height: var(--step-0); }
   .heading-anchor:hover { color: var(--brand); }
   :is(h2, h3, h4):hover > .heading-anchor,
   :is(h2, h3, h4):focus-within > .heading-anchor,
@@ -741,7 +755,7 @@
     transform: translate(-50%, 0);
   }
   @media (prefers-reduced-motion: no-preference) {
-    .toast { transition: opacity 0.2s ease, transform 0.2s ease; }
+    .toast { transition: opacity var(--transition-base) var(--ease), transform var(--transition-base) var(--ease); }
   }
 
   /* ─ FAQ accordion (native <details>/<summary> — no JS required) ─ */
@@ -795,7 +809,7 @@
     position: absolute;
     background: var(--brand);
     border-radius: 2px;
-    transition: transform 0.15s ease;
+    transition: transform var(--transition-fast) var(--ease);
   }
   .faq-icon::before { left: 30%; right: 30%; top: 50%; height: 2px; transform: translateY(-50%); }
   .faq-icon::after  { top: 30%; bottom: 30%; left: 50%; width: 2px; transform: translateX(-50%); }
@@ -1013,7 +1027,7 @@
       border-left: var(--border-thin) solid var(--line);
       box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
       transform: translateX(100%);
-      transition: transform 0.28s ease;
+      transition: transform var(--transition-slow) var(--ease);
       z-index: 20;
       overflow-y: auto;
       overscroll-behavior: contain;
