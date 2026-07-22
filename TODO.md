@@ -3,11 +3,15 @@
 ## Thrive65 Site
 ------------------------
 
+
+### Architecture
+- organize/clean up CSS & JS, add minification/build step
+- move content pages into subfolder
+- components?
+
 ### Bugs
-- hover/focus states on FAQs, keyboard navigation
 
 ### Functional
-- ![ ] Spanish translations / i18n
 - [ ] Handling images in posts/pages
 - Highlighting text shows Medium-style share tooltip
 
@@ -35,8 +39,6 @@
 - a11y scan
 - Google analytics
 - Domain
-- google translate
-- colorblind/dyslexia support
 
 ## Docs CMS
 ------------------------

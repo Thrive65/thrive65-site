@@ -22,14 +22,70 @@
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
   })();
 
-  // Theme toggle (delegated — the button lives in the header include)
-  document.addEventListener("click", function (e) {
-    var btn = e.target.closest && e.target.closest(".theme-toggle");
-    if (!btn) return;
-    var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
-  });
+  // ---------------------------------------------------------------------- //
+  // Display & accessibility settings.
+  //
+  // Each mode is an attribute on <html> with one localStorage key, restored
+  // before paint by the IIFE above (theme) / its Phase 4+ siblings. The panel
+  // itself is a Disclosure (see below); this block wires the controls inside it.
+  // ---------------------------------------------------------------------- //
+  (function () {
+    // Keep the Light | Dark segmented control's aria-pressed in sync with theme.
+    function syncTheme() {
+      var cur = document.documentElement.getAttribute("data-theme");
+      document.querySelectorAll(".a11y-segment").forEach(function (b) {
+        b.setAttribute("aria-pressed", b.getAttribute("data-theme-value") === cur ? "true" : "false");
+      });
+    }
+    document.addEventListener("DOMContentLoaded", syncTheme);
+
+    // Atkinson Hyperlegible backs the dyslexia-friendly font (Phase 5b). It's
+    // only ever needed once the panel is open, so load it lazily on first open.
+    var fontLoaded = false;
+    function loadFont() {
+      if (fontLoaded) return;
+      fontLoaded = true;
+      var l = document.createElement("link");
+      l.rel = "stylesheet";
+      l.href = "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+      document.head.appendChild(l);
+    }
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest) return;
+
+      // Theme segmented control — flip the attribute, persist, resync pressed.
+      var seg = e.target.closest(".a11y-segment");
+      if (seg) {
+        var val = seg.getAttribute("data-theme-value");
+        document.documentElement.setAttribute("data-theme", val);
+        localStorage.setItem("theme", val);
+        syncTheme();
+        return;
+      }
+
+      // First open of the panel pulls in the dyslexia font.
+      if (e.target.closest(".a11y-toggle")) { loadFont(); return; }
+
+      // ✕ and Done both close the panel and return focus to the trigger.
+      if (e.target.closest("[data-a11y-close]")) {
+        Disclosure.set(document.querySelector(".a11y-toggle"), false, true);
+        return;
+      }
+
+      // Reset all — clear the four a11y keys and return theme to Light. (Phase
+      // 4+ attributes get removed here as they're added.)
+      if (e.target.closest(".a11y-reset")) {
+        ["a11y-contrast", "a11y-cvd", "a11y-dyslexic", "a11y-textsize"].forEach(function (k) {
+          localStorage.removeItem(k);
+        });
+        document.documentElement.setAttribute("data-theme", "light");
+        localStorage.setItem("theme", "light");
+        syncTheme();
+        return;
+      }
+    });
+  })();
 
   // ---------------------------------------------------------------------- //
   // Disclosure — a generic show/hide controller for any trigger + region.

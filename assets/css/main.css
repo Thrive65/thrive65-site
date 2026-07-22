@@ -543,10 +543,10 @@
   }
   .nav-cta:hover { background: var(--accent-hover); color: var(--on-accent) !important; }
 
-  /* Nav toggle pills — the theme toggle and the language dropdown trigger share
-     geometry; the language button does NOT reuse the .theme-toggle class (that
-     would make the theme click-handler fire on it), so both are listed here. */
-  .theme-toggle,
+  /* Nav toggle pills — the accessibility trigger and the language dropdown
+     trigger share geometry; the language button does NOT reuse the .a11y-toggle
+     class (they carry different click handlers), so both are listed here. */
+  .a11y-toggle,
   .lang-toggle {
     min-width: var(--control-height);
     min-height: var(--control-height);
@@ -559,20 +559,14 @@
     color: var(--ink);
     cursor: pointer;
   }
-  .theme-toggle:hover,
+  .a11y-toggle:hover,
   .lang-toggle:hover { border-color: var(--brand); color: var(--brand); }
-  .theme-toggle:focus-visible,
+  .a11y-toggle:focus-visible,
   .lang-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-  .theme-toggle .icon-moon { display: none; }
-  [data-theme="dark"] .theme-toggle .icon-sun { display: none; }
-  [data-theme="dark"] .theme-toggle .icon-moon { display: inline; }
-  /* Text label — hidden on desktop (icon-only), shown in the mobile nav panel.
-     Names the action, i.e. the theme it switches TO. */
-  .theme-toggle-text { display: none; }
-  .theme-toggle-text::after { content: "Light mode"; }
-  [data-theme="dark"] .theme-toggle-text::after { content: "Dark mode"; }
+  /* Text label — hidden on desktop (icon-only), shown in the mobile nav panel. */
+  .a11y-toggle-text { display: none; }
 
-  /* Language dropdown — a globe pill in the .theme-toggle family (inherits its
+  /* Language dropdown — a globe pill in the nav-control family (inherits its
      geometry, hover-brand, and focus ring) that widens to hold the code + a
      chevron. The menu reuses the nav-dropdown panel treatment. */
   .lang-select { position: relative; }
@@ -628,6 +622,106 @@
     visibility: hidden;
   }
   .lang-menu button[aria-checked="true"] .lang-check { visibility: visible; }
+
+  /* Display & accessibility settings — the universal-access pill reuses the
+     nav-control geometry above; its panel is a wider version of the nav-dropdown
+     surface treatment. */
+  .a11y-select { position: relative; }
+  .a11y-toggle { gap: 0.4em; padding-inline: 0.7em; font-size: var(--step--1); }
+
+  .a11y-panel {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    inset-inline-end: 0;
+    /* Sizes to its widest row so longer labels (e.g. Spanish) never wrap; the
+       min keeps a comfortable base width, the max keeps it on-screen. */
+    min-width: 21rem;
+    width: max-content;
+    max-width: calc(100vw - 2 * var(--space-m));
+    background: var(--card);
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-card);
+    box-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.18);
+    font-size: var(--step--1);
+    z-index: 40; /* above nav dropdowns/menus */
+  }
+  /* Rows are separated by hairline dividers; the head and foot inherit them. */
+  .a11y-panel-head,
+  .a11y-row,
+  .a11y-panel-foot {
+    padding: var(--space-s) var(--space-m);
+    border-block-start: var(--border-thin) solid var(--line);
+  }
+  .a11y-panel-head { border-block-start: 0; }
+  .a11y-panel-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--step-0);
+    line-height: var(--lh-heading);
+    margin: 0;
+  }
+  .a11y-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .a11y-close:hover { border-color: var(--brand); color: var(--brand); }
+  .a11y-close:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .a11y-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
+  .a11y-row-label { font-weight: 600; white-space: nowrap; }
+
+  /* Segmented control — a bold-edge pill split into equal segments; the pressed
+     segment inverts to ink-on-card. */
+  .a11y-segmented {
+    display: inline-flex;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+  }
+  .a11y-segment {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.3em 0.9em;
+    border: 0;
+    background: var(--card);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background var(--transition-fast) var(--ease), color var(--transition-fast) var(--ease);
+  }
+  .a11y-segment svg { width: 1em; height: 1em; flex-shrink: 0; }
+  .a11y-segment + .a11y-segment { border-inline-start: var(--border-thin) solid var(--edge); }
+  .a11y-segment:hover { color: var(--brand); }
+  .a11y-segment[aria-pressed="true"] { background: var(--brand); color: var(--card); }
+  .a11y-segment[aria-pressed="true"]:hover { color: var(--card); }
+  .a11y-segment:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+  .a11y-panel-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
+  .a11y-reset {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--link);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .a11y-reset:hover { color: var(--brand-strong); }
+  .a11y-reset:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .a11y-saved { font-size: var(--step--2); }
+  /* The Done pill only surfaces in the mobile bottom sheet. */
+  .a11y-done { display: none; }
 
   /* Hamburger button — hidden on desktop, shown in the mobile media query */
   .nav-toggle {
@@ -1142,8 +1236,10 @@
       margin-block-start: var(--space-xs); 
     }
 
-    /* Theme toggle reads as a labelled row in the panel, not a lone icon */
-    .site-header nav .theme-toggle {
+    /* Accessibility trigger reads as a labelled pill, taking the slot the theme
+       toggle used to hold (top of the panel, left of the ✕). */
+    .a11y-select { position: static; }
+    .site-header nav .a11y-toggle {
       width: auto;
       gap: var(--space-2xs);
       padding-inline: var(--space-xs);
@@ -1151,8 +1247,63 @@
       top: var(--space-xs);
       right: var(--space-xl);
     }
-    .site-header nav .theme-toggle:hover { color: var(--brand); }
-    .site-header nav .theme-toggle-text { display: inline; }
+    .site-header nav .a11y-toggle:hover { color: var(--brand); }
+    .site-header nav .a11y-toggle-text { display: inline; }
+
+    /* Settings surface becomes a bottom sheet: fixed to the viewport bottom,
+       full-width, rounded top corners only, above the slide-in nav panel. */
+    .a11y-panel {
+      position: fixed;
+      inset: auto 0 0 0;
+      width: 100%;
+      max-width: none;
+      padding-block-start: var(--space-s);
+      border: var(--border-bold) solid var(--edge);
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      box-shadow: 0 -8px 24px hsla(0, 0%, 0%, 0.24);
+      z-index: 50;
+      padding-block-end: env(safe-area-inset-bottom);
+    }
+    /* Centered grabber bar. */
+    .a11y-panel::before {
+      content: "";
+      display: block;
+      width: 2.5rem;
+      height: 0.25rem;
+      margin: 0 auto var(--space-xs);
+      border-radius: var(--radius-pill);
+      background: var(--line);
+    }
+    /* The ✕ is redundant with the Done pill on the sheet — hide it, swap in Done. */
+    .a11y-panel-head .a11y-close { display: none; }
+    .a11y-saved { display: none; }
+    .a11y-done {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--control-height);
+      padding: 0.4em 1.4em;
+      border: var(--border-bold) solid var(--edge);
+      border-radius: var(--radius-pill);
+      background: var(--ink);
+      color: var(--card);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .a11y-done:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .a11y-panel-foot { justify-content: flex-end; }
+
+    /* Progressive-enhancement slide-up; snaps where @starting-style is unsupported
+       (the disclosure toggles `hidden`, which can't itself transition). */
+    @media (prefers-reduced-motion: no-preference) {
+      .a11y-panel {
+        transition: transform var(--transition-slow) var(--ease), opacity var(--transition-slow) var(--ease);
+      }
+      @starting-style {
+        .a11y-panel { transform: translateY(100%); opacity: 0; }
+      }
+    }
 
     /* Show + fade the backdrop while the panel is open */
     .site-header.nav-open .nav-backdrop {

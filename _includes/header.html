@@ -37,23 +37,39 @@
         </ul>
       </div>
 
-      <button type="button" class="theme-toggle" aria-label="Toggle light/dark theme">
-        <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-          <circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-          <line x1="8" y1="0.8" x2="8" y2="2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="8" y1="13.4" x2="8" y2="15.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="0.8" y1="8" x2="2.6" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="13.4" y1="8" x2="15.2" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="2.9" y1="2.9" x2="4.2" y2="4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="11.8" y1="11.8" x2="13.1" y2="13.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="13.1" y1="2.9" x2="11.8" y2="4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="4.2" y1="11.8" x2="2.9" y2="13.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-        <svg class="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-        </svg>
-        <span class="theme-toggle-text" aria-hidden="true"></span>
-      </button>
+      <div class="a11y-select">
+        <button type="button" class="a11y-toggle" aria-label="Display and accessibility settings"
+                aria-controls="a11y-panel" aria-expanded="false"
+                data-disclosure="nav" data-dismiss="outside esc">
+          {% include icons/universal-access.svg %}
+          <span class="a11y-toggle-text" aria-hidden="true">Accessibility</span>
+        </button>
+        <div id="a11y-panel" class="a11y-panel" hidden role="dialog"
+             aria-label="Display &amp; accessibility settings">
+          <div class="a11y-panel-head repel">
+            <h2 class="a11y-panel-title">Display &amp; accessibility</h2>
+            <button type="button" class="a11y-close" aria-label="Close settings" data-a11y-close>
+              {% include icons/close.svg %}
+            </button>
+          </div>
+
+          <div class="a11y-row">
+            <span class="a11y-row-label" id="a11y-theme-label">Theme</span>
+            <div class="a11y-segmented" role="group" aria-labelledby="a11y-theme-label">
+              <button type="button" class="a11y-segment" data-theme-value="light" aria-pressed="false">{% include icons/sun.svg %}<span>Light</span></button>
+              <button type="button" class="a11y-segment" data-theme-value="dark" aria-pressed="false">{% include icons/moon.svg %}<span>Dark</span></button>
+            </div>
+          </div>
+
+          {% comment %} Phase 4+ setting rows (switches, text size) slot in here. {% endcomment %}
+
+          <div class="a11y-panel-foot repel">
+            <button type="button" class="a11y-reset">Reset all</button>
+            <span class="a11y-saved text-deemphasized">Saved on this device</span>
+            <button type="button" class="a11y-done" data-a11y-close>Done</button>
+          </div>
+        </div>
+      </div>
 
       <a class="nav-cta" href="{{ '/' | relative_url }}#signup">Join us</a>
     </nav>
