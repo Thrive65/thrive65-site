@@ -538,12 +538,22 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     font-weight: 600;
     font-size: var(--step--1);
   }
-  .site-header nav a {
-    color: var(--ink);
+  .site-header nav a:not(.nav-cta) {
+    display: block;
     text-decoration: none;
-    padding-block: 0.35em;
+    white-space: nowrap;
+    color: var(--ink);
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--menu-radius);
+    transition: background-color var(--transition-base) var(--ease);
   }
-  .site-header nav a:hover { color: var(--brand); }
+
+  .site-header nav a:not(.nav-cta):hover,
+  .site-header nav a:not(.nav-cta):focus-visible,
+  .site-header nav .nav-dropdown-toggle:hover,
+  .site-header nav .nav-dropdown-toggle:focus-visible { 
+    background-color: var(--menu-item-hover); 
+  }
 
   /* Markdown-driven link list (from _includes/site-nav.md) — a flex row of
      items that sits in the nav cluster alongside the toggle and CTA. Scoped
@@ -555,7 +565,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-s);
+    gap: var(--space-2xs);
   }
   .site-header nav li { position: relative; }
 
@@ -567,15 +577,16 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     display: inline-flex;
     align-items: center;
     gap: 0.4em;
-    padding-block: 0.35em;
+    padding: var(--space-2xs) var(--space-xs);
     border: 0;
+    border-radius: var(--radius-sm);
     background: none;
     font: inherit;
     color: var(--ink);
     cursor: pointer;
+    transition: background-color var(--transition-base) var(--ease);
   }
-  .site-header nav .nav-dropdown-toggle:hover,
-  .site-header nav .nav-dropdown-toggle:focus-visible { color: var(--brand); }
+
   .site-header nav .nav-dropdown-toggle svg { transition: transform var(--transition-fast) var(--ease); }
   .site-header nav .nav-dropdown-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
 
@@ -604,14 +615,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     box-shadow: var(--menu-shadow);
     z-index: 20;
   }
-  .site-header nav li ul a {
-    display: block;
-    padding: var(--space-2xs) var(--space-xs);
-    border-radius: var(--radius-sm);
-    white-space: nowrap;
-  }
-  .site-header nav li ul a:hover,
-  .site-header nav li ul a:focus-visible { background: var(--menu-item-hover); }
 
   /* Desktop only: stretch the nav-link list (and its items) to the full nav-row
      height. The link list is shorter than the taller .lang-select / .a11y-select
@@ -649,17 +652,19 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
 
   /* Primary CTA pill — the one Marigold accent per view (framed) */
   .nav-cta {
-    background: var(--accent);
-    color: var(--on-accent) !important;
+    text-decoration: none;
     font-weight: 700;
     display: inline-flex;
     align-items: center;
+    background: var(--accent);
+    color: var(--on-accent);
     min-height: var(--control-height);
     padding: 0.55em 1.2em;
     border: var(--border-bold) solid var(--edge);
     border-radius: var(--radius-pill);
+    transition: background var(--transition-base) var(--ease), color var(--transition-base) var(--ease);
   }
-  .nav-cta:hover { background: var(--accent-hover); color: var(--on-accent) !important; }
+  .nav-cta:hover { background: var(--accent-hover); color: var(--on-accent); }
 
   /* Nav toggle pills — the accessibility trigger and the language dropdown
      trigger share geometry; the language button does NOT reuse the .a11y-toggle
