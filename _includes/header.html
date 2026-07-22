@@ -72,7 +72,36 @@
             </button>
           </div>
 
-          {% comment %} Phase 5+ setting rows (colorblind, dyslexia, text size) slot in here. {% endcomment %}
+          <div class="a11y-row">
+            <span class="a11y-row-label" id="a11y-cvd-label">
+              Colorblind-friendly colors
+              <span class="a11y-row-sub">Okabe–Ito palette</span>
+            </span>
+            <button type="button" class="a11y-switch" role="switch" data-setting="cvd"
+                    aria-checked="false" aria-labelledby="a11y-cvd-label">
+              <span class="a11y-switch-knob" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div class="a11y-row">
+            <span class="a11y-row-label" id="a11y-dyslexic-label">
+              Dyslexia-friendly font
+              <span class="a11y-row-sub">Atkinson Hyperlegible</span>
+            </span>
+            <button type="button" class="a11y-switch" role="switch" data-setting="dyslexic"
+                    aria-checked="false" aria-labelledby="a11y-dyslexic-label">
+              <span class="a11y-switch-knob" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div class="a11y-row">
+            <span class="a11y-row-label" id="a11y-textsize-label">Text size</span>
+            <div class="a11y-stepper" role="group" aria-labelledby="a11y-textsize-label">
+              <button type="button" class="a11y-step" data-textstep="down" aria-label="Decrease text size">A&minus;</button>
+              <span class="a11y-step-value" aria-live="polite">100%</span>
+              <button type="button" class="a11y-step" data-textstep="up" aria-label="Increase text size">A+</button>
+            </div>
+          </div>
 
           <div class="a11y-panel-foot repel">
             <button type="button" class="a11y-reset">Reset all</button>

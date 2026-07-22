@@ -86,7 +86,30 @@
         if (s) b.setAttribute("aria-checked", html.getAttribute(s.attr) === s.on ? "true" : "false");
       });
     }
-    document.addEventListener("DOMContentLoaded", function () { syncTheme(); syncSwitches(); });
+    // Text size stepper — three stops; "100" means the attribute is absent
+    // (default fluid root). End buttons disable at the extremes.
+    var TEXT_STEPS = ["100", "112", "125"];
+    function textIndex() {
+      var i = TEXT_STEPS.indexOf(html.getAttribute("data-textsize"));
+      return i === -1 ? 0 : i;
+    }
+    function applyText(i) {
+      var v = TEXT_STEPS[i];
+      if (v === "100") { html.removeAttribute("data-textsize"); localStorage.removeItem("a11y-textsize"); }
+      else { html.setAttribute("data-textsize", v); localStorage.setItem("a11y-textsize", v); }
+      syncText();
+    }
+    function syncText() {
+      var i = textIndex();
+      var val = document.querySelector(".a11y-step-value");
+      if (val) val.textContent = TEXT_STEPS[i] + "%";
+      var down = document.querySelector(".a11y-step[data-textstep='down']");
+      var up = document.querySelector(".a11y-step[data-textstep='up']");
+      if (down) down.disabled = i === 0;
+      if (up) up.disabled = i === TEXT_STEPS.length - 1;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () { syncTheme(); syncSwitches(); syncText(); });
 
     // Atkinson Hyperlegible backs the dyslexia-friendly font. Loaded lazily on
     // first panel open (or already at boot if the setting was persisted).
@@ -124,6 +147,14 @@
         return;
       }
 
+      // Text size stepper — nudge one stop within bounds.
+      var step = e.target.closest(".a11y-step[data-textstep]");
+      if (step && !step.disabled) {
+        var dir = step.getAttribute("data-textstep") === "up" ? 1 : -1;
+        applyText(Math.min(TEXT_STEPS.length - 1, Math.max(0, textIndex() + dir)));
+        return;
+      }
+
       // First open of the panel pulls in the dyslexia font.
       if (e.target.closest(".a11y-toggle")) { loadFont(); return; }
 
@@ -145,6 +176,7 @@
         localStorage.setItem("theme", "light");
         syncTheme();
         syncSwitches();
+        syncText();
         return;
       }
     });

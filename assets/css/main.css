@@ -304,6 +304,30 @@
 }
 
 /* ============================================================================
+   COLORBLIND-FRIENDLY (Okabe–Ito) — swaps the green brand/link family and the
+   pink "bloom" accent for a colorblind-safe blue/orange set. Marigold CTA is
+   unchanged (already CVD-safe). Toggled by data-cvd="on" on <html>.
+
+   Same targeting as HIGH CONTRAST below: overrides the hue tokens on the .hue-*
+   element for all four hues. These come BEFORE the HC blocks so that when both
+   are on, HIGH CONTRAST WINS (equal specificity → later source wins).
+   ============================================================================ */
+html[data-cvd="on"]:not([data-theme="dark"]) .hue-lake-teal,
+html[data-cvd="on"]:not([data-theme="dark"]) .hue-evergreen,
+html[data-cvd="on"]:not([data-theme="dark"]) .hue-electric-blue,
+html[data-cvd="on"]:not([data-theme="dark"]) .hue-ultraviolet {
+  --brand: #0072B2; --brand-strong: #004E7C; --link: #0072B2;
+  --secondary: #005A82; --bloom: #C4560A;
+}
+html[data-cvd="on"][data-theme="dark"] .hue-lake-teal,
+html[data-cvd="on"][data-theme="dark"] .hue-evergreen,
+html[data-cvd="on"][data-theme="dark"] .hue-electric-blue,
+html[data-cvd="on"][data-theme="dark"] .hue-ultraviolet {
+  --brand: #56B4E9; --brand-strong: #8CCBF0; --link: #56B4E9;
+  --secondary: #7EC8E3; --bloom: #E69F00;
+}
+
+/* ============================================================================
    HIGH CONTRAST — flattens surfaces to pure black/white and forces ≥7:1 brand
    and link colors, intentionally overriding the hue system (incl. the hero
    band). Toggled by data-contrast="high" on <html>.
@@ -337,6 +361,27 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
 /* Underline every link and thicken the header hairline for HC legibility. */
 [data-contrast="high"] a { text-decoration: underline; }
 [data-contrast="high"] .site-header { border-bottom-width: var(--border-bold); }
+
+/* ============================================================================
+   DYSLEXIA-FRIENDLY FONT — swaps both font families to Atkinson Hyperlegible,
+   drops the display weight, zeroes tracking, and opens up body leading. The
+   webfont is lazy-loaded (panel open / boot-if-persisted) in head.html.
+   Toggled by data-dyslexic="on" on <html>.
+   ============================================================================ */
+[data-dyslexic="on"] {
+  --font-body: "Atkinson Hyperlegible", sans-serif;
+  --font-display: "Atkinson Hyperlegible", sans-serif;
+  --display-weight: 700;
+  --display-tracking: 0;
+  --lh-body: 1.7;
+}
+
+/* ============================================================================
+   TEXT SIZE — scales the fluid-root knobs only (NOT zoom), so type and rlh-based
+   spacing grow together. Toggled by data-textsize on <html>.
+   ============================================================================ */
+[data-textsize="112"] { --root-min: 18; --root-max: 27; }
+[data-textsize="125"] { --root-min: 20; --root-max: 30; }
 
 /* ── reset ──────────────────────────────────────────────────────────────── */
 @layer reset {
@@ -746,6 +791,36 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     transform: translate(1.15rem, -50%);
   }
   .a11y-switch:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  /* Text-size stepper — round bold-edge A−/A+ buttons around a framed value. */
+  .a11y-stepper { display: inline-flex; align-items: center; gap: var(--space-xs); }
+  .a11y-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color var(--transition-fast) var(--ease), color var(--transition-fast) var(--ease);
+  }
+  .a11y-step:hover:not(:disabled) { border-color: var(--brand); color: var(--brand); }
+  .a11y-step:disabled { opacity: 0.4; cursor: default; }
+  .a11y-step:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .a11y-step-value {
+    min-width: 3.4em;
+    padding: 0.15em 0.4em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
 
   /* Segmented control — a bold-edge pill split into equal segments; the pressed
      segment inverts to ink-on-card. */
