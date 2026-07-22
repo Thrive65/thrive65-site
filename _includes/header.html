@@ -63,34 +63,31 @@
             </div>
 
             <div class="a11y-row">
-              <span class="a11y-row-label" id="a11y-contrast-label">
-                High contrast
-                <span class="a11y-row-sub">Black &amp; white, underlined links</span>
-              </span>
+              <span class="a11y-row-label" id="a11y-contrast-label">High contrast<sup
+                class="a11y-hint" aria-hidden="true" title="Black &amp; white, underlined links">{% include icons/help.svg %}</sup></span>
+              <span class="visually-hidden" id="a11y-contrast-hint">Black &amp; white, underlined links</span>
               <button type="button" class="a11y-switch" role="switch" data-setting="contrast"
-                      aria-checked="false" aria-labelledby="a11y-contrast-label">
+                      aria-checked="false" aria-labelledby="a11y-contrast-label" aria-describedby="a11y-contrast-hint">
                 <span class="a11y-switch-knob" aria-hidden="true"></span>
               </button>
             </div>
 
             <div class="a11y-row">
-              <span class="a11y-row-label" id="a11y-cvd-label">
-                Colorblind-friendly colors
-                <span class="a11y-row-sub">Okabe–Ito palette</span>
-              </span>
+              <span class="a11y-row-label" id="a11y-cvd-label">Colorblind-friendly colors<sup
+                class="a11y-hint" aria-hidden="true" title="Okabe–Ito palette">{% include icons/help.svg %}</sup></span>
+              <span class="visually-hidden" id="a11y-cvd-hint">Okabe–Ito palette</span>
               <button type="button" class="a11y-switch" role="switch" data-setting="cvd"
-                      aria-checked="false" aria-labelledby="a11y-cvd-label">
+                      aria-checked="false" aria-labelledby="a11y-cvd-label" aria-describedby="a11y-cvd-hint">
                 <span class="a11y-switch-knob" aria-hidden="true"></span>
               </button>
             </div>
 
             <div class="a11y-row">
-              <span class="a11y-row-label" id="a11y-dyslexic-label">
-                Dyslexia-friendly font
-                <span class="a11y-row-sub">Atkinson Hyperlegible</span>
-              </span>
+              <span class="a11y-row-label" id="a11y-dyslexic-label">Dyslexia-friendly font<sup
+                class="a11y-hint" aria-hidden="true" title="Atkinson Hyperlegible">{% include icons/help.svg %}</sup></span>
+              <span class="visually-hidden" id="a11y-dyslexic-hint">Atkinson Hyperlegible</span>
               <button type="button" class="a11y-switch" role="switch" data-setting="dyslexic"
-                      aria-checked="false" aria-labelledby="a11y-dyslexic-label">
+                      aria-checked="false" aria-labelledby="a11y-dyslexic-label" aria-describedby="a11y-dyslexic-hint">
                 <span class="a11y-switch-knob" aria-hidden="true"></span>
               </button>
             </div>

@@ -328,6 +328,9 @@ html[data-cvd="on"]:not([data-theme="dark"]) .hue-electric-blue,
 html[data-cvd="on"]:not([data-theme="dark"]) .hue-ultraviolet {
   --brand: #0072B2; --brand-strong: #004E7C; --link: #0072B2;
   --secondary: #005A82; --bloom: #C4560A;
+  /* Hero band swaps the per-hue color for the Okabe–Ito light blue (dark ink),
+     keeping the marigold emphasis, so it stays consistent with the CVD brand. */
+  --hero-bg: #56B4E9; --hero-ink: #06283D; --hero-muted: #0A3A5A; --hero-em: var(--accent);
 }
 html[data-cvd="on"][data-theme="dark"] .hue-lake-teal,
 html[data-cvd="on"][data-theme="dark"] .hue-evergreen,
@@ -335,6 +338,8 @@ html[data-cvd="on"][data-theme="dark"] .hue-electric-blue,
 html[data-cvd="on"][data-theme="dark"] .hue-ultraviolet {
   --brand: #56B4E9; --brand-strong: #8CCBF0; --link: #56B4E9;
   --secondary: #7EC8E3; --bloom: #E69F00;
+  /* Darker Okabe–Ito blue band with light ink for the dark theme. */
+  --hero-bg: #0072B2; --hero-ink: #EAF4FB; --hero-muted: #C3DEEF; --hero-em: var(--accent);
 }
 
 /* ============================================================================
@@ -396,8 +401,11 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
    TEXT SIZE — scales the fluid-root knobs only (NOT zoom), so type and rlh-based
    spacing grow together. Toggled by data-textsize on <html>.
    ============================================================================ */
+[data-textsize="87"]  { --root-min: 14; --root-max: 21; }
 [data-textsize="112"] { --root-min: 18; --root-max: 27; }
 [data-textsize="125"] { --root-min: 20; --root-max: 30; }
+[data-textsize="137"] { --root-min: 22; --root-max: 33; }
+[data-textsize="150"] { --root-min: 24; --root-max: 36; }
 
 /* ── reset ──────────────────────────────────────────────────────────────── */
 @layer reset {
@@ -780,7 +788,11 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     padding: var(--space-s) var(--space-m);
     border-block-start: var(--border-thin) solid var(--line);
   }
-  .a11y-panel-head { border-block-start: 0; }
+  /* Head keeps a persistent bottom divider (matching the item borders) so it
+     reads as docked while the body scrolls beneath it. Drop the first body
+     row's own top border so the two don't stack into a double line. */
+  .a11y-panel-head { border-block-start: 0; border-block-end: var(--border-thin) solid var(--line); }
+  .a11y-panel-body .a11y-row:first-child { border-block-start: 0; }
   .a11y-panel-title {
     font-family: var(--font-display);
     font-weight: 800;
@@ -804,8 +816,17 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   .a11y-close:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
   .a11y-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
-  .a11y-row-label { display: flex; flex-direction: column; gap: 0.1em; font-weight: 600; white-space: nowrap; }
-  .a11y-row-sub { font-weight: 400; font-size: var(--step--2); color: var(--muted); }
+  .a11y-row-label { font-weight: 600; white-space: nowrap; }
+  /* Superscript help marker: the full description lives in its native `title`
+     tooltip. Muted, cursor:help, and its icon sized off a fixed step so it never
+     couples to the label's font size the way a bare 1em would. */
+  .a11y-hint {
+    display: inline-flex;
+    margin-inline-start: 0.35em;
+    color: var(--muted);
+    cursor: help;
+  }
+  .a11y-hint svg { width: var(--step--1); height: var(--step--1); }
 
   /* Switch — a pill track with a sliding knob; role="switch" + aria-checked
      drive the on/off visuals. Off: page-bg track, ink knob left. On: brand
@@ -1246,7 +1267,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    border: var(--border-bold) solid var(--edge);
+    border: var(--border-bold) solid var(--line);
     border-radius: var(--radius-card);
     overflow: hidden;
   }
@@ -1258,8 +1279,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     font-weight: normal;
     border-bottom: var(--border-thin) solid var(--line);
   }
-  .page tr:last-child :is(th, td),
-  .post tr:last-child :is(th, td) { border-bottom: 0; }
+  .page tbody tr:last-child :is(th, td),
+  .post tbody tr:last-child :is(th, td) { border-bottom: 0; }
   .page :is(th, td):first-child,
   .post :is(th, td):first-child {
     background: var(--tint);
@@ -1450,6 +1471,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
       inset: auto 0 0 0;
       width: 100%;
       max-width: none;
+      min-width: 0;
       /* Sheet caps a clear gap below the viewport top; the flex column + body
          scroll from the base rule keep the grabber/head and foot docked. */
       max-height: calc(100dvh - var(--space-xl));

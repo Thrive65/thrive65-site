@@ -40,7 +40,7 @@
     }
     // Text size scales the fluid-root knobs (Phase 5c).
     var ts = localStorage.getItem("a11y-textsize");
-    if (ts === "112" || ts === "125") html.setAttribute("data-textsize", ts);
+    if (["87", "112", "125", "137", "150"].indexOf(ts) !== -1) html.setAttribute("data-textsize", ts);
 
     // Dyslexia font is lazy, but if it's already on, pull it in now so the
     // switch to Atkinson doesn't flash unstyled on first paint.
@@ -114,10 +114,10 @@
     }
     // Text size stepper — three stops; "100" means the attribute is absent
     // (default fluid root). End buttons disable at the extremes.
-    var TEXT_STEPS = ["100", "112", "125"];
+    var TEXT_STEPS = ["87", "100", "112", "125", "137", "150"];
     function textIndex() {
       var i = TEXT_STEPS.indexOf(html.getAttribute("data-textsize"));
-      return i === -1 ? 0 : i;
+      return i === -1 ? TEXT_STEPS.indexOf("100") : i;
     }
     function applyText(i) {
       var v = TEXT_STEPS[i];
