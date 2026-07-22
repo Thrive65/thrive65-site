@@ -3,6 +3,16 @@
 ## Thrive65 Site
 ------------------------
 
+- Lang menu: 
+  - make selected checkmark bigger
+  - bg highlight when selected
+
+- a11y menu
+  - internal scroll when too tall
+  - additional font sizes (smaller than 100%, as big as 200%)
+  - remove sub-label text (e.g. "Black & white, underlined links"). Add question mark icon superscripted to label. Show the removed text within the title "tooltip" of those options. (Default browser Title functionality OK. No custom tooltip component needed)
+  - add letter spacing ticker & tokens
+  - does colorblind pallete cover main brand colors (ultraviolet example is still purple)
 
 ### Architecture
 - organize/clean up CSS & JS, add minification/build step

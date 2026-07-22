@@ -93,6 +93,16 @@
   --radius-pill: 999px;
   --radius-callout: 0 12px 12px 0;
 
+  /* ---- Menu surface (nav dropdowns, language menu, a11y panel) -------
+     One shared treatment so every floating menu matches. Surface/border
+     use var() so they track the current theme's --card / --edge at use. */
+  --menu-surface: var(--card);
+  --menu-border: var(--border-bold) solid var(--edge);
+  --menu-radius: var(--radius-card);
+  --menu-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.18);
+  --menu-offset: var(--space-2xs); /* gap between a toggle and its menu */
+  --menu-item-hover: var(--tint);  /* hover/focus fill on menu items */
+
   /* ---- Motion (transition timing + easing) ----------------------
      Three durations cover every UI transition; existing values were
      rounded to the nearest to keep the set minimal. */
@@ -339,24 +349,30 @@ html[data-cvd="on"][data-theme="dark"] .hue-ultraviolet {
    set on <html> cascade down from there. Selector specificity clears the
    [data-theme="dark"] .hue-* blocks above.
    ============================================================================ */
+   
+html[data-contrast="high"] {
+  --hc-color-light: hsl(130 40% 98% / 1); 
+  --hc-color-dark: #0B1410;
+}
+
 html[data-contrast="high"]:not([data-theme="dark"]) .hue-lake-teal,
 html[data-contrast="high"]:not([data-theme="dark"]) .hue-evergreen,
 html[data-contrast="high"]:not([data-theme="dark"]) .hue-electric-blue,
 html[data-contrast="high"]:not([data-theme="dark"]) .hue-ultraviolet {
-  --bg: #FFFFFF; --card: #FFFFFF; --tint: #FFFFFF;
-  --line: #000000; --ink: #000000; --muted: #000000; --edge: #000000; --focus: #000000;
+  --bg: var(--hc-color-light); --card: var(--hc-color-light); --tint: var(--hc-color-light);
+  --line: var(--hc-color-dark); --ink: var(--hc-color-dark); --muted: var(--hc-color-dark); --edge: var(--hc-color-dark); --focus: var(--hc-color-dark);
   --brand: #005C31; --brand-strong: #00411F; --link: #005C31; --secondary: #00323C;
-  --hero-bg: #FFFFFF; --hero-ink: #000000; --hero-muted: #000000; --hero-em: #7A4C00;
+  --hero-bg: var(--hc-color-light); --hero-ink: var(--hc-color-dark); --hero-muted: var(--hc-color-dark); --hero-em: #7A4C00;
 }
 html[data-contrast="high"][data-theme="dark"] .hue-lake-teal,
 html[data-contrast="high"][data-theme="dark"] .hue-evergreen,
 html[data-contrast="high"][data-theme="dark"] .hue-electric-blue,
 html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
-  --bg: #000000; --card: #000000; --tint: #000000;
-  --line: #FFFFFF; --ink: #FFFFFF; --muted: #FFFFFF; --edge: #FFFFFF; --focus: #FFFF00;
+  --bg: var(--hc-color-dark); --card: var(--hc-color-dark); --tint: var(--hc-color-dark);
+  --line: var(--hc-color-light); --ink: var(--hc-color-light); --muted: var(--hc-color-light); --edge: var(--hc-color-light); --focus: #FFFF00;
   --brand: #4DFFA6; --brand-strong: #90FFC8; --link: #4DFFA6; --secondary: #9BE8FF;
-  --accent: #FFD34D; --accent-hover: #FFE58A; --on-accent: #000000;
-  --hero-bg: #000000; --hero-ink: #FFFFFF; --hero-muted: #FFFFFF; --hero-em: #FFD34D;
+  --accent: #FFD34D; --accent-hover: #FFE58A; --on-accent: var(--hc-color-dark);
+  --hero-bg: var(--hc-color-dark); --hero-ink: var(--hc-color-light); --hero-muted: var(--hc-color-light); --hero-em: #FFD34D;
 }
 /* Underline every link and thicken the header hairline for HC legibility. */
 [data-contrast="high"] a { text-decoration: underline; }
@@ -570,13 +586,14 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   }
   html.js .site-header nav li ul {
     position: absolute;
-    top: calc(100% + var(--space-2xs));
+    top: calc(100% + var(--menu-offset));
     inset-inline-start: 0;
     min-width: max-content;
     padding: var(--space-2xs);
-    background: var(--tint);
-    border: var(--border-thin) solid var(--line);
-    border-radius: var(--radius-card);
+    background: var(--menu-surface);
+    border: var(--menu-border);
+    border-radius: var(--menu-radius);
+    box-shadow: var(--menu-shadow);
     z-index: 20;
   }
   .site-header nav li ul a {
@@ -584,6 +601,19 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     padding: var(--space-2xs) var(--space-xs);
     border-radius: var(--radius-sm);
     white-space: nowrap;
+  }
+  .site-header nav li ul a:hover,
+  .site-header nav li ul a:focus-visible { background: var(--menu-item-hover); }
+
+  /* Desktop only: stretch the nav-link list (and its items) to the full nav-row
+     height. The link list is shorter than the taller .lang-select / .a11y-select
+     pill controls beside it, so without this its dropdown anchored ~8px higher.
+     Filling the row makes every menu drop from the same baseline, so the shared
+     --menu-offset aligns all three. Scoped above the mobile breakpoint so the
+     stacked mobile submenu (li as a block with the submenu below) is untouched. */
+  @media (min-width: 641px) {
+    .site-header nav > ul { align-self: stretch; align-items: stretch; }
+    .site-header nav > ul > li { display: flex; align-items: center; }
   }
 
   /* Brand link — .cluster on the element supplies the flex display */
@@ -665,16 +695,16 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
 
   .lang-menu {
     position: absolute;
-    top: calc(100% + var(--space-xs));
+    top: calc(100% + var(--menu-offset));
     inset-inline-end: 0;
     min-width: 11rem;
     margin: 0;
     padding: var(--space-2xs);
     list-style: none;
-    background: var(--card);
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-sm);
-    box-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.18);
+    background: var(--menu-surface);
+    border: var(--menu-border);
+    border-radius: var(--menu-radius);
+    box-shadow: var(--menu-shadow);
     font-size: var(--step--1);
     z-index: 30;
   }
@@ -695,7 +725,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     cursor: pointer;
   }
   .lang-menu button:hover,
-  .lang-menu button:focus-visible { background: var(--tint); }
+  .lang-menu button:focus-visible { background: var(--menu-item-hover); }
   .lang-menu .lang-check {
     flex-shrink: 0;
     color: var(--brand);
@@ -711,19 +741,37 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
 
   .a11y-panel {
     position: absolute;
-    top: calc(100% + var(--space-xs));
+    top: calc(100% + var(--menu-offset));
     inset-inline-end: 0;
     /* Sizes to its widest row so longer labels (e.g. Spanish) never wrap; the
        min keeps a comfortable base width, the max keeps it on-screen. */
     min-width: 21rem;
     width: max-content;
     max-width: calc(100vw - 2 * var(--space-m));
-    background: var(--card);
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-card);
-    box-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.18);
+    /* Never taller than the space below the sticky header: if the rows would
+       overflow the viewport (small laptop, or enlarged text size), the head and
+       foot stay docked and the options scroll internally. The reserve is the
+       panel's own top offset — header block-padding + toggle height + gap — all
+       rem-derived, so it tracks the text-size scale. */
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - var(--space-xs) - var(--control-height) - var(--menu-offset) - var(--space-s));
+    background: var(--menu-surface);
+    border: var(--menu-border);
+    border-radius: var(--menu-radius);
+    box-shadow: var(--menu-shadow);
     font-size: var(--step--1);
     z-index: 40; /* above nav dropdowns/menus */
+  }
+  /* Head and foot are docked; only the options body scrolls. min-height:0 lets
+     the body shrink below its content height so overflow-y actually engages. */
+  .a11y-panel-head,
+  .a11y-panel-foot { flex-shrink: 0; }
+  .a11y-panel-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   /* Rows are separated by hairline dividers; the head and foot inherit them. */
   .a11y-panel-head,
@@ -1361,6 +1409,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
       padding-inline-start: var(--space-s);
       background: none;
       border: 0;
+      box-shadow: none;
     }
 
     /* Even top/bottom padding gives each link a balanced tap target,
@@ -1401,6 +1450,9 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
       inset: auto 0 0 0;
       width: 100%;
       max-width: none;
+      /* Sheet caps a clear gap below the viewport top; the flex column + body
+         scroll from the base rule keep the grabber/head and foot docked. */
+      max-height: calc(100dvh - var(--space-xl));
       padding-block-start: var(--space-s);
       border: var(--border-bold) solid var(--edge);
       border-radius: var(--radius-card) var(--radius-card) 0 0;
@@ -1658,8 +1710,21 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   }
 
   /* EO "powered by" */
-  .signup .mastfoot { 
-    display: none !important; 
+  .signup .mastfoot {
+    display: none !important;
   }
-  
+
+}
+
+/* Global reduced-motion guard (unlayered !important wins over every layer).
+   Individual transitions still use motion tokens; this collapses them to a
+   near-instant snap when the OS asks for reduced motion, and stops smooth
+   scrolling. Not fully 0s so transitionend/animationend listeners still fire. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

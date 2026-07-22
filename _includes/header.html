@@ -53,53 +53,55 @@
             </button>
           </div>
 
-          <div class="a11y-row">
-            <span class="a11y-row-label" id="a11y-theme-label">Theme</span>
-            <div class="a11y-segmented" role="group" aria-labelledby="a11y-theme-label">
-              <button type="button" class="a11y-segment" data-theme-value="light" aria-pressed="false">{% include icons/sun.svg %}<span>Light</span></button>
-              <button type="button" class="a11y-segment" data-theme-value="dark" aria-pressed="false">{% include icons/moon.svg %}<span>Dark</span></button>
+          <div class="a11y-panel-body">
+            <div class="a11y-row">
+              <span class="a11y-row-label" id="a11y-theme-label">Theme</span>
+              <div class="a11y-segmented" role="group" aria-labelledby="a11y-theme-label">
+                <button type="button" class="a11y-segment" data-theme-value="light" aria-pressed="false">{% include icons/sun.svg %}<span>Light</span></button>
+                <button type="button" class="a11y-segment" data-theme-value="dark" aria-pressed="false">{% include icons/moon.svg %}<span>Dark</span></button>
+              </div>
             </div>
-          </div>
 
-          <div class="a11y-row">
-            <span class="a11y-row-label" id="a11y-contrast-label">
-              High contrast
-              <span class="a11y-row-sub">Black &amp; white, underlined links</span>
-            </span>
-            <button type="button" class="a11y-switch" role="switch" data-setting="contrast"
-                    aria-checked="false" aria-labelledby="a11y-contrast-label">
-              <span class="a11y-switch-knob" aria-hidden="true"></span>
-            </button>
-          </div>
+            <div class="a11y-row">
+              <span class="a11y-row-label" id="a11y-contrast-label">
+                High contrast
+                <span class="a11y-row-sub">Black &amp; white, underlined links</span>
+              </span>
+              <button type="button" class="a11y-switch" role="switch" data-setting="contrast"
+                      aria-checked="false" aria-labelledby="a11y-contrast-label">
+                <span class="a11y-switch-knob" aria-hidden="true"></span>
+              </button>
+            </div>
 
-          <div class="a11y-row">
-            <span class="a11y-row-label" id="a11y-cvd-label">
-              Colorblind-friendly colors
-              <span class="a11y-row-sub">Okabe–Ito palette</span>
-            </span>
-            <button type="button" class="a11y-switch" role="switch" data-setting="cvd"
-                    aria-checked="false" aria-labelledby="a11y-cvd-label">
-              <span class="a11y-switch-knob" aria-hidden="true"></span>
-            </button>
-          </div>
+            <div class="a11y-row">
+              <span class="a11y-row-label" id="a11y-cvd-label">
+                Colorblind-friendly colors
+                <span class="a11y-row-sub">Okabe–Ito palette</span>
+              </span>
+              <button type="button" class="a11y-switch" role="switch" data-setting="cvd"
+                      aria-checked="false" aria-labelledby="a11y-cvd-label">
+                <span class="a11y-switch-knob" aria-hidden="true"></span>
+              </button>
+            </div>
 
-          <div class="a11y-row">
-            <span class="a11y-row-label" id="a11y-dyslexic-label">
-              Dyslexia-friendly font
-              <span class="a11y-row-sub">Atkinson Hyperlegible</span>
-            </span>
-            <button type="button" class="a11y-switch" role="switch" data-setting="dyslexic"
-                    aria-checked="false" aria-labelledby="a11y-dyslexic-label">
-              <span class="a11y-switch-knob" aria-hidden="true"></span>
-            </button>
-          </div>
+            <div class="a11y-row">
+              <span class="a11y-row-label" id="a11y-dyslexic-label">
+                Dyslexia-friendly font
+                <span class="a11y-row-sub">Atkinson Hyperlegible</span>
+              </span>
+              <button type="button" class="a11y-switch" role="switch" data-setting="dyslexic"
+                      aria-checked="false" aria-labelledby="a11y-dyslexic-label">
+                <span class="a11y-switch-knob" aria-hidden="true"></span>
+              </button>
+            </div>
 
-          <div class="a11y-row">
-            <span class="a11y-row-label" id="a11y-textsize-label">Text size</span>
-            <div class="a11y-stepper" role="group" aria-labelledby="a11y-textsize-label">
-              <button type="button" class="a11y-step" data-textstep="down" aria-label="Decrease text size">A&minus;</button>
-              <span class="a11y-step-value" aria-live="polite">100%</span>
-              <button type="button" class="a11y-step" data-textstep="up" aria-label="Increase text size">A+</button>
+            <div class="a11y-row">
+              <span class="a11y-row-label" id="a11y-textsize-label">Text size</span>
+              <div class="a11y-stepper" role="group" aria-labelledby="a11y-textsize-label">
+                <button type="button" class="a11y-step" data-textstep="down" aria-label="Decrease text size">A&minus;</button>
+                <span class="a11y-step-value">100%</span>
+                <button type="button" class="a11y-step" data-textstep="up" aria-label="Increase text size">A+</button>
+              </div>
             </div>
           </div>
 

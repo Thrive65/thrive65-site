@@ -54,6 +54,32 @@
   })();
 
   // ---------------------------------------------------------------------- //
+  // announce(msg) — one polite live-region toast, shared by the copy-link
+  // confirmation and every a11y settings change. Visual + screen-reader in a
+  // single mechanism (role=status aria-live=polite); each call re-sets the
+  // text, which fires exactly one announcement — so no double-announce.
+  // ---------------------------------------------------------------------- //
+  var announce = (function () {
+    var el, timer;
+    return function (msg) {
+      if (!el) {
+        el = document.createElement("div");
+        el.className = "toast";
+        el.setAttribute("role", "status");
+        el.setAttribute("aria-live", "polite");
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
+      // Force reflow so re-triggering restarts the transition.
+      el.classList.remove("is-visible");
+      void el.offsetWidth;
+      el.classList.add("is-visible");
+      clearTimeout(timer);
+      timer = setTimeout(function () { el.classList.remove("is-visible"); }, 2000);
+    };
+  })();
+
+  // ---------------------------------------------------------------------- //
   // Display & accessibility settings.
   //
   // Each mode is an attribute on <html> with one localStorage key, restored
@@ -67,9 +93,9 @@
     // (the object key below); the table maps it to its <html> attribute, its
     // "on" value, and its localStorage key. Phases 5a/5b add rows here only.
     var SETTINGS = {
-      contrast: { attr: "data-contrast", on: "high", key: "a11y-contrast" },
-      cvd:      { attr: "data-cvd", on: "on", key: "a11y-cvd" },
-      dyslexic: { attr: "data-dyslexic", on: "on", key: "a11y-dyslexic" }
+      contrast: { attr: "data-contrast", on: "high", key: "a11y-contrast", label: "High contrast" },
+      cvd:      { attr: "data-cvd", on: "on", key: "a11y-cvd", label: "Colorblind-friendly colors" },
+      dyslexic: { attr: "data-dyslexic", on: "on", key: "a11y-dyslexic", label: "Dyslexia-friendly font" }
     };
 
     // Keep the Light | Dark segmented control's aria-pressed in sync with theme.
@@ -98,6 +124,7 @@
       if (v === "100") { html.removeAttribute("data-textsize"); localStorage.removeItem("a11y-textsize"); }
       else { html.setAttribute("data-textsize", v); localStorage.setItem("a11y-textsize", v); }
       syncText();
+      announce("Text size " + v + "%");
     }
     function syncText() {
       var i = textIndex();
@@ -132,6 +159,7 @@
         html.setAttribute("data-theme", val);
         localStorage.setItem("theme", val);
         syncTheme();
+        announce(val === "dark" ? "Dark mode" : "Light mode");
         return;
       }
 
@@ -144,6 +172,7 @@
         if (on) { html.setAttribute(s.attr, s.on); localStorage.setItem(s.key, s.on); }
         else { html.removeAttribute(s.attr); localStorage.setItem(s.key, "off"); }
         syncSwitches();
+        announce(s.label + (on ? " on" : " off"));
         return;
       }
 
@@ -174,9 +203,13 @@
         html.removeAttribute("data-textsize");
         html.setAttribute("data-theme", "light");
         localStorage.setItem("theme", "light");
+        // Re-run the boot-time auto check: with a11y-contrast now cleared, an OS
+        // "more contrast" preference re-enables high contrast (matches paint).
+        if (matchMedia("(prefers-contrast: more)").matches) html.setAttribute("data-contrast", "high");
         syncTheme();
         syncSwitches();
         syncText();
+        announce("Settings reset");
         return;
       }
     });
@@ -368,23 +401,7 @@
     {% capture anchor_svg %}{% include icons/link.svg %}{% endcapture %}
     var ANCHOR_SVG = {{ anchor_svg | strip | jsonify }};
 
-    var toastEl, toastTimer;
-    function toast() {
-      if (!toastEl) {
-        toastEl = document.createElement("div");
-        toastEl.className = "toast";
-        toastEl.setAttribute("role", "status");
-        toastEl.setAttribute("aria-live", "polite");
-        toastEl.textContent = "Link copied";
-        document.body.appendChild(toastEl);
-      }
-      // Force reflow so re-triggering restarts the transition.
-      toastEl.classList.remove("is-visible");
-      void toastEl.offsetWidth;
-      toastEl.classList.add("is-visible");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(function () { toastEl.classList.remove("is-visible"); }, 2000);
-    }
+    function toast() { announce("Link copied"); }
 
     function copy(text) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
