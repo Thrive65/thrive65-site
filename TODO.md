@@ -9,7 +9,7 @@
 ### Functional
 - ![ ] Spanish translations / i18n
 - [ ] Handling images in posts/pages
-- Heading ID link on hover, copy on click (specifically for FAQs)
+- Highlighting text shows Medium-style share tooltip
 
 ### Design
 - style h6 within FAQ item, for "Sources"
@@ -19,7 +19,6 @@
 - pick theme/hue
 - logo, favicon (`assets/images/favicon.svg`)
 - hero art - colorize/tokenize
-- text highlight color, link underline animation
 
 ## pre launch
 ------------------------

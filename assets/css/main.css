@@ -344,9 +344,11 @@
   p { margin: 0 0 1em; }
 
   a {
-    color: var(--link);
+    color: inherit;
     text-decoration-thickness: 2px;
-    text-underline-offset: 0.15em;
+    text-underline-offset: 0.2em;
+    text-decoration-color: var(--link);
+    transition: color var(--transition-base) var(--ease);
   }
   a:hover { color: var(--brand-strong); }
 
@@ -366,6 +368,12 @@
     border-radius: 0 0 8px 0;
   }
   .skip-link:focus { left: 0; }
+
+  /* Highlighted text */
+  ::selection {
+    background-color: var(--accent);
+    color: var(--on-accent);
+  }
 }
 
 /* ── composition ─────────────────────────────────────────────────────────── */
