@@ -15,11 +15,42 @@
   (function () {
     // Progressive-enhancement flag: components that collapse content only do
     // so once JS can reveal it again (see the `html.js` guards in main.css).
-    document.documentElement.classList.add("js");
+    var html = document.documentElement;
+    html.classList.add("js");
+
+    // Theme — stored light/dark, or "auto" (absent) following the OS.
     var t = localStorage.getItem("theme") || "auto";
     var dark = t === "dark" ||
       (t === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
-    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    html.setAttribute("data-theme", dark ? "dark" : "light");
+
+    // Accessibility toggles — restore each attribute before paint from its key.
+    // Stored value === the "on" value applies it; "off"/absent leaves it off.
+    // (Shared with the switch handler + Reset below; keep the table in sync.)
+    [["a11y-contrast", "data-contrast", "high"],
+     ["a11y-cvd", "data-cvd", "on"],
+     ["a11y-dyslexic", "data-dyslexic", "on"]].forEach(function (s) {
+      if (localStorage.getItem(s[0]) === s[2]) html.setAttribute(s[1], s[2]);
+    });
+    // High contrast auto-enables on `prefers-contrast: more` when unchosen
+    // (mirrors theme auto). An explicit off is stored, so it wins over this.
+    if (!localStorage.getItem("a11y-contrast") &&
+        matchMedia("(prefers-contrast: more)").matches) {
+      html.setAttribute("data-contrast", "high");
+    }
+    // Text size scales the fluid-root knobs (Phase 5c).
+    var ts = localStorage.getItem("a11y-textsize");
+    if (ts === "112" || ts === "125") html.setAttribute("data-textsize", ts);
+
+    // Dyslexia font is lazy, but if it's already on, pull it in now so the
+    // switch to Atkinson doesn't flash unstyled on first paint.
+    if (localStorage.getItem("a11y-dyslexic") === "on") {
+      var l = document.createElement("link");
+      l.id = "atkinson-font";
+      l.rel = "stylesheet";
+      l.href = "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+      document.head.appendChild(l);
+    }
   })();
 
   // ---------------------------------------------------------------------- //
@@ -30,22 +61,39 @@
   // itself is a Disclosure (see below); this block wires the controls inside it.
   // ---------------------------------------------------------------------- //
   (function () {
+    var html = document.documentElement;
+
+    // Switch settings — one row each. A switch button carries data-setting="KEY"
+    // (the object key below); the table maps it to its <html> attribute, its
+    // "on" value, and its localStorage key. Phases 5a/5b add rows here only.
+    var SETTINGS = {
+      contrast: { attr: "data-contrast", on: "high", key: "a11y-contrast" },
+      cvd:      { attr: "data-cvd", on: "on", key: "a11y-cvd" },
+      dyslexic: { attr: "data-dyslexic", on: "on", key: "a11y-dyslexic" }
+    };
+
     // Keep the Light | Dark segmented control's aria-pressed in sync with theme.
     function syncTheme() {
-      var cur = document.documentElement.getAttribute("data-theme");
+      var cur = html.getAttribute("data-theme");
       document.querySelectorAll(".a11y-segment").forEach(function (b) {
         b.setAttribute("aria-pressed", b.getAttribute("data-theme-value") === cur ? "true" : "false");
       });
     }
-    document.addEventListener("DOMContentLoaded", syncTheme);
+    // Reflect each switch's aria-checked from whether its attribute is applied.
+    function syncSwitches() {
+      document.querySelectorAll(".a11y-switch[data-setting]").forEach(function (b) {
+        var s = SETTINGS[b.getAttribute("data-setting")];
+        if (s) b.setAttribute("aria-checked", html.getAttribute(s.attr) === s.on ? "true" : "false");
+      });
+    }
+    document.addEventListener("DOMContentLoaded", function () { syncTheme(); syncSwitches(); });
 
-    // Atkinson Hyperlegible backs the dyslexia-friendly font (Phase 5b). It's
-    // only ever needed once the panel is open, so load it lazily on first open.
-    var fontLoaded = false;
+    // Atkinson Hyperlegible backs the dyslexia-friendly font. Loaded lazily on
+    // first panel open (or already at boot if the setting was persisted).
     function loadFont() {
-      if (fontLoaded) return;
-      fontLoaded = true;
+      if (document.getElementById("atkinson-font")) return;
       var l = document.createElement("link");
+      l.id = "atkinson-font";
       l.rel = "stylesheet";
       l.href = "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap";
       document.head.appendChild(l);
@@ -58,9 +106,21 @@
       var seg = e.target.closest(".a11y-segment");
       if (seg) {
         var val = seg.getAttribute("data-theme-value");
-        document.documentElement.setAttribute("data-theme", val);
+        html.setAttribute("data-theme", val);
         localStorage.setItem("theme", val);
         syncTheme();
+        return;
+      }
+
+      // Switches — flip the mapped attribute, persist ("on" value / "off"), sync.
+      var sw = e.target.closest(".a11y-switch[data-setting]");
+      if (sw) {
+        var s = SETTINGS[sw.getAttribute("data-setting")];
+        if (!s) return;
+        var on = sw.getAttribute("aria-checked") !== "true";
+        if (on) { html.setAttribute(s.attr, s.on); localStorage.setItem(s.key, s.on); }
+        else { html.removeAttribute(s.attr); localStorage.setItem(s.key, "off"); }
+        syncSwitches();
         return;
       }
 
@@ -73,15 +133,18 @@
         return;
       }
 
-      // Reset all — clear the four a11y keys and return theme to Light. (Phase
-      // 4+ attributes get removed here as they're added.)
+      // Reset all — clear every a11y key + attribute and return theme to Light.
       if (e.target.closest(".a11y-reset")) {
-        ["a11y-contrast", "a11y-cvd", "a11y-dyslexic", "a11y-textsize"].forEach(function (k) {
-          localStorage.removeItem(k);
+        Object.keys(SETTINGS).forEach(function (k) {
+          localStorage.removeItem(SETTINGS[k].key);
+          html.removeAttribute(SETTINGS[k].attr);
         });
-        document.documentElement.setAttribute("data-theme", "light");
+        localStorage.removeItem("a11y-textsize");
+        html.removeAttribute("data-textsize");
+        html.setAttribute("data-theme", "light");
         localStorage.setItem("theme", "light");
         syncTheme();
+        syncSwitches();
         return;
       }
     });

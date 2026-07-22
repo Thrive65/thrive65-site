@@ -61,7 +61,18 @@
             </div>
           </div>
 
-          {% comment %} Phase 4+ setting rows (switches, text size) slot in here. {% endcomment %}
+          <div class="a11y-row">
+            <span class="a11y-row-label" id="a11y-contrast-label">
+              High contrast
+              <span class="a11y-row-sub">Black &amp; white, underlined links</span>
+            </span>
+            <button type="button" class="a11y-switch" role="switch" data-setting="contrast"
+                    aria-checked="false" aria-labelledby="a11y-contrast-label">
+              <span class="a11y-switch-knob" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          {% comment %} Phase 5+ setting rows (colorblind, dyslexia, text size) slot in here. {% endcomment %}
 
           <div class="a11y-panel-foot repel">
             <button type="button" class="a11y-reset">Reset all</button>

@@ -303,6 +303,41 @@
   }
 }
 
+/* ============================================================================
+   HIGH CONTRAST — flattens surfaces to pure black/white and forces ≥7:1 brand
+   and link colors, intentionally overriding the hue system (incl. the hero
+   band). Toggled by data-contrast="high" on <html>.
+
+   These blocks are the LAST token overrides in source ON PURPOSE: colorblind
+   (CVD) blocks live above so that when both are on, HIGH CONTRAST WINS. The hue
+   tokens (--brand, --hero-*) are set on <body> by the .hue-* classes, so the
+   overrides target the .hue-* element (matching all four hues); surface tokens
+   set on <html> cascade down from there. Selector specificity clears the
+   [data-theme="dark"] .hue-* blocks above.
+   ============================================================================ */
+html[data-contrast="high"]:not([data-theme="dark"]) .hue-lake-teal,
+html[data-contrast="high"]:not([data-theme="dark"]) .hue-evergreen,
+html[data-contrast="high"]:not([data-theme="dark"]) .hue-electric-blue,
+html[data-contrast="high"]:not([data-theme="dark"]) .hue-ultraviolet {
+  --bg: #FFFFFF; --card: #FFFFFF; --tint: #FFFFFF;
+  --line: #000000; --ink: #000000; --muted: #000000; --edge: #000000; --focus: #000000;
+  --brand: #005C31; --brand-strong: #00411F; --link: #005C31; --secondary: #00323C;
+  --hero-bg: #FFFFFF; --hero-ink: #000000; --hero-muted: #000000; --hero-em: #7A4C00;
+}
+html[data-contrast="high"][data-theme="dark"] .hue-lake-teal,
+html[data-contrast="high"][data-theme="dark"] .hue-evergreen,
+html[data-contrast="high"][data-theme="dark"] .hue-electric-blue,
+html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
+  --bg: #000000; --card: #000000; --tint: #000000;
+  --line: #FFFFFF; --ink: #FFFFFF; --muted: #FFFFFF; --edge: #FFFFFF; --focus: #FFFF00;
+  --brand: #4DFFA6; --brand-strong: #90FFC8; --link: #4DFFA6; --secondary: #9BE8FF;
+  --accent: #FFD34D; --accent-hover: #FFE58A; --on-accent: #000000;
+  --hero-bg: #000000; --hero-ink: #FFFFFF; --hero-muted: #FFFFFF; --hero-em: #FFD34D;
+}
+/* Underline every link and thicken the header hairline for HC legibility. */
+[data-contrast="high"] a { text-decoration: underline; }
+[data-contrast="high"] .site-header { border-bottom-width: var(--border-bold); }
+
 /* ── reset ──────────────────────────────────────────────────────────────── */
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
@@ -676,7 +711,41 @@
   .a11y-close:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
   .a11y-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
-  .a11y-row-label { font-weight: 600; white-space: nowrap; }
+  .a11y-row-label { display: flex; flex-direction: column; gap: 0.1em; font-weight: 600; white-space: nowrap; }
+  .a11y-row-sub { font-weight: 400; font-size: var(--step--2); color: var(--muted); }
+
+  /* Switch — a pill track with a sliding knob; role="switch" + aria-checked
+     drive the on/off visuals. Off: page-bg track, ink knob left. On: brand
+     track, white knob right. */
+  .a11y-switch {
+    position: relative;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 1.6rem;
+    padding: 0;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    background: var(--bg);
+    cursor: pointer;
+    transition: background var(--transition-fast) var(--ease);
+  }
+  .a11y-switch-knob {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 0.15rem;
+    width: 1.05rem;
+    height: 1.05rem;
+    border-radius: var(--radius-pill);
+    background: var(--ink);
+    transform: translateY(-50%);
+    transition: transform var(--transition-fast) var(--ease), background var(--transition-fast) var(--ease);
+  }
+  .a11y-switch[aria-checked="true"] { background: var(--brand); }
+  .a11y-switch[aria-checked="true"] .a11y-switch-knob {
+    background: #fff;
+    transform: translate(1.15rem, -50%);
+  }
+  .a11y-switch:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
   /* Segmented control — a bold-edge pill split into equal segments; the pressed
      segment inverts to ink-on-card. */
