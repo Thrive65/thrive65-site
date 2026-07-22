@@ -53,6 +53,11 @@ Files edited by hand:
 
 **Apps Script add-on (`apps-script/Code.gs`):** Runs as a Google Workspace Add-on (sidebar UI, not Extensions menu). Settings are split between Script Properties (GitHub token/owner/repo/branch, Drive folder ID — shared across docs) and Document Properties (content type, target path, metadata — per-doc). The `doPublish_()` function exports the Doc as Markdown via the Drive REST API, then commits to GitHub. FAQ docs are parsed by `parseFaqMarkdown()` into `faqArrayToYaml()`. See `apps-script/SETUP.md` for the full one-time setup.
 
+**Heading copy-link anchors (`_includes/head.html` IIFE):** Content headings get a GitHub-style hover-revealed chain icon that copies an absolute deep link and shows a `.toast` ("Link copied"). It's a progressive-enhancement IIFE (styles in the CSS `block` layer):
+- **Prose headings** — on `DOMContentLoaded` the JS injects an `<a class="heading-anchor">` into every `main :is(h2, h3, h4)[id]` (kramdown emits the `id`s), skipping `.page-header` titles. So any new content heading is covered automatically — but only if it's an `h2`/`h3`/`h4` *with an id*. Don't use a heading element for decorative eyebrow/kicker text (use a `<p>`); an `id`'d heading there would wrongly get an anchor, and it breaks the document outline besides.
+- **FAQ items** — `_includes/faq.html` gives each `<details>` an `id="faq-{{ question | slugify }}"` and server-renders a `.faq-anchor` inside the `<summary>`. The shared click handler copies the link (and calls `stopPropagation()` so it doesn't toggle the accordion); a separate open-on-hash routine expands and scrolls to a `.faq-item` whose id matches `location.hash`, on load and on `hashchange`.
+  - **Caveat — FAQ deep links are not stable:** `#faq-<slug>` is derived from the question text via Jekyll's `slugify`, so **rewording a question (re-published from Google Docs) changes its link** and old links 404 to that item. Acceptable for now; revisit only if stable FAQ permalinks become a requirement (would need an explicit per-item id in the Doc/YAML instead of a text-derived slug).
+
 ## CSS & HTML methodology (CUBE CSS)
 
 `assets/css/main.css` is organized with native cascade layers: `@layer reset, base, composition, block, utility, exception`.
@@ -73,7 +78,9 @@ The **only** `clamp()` lives on `:root`'s `font-size`, driven by four plain-numb
 
 **Measure & gutter.** `.wrapper` is capped for readability by `inline-size: min(100% - 2 · var(--gutter), var(--measure))`. `--measure` is `41rem` (≈ 68ch of body text, the 50–75ch sweet spot). It's deliberately in **rem, not ch**: rem tracks the root font size so the cap is identical in every context, whereas a `ch` cap resolves against each element's own font size and would make the smaller-type footer narrower than the body. rem still rides the fluid root, so the character count stays constant across viewports. Below the cap (~660 px) the `100% - 2·gutter` term wins and `--gutter` (`--space-s`, one line) reads as side padding; above it, `--measure` wins and the leftover space becomes centring auto-margins — so no breakpoint gutter steps are needed. Multi-column layouts that need more room (the hero) opt up to `--measure-wide` (`78rem`) via a `.hero-grid.wrapper` override in the block layer.
 
-Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout spacing. Never hardcode `px` rhythm values or add new per-token clamps.
+Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout spacing — this includes icon/graphic sizing (`width`/`height` on SVGs, decorative marks), not just text. Never hardcode `px` rhythm values or add new per-token clamps. Prefer a fixed `--step-*` token over a bare `1em` when an element should **not** inherit and scale with its parent's font size (e.g. a gutter icon inside a heading): `1em` couples the size to whatever context it lands in and can blow out on large headings or narrow viewports. Size it with an explicit step and let `1em` resolve against that.
+
+**Motion.** Every property change that's perceivable (opacity, transform, color reveals) should animate smoothly — never snap between states. Drive all transitions with the motion tokens, never hardcoded timing: durations are `--transition-fast` (150ms), `--transition-base` (200ms), `--transition-slow` (300ms), and easing is `--ease`. Write transitions as `<prop> var(--transition-*) var(--ease)`. If a new interaction needs a duration outside this set, round to the nearest existing token rather than introducing a new literal `ms`/`s` value.
 
 | Token | Value | Role |
 |---|---|---|
@@ -102,6 +109,7 @@ Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout sp
 ## Conventions
 
 - Name CSS classes, variables, and data structures for their generic UI role, not for specific content. Example: use `.post-list` not `.minutes-list`.
+- **Icons live in `_includes/icons/` as single-line `.svg` partials, never inline-duplicated.** Any SVG icon used in markup goes in its own file (e.g. `_includes/icons/link.svg`) and is pulled in with `{% include icons/<name>.svg %}`. Never paste the same SVG markup in two places. If the icon is also needed in a JS string (e.g. for client-side injection), capture the include and emit it safely rather than re-typing it: `{% capture icon %}{% include icons/<name>.svg %}{% endcapture %}` then `var ICON = {{ icon | strip | jsonify }};` — `jsonify` escapes quotes/whitespace into a valid JS string literal from the one source file.
 
 ## Pre-launch checklist (from README)
 

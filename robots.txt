@@ -1,0 +1,10 @@
+---
+# Rendered by Jekyll (front matter present) so jekyll-sitemap won't overwrite it.
+layout: null
+sitemap: false
+permalink: /robots.txt
+---
+User-agent: *
+Allow: /
+
+Sitemap: {{ site.url }}{{ site.baseurl }}/sitemap.xml

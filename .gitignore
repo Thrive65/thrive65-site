@@ -11,3 +11,4 @@ Gemfile.lock
 # Claude Code local config & code-graph index (machine/local state)
 .github/.claude/
 .tokensave/
+assets/images/svgo.config.mjs

@@ -4,10 +4,14 @@
 {% endif %}
 <div class="faq flow flow-space-xs">
   {% for item in site.data.faq.items %}
-    <details class="faq-item">
+    {% assign faq_id = item.question | slugify %}
+    <details class="faq-item" id="faq-{{ faq_id }}">
       <summary class="cluster">
-        <span class="faq-icon" aria-hidden="true"></span>
+        <a class="heading-anchor faq-anchor" href="#faq-{{ faq_id }}" aria-label="Copy link to question: {{ item.question | escape }}">
+          {% include icons/link.svg %}
+        </a>
         <h3>{{ item.question }}</h3>
+        <span class="faq-icon" aria-hidden="true"></span>
       </summary>
       <div class="faq-answer">
         {{ item.answer | markdownify }}

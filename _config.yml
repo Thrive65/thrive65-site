@@ -10,6 +10,18 @@ baseurl: "/thrive65-site" # leave blank for a custom domain or a user/org page; 
 # The homepage embeds the EmailOctopus signup form directly in index.md (see the #signup section).
 signup_form_action: "" # (optional/unused) generic form POST URL — kept for reference only
 
+# SEO / social sharing (consumed by jekyll-seo-tag)
+# NOTE: image/logo are PLACEHOLDERS — replace with real branded assets (see TODO.md).
+# The default social image is set per-page via `defaults` below (seo-tag reads
+# page-level `image`, not a site-level one). Its hash form emits og:image
+# width/height/alt + twitter:image, and auto-selects the summary_large_image card.
+logo: /assets/images/logo.png # square brand mark → Organization schema logo
+social:
+  name: Thrive65
+  links: [] # TODO: add real profile URLs (Facebook, X, Instagram…) → schema.org sameAs
+# twitter:
+#   username: thrive65   # TODO: set real X/Twitter handle → emits twitter:site @handle
+
 markdown: kramdown
 kramdown:
   input: GFM
@@ -20,6 +32,7 @@ permalink: /:title/
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-sitemap
 
 defaults:
   - scope:
@@ -31,6 +44,13 @@ defaults:
       path: ""
     values:
       layout: "page"
+      # Default social share image (jekyll-seo-tag). Pages/posts may override
+      # `image:` in their own front matter. PLACEHOLDER — see TODO.md.
+      image:
+        path: /assets/images/og-default.png
+        width: 1200
+        height: 630
+        alt: Thrive65 — community advocacy for District 65 schools
 
 exclude:
   - Gemfile
