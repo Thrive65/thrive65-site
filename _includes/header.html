@@ -15,6 +15,28 @@
     <div class="nav-backdrop"></div>
     <nav id="primary-nav" class="cluster" aria-label="Primary">
       {% capture site_nav %}{% include site-nav.md %}{% endcapture %}{{ site_nav | markdownify }}
+      <div class="lang-select">
+        <button type="button" class="lang-toggle" aria-label="Select language"
+                aria-controls="lang-menu" aria-expanded="false"
+                data-disclosure="nav" data-dismiss="outside esc focusout">
+          {% include icons/globe.svg %}
+          <span class="lang-code">EN</span>
+          {% include icons/chevron.svg %}
+        </button>
+        <ul id="lang-menu" class="lang-menu" hidden role="menu" aria-label="Language">
+          <li role="none">
+            <button type="button" class="lang-menu-item" role="menuitemradio" aria-checked="true" data-lang="en-US">
+              English{% include icons/check.svg %}
+            </button>
+          </li>
+          <li role="none">
+            <button type="button" class="lang-menu-item" role="menuitemradio" aria-checked="false" data-lang="es-MX">
+              Español{% include icons/check.svg %}
+            </button>
+          </li>
+        </ul>
+      </div>
+
       <button type="button" class="theme-toggle" aria-label="Toggle light/dark theme">
         <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
           <circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
@@ -33,11 +55,19 @@
         <span class="theme-toggle-text" aria-hidden="true"></span>
       </button>
 
-      <!-- Elfsight Website Translator | Thrive65 Translate Button -->
-      <script src="https://elfsightcdn.com/platform.js" async></script>
-      <div class="elfsight-app-91448ae8-7a99-4960-b854-caa497c1ea85" data-elfsight-app-lazy></div>
-
       <a class="nav-cta" href="{{ '/' | relative_url }}#signup">Join us</a>
     </nav>
+  </div>
+
+  <!-- Elfsight Website Translator drives the actual page translation. The custom
+       .lang-select control above is the visible UI; selecting a language reloads
+       with ?lang=<code>, which this widget reads and persists (see head.html).
+       Kept in the DOM but visually hidden so it still initializes; NOT display:none.
+       No data-elfsight-app-lazy: lazy init uses an IntersectionObserver, but the
+       visually-hidden container is clipped to ~1px so it would never register as
+       visible and never load. The translator must run on every page regardless. -->
+  <div class="lang-widget-mount visually-hidden" aria-hidden="true">
+    <script src="https://elfsightcdn.com/platform.js" async></script>
+    <div class="elfsight-app-91448ae8-7a99-4960-b854-caa497c1ea85"></div>
   </div>
 </header>

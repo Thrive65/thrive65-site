@@ -102,7 +102,10 @@
   --transition-slow: 300ms;   /* panel slide, larger transforms */
 
   /* ---- Toggle geometry ---------------------- */
-  --toggle-size: 3.3em; /* theme toggle and hamburger menu, ~44px */
+  --toggle-size: 3.3em; /* hamburger menu, ~44px (em: scales with its own font) */
+  /* Shared nav-control height (theme/lang pills + CTA). Font-INDEPENDENT so
+     controls with different font sizes still line up at the 44px hit target. */
+  --control-height: 2.75rem;
 
   /* ---- Shared: surfaces & structure · LIGHT ----------------------------- */
   --bg:    #F7F5EC;                 /* warm page surface */
@@ -344,7 +347,7 @@
   p { margin: 0 0 1em; }
 
   a {
-    color: inherit;
+    color: var(--link);
     text-decoration-thickness: 2px;
     text-underline-offset: 0.2em;
     text-decoration-color: var(--link);
@@ -531,15 +534,22 @@
     background: var(--accent);
     color: var(--on-accent) !important;
     font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-height);
     padding: 0.55em 1.2em;
     border: var(--border-bold) solid var(--edge);
     border-radius: var(--radius-pill);
   }
   .nav-cta:hover { background: var(--accent-hover); color: var(--on-accent) !important; }
 
-  .theme-toggle {
-    min-width: var(--toggle-size);
-    min-height: var(--toggle-size);
+  /* Nav toggle pills — the theme toggle and the language dropdown trigger share
+     geometry; the language button does NOT reuse the .theme-toggle class (that
+     would make the theme click-handler fire on it), so both are listed here. */
+  .theme-toggle,
+  .lang-toggle {
+    min-width: var(--control-height);
+    min-height: var(--control-height);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -549,8 +559,10 @@
     color: var(--ink);
     cursor: pointer;
   }
-  .theme-toggle:hover { border-color: var(--brand); color: var(--brand); }
-  .theme-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .theme-toggle:hover,
+  .lang-toggle:hover { border-color: var(--brand); color: var(--brand); }
+  .theme-toggle:focus-visible,
+  .lang-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .theme-toggle .icon-moon { display: none; }
   [data-theme="dark"] .theme-toggle .icon-sun { display: none; }
   [data-theme="dark"] .theme-toggle .icon-moon { display: inline; }
@@ -559,6 +571,63 @@
   .theme-toggle-text { display: none; }
   .theme-toggle-text::after { content: "Light mode"; }
   [data-theme="dark"] .theme-toggle-text::after { content: "Dark mode"; }
+
+  /* Language dropdown — a globe pill in the .theme-toggle family (inherits its
+     geometry, hover-brand, and focus ring) that widens to hold the code + a
+     chevron. The menu reuses the nav-dropdown panel treatment. */
+  .lang-select { position: relative; }
+  .lang-toggle {
+    gap: 0.4em;
+    padding-inline: 0.7em;
+    font-size: var(--step--1); /* match the theme toggle's context so 44px holds */
+  }
+  .lang-toggle .lang-code {
+    font-size: var(--step--1);
+    font-weight: 600;
+    line-height: 1;
+  }
+  .lang-toggle svg:last-child { transition: transform var(--transition-fast) var(--ease); }
+  .lang-toggle[aria-expanded="true"] svg:last-child { transform: rotate(180deg); }
+
+  .lang-menu {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    inset-inline-end: 0;
+    min-width: 11rem;
+    margin: 0;
+    padding: var(--space-2xs);
+    list-style: none;
+    background: var(--card);
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.18);
+    font-size: var(--step--1);
+    z-index: 30;
+  }
+  .lang-menu button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--space-xs);
+    padding: var(--space-2xs) var(--space-xs);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: var(--ink);
+    text-align: start;
+    cursor: pointer;
+  }
+  .lang-menu button:hover,
+  .lang-menu button:focus-visible { background: var(--tint); }
+  .lang-menu .lang-check {
+    flex-shrink: 0;
+    color: var(--brand);
+    visibility: hidden;
+  }
+  .lang-menu button[aria-checked="true"] .lang-check { visibility: visible; }
 
   /* Hamburger button — hidden on desktop, shown in the mobile media query */
   .nav-toggle {

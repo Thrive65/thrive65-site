@@ -125,6 +125,54 @@
     });
   });
 
+  // Language dropdown — the visible EN/ES control. Elfsight does the actual
+  // translation: it reads a `?lang=<code>` query param on load and persists the
+  // choice itself, so selecting a language just reloads with the new param.
+  (function () {
+    var LANGS = { "en-US": "EN", "es-MX": "ES" };
+    var LS_KEY = "WebsiteTranslator.language.91448ae8-7a99-4960-b854-caa497c1ea85";
+    // Resolve the active language. The ?lang= param wins because on an explicit
+    // switch it is correct immediately, whereas Elfsight only writes its own
+    // store *after* translating (so it's stale on that first post-click load).
+    // Fall back to Elfsight's persisted value for a bare URL (no param yet).
+    function current() {
+      var p = new URLSearchParams(location.search).get("lang");
+      if (LANGS[p]) return p;
+      try {
+        var v = JSON.parse(localStorage.getItem(LS_KEY)).value;
+        if (LANGS[v]) return v;
+      } catch (e) {}
+      return "en-US"; // nothing chosen → English default
+    }
+    // Reflect a language in the trigger label and the menu checkmarks. The
+    // .lang-code text is excluded from translation in the Elfsight dashboard, so
+    // it's safe to set as plain text.
+    function reflect(active) {
+      var code = document.querySelector(".lang-toggle .lang-code");
+      if (code) code.textContent = LANGS[active];
+      document.querySelectorAll(".lang-menu button[data-lang]").forEach(function (b) {
+        b.setAttribute("aria-checked", b.getAttribute("data-lang") === active ? "true" : "false");
+      });
+    }
+    document.addEventListener("DOMContentLoaded", function () { reflect(current()); });
+    // Selecting a language: update the control immediately (so the state is right
+    // even before the reload paints), then reload with ?lang=<code>.
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest) return;
+      var item = e.target.closest(".lang-menu button[data-lang]");
+      if (!item) return;
+      var code = item.getAttribute("data-lang");
+      if (code === current()) { // already active — just close the menu
+        Disclosure.set(document.querySelector(".lang-toggle"), false, true);
+        return;
+      }
+      reflect(code);
+      var url = new URL(location.href);
+      url.searchParams.set("lang", code);
+      location.href = url.toString();
+    });
+  })();
+
   // Mobile nav — hamburger toggles a slide-in panel (delegated)
   function closeNav() {
     var header = document.querySelector(".site-header");
