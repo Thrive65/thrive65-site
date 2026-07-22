@@ -1,0 +1,1293 @@
+/* ==========================================================================
+   Thrive65 — CUBE CSS
+   Layers: reset → base → composition → block → utility → exception
+   ========================================================================== */
+
+@layer reset, base, composition, block, utility, exception;
+
+/* ============================================================================
+   Common Ground — design tokens (Thrive65 redesign)
+   :root = shared tokens + DEFAULT hue (Lake Teal), LIGHT theme.
+   [data-theme="dark"] = shared dark + default hue dark.
+   .hue-* = the 8 tokens that vary per hue (light + dark).
+   ============================================================================ */
+
+:root {
+  /* ---- Fluid root — THE four knobs (plain numbers, think px) ------------ */
+  /* Text is --root-min px at --screen-min and below, --root-max px at
+     --screen-max and above, linear in between. Tweak any knob (live in
+     devtools works) and the whole system — rem type, rlh space — follows.
+     px at width w ≈ root-min + (root-max − root-min) × (w − screen-min) / (screen-max − screen-min)
+     Defaults: 16 @320 · ~17.6 @768 · ~19.3 @1240 · ~21.3 @1800 · 24 @2560+ */
+  --root-min: 16;
+  --root-max: 24;
+  --screen-min: 320;
+  --screen-max: 2560;
+
+  /* derived — do not edit. Sizes are % of the user's default (16px) so
+     browser font-size preferences still scale everything. */
+  --root-slope: calc((var(--root-max) - var(--root-min)) / (var(--screen-max) - var(--screen-min)));
+  font-size: clamp(
+    calc(var(--root-min) / 16 * 100%),
+    calc((var(--root-min) - var(--root-slope) * var(--screen-min)) / 16 * 100% + var(--root-slope) * 100vw),
+    calc(var(--root-max) / 16 * 100%)
+  );
+  line-height: 1.5; /* rlh unit = 1.5 × root font-size; body sets its own leading */
+
+  /* ---- Typography ------------------------------------------------------- */
+  --font-display: "Archivo", sans-serif;                 /* was Fraunces */
+  --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --display-weight: 800;
+  --display-tracking: -0.01em;
+
+  /* ---- Type scale — proportional rem, minor third (1.2) ----------------- */
+  /* Plain rem: each step rides the fluid root, ratio stays constant. */
+  --step--2: 0.694rem;
+  --step--1: 0.833rem;
+  --step-0:  1rem;
+  --step-1:  1.2rem;
+  --step-2:  1.44rem;
+  --step-3:  1.728rem;
+  --step-4:  2.074rem;
+  --step-5:  2.488rem;
+
+  /* ---- Spacing — rlh line-counts (1rlh = one root line, 24px at min) ---- */
+  /* Doubles every two steps (s→l→2xl→4xl = 1·2·4·8, m→xl→3xl = 1.5·3·6). */
+  --space-2xs: 0.25rlh;   /* ¼ line   —   6px at min */
+  --space-xs:  0.5rlh;    /* ½ line   —  12px */
+  --space-s:   1rlh;      /* 1 line   —  24px */
+  --space-m:   1.5rlh;    /* 1½ lines —  36px */
+  --space-l:   2rlh;      /* 2 lines  —  48px */
+  --space-xl:  3rlh;      /* 3 lines  —  72px */
+  --space-2xl: 4rlh;      /* 4 lines  —  96px */
+  --space-3xl: 6rlh;      /* 6 lines  — 144px */
+  --space-4xl: 8rlh;      /* 8 lines  — 192px */
+
+  /* ---- Wrapper gutter — side padding on narrow screens ------------------ */
+  /* Only governs layout below the measure cap (~660px). Above that the
+     --measure cap wins and the leftover space becomes auto margins, so the
+     old desktop gutter steps were superfluous and were removed. */
+  --gutter: var(--space-s);  /* 1 line of breathing room at the edges */
+
+  /* ---- Measure — optimal line length, caps every .wrapper -------------- */
+  /* Anchored in rem, not ch: rem tracks the ROOT font size, so the cap is
+     identical in every context. (A ch cap would resolve against each
+     element's OWN font size, making the smaller-type footer narrower than
+     the body.) rem still rides the fluid root, so ~68 chars of body text —
+     the 50–75ch readability sweet spot — hold at every viewport.
+     41rem ≈ 68ch of body text (Public Sans "0" ≈ 0.605rem wide). */
+  --measure:      41rem;  /* body prose, header, footer — the default cap */
+  --measure-wide: 66rem;  /* escape hatch for multi-column layouts (hero) */
+
+  /* ---- Line heights ----------------------------------------------------- */
+  --lh-body: 1.6;
+  --lh-lead: 1.5;
+  --lh-heading: 1.15;
+  --lh-display: 1.1;
+
+  /* ---- Borders & radii (framed 2px-edge look) ---------------------- */
+  --border-thin: 1px;
+  --border-bold: 2px;
+  --radius-card: 12px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+  --radius-callout: 0 12px 12px 0;
+
+  /* ---- Motion (transition timing + easing) ----------------------
+     Three durations cover every UI transition; existing values were
+     rounded to the nearest to keep the set minimal. */
+  --ease: ease;
+  --transition-fast: 150ms;   /* hover reveals, icon rotations */
+  --transition-base: 200ms;   /* fades, toast */
+  --transition-slow: 300ms;   /* panel slide, larger transforms */
+
+  /* ---- Toggle geometry ---------------------- */
+  --toggle-size: 3.3em; /* theme toggle and hamburger menu, ~44px */
+
+  /* ---- Shared: surfaces & structure · LIGHT ----------------------------- */
+  --bg:    #F7F5EC;                 /* warm page surface */
+  --card:  #FFFFFF;                 /* raised surfaces */
+  --tint:  hsla(150, 30%, 91%, 1);  /* soft callout wash (Meadow Tint) */
+  --line:  hsla(150, 20%, 83%, 1);  /* 1px hairlines, dividers */
+  --ink:   #14231B;                 /* headings & body text */
+  --muted: hsla(150, 16%, 30%, 1);  /* secondary text */
+  --edge:  #0B0B0B;                 /* 2px frames; focus outline on light */
+  --on-accent: #221B05;             /* CTA label text (on Marigold) */
+  --focus: #0B0B0B;                 /* focus outline — edge on light */
+
+  /* ---- Shared: accents (CONSTANT across all hues) ----------------------- */
+  --secondary:    hsla(189, 65%, 22%, 1); /* Lakewater Teal — eyebrows, 2nd headings */
+  --accent:       #FFB01A;                 /* Marigold — primary CTA fill (constant) */
+  --accent-hover: #FFC44F;                 /* CTA hover */
+  --bloom:        #D42A56;                 /* Accent 2 — moment-of-change only */
+
+  /* ---- Shared: footer family (shared across themes) --------------------- */
+  --footer-bg:   #070E0A;
+  --footer-head: #EDF5EE;
+  --footer-ink:  #B7CCBD;
+
+  /* ---- Illustration — constants (same across all hues) ------------------ */
+  --art-sky:   transparent;         /* hero-bg shows through */
+  --art-warm:  hsl(39 100% 55%);    /* marigold */
+  --art-pop:   hsl(339 70% 50%);    /* rose */
+  --art-clock: hsl(185 40% 97%);    /* near-white */
+  --art-line:  hsl(190 45% 10%);    /* near-black */
+  --art-ink:   hsl(190 38% 18%);    /* near-black */
+}
+
+/* ============================================================================
+   SHARED DARK surfaces + default hue (Lake Teal) DARK.
+   Set data-theme="dark" on <html>.
+   ============================================================================ */
+[data-theme="dark"] {
+  --bg:    #0B1410;
+  --card:  #17251C;
+  --tint:  #123122;
+  --line:  #283A2E;
+  --ink:   #E9F2EA;
+  --muted: #A9BBAD;
+  --edge:  #0B0B0B;                 /* shared */
+  --on-accent: #221B05;             /* shared */
+  --focus: #8CE7B7;                 /* focus outline — mint on dark */
+
+  --secondary:    hsla(189, 65%, 60%, 1);
+  --accent:       #FFB01A;          /* constant */
+  --accent-hover: #FFC44F;          /* constant */
+  --bloom:        #FF5D7B;
+
+  --footer-bg:   #070E0A;           /* shared */
+  --footer-head: #EDF5EE;           /* shared */
+  --footer-ink:  #B7CCBD;           /* shared */
+
+  --art-warm:  hsl(42 100% 60%);
+  --art-pop:   hsl(342 90% 68%);
+  --art-clock: hsl(185 25% 93%);
+  --art-line:  hsl(190 45% 8%);
+  --art-ink:   hsl(190 42% 12%);
+}
+
+/* ============================================================================
+   HUE WRAPPER CLASSES — LIGHT
+   Add to <body> (whole page) or any wrapper (section-level comparison).
+   These override only the 8 hue tokens; everything else inherits from :root.
+   ============================================================================ */
+.hue-lake-teal {                                   /* LIVE BRAND (same as :root default) */
+  --brand: #0F7A45; 
+  --brand-strong: #0A5C34; 
+  --link: #0F7A45;
+  --hero-bg: hsla(189, 65%, 46%, 1); 
+  --hero-ink: hsla(189, 65%, 9%, 1);
+  --hero-muted: hsla(189, 65%, 13%, 1); 
+  --hero-em: var(--accent);
+  --band-alt: hsla(189, 30%, 92%, 1);
+  --art-cloud: hsl(191 40% 96%); --art-wall-2: hsl(185 26% 91%); --art-wall: hsl(200 30% 76%);
+  --art-roof: hsl(189 62% 27%); --art-foliage: hsl(150 55% 33%); --art-foliage-2: hsl(158 50% 55%);
+  --art-warm-2: hsl(189 85% 90%); --art-warm-3: hsl(9 90% 85%); --art-ground: hsl(193 16% 85%);
+}
+.hue-evergreen {
+  --brand: #0F7A45; 
+  --brand-strong: #0A5C34; 
+  --link: #0F7A45;
+  --hero-bg: #1CA05C; 
+  --hero-ink: #0B2417;
+  --hero-muted: #082A18; 
+  --hero-em: var(--accent);
+  --band-alt: hsla(150, 34%, 93%, 1);
+  --art-cloud: hsl(151 40% 96%); --art-wall-2: hsl(145 24% 91%); --art-wall: hsl(162 28% 76%);
+  --art-roof: hsl(149 58% 24%); --art-foliage: hsl(150 60% 22%); --art-foliage-2: hsl(140 48% 46%);
+  --art-warm-2: hsl(150 65% 84%); --art-warm-3: hsl(315 75% 85%); --art-ground: hsl(153 16% 85%);
+}
+.hue-electric-blue {
+  --brand: hsla(227, 90%, 42%, 1); 
+  --brand-strong: hsla(227,
+   90%, 30%, 1); --link: hsla(227, 90%, 42%, 1);
+  --hero-bg: hsla(227,
+   100%, 68%, 1); --hero-ink: hsla(227, 90%, 17%, 1);
+  --hero-muted: hsla(227,
+   90%, 17%, 1); --hero-em: #FFFFFF;
+  --band-alt: #E7ECFF;
+  --art-cloud: hsl(229 45% 97%); --art-wall-2: hsl(223 26% 92%); --art-wall: hsl(238 30% 78%);
+  --art-roof: hsl(227 62% 40%); --art-foliage: hsl(210 50% 40%); --art-foliage-2: hsl(202 48% 58%);
+  --art-warm-2: hsl(224 90% 90%); --art-warm-3: hsl(30 95% 85%); --art-ground: hsl(231 18% 86%);
+}
+.hue-ultraviolet {
+  --brand: #7A18D4; 
+  --brand-strong: #57109C; 
+  --link: #7A18D4;
+  --hero-bg: #A75DEC; 
+  --hero-ink: #1B0E42;
+  --hero-muted: #1B0E42; 
+  --hero-em: #FFFFFF;
+  --band-alt: #F1E6FF;
+  --art-cloud: hsl(273 45% 97%); --art-wall-2: hsl(267 26% 92%); --art-wall: hsl(282 30% 78%);
+  --art-roof: hsl(271 60% 40%); --art-foliage: hsl(285 45% 40%); --art-foliage-2: hsl(266 45% 50%);
+  --art-warm-2: hsl(271 80% 90%); --art-warm-3: hsl(95 68% 85%); --art-ground: hsl(275 18% 86%);
+}
+
+/* ============================================================================
+   HUE WRAPPER CLASSES — DARK  (higher specificity than the light blocks above)
+   ============================================================================ */
+[data-theme="dark"] .hue-lake-teal {
+  --brand: #3FD9C0;
+  --brand-strong: #74E8D6;
+  --link: #3FD9C0;
+  --hero-bg: #1C7687;
+  --hero-ink: #E6F3EF;
+  --hero-muted: #F0F9F5;
+  --hero-em: #FFC44F;
+  --band-alt: hsla(189, 50%, 9%, 1);
+  --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
+  --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
+  --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
+}
+[data-theme="dark"] .hue-evergreen {
+  --brand: #4ED991;
+  --brand-strong: #7BE8AE;
+  --link: #4ED991;
+  --hero-bg: #16854F;
+  --hero-ink: #E9F2E6;
+  --hero-muted: #A9CDB6;
+  --hero-em: var(--accent);
+  --band-alt: hsla(150, 70%, 10%, 1);
+  --art-cloud: hsl(153 30% 48%); --art-wall: hsl(150 22% 42%); --art-wall-2: hsl(162 24% 52%);
+  --art-roof: hsl(149 50% 26%); --art-foliage: hsl(150 55% 40%); --art-foliage-2: hsl(140 50% 58%);
+  --art-warm-2: hsl(150 60% 50%); --art-warm-3: hsl(315 80% 66%); --art-ground: hsl(152 26% 20%);
+}
+[data-theme="dark"] .hue-electric-blue {
+  --brand: #7E9DFF;
+  --brand-strong: #A9BEFF;
+  --link: #7E9DFF;
+  --hero-bg: #0033EB;
+  --hero-ink: #F2F5FF;
+  --hero-muted: #BFCCFF;
+  --hero-em: var(--accent);
+  --band-alt: hsla(227, 90%, 14%, 1);
+  --art-cloud: hsl(229 40% 62%); --art-wall: hsl(227 26% 55%); --art-wall-2: hsl(236 28% 66%);
+  --art-roof: hsl(227 60% 34%); --art-foliage: hsl(208 50% 52%); --art-foliage-2: hsl(200 50% 66%);
+  --art-warm-2: hsl(222 92% 72%); --art-warm-3: hsl(32 95% 60%); --art-ground: hsl(228 30% 24%);
+}
+[data-theme="dark"] .hue-ultraviolet {
+  --brand: #BE8CFF;
+  --brand-strong: #D3B4FF;
+  --link: #BE8CFF;
+  --hero-bg: #5B16C4;
+  --hero-ink: #F6EEFF;
+  --hero-muted: #DCC0FF;
+  --hero-em: var(--accent);
+  --band-alt: #1B0E42;
+  --art-cloud: hsl(273 35% 62%); --art-wall: hsl(271 26% 55%); --art-wall-2: hsl(282 28% 65%);
+  --art-roof: hsl(271 55% 34%); --art-foliage: hsl(285 48% 50%); --art-foliage-2: hsl(276 48% 64%);
+  --art-warm-2: hsl(271 82% 70%); --art-warm-3: hsl(98 60% 54%); --art-ground: hsl(274 30% 22%);
+}
+
+/* ============================================================================
+   OPTIONAL pure-CSS auto dark (no JS). Only needed if you do NOT set
+   data-theme on <html>. Covers shared surfaces + the DEFAULT hue only.
+   ============================================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --bg: #0B1410; --card: #17251C; --tint: #123122;
+    --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD; --focus: #8CE7B7;
+    --secondary: hsla(189, 65%, 60%, 1); --bloom: #FF5D7B;
+    --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
+    --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
+    --band-alt: hsla(189, 50%, 9%, 1);
+    --art-warm: hsl(42 100% 60%); --art-pop: hsl(342 90% 68%); --art-clock: hsl(185 25% 93%);
+    --art-line: hsl(190 45% 8%); --art-ink: hsl(190 42% 12%);
+    --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
+    --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
+    --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
+  }
+}
+
+/* ── reset ──────────────────────────────────────────────────────────────── */
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  img  { max-width: 100%; display: block; }
+}
+
+/* ── base ───────────────────────────────────────────────────────────────── */
+@layer base {
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    color: var(--ink);
+    background: var(--bg);
+    line-height: var(--lh-body);
+  }
+
+  /* Grow main to fill the viewport so the footer sits at the bottom
+     when page content is too short to push it there. */
+  #main {
+    flex: 1 0 auto;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
+    line-height: var(--lh-heading);
+    margin: 0 0 0.5em;
+  }
+  /* Global heading scale — descending steps. Override only where a context
+     genuinely differs (hero display); never re-declare a matching size. */
+  h1 { font-size: var(--step-3); }
+  h2 { font-size: var(--step-2); }
+  h3 { font-size: var(--step-1); }
+
+  p { margin: 0 0 1em; }
+
+  a {
+    color: var(--link);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.15em;
+  }
+  a:hover { color: var(--brand-strong); }
+
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -999px;
+    top: 0;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 0.75em 1.25em;
+    z-index: 100;
+    border-radius: 0 0 8px 0;
+  }
+  .skip-link:focus { left: 0; }
+}
+
+/* ── composition ─────────────────────────────────────────────────────────── */
+@layer composition {
+  /* Measure + gutter in one: below the cap, `100% - 2·gutter` wins and the
+     gutter reads as side padding; above it, `--measure` wins and the leftover
+     space becomes the auto margins that centre the content. */
+  .wrapper {
+    inline-size: min(100% - 2 * var(--gutter), var(--measure));
+    margin-inline: auto;
+  }
+
+  .region {
+    padding-block: var(--space-xl);
+  }
+
+  /* Lobotomised owl — spacing between flow children (default: one line) */
+  .flow > * + * {
+    margin-block-start: var(--flow-space, var(--space-s));
+  }
+
+  .cluster {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s);
+  }
+
+  .repel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+  }
+}
+
+/* ── block ───────────────────────────────────────────────────────────────── */
+@layer block {
+
+  /* ─ Site header ─ */
+  .site-header {
+    border-bottom: var(--border-thin) solid var(--line);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0px -1.5rem 2rem 1px var(--footer-bg);
+  }
+  /* Add block padding to the repel wrapper inside the header */
+  .site-header .wrapper {
+    padding-block: var(--space-xs);
+  }
+  .site-header nav {
+    font-weight: 600;
+    font-size: var(--step--1);
+  }
+  .site-header nav a {
+    color: var(--ink);
+    text-decoration: none;
+    padding-block: 0.35em;
+  }
+  .site-header nav a:hover { color: var(--brand); }
+
+  /* Markdown-driven link list (from _includes/site-nav.md) — a flex row of
+     items that sits in the nav cluster alongside the toggle and CTA. Scoped
+     to the top-level list (`> ul`) so nested dropdown lists don't inherit it. */
+  .site-header nav > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s);
+  }
+  .site-header nav li { position: relative; }
+
+  /* Dropdown: a list item that nests a list. JS replaces the label text node
+     with this button (chevron follows the text colour via currentColor) and
+     manages the nested list as a Disclosure region (shown via the `hidden`
+     attribute — see head.html). */
+  .site-header nav .nav-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding-block: 0.35em;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .site-header nav .nav-dropdown-toggle:hover,
+  .site-header nav .nav-dropdown-toggle:focus-visible { color: var(--brand); }
+  .site-header nav .nav-dropdown-toggle svg { transition: transform var(--transition-fast) var(--ease); }
+  .site-header nav .nav-dropdown-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+  /* Nested list. Un-enhanced (no JS) it degrades to a plain indented sub-list
+     that stays visible and reachable; the floating-panel treatment is gated on
+     `html.js`, and the `[hidden]` utility hides it while collapsed. */
+  .site-header nav li ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    padding-inline-start: var(--space-s);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  html.js .site-header nav li ul {
+    position: absolute;
+    top: calc(100% + var(--space-2xs));
+    inset-inline-start: 0;
+    min-width: max-content;
+    padding: var(--space-2xs);
+    background: var(--tint);
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-card);
+    z-index: 20;
+  }
+  .site-header nav li ul a {
+    display: block;
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+  }
+
+  /* Brand link — .cluster on the element supplies the flex display */
+  .brand {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
+    font-size: var(--step-1);
+    color: var(--ink);
+    text-decoration: none;
+    gap: 0.55em; /* tighter than .cluster default */
+  }
+  .brand .wordmark { line-height: 1; }
+  .brand .wordmark-accent { color: var(--brand); }
+
+  .brand-mark {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+  .brand-mark svg {
+    display: block;
+    width: 2em;
+    height: 2em;
+  }
+
+  /* Primary CTA pill — the one Marigold accent per view (framed) */
+  .nav-cta {
+    background: var(--accent);
+    color: var(--on-accent) !important;
+    font-weight: 700;
+    padding: 0.55em 1.2em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+  }
+  .nav-cta:hover { background: var(--accent-hover); color: var(--on-accent) !important; }
+
+  .theme-toggle {
+    min-width: var(--toggle-size);
+    min-height: var(--toggle-size);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--brand); color: var(--brand); }
+  .theme-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .theme-toggle .icon-moon { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: inline; }
+  /* Text label — hidden on desktop (icon-only), shown in the mobile nav panel.
+     Names the action, i.e. the theme it switches TO. */
+  .theme-toggle-text { display: none; }
+  .theme-toggle-text::after { content: "Light mode"; }
+  [data-theme="dark"] .theme-toggle-text::after { content: "Dark mode"; }
+
+  /* Hamburger button — hidden on desktop, shown in the mobile media query */
+  .nav-toggle {
+    display: none;
+    width: var(--toggle-size);
+    height: var(--toggle-size);
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+    z-index: 30;
+  }
+  .nav-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .nav-toggle-box {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 1.15em;
+    height: 0.85em;
+  }
+  .nav-toggle-bar {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform var(--transition-slow) var(--ease), opacity var(--transition-base) var(--ease);
+  }
+  /* Morph the three bars into an X when the menu is open.
+     Box is 0.85em tall with three 2px bars spaced by space-between, so the
+     outer bars sit 1px in from each edge — translate each exactly to the box
+     centre ((0.85em − 2px) / 2) before rotating so the strokes cross cleanly. */
+  .nav-open .nav-toggle-bar:nth-child(1) { transform: translateY(calc(0.425em - 1px)) rotate(45deg); }
+  .nav-open .nav-toggle-bar:nth-child(2) { opacity: 0; }
+  .nav-open .nav-toggle-bar:nth-child(3) { transform: translateY(calc(-0.425em + 1px)) rotate(-45deg); }
+
+  /* Backdrop behind the slide-in panel (mobile only) */
+  .nav-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transition: opacity var(--transition-slow) var(--ease);
+    z-index: 15;
+  }
+
+  /* Lock page scroll behind the open slide-in panel (class toggled in head.html) */
+  body.nav-open {
+    overflow: hidden;
+  }
+
+  /* ─ Hero ─ (full-bleed colored band; the only context that overrides
+     the global heading scale) */
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-hue {
+    background: var(--hero-bg);
+    color: var(--hero-ink);
+  }
+  /* Two-column: copy left, line-art scene bleeding to the right edge */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: stretch;
+    gap: var(--space-l);
+  }
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+  .hero-art {
+    position: relative;
+    /* intrinsic size so the absolutely-positioned SVG has a box;
+       art scales down when the grid stacks on mobile.
+       Matches the illustration's 768×800 viewBox so it doesn't letterbox. */
+    aspect-ratio: 768 / 800;
+  }
+  .hero-art svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  /* Color for kicker/Eyebrows. Any first element that follows a heading */
+  .hero-hue *:first-child:has(+ h1, + h2) { 
+    color: var(--hero-muted); 
+  }
+  .hero h3 {  /* eyebrow */
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: var(--step--1);
+    line-height: var(--lh-heading);
+    margin: 0 0 0.75em;
+  }
+  .hero h1 {
+    font-size: var(--step-5);
+    line-height: var(--lh-display);
+    color: var(--hero-ink);
+    max-width: 16ch;
+  }
+  .hero h1 em {
+    color: var(--hero-em);
+    font-style: italic;
+  }
+  .hero p {
+    font-size: var(--step-1);
+    line-height: var(--lh-lead);
+    color: var(--hero-muted);
+    max-width: 42ch;
+    margin-bottom: 1.75em;
+  }
+  .hero a {
+    display: inline-block;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 0.8em 1.7em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    background: var(--accent);
+    color: var(--on-accent) !important;
+  }
+  .hero a:hover { background: var(--accent-hover); }
+
+  /* ─ Button (base; use utility classes for color variations) ─ */
+  .button {
+    display: inline-block;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 0.8em 1.6em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    font-size: var(--step-0);
+  }
+
+  /* ─ Heading copy-link anchors (GitHub-style) ─
+     Hover/focus reveals a chain icon in the left gutter; clicking copies an
+     absolute deep link (JS in head.html). The anchor is injected for prose
+     headings and server-rendered for FAQ items. */
+  main :is(h2, h3, h4):has(> .heading-anchor) { position: relative; }
+  .heading-anchor {
+    position: absolute;
+    right: 100%;
+    margin-right: var(--space-2xs);
+    /* Span the heading's first line (1lh inherits the heading's font-size +
+       line-height) so align-items:center vertically centers the icon against
+       the heading text, whatever its step. */
+    top: 0;
+    height: 1lh;
+    display: inline-flex;
+    align-items: center;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity var(--transition-fast) var(--ease);
+  }
+  /* Icon sized with a fixed step (not 1em) so it's consistent across heading
+     levels and stays small enough for the narrow mobile gutter. */
+  .heading-anchor svg { width: var(--step-0); height: var(--step-0); }
+  .heading-anchor:hover { color: var(--brand); }
+  :is(h2, h3, h4):hover > .heading-anchor,
+  :is(h2, h3, h4):focus-within > .heading-anchor,
+  .faq-item:hover > summary > .faq-anchor,
+  .faq-item:focus-within > summary > .faq-anchor,
+  .heading-anchor:focus-visible { opacity: 1; }
+  /* Touch devices have no hover — keep anchors visible. */
+  @media (hover: none) {
+    .heading-anchor { opacity: 1; }
+  }
+
+  /* ─ "Link copied" toast ─ bottom-center, single reusable node. */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: var(--space-m);
+    transform: translate(-50%, 1rem);
+    z-index: 100;
+    padding: var(--space-2xs) var(--space-s);
+    border-radius: var(--radius-pill);
+    background: var(--ink);
+    color: var(--bg);
+    font-size: var(--step--1);
+    font-weight: 600;
+    box-shadow: 0 4px 16px hsla(0, 0%, 0%, 0.2);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .toast { transition: opacity var(--transition-base) var(--ease), transform var(--transition-base) var(--ease); }
+  }
+
+  /* ─ FAQ accordion (native <details>/<summary> — no JS required) ─ */
+  .faq-item {
+    background: var(--card);
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-card);
+    /* overflow visible so the gutter copy-link anchor (right:100%) isn't
+       clipped; children stay rectangular within the rounded frame anyway. */
+    position: relative;   /* gutter anchor positioning */
+  }
+  .faq-anchor {
+    /* summary is padded; center vertically against that first line */
+    top: calc(var(--space-xs) + 0.5em);
+    transform: translateY(-50%);
+  }
+  /* .cluster on the <summary> element supplies display:flex; override gap here */
+  .faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+    padding: var(--space-xs);
+    gap: 0.85em;
+    flex-wrap: nowrap;      /* keep the + icon on the same line as the question */
+    align-items: start;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary h3 {  /* match the summary size, not the global h3 step */
+    min-width: 0;  /* allow the question to shrink/wrap beside the icon */
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+    line-height: inherit;
+  }
+
+  .faq-icon {
+    flex-shrink: 0;
+    margin-inline-start: auto;   /* pin the +/− to the right edge */
+    width: 1.4em;
+    height: 1.4em;
+    border-radius: 50%;
+    background: var(--tint);
+    position: relative;
+  }
+  .faq-icon::before,
+  .faq-icon::after {
+    content: "";
+    position: absolute;
+    background: var(--brand);
+    border-radius: 2px;
+    transition: transform var(--transition-fast) var(--ease);
+  }
+  .faq-icon::before { left: 30%; right: 30%; top: 50%; height: 2px; transform: translateY(-50%); }
+  .faq-icon::after  { top: 30%; bottom: 30%; left: 50%; width: 2px; transform: translateX(-50%); }
+  .faq-item[open] .faq-icon::after { transform: translateX(-50%) rotate(90deg) scaleX(0); }
+
+  .faq-answer {
+    padding-block: 0 var(--space-s);
+    padding-inline: var(--space-xs) var(--space-s);
+    color: var(--muted);
+  }
+  .faq-answer :last-child { margin-bottom: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-icon::after { transition: none; }
+  }
+
+  /* ─ Post / page prose ─ (headings inherit the global scale; only rhythm here) */
+  .post h2,
+  .page :is(h1, h2) { margin-block-start: var(--space-m); }
+  .post h3,
+  .page h3 { margin-block-start: var(--space-s); }
+  .post > *:first-child,
+  .page > *:first-child { margin-block-start: 0; }
+  .post ul:not(.post-list), .post ol,
+  .page ul:not(.post-list), .page ol  { padding-left: 1.25em; }
+  .post :is(ul:not(.post-list), ol) li + li,
+  .page :is(ul:not(.post-list), ol) li + li { margin-block-start: var(--space-2xs); }
+  /* Google Docs sometimes wraps a list item's content in a <p>; drop its
+     inherited paragraph margin so it doesn't inflate item spacing. */
+  .post li > p,
+  .page li > p { margin-block: 0; }
+
+  /* ─ Page-header band ─ intro strip under the site header. Background comes
+     from the .bg-surface-alt utility; only the layout + h1 override live here. */
+  .page-header .wrapper {
+    padding-block: var(--space-xl) var(--space-m); /* less bottom space for wave */ 
+  }
+  .page-header h1 {
+    font-size: var(--step-4);
+    color: var(--ink);
+    margin-block: 0.1em 0;
+  }
+
+  /* ─ Brand-colored section headings ─ h2 marks a new major section and
+     retints per hue automatically. h3 stays neutral ink (no rule needed). */
+  .page h2,
+  .post h2 { color: var(--brand); }
+
+  /* ─ Standfirst / sign-off ─ a fully-italic opening or closing paragraph
+     (single <em> child) reads as a lead-in or a closing line. */
+  .page p:first-child:has(> em:only-child),
+  .post p:first-child:has(> em:only-child) {
+    font-size: var(--step-1);
+    font-style: italic;
+    color: var(--muted);
+  }
+  .page p:last-child:has(> em:only-child),
+  .post p:last-child:has(> em:only-child) {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  /* ─ Framed tables ─ classless, matching the FAQ card frame. These are
+     definition tables: the first column holds labels. GFM always promotes the
+     first row to <th> and Google Docs strips that row's bold, so a <strong>
+     can't mark the top-left label — position does. The label column is shaded
+     and bold; the base rule clears the <th> user-agent bold so the value
+     column (including the promoted header-row cell) reads plainly. */
+  .page table,
+  .post table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+  .page :is(th, td),
+  .post :is(th, td) {
+    padding: 0.9em 1.1em;
+    text-align: left;
+    vertical-align: top;
+    font-weight: normal;
+    border-bottom: var(--border-thin) solid var(--line);
+  }
+  .page tr:last-child :is(th, td),
+  .post tr:last-child :is(th, td) { border-bottom: 0; }
+  .page :is(th, td):first-child,
+  .post :is(th, td):first-child {
+    background: var(--tint);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ─ Callouts ─ blockquotes render as tinted framed cards. A lone bold run in
+     the first paragraph (`> **Label**`) becomes an eyebrow label line. */
+  .page blockquote,
+  .post blockquote {
+    margin: 0;
+    background: var(--tint);
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-card);
+    padding: var(--space-s);
+  }
+  .page blockquote :last-child,
+  .post blockquote :last-child { margin-bottom: 0; }
+  .page blockquote p:first-child:has(> strong:only-child),
+  .post blockquote p:first-child:has(> strong:only-child) {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: var(--step--2);
+    color: var(--secondary);
+    margin-bottom: var(--space-2xs);
+  }
+
+  /* ─ Checklist ─ kramdown task lists (`- [ ]`): brand-outlined boxes replace
+     bullets and native checkboxes. kramdown wraps each item's content in a <p>
+     (`<li><p><input>text</p></li>`), so the checkbox is inline before the text
+     — space it with its own margin rather than a flex gap. */
+  .page .task-list,
+  .post .task-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  .page .task-list-item-checkbox,
+  .post .task-list-item-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1em;
+    height: 1em;
+    margin-inline-end: 0.5em;
+    border: var(--border-bold) solid var(--brand);
+    border-radius: 0.25em;
+    vertical-align: -0.1em;
+  }
+
+  /* ─ Post list ─ */
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  /* .repel on each <li> handles flex layout; add spacing + divider here */
+  .post-list li {
+    padding: var(--space-xs) 0;
+    border-bottom: var(--border-thin) solid var(--line);
+  }
+
+  /* ─ Site footer ─ */
+  .site-footer {
+    background: var(--footer-bg);
+    padding-block: var(--space-l);
+    color: var(--footer-ink);
+    font-size: var(--step--1);
+  }
+  .site-footer .wordmark {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
+    color: var(--footer-head);
+    font-size: var(--step-1);
+    margin: 0 0 0.35em;
+  }
+  .site-footer .wordmark-accent { color: var(--accent); }
+  .site-footer strong {
+    color: var(--footer-head);
+    font-weight: 600;
+  }
+  .site-footer a { color: var(--footer-head); }
+
+  /* ─ Signup band (colored hero band; matches the reference) ─ */
+  .signup {
+    background: var(--hero-bg);
+    color: var(--hero-ink);
+  }
+  .signup h2 { color: var(--hero-ink); }
+  .signup p { color: var(--hero-muted); }
+  .signup .text-deemphasized { color: var(--hero-muted); }
+  .signup a { color: var(--hero-ink); }
+  .signup a:hover { color: var(--accent); }
+
+  /* ─ Section eyebrow ─ kicker above a section heading. Classless: the first
+     <p> in a section's content, when it directly precedes the heading. Authored
+     as the first line of the published Markdown (Overview, Signup) or the FAQ
+     include, so it survives a Google-Docs re-publish without needing a class. */
+  section p:first-child:has(+ h1, + h2) {
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: var(--step--1);
+    line-height: var(--lh-heading);
+    margin-bottom: var(--space-2xs);
+    color: var(--secondary);
+  }
+
+  /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
+  @media (max-width: 640px) {
+    .nav-toggle { display: inline-flex; }
+
+    /* Nav becomes a panel that slides in from the right edge */
+    .site-header nav {
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: 90vw;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 0;
+      padding: calc(var(--space-xl) + env(safe-area-inset-top)) var(--space-m) var(--space-l);
+      background: var(--bg);
+      border-left: var(--border-thin) solid var(--line);
+      box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
+      transform: translateX(100%);
+      transition: transform var(--transition-slow) var(--ease);
+      z-index: 20;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .site-header.nav-open nav { transform: translateX(0); }
+
+    /* Nav link list stacks; dropdown menu opens inline (indented) rather than
+       as a floating panel — visibility still driven by the toggle. */
+    .site-header nav > ul { flex-direction: column; align-items: flex-start; gap: 0; width: 100%; }
+    .site-header nav li { width: 100%; }
+    /* Same `html.js` specificity as the desktop floating-panel rule, so this
+       inline treatment wins here regardless of source order. */
+    html.js .site-header nav li ul {
+      position: static;
+      padding: 0;
+      padding-inline-start: var(--space-s);
+      background: none;
+      border: 0;
+    }
+
+    /* Even top/bottom padding gives each link a balanced tap target,
+       and drives the vertical rhythm instead of a gap on the parent. */
+    .site-header nav a:not(.nav-cta),
+    .site-header nav .nav-dropdown-toggle {
+      font-size: var(--step-1);
+      padding-block: var(--space-xs);
+      padding-inline-start: 0;
+    }
+    /* Block-level so each link's padding becomes part of the li's height. 
+       The toggle stays flex to keep its label + chevron aligned. */
+    .site-header nav a:not(.nav-cta) { display: block; }
+    .site-header nav .nav-dropdown-toggle { display: flex; }
+    .site-header nav .nav-cta { 
+      font-size: var(--step-0);
+      margin-block-start: var(--space-xs); 
+    }
+
+    /* Theme toggle reads as a labelled row in the panel, not a lone icon */
+    .site-header nav .theme-toggle {
+      width: auto;
+      gap: var(--space-2xs);
+      padding-inline: var(--space-xs);
+      position: absolute;
+      top: var(--space-xs);
+      right: var(--space-xl);
+    }
+    .site-header nav .theme-toggle:hover { color: var(--brand); }
+    .site-header nav .theme-toggle-text { display: inline; }
+
+    /* Show + fade the backdrop while the panel is open */
+    .site-header.nav-open .nav-backdrop {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Trim the empty space above the hero on mobile */
+    .hero-copy {
+      padding-block: var(--space-l);
+    }
+  }
+}
+
+/* ── utility ─────────────────────────────────────────────────────────────── */
+@layer utility {
+  /* Layout / alignment */
+  .text-center    { text-align: center; }
+  .measure        { max-width: 50ch; }
+  .measure-narrow { max-width: 16ch; }
+  .nowrap         { white-space: nowrap; }
+
+  /* Semantic surface + text colors */
+  .bg-surface       { background: var(--bg); }
+  .bg-surface-alt   { background: var(--band-alt); }
+  .bg-brand         { background: var(--brand); }
+  .bg-accent        { background: var(--accent); }
+  .text-base        { color: var(--ink); }
+  .text-deemphasized{ color: var(--muted); }
+  .text-brand       { color: var(--brand); }
+
+  /* Semantic type sizes (line-height paired to size, per the scale above) */
+  .text-meta {
+    font-size: var(--step--1);
+    line-height: var(--lh-body);
+  }
+  .text-eyebrow {  /* kicker/overline — sits tight above a heading */
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: var(--lh-heading);
+    color: var(--secondary);
+    margin: 0;
+  }
+
+  .font-display   { font-family: var(--font-display); }
+
+  /* Flow rhythm + margin helpers */
+  .flow-space-2xs { --flow-space: var(--space-2xs); }
+  .flow-space-xs  { --flow-space: var(--space-xs); }
+  .flow-space-s   { --flow-space: var(--space-s); }
+  .flow-space-m   { --flow-space: var(--space-m); }
+  .flow-space-l   { --flow-space: var(--space-l); }
+
+  .mt-xs { margin-block-start: var(--space-xs); }
+  .mt-s  { margin-block-start: var(--space-s); }
+  .mt-m  { margin-block-start: var(--space-m); }
+  .mt-l  { margin-block-start: var(--space-l); }
+  .mt-xl { margin-block-start: var(--space-xl); }
+
+  /* wide cap wrapper */
+  .wide.wrapper {
+    inline-size: min(100% - 2 * var(--gutter), var(--measure-wide));
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+  }
+
+  /* ─ Show / hide ─ generic helpers to toggle an element in/out of layout.
+     .hidden removes it entirely; .visible restores its default display.
+     [hidden] makes the native attribute authoritative over component display
+     rules, so the Disclosure controller (see head.html) can reliably collapse
+     any region by toggling it. */
+  [hidden] { display: none !important; }
+  .hidden { display: none !important; }
+  .visible { display: revert !important; }
+
+  /* ─ Wave / curve divider ─ a full-bleed transition placed between two bands.
+     Set the two adjacent band colors per instance:
+       <div class="wave" style="--wave-above: var(--hero-bg); --wave-below: var(--bg);"></div>
+     The element paints the lower band's color; the ::before paints the upper
+     band's color, masked to a curve so the lower color shows through the cut.
+     Shape varies automatically by position — a single .wave class yields three
+     alternating silhouettes via :nth-of-type(). Masks are token-blind, so the
+     curve retints with hue + theme for free. */
+  .wave {
+    --wave-above: var(--hero-bg);
+    --wave-below: var(--bg);
+    /* default silhouette (also used by :nth-of-type(3n+1)) — sweeps left */
+    --wave-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 64' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L1440,0 L1440,10 C980,24 320,62 0,44 Z' fill='%23000'/%3E%3C/svg%3E");
+    position: relative;
+    height: clamp(28px, 4vw, 56px);
+    background: var(--wave-below);
+  }
+  .wave::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--wave-above);
+    -webkit-mask: var(--wave-shape) center / 100% 100% no-repeat;
+            mask: var(--wave-shape) center / 100% 100% no-repeat;
+  }
+  /* :nth-of-type cycles the silhouette every three waves for variety */
+  .wave:nth-of-type(3n+2) {  /* sweeps right */
+    --wave-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 64' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L1440,0 L1440,44 C1120,62 460,24 0,10 Z' fill='%23000'/%3E%3C/svg%3E");
+  }
+  .wave:nth-of-type(3n) {    /* waves through the middle */
+    --wave-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 64' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L1440,0 L1440,26 C1230,26 1160,46 1010,46 C870,46 830,16 710,16 C590,16 550,46 410,46 C260,46 200,26 0,26 Z' fill='%23000'/%3E%3C/svg%3E");
+  }
+}
+
+/* ── exception ───────────────────────────────────────────────────────────── */
+@layer exception {
+  /* EmailOctopus embed restyle — scoped under .signup; !important overrides injected styles */
+  .signup .inline-container {
+    margin-inline: auto;
+  }
+  .signup .emailoctopus-form-wrapper {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: var(--space-s) auto 0 !important;
+    max-width: 560px;
+  }
+  /* EmailOctopus nests the email input inside an unnamed <div>, with the
+     submit button as its sibling — both direct children of .main-form.
+     Make .main-form the flex row so they sit on one line. */
+  .signup .emailoctopus-form .main-form {
+    display: flex !important;
+    flex-wrap: nowrap !important;   /* keep the input and Subscribe button on one line */
+    justify-content: center !important;
+    align-items: stretch !important;
+  }
+  .signup .emailoctopus-form .emailoctopus-form-row { margin: 0 !important; }
+  /* the input's wrapper grows to fill; the submit button stays its natural width */
+  .signup .emailoctopus-form .main-form > div {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    /* Flex container so the stretch cascades to the nested input, matching
+       the (intrinsically taller) submit button's height exactly. */
+    display: flex !important;
+    align-items: stretch !important;
+  }
+  .signup .emailoctopus-form .emailoctopus-form-row {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex !important;
+    align-items: stretch !important;
+  }
+  .signup .emailoctopus-form .main-form > input[type="submit"] {
+    flex: 0 0 auto !important;
+    width: auto !important;   /* override EmailOctopus's .w-100 */
+  }
+  .signup .emailoctopus-form label {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0);
+    white-space: nowrap; border: 0;
+  }
+  /* common input styles */
+  .signup .emailoctopus-form input[type="submit"],
+  .signup .emailoctopus-form .form-control {
+    /* Set family AND size explicitly — `font: var(--font-body)` is an invalid
+       shorthand (no size) and was dropped, letting the input and button fall
+       back to different UA font sizes and thus mismatched heights. */
+    font-family: var(--font-body) !important;
+    font-size: var(--step-0) !important;
+    line-height: .85 !important;
+    min-height: 40px !important;
+    padding: 0.75em 1em !important;
+    margin: 0 !important;
+  }
+  /* signup input */
+  .signup .emailoctopus-form .form-control {
+    border-radius:  999px 0 0 999px !important;
+    border: var(--border-bold) solid var(--edge) !important;
+    border-right: none !important;
+    background: var(--card) !important;
+    color: var(--ink) !important;
+    min-width: 0;
+    width: 100% !important;
+    /* Chrome renders text inputs a few px shorter than buttons and won't
+       stretch them via align-items; the flex row has a definite height (set by
+       the taller button), so fill it explicitly to match the button exactly. */
+    height: 100% !important;
+  }
+  /* signup submit button */
+  .signup .emailoctopus-form input[type="submit"] {
+    font-weight: 700 !important;
+    background: var(--accent) !important;
+    color: var(--on-accent) !important;
+    border: var(--border-bold) solid var(--edge) !important;
+    border-radius: 0 999px 999px 0 !important;
+    width: auto !important;
+    cursor: pointer !important;
+  }
+  .signup .emailoctopus-form input[type="submit"]:hover {
+    background: var(--accent-hover) !important;
+  }
+
+  /* EO "powered by" */
+  .signup .mastfoot { 
+    display: none !important; 
+  }
+  
+}

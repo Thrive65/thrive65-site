@@ -101,6 +101,8 @@
 
   // Nav dropdowns — enhance each nested nav list into a disclosure button
   // (the leading label text node of the <li> becomes the button label).
+  {% capture chevron_svg %}{% include icons/chevron.svg %}{% endcapture %}
+  var CHEVRON_SVG = {{ chevron_svg | strip | jsonify }};
   document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".site-header nav li > ul").forEach(function (menu, i) {
       var li = menu.parentNode, label = "", node = li.firstChild;
@@ -118,8 +120,7 @@
       btn.setAttribute("aria-controls", menu.id);
       btn.setAttribute("data-disclosure", "nav");            // exclusive group
       btn.setAttribute("data-dismiss", "outside esc focusout");
-      btn.innerHTML = label.trim() +
-        ' <svg width="10" height="7" viewBox="0 0 10 7" aria-hidden="true"><polyline points="1,1.5 5,5.5 9,1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      btn.innerHTML = label.trim() + " " + CHEVRON_SVG;
       li.insertBefore(btn, menu);
     });
   });
