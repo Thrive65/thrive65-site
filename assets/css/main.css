@@ -726,6 +726,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    min-height: 44px;       /* ≥44px tap target (acceptance checklist) */
     gap: var(--space-xs);
     padding: var(--space-2xs) var(--space-xs);
     border: 0;
@@ -924,6 +925,31 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   .a11y-segment[aria-pressed="true"] { background: var(--brand); color: var(--card); }
   .a11y-segment[aria-pressed="true"]:hover { color: var(--card); }
   .a11y-segment:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+  /* Hit-target expansion — the panel's compact controls (switch, stepper,
+     segment, close ✕) match the approved frames but read smaller than 44px.
+     A transparent, centered overlay guarantees a ≥44×44px pointer/tap target
+     (acceptance checklist) without altering the visual size or layout: it's
+     absolutely positioned, so it never changes the flex box it sits in. */
+  .a11y-step,
+  .a11y-segment,
+  .a11y-close,
+  .a11y-reset { position: relative; }
+  .a11y-switch::before,
+  .a11y-step::before,
+  .a11y-segment::before,
+  .a11y-close::before,
+  .a11y-reset::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
+    width: 100%;
+    height: 100%;
+  }
 
   .a11y-panel-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
   .a11y-reset {
