@@ -44,10 +44,9 @@
           {% include icons/universal-access.svg %}
           <span class="a11y-toggle-text" aria-hidden="true">Accessibility</span>
         </button>
-        <div id="a11y-panel" class="a11y-panel" hidden role="dialog"
-             aria-label="Display &amp; accessibility settings">
+        <div id="a11y-panel" class="a11y-panel" hidden role="group" aria-labelledby="a11y-panel-title">
           <div class="a11y-panel-head repel">
-            <h2 class="a11y-panel-title">Display &amp; accessibility</h2>
+            <h2 class="a11y-panel-title" id="a11y-panel-title">Display &amp; accessibility</h2>
             <button type="button" class="a11y-close" aria-label="Close settings" data-a11y-close>
               {% include icons/close.svg %}
             </button>
@@ -121,7 +120,7 @@
        No data-elfsight-app-lazy: lazy init uses an IntersectionObserver, but the
        visually-hidden container is clipped to ~1px so it would never register as
        visible and never load. The translator must run on every page regardless. -->
-  <div class="lang-widget-mount visually-hidden" aria-hidden="true">
+  <div class="lang-widget-mount visually-hidden" inert>
     <script src="https://elfsightcdn.com/platform.js" async></script>
     <div class="elfsight-app-91448ae8-7a99-4960-b854-caa497c1ea85"></div>
   </div>
