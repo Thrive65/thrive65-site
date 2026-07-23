@@ -5,7 +5,7 @@
     <a class="brand cluster" href="{{ '/' | relative_url }}">
       <span class="wordmark">Thrive<span class="wordmark-accent">65</span></span>
     </a>
-    <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
+    <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-panel">
       <span class="nav-toggle-box" aria-hidden="true">
         <span class="nav-toggle-bar"></span>
         <span class="nav-toggle-bar"></span>
@@ -13,8 +13,12 @@
       </span>
     </button>
     <div class="nav-backdrop"></div>
+    <div id="nav-panel" class="nav-panel">
     <nav id="primary-nav" class="cluster" aria-label="Primary">
       {% capture site_nav %}{% include site-nav.md %}{% endcapture %}{{ site_nav | markdownify }}
+      <a class="nav-cta" href="{{ '/' | relative_url }}#signup">Join us</a>
+    </nav>
+    <nav id="utility-nav" class="cluster" aria-label="Utilities">
       <div class="lang-select">
         <button type="button" class="lang-toggle" aria-label="Select language"
                 aria-controls="lang-menu" aria-expanded="false"
@@ -109,8 +113,8 @@
         </div>
       </div>
 
-      <a class="nav-cta" href="{{ '/' | relative_url }}#signup">Join us</a>
     </nav>
+    </div>
   </div>
 
   <!-- Elfsight Website Translator drives the actual page translation. The custom

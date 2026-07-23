@@ -506,7 +506,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-s);
+    gap: var(--space-xs);
   }
 
   .repel {
@@ -523,17 +523,21 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
 
   /* ─ Site header ─ */
   .site-header {
-    border-bottom: var(--border-thin) solid var(--line);
+    border-bottom: var(--border-bold) solid var(--line);
     background: var(--bg);
     position: sticky;
     top: 0;
     z-index: 10;
-    box-shadow: 0px -1.5rem 2rem 1px var(--footer-bg);
   }
   /* Add block padding to the repel wrapper inside the header */
   .site-header .wrapper {
     padding-block: var(--space-xs);
   }
+  /* Wrapper around the primary + utility navs. On desktop it dissolves
+     (display: contents) so both navs sit as direct flex children of the
+     .repel wrapper — brand left, primary-nav centre, utility-nav right.
+     On mobile it becomes the slide-in panel (see the responsive block). */
+  .nav-panel { display: contents; }
   .site-header nav {
     font-weight: 600;
     font-size: var(--step--1);
@@ -622,7 +626,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
      Filling the row makes every menu drop from the same baseline, so the shared
      --menu-offset aligns all three. Scoped above the mobile breakpoint so the
      stacked mobile submenu (li as a block with the submenu below) is untouched. */
-  @media (min-width: 641px) {
+  @media (min-width: 785px) {
     .site-header nav > ul { align-self: stretch; align-items: stretch; }
     .site-header nav > ul > li { display: flex; align-items: center; }
   }
@@ -1420,19 +1424,19 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   }
 
   /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
-  @media (max-width: 640px) {
+  @media (max-width: 784px) {
     .nav-toggle { display: inline-flex; }
 
-    /* Nav becomes a panel that slides in from the right edge */
-    .site-header nav {
+    /* The .nav-panel wrapper (holding both navs) becomes the panel that slides
+       in from the right edge. Both navs stack vertically inside it as full-width
+       blocks, so the primary links and the utility controls share one surface
+       instead of overlapping as two separate fixed panels. */
+    .site-header .nav-panel {
+      display: block;
       position: fixed;
       inset: 0 0 0 auto;
       width: 90vw;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-      gap: 0;
-      padding: calc(var(--space-xl) + env(safe-area-inset-top)) var(--space-m) var(--space-l);
+      padding: calc(var(--space-xl) + env(safe-area-inset-top)) var(--space-s) var(--space-l);
       background: var(--bg);
       border-left: var(--border-thin) solid var(--line);
       box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
@@ -1442,7 +1446,14 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
       overflow-y: auto;
       overscroll-behavior: contain;
     }
-    .site-header.nav-open nav { transform: translateX(0); }
+    .site-header.nav-open .nav-panel { transform: translateX(0); }
+    .site-header .nav-panel nav {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 0;
+      width: 100%;
+    }
 
     /* Nav link list stacks; dropdown menu opens inline (indented) rather than
        as a floating panel — visibility still driven by the toggle. */
@@ -1465,7 +1476,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     .site-header nav .nav-dropdown-toggle {
       font-size: var(--step-1);
       padding-block: var(--space-xs);
-      padding-inline-start: 0;
     }
     /* Block-level so each link's padding becomes part of the li's height. 
        The toggle stays flex to keep its label + chevron aligned. */
@@ -1474,13 +1484,14 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     .site-header nav .nav-cta { 
       font-size: var(--step-0);
       margin-block-start: var(--space-xs); 
+      margin-inline-start: var(--space-xs); 
     }
 
-    /* Accessibility trigger reads as a labelled pill, taking the slot the theme
-       toggle used to hold (top of the panel, left of the ✕). */
-    .a11y-select { position: static; }
-    .site-header nav .a11y-toggle {
+    /* Utility navs (Language, Accessibility) display inline
+       at top of the panel, left of the ✕. */
+    .site-header #utility-nav {
       width: auto;
+      flex-direction: row;
       gap: var(--space-2xs);
       padding-inline: var(--space-xs);
       position: absolute;
@@ -1488,7 +1499,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
       right: var(--space-xl);
     }
     .site-header nav .a11y-toggle:hover { color: var(--brand); }
-    .site-header nav .a11y-toggle-text { display: inline; }
+    .site-header nav .a11y-toggle-text { display: inline; font-weight: 600; }
 
     /* Settings surface becomes a bottom sheet: fixed to the viewport bottom,
        full-width, rounded top corners only, above the slide-in nav panel. */
