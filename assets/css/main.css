@@ -722,25 +722,11 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     z-index: 30;
   }
   .lang-menu-item {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
     min-height: 44px;       /* ≥44px tap target (acceptance checklist) */
-    gap: var(--space-xs);
-    padding: var(--space-2xs) var(--space-xs);
-    border: 0;
-    border-radius: var(--radius-sm);
-    background: none;
-    font: inherit;
-    font-weight: 600;
-    color: var(--ink);
-    text-decoration: none;  /* links: suppress the base underline */
-    text-align: start;
-    cursor: pointer;
   }
-  .lang-menu-item:hover,
-  .lang-menu-item:focus-visible { background: var(--menu-item-hover); }
   .lang-menu .lang-check {
     flex-shrink: 0;
     color: var(--brand);
@@ -904,7 +890,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     display: inline-flex;
     border: var(--border-bold) solid var(--edge);
     border-radius: var(--radius-pill);
-    overflow: hidden;
   }
   .a11y-segment {
     display: inline-flex;
@@ -925,7 +910,16 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   .a11y-segment:hover { color: var(--brand); }
   .a11y-segment[aria-pressed="true"] { background: var(--brand); color: var(--card); }
   .a11y-segment[aria-pressed="true"]:hover { color: var(--card); }
-  .a11y-segment:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+  .a11y-segment:focus-visible { 
+    outline: 3px solid var(--focus); 
+    outline-offset: 4px; 
+  }
+  button.a11y-segment:first-child {
+    border-radius: var(--radius-pill) 0px 0 var(--radius-pill);
+  }
+  button.a11y-segment:last-child {
+    border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+  }
 
   /* Hit-target expansion — the panel's compact controls (switch, stepper,
      segment, close ✕) match the approved frames but read smaller than 44px.
