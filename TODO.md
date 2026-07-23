@@ -4,10 +4,7 @@
 ------------------------
 
 - a11y menu
-  - ✅ internal scroll when too tall
-  - ✅ additional font sizes (smaller than 100%, as big as 200%)
-  - ✅ add colorblind pallete tokens for remaining tokens not currently set (like --hero colors)
-  - ✅ remove sub-label text (e.g. "Black & white, underlined links"). Add question mark icon superscripted to label. Show the removed text within the title "tooltip" of those options. (Default browser Title functionality OK. No custom tooltip component needed)
+  - low pri: change a11y-segmented items to a radio group, slightly more specific semantically.
   - add letter spacing ticker & tokens
 
 ### Architecture
