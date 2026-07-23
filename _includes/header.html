@@ -15,24 +15,113 @@
     <div class="nav-backdrop"></div>
     <nav id="primary-nav" class="cluster" aria-label="Primary">
       {% capture site_nav %}{% include site-nav.md %}{% endcapture %}{{ site_nav | markdownify }}
-      <button type="button" class="theme-toggle" aria-label="Toggle light/dark theme">
-        <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-          <circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-          <line x1="8" y1="0.8" x2="8" y2="2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="8" y1="13.4" x2="8" y2="15.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="0.8" y1="8" x2="2.6" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="13.4" y1="8" x2="15.2" y2="8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="2.9" y1="2.9" x2="4.2" y2="4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="11.8" y1="11.8" x2="13.1" y2="13.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="13.1" y1="2.9" x2="11.8" y2="4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="4.2" y1="11.8" x2="2.9" y2="13.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-        <svg class="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-        </svg>
-        <span class="theme-toggle-text" aria-hidden="true"></span>
-      </button>
+      <div class="lang-select">
+        <button type="button" class="lang-toggle" aria-label="Select language"
+                aria-controls="lang-menu" aria-expanded="false"
+                data-disclosure="nav" data-dismiss="outside esc focusout">
+          {% include icons/globe.svg %}
+          <span class="lang-code">EN</span>
+          {% include icons/chevron.svg %}
+        </button>
+        <ul id="lang-menu" class="lang-menu" hidden aria-label="Language">
+          <li>
+            <a href="?lang=en-US" class="lang-menu-item" data-lang="en-US" aria-current="true">
+              English{% include icons/check.svg %}
+            </a>
+          </li>
+          <li>
+            <a href="?lang=es-MX" class="lang-menu-item" data-lang="es-MX">
+              Español{% include icons/check.svg %}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="a11y-select">
+        <button type="button" class="a11y-toggle" aria-label="Display and accessibility settings"
+                aria-controls="a11y-panel" aria-expanded="false"
+                data-disclosure="nav" data-dismiss="outside esc">
+          {% include icons/universal-access.svg %}
+          <span class="a11y-toggle-text" aria-hidden="true">Accessibility</span>
+        </button>
+        <div id="a11y-panel" class="a11y-panel" hidden role="group" aria-labelledby="a11y-panel-title">
+          <div class="a11y-panel-head repel">
+            <h2 class="a11y-panel-title" id="a11y-panel-title">Display &amp; accessibility</h2>
+            <button type="button" class="a11y-close" aria-label="Close settings" data-a11y-close>
+              {% include icons/close.svg %}
+            </button>
+          </div>
+
+          <div class="a11y-panel-body">
+            <div class="a11y-row">
+              <span class="a11y-row-label" id="a11y-theme-label">Theme</span>
+              <div class="a11y-segmented" role="group" aria-labelledby="a11y-theme-label">
+                <button type="button" class="a11y-segment" data-theme-value="light" aria-pressed="false">{% include icons/sun.svg %}<span>Light</span></button>
+                <button type="button" class="a11y-segment" data-theme-value="dark" aria-pressed="false">{% include icons/moon.svg %}<span>Dark</span></button>
+              </div>
+            </div>
+
+            <div class="a11y-row">
+              <span class="a11y-row-label" id="a11y-contrast-label">High contrast<sup
+                class="a11y-hint" aria-hidden="true" title="Black &amp; white, underlined links">{% include icons/help.svg %}</sup></span>
+              <span class="visually-hidden" id="a11y-contrast-hint">Black &amp; white, underlined links</span>
+              <button type="button" class="a11y-switch" role="switch" data-setting="contrast"
+                      aria-checked="false" aria-labelledby="a11y-contrast-label" aria-describedby="a11y-contrast-hint">
+                <span class="a11y-switch-knob" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <div class="a11y-row">
+              <span class="a11y-row-label" id="a11y-cvd-label">Colorblind-friendly colors<sup
+                class="a11y-hint" aria-hidden="true" title="Okabe–Ito palette">{% include icons/help.svg %}</sup></span>
+              <span class="visually-hidden" id="a11y-cvd-hint">Okabe–Ito palette</span>
+              <button type="button" class="a11y-switch" role="switch" data-setting="cvd"
+                      aria-checked="false" aria-labelledby="a11y-cvd-label" aria-describedby="a11y-cvd-hint">
+                <span class="a11y-switch-knob" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <div class="a11y-row">
+              <span class="a11y-row-label" id="a11y-dyslexic-label">Dyslexia-friendly font<sup
+                class="a11y-hint" aria-hidden="true" title="Atkinson Hyperlegible">{% include icons/help.svg %}</sup></span>
+              <span class="visually-hidden" id="a11y-dyslexic-hint">Atkinson Hyperlegible</span>
+              <button type="button" class="a11y-switch" role="switch" data-setting="dyslexic"
+                      aria-checked="false" aria-labelledby="a11y-dyslexic-label" aria-describedby="a11y-dyslexic-hint">
+                <span class="a11y-switch-knob" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <div class="a11y-row">
+              <span class="a11y-row-label" id="a11y-textsize-label">Text size</span>
+              <div class="a11y-stepper" role="group" aria-labelledby="a11y-textsize-label">
+                <button type="button" class="a11y-step" data-textstep="down" aria-label="Decrease text size">A&minus;</button>
+                <span class="a11y-step-value">100%</span>
+                <button type="button" class="a11y-step" data-textstep="up" aria-label="Increase text size">A+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="a11y-panel-foot repel">
+            <button type="button" class="a11y-reset">Reset all</button>
+            <span class="a11y-saved text-deemphasized">Saved on this device</span>
+            <button type="button" class="a11y-done" data-a11y-close>Done</button>
+          </div>
+        </div>
+      </div>
+
       <a class="nav-cta" href="{{ '/' | relative_url }}#signup">Join us</a>
     </nav>
+  </div>
+
+  <!-- Elfsight Website Translator drives the actual page translation. The custom
+       .lang-select control above is the visible UI; selecting a language reloads
+       with ?lang=<code>, which this widget reads and persists (see head.html).
+       Kept in the DOM but visually hidden so it still initializes; NOT display:none.
+       No data-elfsight-app-lazy: lazy init uses an IntersectionObserver, but the
+       visually-hidden container is clipped to ~1px so it would never register as
+       visible and never load. The translator must run on every page regardless. -->
+  <div class="lang-widget-mount visually-hidden" inert>
+    <script src="https://elfsightcdn.com/platform.js" async></script>
+    <div class="elfsight-app-91448ae8-7a99-4960-b854-caa497c1ea85"></div>
   </div>
 </header>

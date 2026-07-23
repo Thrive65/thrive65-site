@@ -15,21 +15,205 @@
   (function () {
     // Progressive-enhancement flag: components that collapse content only do
     // so once JS can reveal it again (see the `html.js` guards in main.css).
-    document.documentElement.classList.add("js");
+    var html = document.documentElement;
+    html.classList.add("js");
+
+    // Theme — stored light/dark, or "auto" (absent) following the OS.
     var t = localStorage.getItem("theme") || "auto";
     var dark = t === "dark" ||
       (t === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
-    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    html.setAttribute("data-theme", dark ? "dark" : "light");
+
+    // Accessibility toggles — restore each attribute before paint from its key.
+    // Stored value === the "on" value applies it; "off"/absent leaves it off.
+    // (Shared with the switch handler + Reset below; keep the table in sync.)
+    [["a11y-contrast", "data-contrast", "high"],
+     ["a11y-cvd", "data-cvd", "on"],
+     ["a11y-dyslexic", "data-dyslexic", "on"]].forEach(function (s) {
+      if (localStorage.getItem(s[0]) === s[2]) html.setAttribute(s[1], s[2]);
+    });
+    // High contrast auto-enables on `prefers-contrast: more` when unchosen
+    // (mirrors theme auto). An explicit off is stored, so it wins over this.
+    if (!localStorage.getItem("a11y-contrast") &&
+        matchMedia("(prefers-contrast: more)").matches) {
+      html.setAttribute("data-contrast", "high");
+    }
+    // Text size scales the fluid-root knobs (Phase 5c).
+    var ts = localStorage.getItem("a11y-textsize");
+    if (["87", "112", "125", "137", "150"].indexOf(ts) !== -1) html.setAttribute("data-textsize", ts);
+
+    // Dyslexia font is lazy, but if it's already on, pull it in now so the
+    // switch to Atkinson doesn't flash unstyled on first paint.
+    if (localStorage.getItem("a11y-dyslexic") === "on") {
+      var l = document.createElement("link");
+      l.id = "atkinson-font";
+      l.rel = "stylesheet";
+      l.href = "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+      document.head.appendChild(l);
+    }
   })();
 
-  // Theme toggle (delegated — the button lives in the header include)
-  document.addEventListener("click", function (e) {
-    var btn = e.target.closest && e.target.closest(".theme-toggle");
-    if (!btn) return;
-    var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
-  });
+  // ---------------------------------------------------------------------- //
+  // announce(msg) — one polite live-region toast, shared by the copy-link
+  // confirmation and every a11y settings change. Visual + screen-reader in a
+  // single mechanism (role=status aria-live=polite); each call re-sets the
+  // text, which fires exactly one announcement — so no double-announce.
+  // ---------------------------------------------------------------------- //
+  var announce = (function () {
+    var el, timer;
+    return function (msg) {
+      if (!el) {
+        el = document.createElement("div");
+        el.className = "toast";
+        el.setAttribute("role", "status");
+        el.setAttribute("aria-live", "polite");
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
+      // Force reflow so re-triggering restarts the transition.
+      el.classList.remove("is-visible");
+      void el.offsetWidth;
+      el.classList.add("is-visible");
+      clearTimeout(timer);
+      timer = setTimeout(function () { el.classList.remove("is-visible"); }, 2000);
+    };
+  })();
+
+  // ---------------------------------------------------------------------- //
+  // Display & accessibility settings.
+  //
+  // Each mode is an attribute on <html> with one localStorage key, restored
+  // before paint by the IIFE above (theme) / its Phase 4+ siblings. The panel
+  // itself is a Disclosure (see below); this block wires the controls inside it.
+  // ---------------------------------------------------------------------- //
+  (function () {
+    var html = document.documentElement;
+
+    // Switch settings — one row each. A switch button carries data-setting="KEY"
+    // (the object key below); the table maps it to its <html> attribute, its
+    // "on" value, and its localStorage key. Phases 5a/5b add rows here only.
+    var SETTINGS = {
+      contrast: { attr: "data-contrast", on: "high", key: "a11y-contrast", label: "High contrast" },
+      cvd:      { attr: "data-cvd", on: "on", key: "a11y-cvd", label: "Colorblind-friendly colors" },
+      dyslexic: { attr: "data-dyslexic", on: "on", key: "a11y-dyslexic", label: "Dyslexia-friendly font" }
+    };
+
+    // Keep the Light | Dark segmented control's aria-pressed in sync with theme.
+    function syncTheme() {
+      var cur = html.getAttribute("data-theme");
+      document.querySelectorAll(".a11y-segment").forEach(function (b) {
+        b.setAttribute("aria-pressed", b.getAttribute("data-theme-value") === cur ? "true" : "false");
+      });
+    }
+    // Reflect each switch's aria-checked from whether its attribute is applied.
+    function syncSwitches() {
+      document.querySelectorAll(".a11y-switch[data-setting]").forEach(function (b) {
+        var s = SETTINGS[b.getAttribute("data-setting")];
+        if (s) b.setAttribute("aria-checked", html.getAttribute(s.attr) === s.on ? "true" : "false");
+      });
+    }
+    // Text size stepper — three stops; "100" means the attribute is absent
+    // (default fluid root). End buttons disable at the extremes.
+    var TEXT_STEPS = ["87", "100", "112", "125", "137", "150"];
+    function textIndex() {
+      var i = TEXT_STEPS.indexOf(html.getAttribute("data-textsize"));
+      return i === -1 ? TEXT_STEPS.indexOf("100") : i;
+    }
+    function applyText(i) {
+      var v = TEXT_STEPS[i];
+      if (v === "100") { html.removeAttribute("data-textsize"); localStorage.removeItem("a11y-textsize"); }
+      else { html.setAttribute("data-textsize", v); localStorage.setItem("a11y-textsize", v); }
+      syncText();
+      announce("Text size " + v + "%");
+    }
+    function syncText() {
+      var i = textIndex();
+      var val = document.querySelector(".a11y-step-value");
+      if (val) val.textContent = TEXT_STEPS[i] + "%";
+      var down = document.querySelector(".a11y-step[data-textstep='down']");
+      var up = document.querySelector(".a11y-step[data-textstep='up']");
+      if (down) down.disabled = i === 0;
+      if (up) up.disabled = i === TEXT_STEPS.length - 1;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () { syncTheme(); syncSwitches(); syncText(); });
+
+    // Atkinson Hyperlegible backs the dyslexia-friendly font. Loaded lazily on
+    // first panel open (or already at boot if the setting was persisted).
+    function loadFont() {
+      if (document.getElementById("atkinson-font")) return;
+      var l = document.createElement("link");
+      l.id = "atkinson-font";
+      l.rel = "stylesheet";
+      l.href = "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+      document.head.appendChild(l);
+    }
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest) return;
+
+      // Theme segmented control — flip the attribute, persist, resync pressed.
+      var seg = e.target.closest(".a11y-segment");
+      if (seg) {
+        var val = seg.getAttribute("data-theme-value");
+        html.setAttribute("data-theme", val);
+        localStorage.setItem("theme", val);
+        syncTheme();
+        announce(val === "dark" ? "Dark mode" : "Light mode");
+        return;
+      }
+
+      // Switches — flip the mapped attribute, persist ("on" value / "off"), sync.
+      var sw = e.target.closest(".a11y-switch[data-setting]");
+      if (sw) {
+        var s = SETTINGS[sw.getAttribute("data-setting")];
+        if (!s) return;
+        var on = sw.getAttribute("aria-checked") !== "true";
+        if (on) { html.setAttribute(s.attr, s.on); localStorage.setItem(s.key, s.on); }
+        else { html.removeAttribute(s.attr); localStorage.setItem(s.key, "off"); }
+        syncSwitches();
+        announce(s.label + (on ? " on" : " off"));
+        return;
+      }
+
+      // Text size stepper — nudge one stop within bounds.
+      var step = e.target.closest(".a11y-step[data-textstep]");
+      if (step && !step.disabled) {
+        var dir = step.getAttribute("data-textstep") === "up" ? 1 : -1;
+        applyText(Math.min(TEXT_STEPS.length - 1, Math.max(0, textIndex() + dir)));
+        return;
+      }
+
+      // First open of the panel pulls in the dyslexia font.
+      if (e.target.closest(".a11y-toggle")) { loadFont(); return; }
+
+      // ✕ and Done both close the panel and return focus to the trigger.
+      if (e.target.closest("[data-a11y-close]")) {
+        Disclosure.set(document.querySelector(".a11y-toggle"), false, true);
+        return;
+      }
+
+      // Reset all — clear every a11y key + attribute and return theme to Light.
+      if (e.target.closest(".a11y-reset")) {
+        Object.keys(SETTINGS).forEach(function (k) {
+          localStorage.removeItem(SETTINGS[k].key);
+          html.removeAttribute(SETTINGS[k].attr);
+        });
+        localStorage.removeItem("a11y-textsize");
+        html.removeAttribute("data-textsize");
+        html.setAttribute("data-theme", "light");
+        localStorage.setItem("theme", "light");
+        // Re-run the boot-time auto check: with a11y-contrast now cleared, an OS
+        // "more contrast" preference re-enables high contrast (matches paint).
+        if (matchMedia("(prefers-contrast: more)").matches) html.setAttribute("data-contrast", "high");
+        syncTheme();
+        syncSwitches();
+        syncText();
+        announce("Settings reset");
+        return;
+      }
+    });
+  })();
 
   // ---------------------------------------------------------------------- //
   // Disclosure — a generic show/hide controller for any trigger + region.
@@ -101,6 +285,8 @@
 
   // Nav dropdowns — enhance each nested nav list into a disclosure button
   // (the leading label text node of the <li> becomes the button label).
+  {% capture chevron_svg %}{% include icons/chevron.svg %}{% endcapture %}
+  var CHEVRON_SVG = {{ chevron_svg | strip | jsonify }};
   document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".site-header nav li > ul").forEach(function (menu, i) {
       var li = menu.parentNode, label = "", node = li.firstChild;
@@ -118,11 +304,46 @@
       btn.setAttribute("aria-controls", menu.id);
       btn.setAttribute("data-disclosure", "nav");            // exclusive group
       btn.setAttribute("data-dismiss", "outside esc focusout");
-      btn.innerHTML = label.trim() +
-        ' <svg width="10" height="7" viewBox="0 0 10 7" aria-hidden="true"><polyline points="1,1.5 5,5.5 9,1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      btn.innerHTML = label.trim() + " " + CHEVRON_SVG;
       li.insertBefore(btn, menu);
     });
   });
+
+  // Language dropdown — the visible EN/ES control. Elfsight does the actual
+  // translation: it reads a `?lang=<code>` query param on load and persists the
+  // choice itself, so selecting a language just reloads with the new param.
+  (function () {
+    var LANGS = { "en-US": "EN", "es-MX": "ES" };
+    var LS_KEY = "WebsiteTranslator.language.91448ae8-7a99-4960-b854-caa497c1ea85";
+    // Resolve the active language. The ?lang= param wins because on an explicit
+    // switch it is correct immediately, whereas Elfsight only writes its own
+    // store *after* translating (so it's stale on that first post-click load).
+    // Fall back to Elfsight's persisted value for a bare URL (no param yet).
+    function current() {
+      var p = new URLSearchParams(location.search).get("lang");
+      if (LANGS[p]) return p;
+      try {
+        var v = JSON.parse(localStorage.getItem(LS_KEY)).value;
+        if (LANGS[v]) return v;
+      } catch (e) {}
+      return "en-US"; // nothing chosen → English default
+    }
+    // Reflect the active language in the trigger label and mark the current menu
+    // item with aria-current. The menu items are plain links (href="?lang=<code>")
+    // that reload the page natively — the Elfsight widget reads ?lang and applies
+    // it — so there's no click handler here; this only keeps the UI state honest.
+    // The .lang-code text is excluded from translation in the Elfsight dashboard,
+    // so it's safe to set as plain text.
+    function reflect(active) {
+      var code = document.querySelector(".lang-toggle .lang-code");
+      if (code) code.textContent = LANGS[active];
+      document.querySelectorAll(".lang-menu a[data-lang]").forEach(function (a) {
+        if (a.getAttribute("data-lang") === active) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
+      });
+    }
+    document.addEventListener("DOMContentLoaded", function () { reflect(current()); });
+  })();
 
   // Mobile nav — hamburger toggles a slide-in panel (delegated)
   function closeNav() {
@@ -168,23 +389,7 @@
     {% capture anchor_svg %}{% include icons/link.svg %}{% endcapture %}
     var ANCHOR_SVG = {{ anchor_svg | strip | jsonify }};
 
-    var toastEl, toastTimer;
-    function toast() {
-      if (!toastEl) {
-        toastEl = document.createElement("div");
-        toastEl.className = "toast";
-        toastEl.setAttribute("role", "status");
-        toastEl.setAttribute("aria-live", "polite");
-        toastEl.textContent = "Link copied";
-        document.body.appendChild(toastEl);
-      }
-      // Force reflow so re-triggering restarts the transition.
-      toastEl.classList.remove("is-visible");
-      void toastEl.offsetWidth;
-      toastEl.classList.add("is-visible");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(function () { toastEl.classList.remove("is-visible"); }, 2000);
-    }
+    function toast() { announce("Link copied"); }
 
     function copy(text) {
       if (navigator.clipboard && navigator.clipboard.writeText) {

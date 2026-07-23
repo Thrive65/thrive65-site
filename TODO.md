@@ -3,11 +3,18 @@
 ## Thrive65 Site
 ------------------------
 
+- a11y menu
+  - low pri: change a11y-segmented items to a radio group, slightly more specific semantically.
+  - add letter spacing ticker & tokens
+
+### Architecture
+- organize/clean up CSS & JS, add minification/build step
+- move content pages into subfolder
+- icons - figure an easier way to adjust size of icons
+
 ### Bugs
-- hover/focus states on FAQs, keyboard navigation
 
 ### Functional
-- ![ ] Spanish translations / i18n
 - [ ] Handling images in posts/pages
 - Highlighting text shows Medium-style share tooltip
 
@@ -19,6 +26,8 @@
 - pick theme/hue
 - logo, favicon (`assets/images/favicon.svg`)
 - hero art - colorize/tokenize
+- make borders consistent (buttons in nav, dropdowns, nav border bottom itself)
+- remove nav drop shadow
 
 ## pre launch
 ------------------------
@@ -33,8 +42,6 @@
 - a11y scan
 - Google analytics
 - Domain
-- google translate
-- colorblind/dyslexia support
 
 ## Docs CMS
 ------------------------

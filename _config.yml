@@ -56,5 +56,7 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+  - TODO.md
+  - EXPLANATION.md
   - apps-script
   - node_modules

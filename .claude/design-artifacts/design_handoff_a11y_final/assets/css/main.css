@@ -93,16 +93,6 @@
   --radius-pill: 999px;
   --radius-callout: 0 12px 12px 0;
 
-  /* ---- Menu surface (nav dropdowns, language menu, a11y panel) -------
-     One shared treatment so every floating menu matches. Surface/border
-     use var() so they track the current theme's --card / --edge at use. */
-  --menu-surface: var(--card);
-  --menu-border: var(--border-bold) solid var(--edge);
-  --menu-radius: var(--radius-card);
-  --menu-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.18);
-  --menu-offset: var(--space-2xs); /* gap between a toggle and its menu */
-  --menu-item-hover: var(--tint);  /* hover/focus fill on menu items */
-
   /* ---- Motion (transition timing + easing) ----------------------
      Three durations cover every UI transition; existing values were
      rounded to the nearest to keep the set minimal. */
@@ -112,10 +102,7 @@
   --transition-slow: 300ms;   /* panel slide, larger transforms */
 
   /* ---- Toggle geometry ---------------------- */
-  --toggle-size: 3.3em; /* hamburger menu, ~44px (em: scales with its own font) */
-  /* Shared nav-control height (theme/lang pills + CTA). Font-INDEPENDENT so
-     controls with different font sizes still line up at the 44px hit target. */
-  --control-height: 2.75rem;
+  --toggle-size: 3.3em; /* theme toggle and hamburger menu, ~44px */
 
   /* ---- Shared: surfaces & structure · LIGHT ----------------------------- */
   --bg:    #F7F5EC;                 /* warm page surface */
@@ -313,100 +300,6 @@
   }
 }
 
-/* ============================================================================
-   COLORBLIND-FRIENDLY (Okabe–Ito) — swaps the green brand/link family and the
-   pink "bloom" accent for a colorblind-safe blue/orange set. Marigold CTA is
-   unchanged (already CVD-safe). Toggled by data-cvd="on" on <html>.
-
-   Same targeting as HIGH CONTRAST below: overrides the hue tokens on the .hue-*
-   element for all four hues. These come BEFORE the HC blocks so that when both
-   are on, HIGH CONTRAST WINS (equal specificity → later source wins).
-   ============================================================================ */
-html[data-cvd="on"]:not([data-theme="dark"]) .hue-lake-teal,
-html[data-cvd="on"]:not([data-theme="dark"]) .hue-evergreen,
-html[data-cvd="on"]:not([data-theme="dark"]) .hue-electric-blue,
-html[data-cvd="on"]:not([data-theme="dark"]) .hue-ultraviolet {
-  --brand: #0072B2; --brand-strong: #004E7C; --link: #0072B2;
-  --secondary: #005A82; --bloom: #C4560A;
-  /* Hero band swaps the per-hue color for the Okabe–Ito light blue (dark ink),
-     keeping the marigold emphasis, so it stays consistent with the CVD brand. */
-  --hero-bg: #56B4E9; --hero-ink: #06283D; --hero-muted: #0A3A5A; --hero-em: var(--accent);
-}
-html[data-cvd="on"][data-theme="dark"] .hue-lake-teal,
-html[data-cvd="on"][data-theme="dark"] .hue-evergreen,
-html[data-cvd="on"][data-theme="dark"] .hue-electric-blue,
-html[data-cvd="on"][data-theme="dark"] .hue-ultraviolet {
-  --brand: #56B4E9; --brand-strong: #8CCBF0; --link: #56B4E9;
-  --secondary: #7EC8E3; --bloom: #E69F00;
-  /* Darker Okabe–Ito blue band with light ink for the dark theme. */
-  --hero-bg: #0072B2; --hero-ink: #EAF4FB; --hero-muted: #C3DEEF; --hero-em: var(--accent);
-}
-
-/* ============================================================================
-   HIGH CONTRAST — flattens surfaces to pure black/white and forces ≥7:1 brand
-   and link colors, intentionally overriding the hue system (incl. the hero
-   band). Toggled by data-contrast="high" on <html>.
-
-   These blocks are the LAST token overrides in source ON PURPOSE: colorblind
-   (CVD) blocks live above so that when both are on, HIGH CONTRAST WINS. The hue
-   tokens (--brand, --hero-*) are set on <body> by the .hue-* classes, so the
-   overrides target the .hue-* element (matching all four hues); surface tokens
-   set on <html> cascade down from there. Selector specificity clears the
-   [data-theme="dark"] .hue-* blocks above.
-   ============================================================================ */
-   
-html[data-contrast="high"] {
-  --hc-color-light: hsl(130 40% 98% / 1); 
-  --hc-color-dark: #0B1410;
-}
-
-html[data-contrast="high"]:not([data-theme="dark"]) .hue-lake-teal,
-html[data-contrast="high"]:not([data-theme="dark"]) .hue-evergreen,
-html[data-contrast="high"]:not([data-theme="dark"]) .hue-electric-blue,
-html[data-contrast="high"]:not([data-theme="dark"]) .hue-ultraviolet {
-  --bg: var(--hc-color-light); --card: var(--hc-color-light); --tint: var(--hc-color-light);
-  --line: var(--hc-color-dark); --ink: var(--hc-color-dark); --muted: var(--hc-color-dark); --edge: var(--hc-color-dark); --focus: var(--hc-color-dark);
-  --brand: #005C31; --brand-strong: #00411F; --link: #005C31; --secondary: #00323C;
-  --hero-bg: var(--hc-color-light); --hero-ink: var(--hc-color-dark); --hero-muted: var(--hc-color-dark); --hero-em: #7A4C00;
-}
-html[data-contrast="high"][data-theme="dark"] .hue-lake-teal,
-html[data-contrast="high"][data-theme="dark"] .hue-evergreen,
-html[data-contrast="high"][data-theme="dark"] .hue-electric-blue,
-html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
-  --bg: var(--hc-color-dark); --card: var(--hc-color-dark); --tint: var(--hc-color-dark);
-  --line: var(--hc-color-light); --ink: var(--hc-color-light); --muted: var(--hc-color-light); --edge: var(--hc-color-light); --focus: #FFFF00;
-  --brand: #4DFFA6; --brand-strong: #90FFC8; --link: #4DFFA6; --secondary: #9BE8FF;
-  --accent: #FFD34D; --accent-hover: #FFE58A; --on-accent: var(--hc-color-dark);
-  --hero-bg: var(--hc-color-dark); --hero-ink: var(--hc-color-light); --hero-muted: var(--hc-color-light); --hero-em: #FFD34D;
-}
-/* Underline every link and thicken the header hairline for HC legibility. */
-[data-contrast="high"] a { text-decoration: underline; }
-[data-contrast="high"] .site-header { border-bottom-width: var(--border-bold); }
-
-/* ============================================================================
-   DYSLEXIA-FRIENDLY FONT — swaps both font families to Atkinson Hyperlegible,
-   drops the display weight, zeroes tracking, and opens up body leading. The
-   webfont is lazy-loaded (panel open / boot-if-persisted) in head.html.
-   Toggled by data-dyslexic="on" on <html>.
-   ============================================================================ */
-[data-dyslexic="on"] {
-  --font-body: "Atkinson Hyperlegible", sans-serif;
-  --font-display: "Atkinson Hyperlegible", sans-serif;
-  --display-weight: 700;
-  --display-tracking: 0;
-  --lh-body: 1.7;
-}
-
-/* ============================================================================
-   TEXT SIZE — scales the fluid-root knobs only (NOT zoom), so type and rlh-based
-   spacing grow together. Toggled by data-textsize on <html>.
-   ============================================================================ */
-[data-textsize="87"]  { --root-min: 14; --root-max: 21; }
-[data-textsize="112"] { --root-min: 18; --root-max: 27; }
-[data-textsize="125"] { --root-min: 20; --root-max: 30; }
-[data-textsize="137"] { --root-min: 22; --root-max: 33; }
-[data-textsize="150"] { --root-min: 24; --root-max: 36; }
-
 /* ── reset ──────────────────────────────────────────────────────────────── */
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
@@ -453,9 +346,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   a {
     color: var(--link);
     text-decoration-thickness: 2px;
-    text-underline-offset: 0.2em;
-    text-decoration-color: var(--link);
-    transition: color var(--transition-base) var(--ease);
+    text-underline-offset: 0.15em;
   }
   a:hover { color: var(--brand-strong); }
 
@@ -475,12 +366,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     border-radius: 0 0 8px 0;
   }
   .skip-link:focus { left: 0; }
-
-  /* Highlighted text */
-  ::selection {
-    background-color: var(--accent);
-    color: var(--on-accent);
-  }
 }
 
 /* ── composition ─────────────────────────────────────────────────────────── */
@@ -538,22 +423,12 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     font-weight: 600;
     font-size: var(--step--1);
   }
-  .site-header nav a:not(.nav-cta) {
-    display: block;
-    text-decoration: none;
-    white-space: nowrap;
+  .site-header nav a {
     color: var(--ink);
-    padding: var(--space-2xs) var(--space-xs);
-    border-radius: var(--menu-radius);
-    transition: background-color var(--transition-base) var(--ease);
+    text-decoration: none;
+    padding-block: 0.35em;
   }
-
-  .site-header nav a:not(.nav-cta):hover,
-  .site-header nav a:not(.nav-cta):focus-visible,
-  .site-header nav .nav-dropdown-toggle:hover,
-  .site-header nav .nav-dropdown-toggle:focus-visible { 
-    background-color: var(--menu-item-hover); 
-  }
+  .site-header nav a:hover { color: var(--brand); }
 
   /* Markdown-driven link list (from _includes/site-nav.md) — a flex row of
      items that sits in the nav cluster alongside the toggle and CTA. Scoped
@@ -565,7 +440,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-2xs);
+    gap: var(--space-s);
   }
   .site-header nav li { position: relative; }
 
@@ -577,16 +452,15 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     display: inline-flex;
     align-items: center;
     gap: 0.4em;
-    padding: var(--space-2xs) var(--space-xs);
+    padding-block: 0.35em;
     border: 0;
-    border-radius: var(--radius-sm);
     background: none;
     font: inherit;
     color: var(--ink);
     cursor: pointer;
-    transition: background-color var(--transition-base) var(--ease);
   }
-
+  .site-header nav .nav-dropdown-toggle:hover,
+  .site-header nav .nav-dropdown-toggle:focus-visible { color: var(--brand); }
   .site-header nav .nav-dropdown-toggle svg { transition: transform var(--transition-fast) var(--ease); }
   .site-header nav .nav-dropdown-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
 
@@ -605,26 +479,20 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   }
   html.js .site-header nav li ul {
     position: absolute;
-    top: calc(100% + var(--menu-offset));
+    top: calc(100% + var(--space-2xs));
     inset-inline-start: 0;
     min-width: max-content;
     padding: var(--space-2xs);
-    background: var(--menu-surface);
-    border: var(--menu-border);
-    border-radius: var(--menu-radius);
-    box-shadow: var(--menu-shadow);
+    background: var(--tint);
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-card);
     z-index: 20;
   }
-
-  /* Desktop only: stretch the nav-link list (and its items) to the full nav-row
-     height. The link list is shorter than the taller .lang-select / .a11y-select
-     pill controls beside it, so without this its dropdown anchored ~8px higher.
-     Filling the row makes every menu drop from the same baseline, so the shared
-     --menu-offset aligns all three. Scoped above the mobile breakpoint so the
-     stacked mobile submenu (li as a block with the submenu below) is untouched. */
-  @media (min-width: 641px) {
-    .site-header nav > ul { align-self: stretch; align-items: stretch; }
-    .site-header nav > ul > li { display: flex; align-items: center; }
+  .site-header nav li ul a {
+    display: block;
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
   }
 
   /* Brand link — .cluster on the element supplies the flex display */
@@ -652,27 +520,18 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
 
   /* Primary CTA pill — the one Marigold accent per view (framed) */
   .nav-cta {
-    text-decoration: none;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
     background: var(--accent);
-    color: var(--on-accent);
-    min-height: var(--control-height);
+    color: var(--on-accent) !important;
+    font-weight: 700;
     padding: 0.55em 1.2em;
     border: var(--border-bold) solid var(--edge);
     border-radius: var(--radius-pill);
-    transition: background var(--transition-base) var(--ease), color var(--transition-base) var(--ease);
   }
-  .nav-cta:hover { background: var(--accent-hover); color: var(--on-accent); }
+  .nav-cta:hover { background: var(--accent-hover); color: var(--on-accent) !important; }
 
-  /* Nav toggle pills — the accessibility trigger and the language dropdown
-     trigger share geometry; the language button does NOT reuse the .a11y-toggle
-     class (they carry different click handlers), so both are listed here. */
-  .a11y-toggle,
-  .lang-toggle {
-    min-width: var(--control-height);
-    min-height: var(--control-height);
+  .theme-toggle {
+    min-width: var(--toggle-size);
+    min-height: var(--toggle-size);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -682,285 +541,16 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     color: var(--ink);
     cursor: pointer;
   }
-  .a11y-toggle:hover,
-  .lang-toggle:hover { border-color: var(--brand); color: var(--brand); }
-  .a11y-toggle:focus-visible,
-  .lang-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-  /* Text label — hidden on desktop (icon-only), shown in the mobile nav panel. */
-  .a11y-toggle-text { display: none; }
-
-  /* Language dropdown — a globe pill in the nav-control family (inherits its
-     geometry, hover-brand, and focus ring) that widens to hold the code + a
-     chevron. The menu reuses the nav-dropdown panel treatment. */
-  .lang-select { position: relative; }
-  .lang-toggle {
-    gap: 0.4em;
-    padding-inline: 0.7em;
-    font-size: var(--step--1); /* match the theme toggle's context so 44px holds */
-  }
-  .lang-toggle .lang-code {
-    font-size: var(--step--1);
-    font-weight: 600;
-    line-height: 1;
-  }
-  .lang-toggle svg:last-child { transition: transform var(--transition-fast) var(--ease); }
-  .lang-toggle[aria-expanded="true"] svg:last-child { transform: rotate(180deg); }
-
-  .lang-menu {
-    position: absolute;
-    top: calc(100% + var(--menu-offset));
-    inset-inline-end: 0;
-    min-width: 11rem;
-    margin: 0;
-    padding: var(--space-2xs);
-    list-style: none;
-    background: var(--menu-surface);
-    border: var(--menu-border);
-    border-radius: var(--menu-radius);
-    box-shadow: var(--menu-shadow);
-    font-size: var(--step--1);
-    z-index: 30;
-  }
-  .lang-menu-item {
-    display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 44px;       /* ≥44px tap target (acceptance checklist) */
-  }
-  .lang-menu .lang-check {
-    flex-shrink: 0;
-    color: var(--brand);
-    visibility: hidden;
-  }
-  .lang-menu-item[aria-current="true"] .lang-check { visibility: visible; }
-
-  /* Display & accessibility settings — the universal-access pill reuses the
-     nav-control geometry above; its panel is a wider version of the nav-dropdown
-     surface treatment. */
-  .a11y-select { position: relative; }
-  .a11y-toggle { gap: 0.4em; padding-inline: 0.7em; font-size: var(--step--1); }
-
-  .a11y-panel {
-    position: absolute;
-    top: calc(100% + var(--menu-offset));
-    inset-inline-end: 0;
-    /* Sizes to its widest row so longer labels (e.g. Spanish) never wrap; the
-       min keeps a comfortable base width, the max keeps it on-screen. */
-    min-width: 21rem;
-    width: max-content;
-    max-width: calc(100vw - 2 * var(--space-m));
-    /* Never taller than the space below the sticky header: if the rows would
-       overflow the viewport (small laptop, or enlarged text size), the head and
-       foot stay docked and the options scroll internally. The reserve is the
-       panel's own top offset — header block-padding + toggle height + gap — all
-       rem-derived, so it tracks the text-size scale. */
-    display: flex;
-    flex-direction: column;
-    max-height: calc(100dvh - var(--space-xs) - var(--control-height) - var(--menu-offset) - var(--space-s));
-    background: var(--menu-surface);
-    border: var(--menu-border);
-    border-radius: var(--menu-radius);
-    box-shadow: var(--menu-shadow);
-    font-size: var(--step--1);
-    z-index: 40; /* above nav dropdowns/menus */
-  }
-  /* Head and foot are docked; only the options body scrolls. min-height:0 lets
-     the body shrink below its content height so overflow-y actually engages. */
-  .a11y-panel-head,
-  .a11y-panel-foot { flex-shrink: 0; }
-  .a11y-panel-body {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  /* Rows are separated by hairline dividers; the head and foot inherit them. */
-  .a11y-panel-head,
-  .a11y-row,
-  .a11y-panel-foot {
-    padding: var(--space-s) var(--space-m);
-    border-block-start: var(--border-thin) solid var(--line);
-  }
-  /* Head keeps a persistent bottom divider (matching the item borders) so it
-     reads as docked while the body scrolls beneath it. Drop the first body
-     row's own top border so the two don't stack into a double line. */
-  .a11y-panel-head { border-block-start: 0; border-block-end: var(--border-thin) solid var(--line); }
-  .a11y-panel-body .a11y-row:first-child { border-block-start: 0; }
-  .a11y-panel-title {
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: var(--step-0);
-    line-height: var(--lh-heading);
-    margin: 0;
-  }
-  .a11y-close {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: var(--border-thin) solid var(--line);
-    border-radius: var(--radius-pill);
-    background: var(--card);
-    color: var(--ink);
-    cursor: pointer;
-  }
-  .a11y-close:hover { border-color: var(--brand); color: var(--brand); }
-  .a11y-close:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-
-  .a11y-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
-  .a11y-row-label { font-weight: 600; white-space: nowrap; }
-  /* Superscript help marker: the full description lives in its native `title`
-     tooltip. Muted, cursor:help, and its icon sized off a fixed step so it never
-     couples to the label's font size the way a bare 1em would. */
-  .a11y-hint {
-    display: inline-flex;
-    margin-inline-start: 0.35em;
-    color: var(--muted);
-    cursor: help;
-  }
-  .a11y-hint svg { width: var(--step--1); height: var(--step--1); }
-
-  /* Switch — a pill track with a sliding knob; role="switch" + aria-checked
-     drive the on/off visuals. Off: page-bg track, ink knob left. On: brand
-     track, white knob right. */
-  .a11y-switch {
-    position: relative;
-    flex-shrink: 0;
-    width: 2.75rem;
-    height: 1.6rem;
-    padding: 0;
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-pill);
-    background: var(--bg);
-    cursor: pointer;
-    transition: background var(--transition-fast) var(--ease);
-  }
-  .a11y-switch-knob {
-    position: absolute;
-    top: 50%;
-    inset-inline-start: 0.15rem;
-    width: 1.05rem;
-    height: 1.05rem;
-    border-radius: var(--radius-pill);
-    background: var(--ink);
-    transform: translateY(-50%);
-    transition: transform var(--transition-fast) var(--ease), background var(--transition-fast) var(--ease);
-  }
-  .a11y-switch[aria-checked="true"] { background: var(--brand); }
-  .a11y-switch[aria-checked="true"] .a11y-switch-knob {
-    background: #fff;
-    transform: translate(1.15rem, -50%);
-  }
-  .a11y-switch:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-
-  /* Text-size stepper — round bold-edge A−/A+ buttons around a framed value. */
-  .a11y-stepper { display: inline-flex; align-items: center; gap: var(--space-xs); }
-  .a11y-step {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-pill);
-    background: var(--card);
-    color: var(--ink);
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-    transition: border-color var(--transition-fast) var(--ease), color var(--transition-fast) var(--ease);
-  }
-  .a11y-step:hover:not(:disabled) { border-color: var(--brand); color: var(--brand); }
-  .a11y-step:disabled { opacity: 0.4; cursor: default; }
-  .a11y-step:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-  .a11y-step-value {
-    min-width: 3.4em;
-    padding: 0.15em 0.4em;
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-sm);
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    text-align: center;
-  }
-
-  /* Segmented control — a bold-edge pill split into equal segments; the pressed
-     segment inverts to ink-on-card. */
-  .a11y-segmented {
-    display: inline-flex;
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-pill);
-  }
-  .a11y-segment {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-    padding: 0.3em 0.9em;
-    border: 0;
-    background: var(--card);
-    color: var(--ink);
-    font: inherit;
-    font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: background var(--transition-fast) var(--ease), color var(--transition-fast) var(--ease);
-  }
-  .a11y-segment svg { width: 1em; height: 1em; flex-shrink: 0; }
-  .a11y-segment + .a11y-segment { border-inline-start: var(--border-thin) solid var(--edge); }
-  .a11y-segment:hover { color: var(--brand); }
-  .a11y-segment[aria-pressed="true"] { background: var(--brand); color: var(--card); }
-  .a11y-segment[aria-pressed="true"]:hover { color: var(--card); }
-  .a11y-segment:focus-visible { 
-    outline: 3px solid var(--focus); 
-    outline-offset: 4px; 
-  }
-  button.a11y-segment:first-child {
-    border-radius: var(--radius-pill) 0px 0 var(--radius-pill);
-  }
-  button.a11y-segment:last-child {
-    border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
-  }
-
-  /* Hit-target expansion — the panel's compact controls (switch, stepper,
-     segment, close ✕) match the approved frames but read smaller than 44px.
-     A transparent, centered overlay guarantees a ≥44×44px pointer/tap target
-     (acceptance checklist) without altering the visual size or layout: it's
-     absolutely positioned, so it never changes the flex box it sits in. */
-  .a11y-step,
-  .a11y-segment,
-  .a11y-close,
-  .a11y-reset { position: relative; }
-  .a11y-switch::before,
-  .a11y-step::before,
-  .a11y-segment::before,
-  .a11y-close::before,
-  .a11y-reset::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 44px;
-    min-height: 44px;
-    width: 100%;
-    height: 100%;
-  }
-
-  .a11y-panel-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
-  .a11y-reset {
-    padding: 0;
-    border: 0;
-    background: none;
-    font: inherit;
-    color: var(--link);
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  .a11y-reset:hover { color: var(--brand-strong); }
-  .a11y-reset:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-  .a11y-saved { font-size: var(--step--2); }
-  /* The Done pill only surfaces in the mobile bottom sheet. */
-  .a11y-done { display: none; }
+  .theme-toggle:hover { border-color: var(--brand); color: var(--brand); }
+  .theme-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .theme-toggle .icon-moon { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: inline; }
+  /* Text label — hidden on desktop (icon-only), shown in the mobile nav panel.
+     Names the action, i.e. the theme it switches TO. */
+  .theme-toggle-text { display: none; }
+  .theme-toggle-text::after { content: "Light mode"; }
+  [data-theme="dark"] .theme-toggle-text::after { content: "Dark mode"; }
 
   /* Hamburger button — hidden on desktop, shown in the mobile media query */
   .nav-toggle {
@@ -1293,7 +883,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    border: var(--border-bold) solid var(--line);
+    border: var(--border-bold) solid var(--edge);
     border-radius: var(--radius-card);
     overflow: hidden;
   }
@@ -1305,8 +895,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     font-weight: normal;
     border-bottom: var(--border-thin) solid var(--line);
   }
-  .page tbody tr:last-child :is(th, td),
-  .post tbody tr:last-child :is(th, td) { border-bottom: 0; }
+  .page tr:last-child :is(th, td),
+  .post tr:last-child :is(th, td) { border-bottom: 0; }
   .page :is(th, td):first-child,
   .post :is(th, td):first-child {
     background: var(--tint);
@@ -1456,7 +1046,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
       padding-inline-start: var(--space-s);
       background: none;
       border: 0;
-      box-shadow: none;
     }
 
     /* Even top/bottom padding gives each link a balanced tap target,
@@ -1476,10 +1065,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
       margin-block-start: var(--space-xs); 
     }
 
-    /* Accessibility trigger reads as a labelled pill, taking the slot the theme
-       toggle used to hold (top of the panel, left of the ✕). */
-    .a11y-select { position: static; }
-    .site-header nav .a11y-toggle {
+    /* Theme toggle reads as a labelled row in the panel, not a lone icon */
+    .site-header nav .theme-toggle {
       width: auto;
       gap: var(--space-2xs);
       padding-inline: var(--space-xs);
@@ -1487,67 +1074,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
       top: var(--space-xs);
       right: var(--space-xl);
     }
-    .site-header nav .a11y-toggle:hover { color: var(--brand); }
-    .site-header nav .a11y-toggle-text { display: inline; }
-
-    /* Settings surface becomes a bottom sheet: fixed to the viewport bottom,
-       full-width, rounded top corners only, above the slide-in nav panel. */
-    .a11y-panel {
-      position: fixed;
-      inset: auto 0 0 0;
-      width: 100%;
-      max-width: none;
-      min-width: 0;
-      /* Sheet caps a clear gap below the viewport top; the flex column + body
-         scroll from the base rule keep the grabber/head and foot docked. */
-      max-height: calc(100dvh - var(--space-xl));
-      padding-block-start: var(--space-s);
-      border: var(--border-bold) solid var(--edge);
-      border-radius: var(--radius-card) var(--radius-card) 0 0;
-      box-shadow: 0 -8px 24px hsla(0, 0%, 0%, 0.24);
-      z-index: 50;
-      padding-block-end: env(safe-area-inset-bottom);
-    }
-    /* Centered grabber bar. */
-    .a11y-panel::before {
-      content: "";
-      display: block;
-      width: 2.5rem;
-      height: 0.25rem;
-      margin: 0 auto var(--space-xs);
-      border-radius: var(--radius-pill);
-      background: var(--line);
-    }
-    /* The ✕ is redundant with the Done pill on the sheet — hide it, swap in Done. */
-    .a11y-panel-head .a11y-close { display: none; }
-    .a11y-saved { display: none; }
-    .a11y-done {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: var(--control-height);
-      padding: 0.4em 1.4em;
-      border: var(--border-bold) solid var(--edge);
-      border-radius: var(--radius-pill);
-      background: var(--ink);
-      color: var(--card);
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .a11y-done:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-    .a11y-panel-foot { justify-content: flex-end; }
-
-    /* Progressive-enhancement slide-up; snaps where @starting-style is unsupported
-       (the disclosure toggles `hidden`, which can't itself transition). */
-    @media (prefers-reduced-motion: no-preference) {
-      .a11y-panel {
-        transition: transform var(--transition-slow) var(--ease), opacity var(--transition-slow) var(--ease);
-      }
-      @starting-style {
-        .a11y-panel { transform: translateY(100%); opacity: 0; }
-      }
-    }
+    .site-header nav .theme-toggle:hover { color: var(--brand); }
+    .site-header nav .theme-toggle-text { display: inline; }
 
     /* Show + fade the backdrop while the panel is open */
     .site-header.nav-open .nav-backdrop {
@@ -1758,21 +1286,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   }
 
   /* EO "powered by" */
-  .signup .mastfoot {
-    display: none !important;
+  .signup .mastfoot { 
+    display: none !important; 
   }
-
-}
-
-/* Global reduced-motion guard (unlayered !important wins over every layer).
-   Individual transitions still use motion tokens; this collapses them to a
-   near-instant snap when the OS asks for reduced motion, and stops smooth
-   scrolling. Not fully 0s so transitionend/animationend listeners still fire. */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+  
 }
