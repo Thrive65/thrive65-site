@@ -23,16 +23,16 @@
           <span class="lang-code">EN</span>
           {% include icons/chevron.svg %}
         </button>
-        <ul id="lang-menu" class="lang-menu" hidden role="menu" aria-label="Language">
-          <li role="none">
-            <button type="button" class="lang-menu-item" role="menuitemradio" aria-checked="true" data-lang="en-US">
+        <ul id="lang-menu" class="lang-menu" hidden aria-label="Language">
+          <li>
+            <a href="?lang=en-US" class="lang-menu-item" data-lang="en-US" aria-current="true">
               English{% include icons/check.svg %}
-            </button>
+            </a>
           </li>
-          <li role="none">
-            <button type="button" class="lang-menu-item" role="menuitemradio" aria-checked="false" data-lang="es-MX">
+          <li>
+            <a href="?lang=es-MX" class="lang-menu-item" data-lang="es-MX">
               Español{% include icons/check.svg %}
-            </button>
+            </a>
           </li>
         </ul>
       </div>

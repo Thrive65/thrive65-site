@@ -721,7 +721,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     font-size: var(--step--1);
     z-index: 30;
   }
-  .lang-menu button {
+  .lang-menu-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -735,17 +735,18 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     font: inherit;
     font-weight: 600;
     color: var(--ink);
+    text-decoration: none;  /* links: suppress the base underline */
     text-align: start;
     cursor: pointer;
   }
-  .lang-menu button:hover,
-  .lang-menu button:focus-visible { background: var(--menu-item-hover); }
+  .lang-menu-item:hover,
+  .lang-menu-item:focus-visible { background: var(--menu-item-hover); }
   .lang-menu .lang-check {
     flex-shrink: 0;
     color: var(--brand);
     visibility: hidden;
   }
-  .lang-menu button[aria-checked="true"] .lang-check { visibility: visible; }
+  .lang-menu-item[aria-current="true"] .lang-check { visibility: visible; }
 
   /* Display & accessibility settings — the universal-access pill reuses the
      nav-control geometry above; its panel is a wider version of the nav-dropdown

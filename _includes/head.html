@@ -328,33 +328,21 @@
       } catch (e) {}
       return "en-US"; // nothing chosen → English default
     }
-    // Reflect a language in the trigger label and the menu checkmarks. The
-    // .lang-code text is excluded from translation in the Elfsight dashboard, so
-    // it's safe to set as plain text.
+    // Reflect the active language in the trigger label and mark the current menu
+    // item with aria-current. The menu items are plain links (href="?lang=<code>")
+    // that reload the page natively — the Elfsight widget reads ?lang and applies
+    // it — so there's no click handler here; this only keeps the UI state honest.
+    // The .lang-code text is excluded from translation in the Elfsight dashboard,
+    // so it's safe to set as plain text.
     function reflect(active) {
       var code = document.querySelector(".lang-toggle .lang-code");
       if (code) code.textContent = LANGS[active];
-      document.querySelectorAll(".lang-menu button[data-lang]").forEach(function (b) {
-        b.setAttribute("aria-checked", b.getAttribute("data-lang") === active ? "true" : "false");
+      document.querySelectorAll(".lang-menu a[data-lang]").forEach(function (a) {
+        if (a.getAttribute("data-lang") === active) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
       });
     }
     document.addEventListener("DOMContentLoaded", function () { reflect(current()); });
-    // Selecting a language: update the control immediately (so the state is right
-    // even before the reload paints), then reload with ?lang=<code>.
-    document.addEventListener("click", function (e) {
-      if (!e.target.closest) return;
-      var item = e.target.closest(".lang-menu button[data-lang]");
-      if (!item) return;
-      var code = item.getAttribute("data-lang");
-      if (code === current()) { // already active — just close the menu
-        Disclosure.set(document.querySelector(".lang-toggle"), false, true);
-        return;
-      }
-      reflect(code);
-      var url = new URL(location.href);
-      url.searchParams.set("lang", code);
-      location.href = url.toString();
-    });
   })();
 
   // Mobile nav — hamburger toggles a slide-in panel (delegated)
