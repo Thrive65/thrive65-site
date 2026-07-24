@@ -1247,14 +1247,15 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   .page h3 { margin-block-start: var(--space-s); }
   .post > *:first-child,
   .page > *:first-child { margin-block-start: 0; }
-  .post ul:not(.post-list), .post ol,
-  .page ul:not(.post-list), .page ol  { padding-left: 1.25em; }
-  .post :is(ul:not(.post-list), ol) li + li,
-  .page :is(ul:not(.post-list), ol) li + li { margin-block-start: var(--space-2xs); }
+  /* Classless prose lists. `.prose` marks every markdown container — the
+     post/page articles and the homepage sections — so list styling is
+     consistent everywhere without per-section targeting. `.post-list` (the
+     blog index) opts out; it's a custom-classed component. */
+  .prose ul:not(.post-list), .prose ol { padding-left: 1.25em; }
+  .prose :is(ul:not(.post-list), ol) li + li { margin-block-start: var(--space-2xs); }
   /* Google Docs sometimes wraps a list item's content in a <p>; drop its
      inherited paragraph margin so it doesn't inflate item spacing. */
-  .post li > p,
-  .page li > p { margin-block: 0; }
+  .prose li > p { margin-block: 0; }
 
   /* ─ Page-header band ─ intro strip under the site header. Background comes
      from the .bg-surface-alt utility; only the layout + h1 override live here. */
@@ -1309,6 +1310,14 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     font-weight: normal;
     border-bottom: var(--border-thin) solid var(--line);
   }
+  /* Long URLs used as link text must be breakable. `anywhere` (unlike
+     `break-word`) reduces the cell's min-content width, so under table-layout:
+     auto the column stops growing to fit the URL and the table stops
+     overflowing on mobile. */
+  .page :is(th, td) a,
+  .post :is(th, td) a {
+    overflow-wrap: anywhere;
+  }
   .page tbody tr:last-child :is(th, td),
   .post tbody tr:last-child :is(th, td) { border-bottom: 0; }
   .page :is(th, td):first-child,
@@ -1317,9 +1326,16 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     font-weight: 700;
     white-space: nowrap;
   }
+  /* Mobile Table Styles */
   @media (max-width: 784px) {
     .page :is(th, td):first-child,
-    .post :is(th, td):first-child { white-space: normal; }
+    .post :is(th, td):first-child { 
+      white-space: normal; 
+      font-size: var(--step--1);
+    }
+    .page :is(th, td), .post :is(th, td) { 
+      padding: var(--space-xs) var(--space-2xs); 
+    }
   }
 
   /* ─ Callouts ─ blockquotes render as tinted framed cards. A lone bold run in
@@ -1496,6 +1512,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     .site-header #utility-nav {
       width: auto;
       flex-direction: row;
+      flex-wrap: nowrap;
       gap: var(--space-2xs);
       padding-inline: var(--space-xs);
       position: absolute;

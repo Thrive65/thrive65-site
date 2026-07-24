@@ -5,7 +5,7 @@ title: Thrive65 | Community advocacy for District 65 schools
 
 <section class="hero hero-hue">
   <div class="wide wrapper hero-grid">
-    <div class="hero-copy">
+    <div class="hero-copy prose">
       {% capture hero_md %}{% include home-hero.md %}{% endcapture %}
       {{ hero_md | markdownify }}
     </div>
@@ -18,7 +18,7 @@ title: Thrive65 | Community advocacy for District 65 schools
 <div class="wave" style="--wave-above: var(--hero-bg); --wave-below: var(--bg);" aria-hidden="true"></div>
 
 <section id="overview" class="region">
-  <div class="wrapper">
+  <div class="wrapper prose">
     {% capture section_md %}{% include home-overview.md %}{% endcapture %}
     {{ section_md | markdownify }}
   </div>
@@ -35,7 +35,7 @@ title: Thrive65 | Community advocacy for District 65 schools
 <div class="wave" style="--wave-above: var(--band-alt); --wave-below: var(--hero-bg);" aria-hidden="true"></div>
 
 <section id="signup" class="signup region hero-hue text-center">
-  <div class="wrapper">
+  <div class="wrapper prose">
     {% capture signup_md %}{% include home-signup.md %}{% endcapture %}
     {{ signup_md | markdownify }}
 
