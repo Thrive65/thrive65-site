@@ -1,0 +1,89 @@
+/* ============================================================================
+   HUE ARCHIVE — alternate colorsets removed from assets/css/main.css when the
+   hue system was collapsed to a single `.hue-default` (lake-teal values).
+   Kept out of the build for future review; re-instate by pasting a block back
+   into main.css (light block in the "HUE WRAPPER CLASSES — LIGHT" section,
+   dark block in "— DARK") and re-adding the class to the CVD/HC selector lists.
+   ============================================================================ */
+
+/* ---- LIGHT ---- */
+.hue-evergreen {
+  --brand: #0F7A45;
+  --brand-strong: #0A5C34;
+  --link: #0F7A45;
+  --hero-bg: #1CA05C;
+  --hero-ink: #0B2417;
+  --hero-muted: #082A18;
+  --hero-em: var(--accent);
+  --band-alt: hsla(150, 34%, 93%, 1);
+  --art-cloud: hsl(151 40% 96%); --art-wall-2: hsl(145 24% 91%); --art-wall: hsl(162 28% 76%);
+  --art-roof: hsl(149 58% 24%); --art-foliage: hsl(150 60% 22%); --art-foliage-2: hsl(140 48% 46%);
+  --art-warm-2: hsl(150 65% 84%); --art-warm-3: hsl(315 75% 85%); --art-ground: hsl(153 16% 85%);
+}
+.hue-electric-blue {
+  --brand: hsla(227, 90%, 42%, 1);
+  --brand-strong: hsla(227,
+   90%, 30%, 1); --link: hsla(227, 90%, 42%, 1);
+  --hero-bg: hsla(227,
+   100%, 68%, 1); --hero-ink: hsla(227, 90%, 17%, 1);
+  --hero-muted: hsla(227,
+   90%, 17%, 1); --hero-em: #FFFFFF;
+  --band-alt: #E7ECFF;
+  --art-cloud: hsl(229 45% 97%); --art-wall-2: hsl(223 26% 92%); --art-wall: hsl(238 30% 78%);
+  --art-roof: hsl(227 62% 40%); --art-foliage: hsl(210 50% 40%); --art-foliage-2: hsl(202 48% 58%);
+  --art-warm-2: hsl(224 90% 90%); --art-warm-3: hsl(30 95% 85%); --art-ground: hsl(231 18% 86%);
+}
+.hue-ultraviolet {
+  --brand: #7A18D4;
+  --brand-strong: #57109C;
+  --link: #7A18D4;
+  --hero-bg: #A75DEC;
+  --hero-ink: #1B0E42;
+  --hero-muted: #1B0E42;
+  --hero-em: #FFFFFF;
+  --band-alt: #F1E6FF;
+  --art-cloud: hsl(273 45% 97%); --art-wall-2: hsl(267 26% 92%); --art-wall: hsl(282 30% 78%);
+  --art-roof: hsl(271 60% 40%); --art-foliage: hsl(285 45% 40%); --art-foliage-2: hsl(266 45% 50%);
+  --art-warm-2: hsl(271 80% 90%); --art-warm-3: hsl(95 68% 85%); --art-ground: hsl(275 18% 86%);
+}
+
+/* ---- DARK ---- */
+[data-theme="dark"] .hue-evergreen {
+  --brand: #4ED991;
+  --brand-strong: #7BE8AE;
+  --link: #4ED991;
+  --hero-bg: #16854F;
+  --hero-ink: #E9F2E6;
+  --hero-muted: #A9CDB6;
+  --hero-em: var(--accent);
+  --band-alt: hsla(150, 70%, 10%, 1);
+  --art-cloud: hsl(153 30% 48%); --art-wall: hsl(150 22% 42%); --art-wall-2: hsl(162 24% 52%);
+  --art-roof: hsl(149 50% 26%); --art-foliage: hsl(150 55% 40%); --art-foliage-2: hsl(140 50% 58%);
+  --art-warm-2: hsl(150 60% 50%); --art-warm-3: hsl(315 80% 66%); --art-ground: hsl(152 26% 20%);
+}
+[data-theme="dark"] .hue-electric-blue {
+  --brand: #7E9DFF;
+  --brand-strong: #A9BEFF;
+  --link: #7E9DFF;
+  --hero-bg: #0033EB;
+  --hero-ink: #F2F5FF;
+  --hero-muted: #BFCCFF;
+  --hero-em: var(--accent);
+  --band-alt: hsla(227, 90%, 14%, 1);
+  --art-cloud: hsl(229 40% 62%); --art-wall: hsl(227 26% 55%); --art-wall-2: hsl(236 28% 66%);
+  --art-roof: hsl(227 60% 34%); --art-foliage: hsl(208 50% 52%); --art-foliage-2: hsl(200 50% 66%);
+  --art-warm-2: hsl(222 92% 72%); --art-warm-3: hsl(32 95% 60%); --art-ground: hsl(228 30% 24%);
+}
+[data-theme="dark"] .hue-ultraviolet {
+  --brand: #BE8CFF;
+  --brand-strong: #D3B4FF;
+  --link: #BE8CFF;
+  --hero-bg: #5B16C4;
+  --hero-ink: #F6EEFF;
+  --hero-muted: #DCC0FF;
+  --hero-em: var(--accent);
+  --band-alt: #1B0E42;
+  --art-cloud: hsl(273 35% 62%); --art-wall: hsl(271 26% 55%); --art-wall-2: hsl(282 28% 65%);
+  --art-roof: hsl(271 55% 34%); --art-foliage: hsl(285 48% 50%); --art-foliage-2: hsl(276 48% 64%);
+  --art-warm-2: hsl(271 82% 70%); --art-warm-3: hsl(98 60% 54%); --art-ground: hsl(274 30% 22%);
+}

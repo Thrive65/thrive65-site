@@ -180,11 +180,11 @@
 }
 
 /* ============================================================================
-   HUE WRAPPER CLASSES — LIGHT
-   Add to <body> (whole page) or any wrapper (section-level comparison).
-   These override only the 8 hue tokens; everything else inherits from :root.
+   HUE WRAPPER CLASS — LIGHT (single standard hue; alternates archived in
+   .claude/design-artifacts/hue-archive.css)
+   Overrides only the hue tokens; everything else inherits from :root.
    ============================================================================ */
-.hue-lake-teal {                                   /* LIVE BRAND (same as :root default) */
+.hue-default {                                     /* LIVE BRAND (lake-teal, same as :root default) */
   --brand: #0F7A45; 
   --brand-strong: #0A5C34; 
   --link: #0F7A45;
@@ -197,50 +197,11 @@
   --art-roof: hsl(189 62% 27%); --art-foliage: hsl(150 55% 33%); --art-foliage-2: hsl(158 50% 55%);
   --art-warm-2: hsl(189 85% 90%); --art-warm-3: hsl(9 90% 85%); --art-ground: hsl(193 16% 85%);
 }
-.hue-evergreen {
-  --brand: #0F7A45; 
-  --brand-strong: #0A5C34; 
-  --link: #0F7A45;
-  --hero-bg: #1CA05C; 
-  --hero-ink: #0B2417;
-  --hero-muted: #082A18; 
-  --hero-em: var(--accent);
-  --band-alt: hsla(150, 34%, 93%, 1);
-  --art-cloud: hsl(151 40% 96%); --art-wall-2: hsl(145 24% 91%); --art-wall: hsl(162 28% 76%);
-  --art-roof: hsl(149 58% 24%); --art-foliage: hsl(150 60% 22%); --art-foliage-2: hsl(140 48% 46%);
-  --art-warm-2: hsl(150 65% 84%); --art-warm-3: hsl(315 75% 85%); --art-ground: hsl(153 16% 85%);
-}
-.hue-electric-blue {
-  --brand: hsla(227, 90%, 42%, 1); 
-  --brand-strong: hsla(227,
-   90%, 30%, 1); --link: hsla(227, 90%, 42%, 1);
-  --hero-bg: hsla(227,
-   100%, 68%, 1); --hero-ink: hsla(227, 90%, 17%, 1);
-  --hero-muted: hsla(227,
-   90%, 17%, 1); --hero-em: #FFFFFF;
-  --band-alt: #E7ECFF;
-  --art-cloud: hsl(229 45% 97%); --art-wall-2: hsl(223 26% 92%); --art-wall: hsl(238 30% 78%);
-  --art-roof: hsl(227 62% 40%); --art-foliage: hsl(210 50% 40%); --art-foliage-2: hsl(202 48% 58%);
-  --art-warm-2: hsl(224 90% 90%); --art-warm-3: hsl(30 95% 85%); --art-ground: hsl(231 18% 86%);
-}
-.hue-ultraviolet {
-  --brand: #7A18D4; 
-  --brand-strong: #57109C; 
-  --link: #7A18D4;
-  --hero-bg: #A75DEC; 
-  --hero-ink: #1B0E42;
-  --hero-muted: #1B0E42; 
-  --hero-em: #FFFFFF;
-  --band-alt: #F1E6FF;
-  --art-cloud: hsl(273 45% 97%); --art-wall-2: hsl(267 26% 92%); --art-wall: hsl(282 30% 78%);
-  --art-roof: hsl(271 60% 40%); --art-foliage: hsl(285 45% 40%); --art-foliage-2: hsl(266 45% 50%);
-  --art-warm-2: hsl(271 80% 90%); --art-warm-3: hsl(95 68% 85%); --art-ground: hsl(275 18% 86%);
-}
 
 /* ============================================================================
-   HUE WRAPPER CLASSES — DARK  (higher specificity than the light blocks above)
+   HUE WRAPPER CLASS — DARK  (higher specificity than the light block above)
    ============================================================================ */
-[data-theme="dark"] .hue-lake-teal {
+[data-theme="dark"] .hue-default {
   --brand: #3FD9C0;
   --brand-strong: #74E8D6;
   --link: #3FD9C0;
@@ -252,45 +213,6 @@
   --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
   --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
   --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
-}
-[data-theme="dark"] .hue-evergreen {
-  --brand: #4ED991;
-  --brand-strong: #7BE8AE;
-  --link: #4ED991;
-  --hero-bg: #16854F;
-  --hero-ink: #E9F2E6;
-  --hero-muted: #A9CDB6;
-  --hero-em: var(--accent);
-  --band-alt: hsla(150, 70%, 10%, 1);
-  --art-cloud: hsl(153 30% 48%); --art-wall: hsl(150 22% 42%); --art-wall-2: hsl(162 24% 52%);
-  --art-roof: hsl(149 50% 26%); --art-foliage: hsl(150 55% 40%); --art-foliage-2: hsl(140 50% 58%);
-  --art-warm-2: hsl(150 60% 50%); --art-warm-3: hsl(315 80% 66%); --art-ground: hsl(152 26% 20%);
-}
-[data-theme="dark"] .hue-electric-blue {
-  --brand: #7E9DFF;
-  --brand-strong: #A9BEFF;
-  --link: #7E9DFF;
-  --hero-bg: #0033EB;
-  --hero-ink: #F2F5FF;
-  --hero-muted: #BFCCFF;
-  --hero-em: var(--accent);
-  --band-alt: hsla(227, 90%, 14%, 1);
-  --art-cloud: hsl(229 40% 62%); --art-wall: hsl(227 26% 55%); --art-wall-2: hsl(236 28% 66%);
-  --art-roof: hsl(227 60% 34%); --art-foliage: hsl(208 50% 52%); --art-foliage-2: hsl(200 50% 66%);
-  --art-warm-2: hsl(222 92% 72%); --art-warm-3: hsl(32 95% 60%); --art-ground: hsl(228 30% 24%);
-}
-[data-theme="dark"] .hue-ultraviolet {
-  --brand: #BE8CFF;
-  --brand-strong: #D3B4FF;
-  --link: #BE8CFF;
-  --hero-bg: #5B16C4;
-  --hero-ink: #F6EEFF;
-  --hero-muted: #DCC0FF;
-  --hero-em: var(--accent);
-  --band-alt: #1B0E42;
-  --art-cloud: hsl(273 35% 62%); --art-wall: hsl(271 26% 55%); --art-wall-2: hsl(282 28% 65%);
-  --art-roof: hsl(271 55% 34%); --art-foliage: hsl(285 48% 50%); --art-foliage-2: hsl(276 48% 64%);
-  --art-warm-2: hsl(271 82% 70%); --art-warm-3: hsl(98 60% 54%); --art-ground: hsl(274 30% 22%);
 }
 
 /* ============================================================================
@@ -318,24 +240,18 @@
    pink "bloom" accent for a colorblind-safe blue/orange set. Marigold CTA is
    unchanged (already CVD-safe). Toggled by data-cvd="on" on <html>.
 
-   Same targeting as HIGH CONTRAST below: overrides the hue tokens on the .hue-*
-   element for all four hues. These come BEFORE the HC blocks so that when both
+   Same targeting as HIGH CONTRAST below: overrides the hue tokens on the
+   .hue-default element. These come BEFORE the HC blocks so that when both
    are on, HIGH CONTRAST WINS (equal specificity → later source wins).
    ============================================================================ */
-html[data-cvd="on"]:not([data-theme="dark"]) .hue-lake-teal,
-html[data-cvd="on"]:not([data-theme="dark"]) .hue-evergreen,
-html[data-cvd="on"]:not([data-theme="dark"]) .hue-electric-blue,
-html[data-cvd="on"]:not([data-theme="dark"]) .hue-ultraviolet {
+html[data-cvd="on"]:not([data-theme="dark"]) .hue-default {
   --brand: #0072B2; --brand-strong: #004E7C; --link: #0072B2;
   --secondary: #005A82; --bloom: #C4560A;
   /* Hero band swaps the per-hue color for the Okabe–Ito light blue (dark ink),
      keeping the marigold emphasis, so it stays consistent with the CVD brand. */
   --hero-bg: #56B4E9; --hero-ink: #06283D; --hero-muted: #0A3A5A; --hero-em: var(--accent);
 }
-html[data-cvd="on"][data-theme="dark"] .hue-lake-teal,
-html[data-cvd="on"][data-theme="dark"] .hue-evergreen,
-html[data-cvd="on"][data-theme="dark"] .hue-electric-blue,
-html[data-cvd="on"][data-theme="dark"] .hue-ultraviolet {
+html[data-cvd="on"][data-theme="dark"] .hue-default {
   --brand: #56B4E9; --brand-strong: #8CCBF0; --link: #56B4E9;
   --secondary: #7EC8E3; --bloom: #E69F00;
   /* Darker Okabe–Ito blue band with light ink for the dark theme. */
@@ -349,10 +265,10 @@ html[data-cvd="on"][data-theme="dark"] .hue-ultraviolet {
 
    These blocks are the LAST token overrides in source ON PURPOSE: colorblind
    (CVD) blocks live above so that when both are on, HIGH CONTRAST WINS. The hue
-   tokens (--brand, --hero-*) are set on <body> by the .hue-* classes, so the
-   overrides target the .hue-* element (matching all four hues); surface tokens
+   tokens (--brand, --hero-*) are set on <body> by the .hue-default class, so
+   the overrides target the .hue-default element; surface tokens
    set on <html> cascade down from there. Selector specificity clears the
-   [data-theme="dark"] .hue-* blocks above.
+   [data-theme="dark"] .hue-default block above.
    ============================================================================ */
    
 html[data-contrast="high"] {
@@ -360,19 +276,13 @@ html[data-contrast="high"] {
   --hc-color-dark: #0B1410;
 }
 
-html[data-contrast="high"]:not([data-theme="dark"]) .hue-lake-teal,
-html[data-contrast="high"]:not([data-theme="dark"]) .hue-evergreen,
-html[data-contrast="high"]:not([data-theme="dark"]) .hue-electric-blue,
-html[data-contrast="high"]:not([data-theme="dark"]) .hue-ultraviolet {
+html[data-contrast="high"]:not([data-theme="dark"]) .hue-default {
   --bg: var(--hc-color-light); --card: var(--hc-color-light); --tint: var(--hc-color-light);
   --line: var(--hc-color-dark); --ink: var(--hc-color-dark); --muted: var(--hc-color-dark); --edge: var(--hc-color-dark); --focus: var(--hc-color-dark);
   --brand: #005C31; --brand-strong: #00411F; --link: #005C31; --secondary: #00323C;
   --hero-bg: var(--hc-color-light); --hero-ink: var(--hc-color-dark); --hero-muted: var(--hc-color-dark); --hero-em: #7A4C00;
 }
-html[data-contrast="high"][data-theme="dark"] .hue-lake-teal,
-html[data-contrast="high"][data-theme="dark"] .hue-evergreen,
-html[data-contrast="high"][data-theme="dark"] .hue-electric-blue,
-html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
+html[data-contrast="high"][data-theme="dark"] .hue-default {
   --bg: var(--hc-color-dark); --card: var(--hc-color-dark); --tint: var(--hc-color-dark);
   --line: var(--hc-color-light); --ink: var(--hc-color-light); --muted: var(--hc-color-light); --edge: var(--hc-color-light); --focus: #FFFF00;
   --brand: #4DFFA6; --brand-strong: #90FFC8; --link: #4DFFA6; --secondary: #9BE8FF;
@@ -688,8 +598,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   }
   .a11y-toggle:hover,
   .lang-toggle:hover { border-color: var(--brand); color: var(--brand); }
-  .a11y-toggle:focus-visible,
-  .lang-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   /* Text label — hidden on desktop (icon-only), shown in the mobile nav panel. */
   .a11y-toggle-text { display: none; }
 
@@ -810,7 +718,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     cursor: pointer;
   }
   .a11y-close:hover { border-color: var(--brand); color: var(--brand); }
-  .a11y-close:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
   .a11y-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
   .a11y-row-label { font-weight: 600; white-space: nowrap; }
@@ -856,7 +763,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     background: #fff;
     transform: translate(1.15rem, -50%);
   }
-  .a11y-switch:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
   /* Text-size stepper — round bold-edge A−/A+ buttons around a framed value. */
   .a11y-stepper { display: inline-flex; align-items: center; gap: var(--space-xs); }
@@ -877,7 +783,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   }
   .a11y-step:hover:not(:disabled) { border-color: var(--brand); color: var(--brand); }
   .a11y-step:disabled { opacity: 0.4; cursor: default; }
-  .a11y-step:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .a11y-step-value {
     min-width: 3.4em;
     padding: 0.15em 0.4em;
@@ -961,7 +866,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     cursor: pointer;
   }
   .a11y-reset:hover { color: var(--brand-strong); }
-  .a11y-reset:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .a11y-saved { font-size: var(--step--2); }
   /* The Done pill only surfaces in the mobile bottom sheet. */
   .a11y-done { display: none; }
@@ -981,7 +885,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     cursor: pointer;
     z-index: 30;
   }
-  .nav-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .nav-toggle-box {
     display: inline-flex;
     flex-direction: column;
@@ -1101,18 +1004,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
   }
   .hero a:hover { background: var(--accent-hover); }
 
-  /* ─ Button (base; use utility classes for color variations) ─ */
-  .button {
-    display: inline-block;
-    font-weight: 700;
-    text-decoration: none;
-    padding: 0.8em 1.6em;
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-pill);
-    cursor: pointer;
-    font-size: var(--step-0);
-  }
-
   /* ─ Heading copy-link anchors (GitHub-style) ─
      Hover/focus reveals a chain icon in the left gutter; clicking copies an
      absolute deep link (JS in head.html). The anchor is injected for prose
@@ -1168,9 +1059,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     opacity: 1;
     transform: translate(-50%, 0);
   }
-  @media (prefers-reduced-motion: no-preference) {
-    .toast { transition: opacity var(--transition-base) var(--ease), transform var(--transition-base) var(--ease); }
-  }
+  /* Global reduced-motion guard (end of file) collapses this when needed. */
+  .toast { transition: opacity var(--transition-base) var(--ease), transform var(--transition-base) var(--ease); }
 
   /* ─ FAQ accordion (native <details>/<summary> — no JS required) ─ */
   .faq-item {
@@ -1235,10 +1125,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     color: var(--muted);
   }
   .faq-answer :last-child { margin-bottom: 0; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .faq-icon::after { transition: none; }
-  }
 
   /* ─ Post / page prose ─ (headings inherit the global scale; only rhythm here) */
   .post h2,
@@ -1571,18 +1457,16 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
       font-weight: 700;
       cursor: pointer;
     }
-    .a11y-done:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
     .a11y-panel-foot { justify-content: flex-end; }
 
     /* Progressive-enhancement slide-up; snaps where @starting-style is unsupported
-       (the disclosure toggles `hidden`, which can't itself transition). */
-    @media (prefers-reduced-motion: no-preference) {
-      .a11y-panel {
-        transition: transform var(--transition-slow) var(--ease), opacity var(--transition-slow) var(--ease);
-      }
-      @starting-style {
-        .a11y-panel { transform: translateY(100%); opacity: 0; }
-      }
+       (the disclosure toggles `hidden`, which can't itself transition). The global
+       reduced-motion guard collapses the transition when the OS asks. */
+    .a11y-panel {
+      transition: transform var(--transition-slow) var(--ease), opacity var(--transition-slow) var(--ease);
+    }
+    @starting-style {
+      .a11y-panel { transform: translateY(100%); opacity: 0; }
     }
 
     /* Show + fade the backdrop while the panel is open */

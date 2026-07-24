@@ -29,3 +29,9 @@ steps listed in its own `CLAUDE.md`.
 - `README.md`, `CLAUDE.md` — the handoff's own overview and ordered work plan.
 - `reference/*.dc.html` — design-reference prototypes (recreate in Jekyll +
   CUBE CSS; do **not** ship the HTML).
+
+### `hue-archive.css` — retired alternate hue colorsets
+The evergreen / electric-blue / ultraviolet `.hue-*` token blocks (light +
+dark) removed from `assets/css/main.css` when the hue system collapsed to a
+single `.hue-default` (lake-teal). Paste a block back into main.css to
+re-instate a hue for review.
