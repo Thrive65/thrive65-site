@@ -1317,6 +1317,10 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     font-weight: 700;
     white-space: nowrap;
   }
+  @media (max-width: 784px) {
+    .page :is(th, td):first-child,
+    .post :is(th, td):first-child { white-space: normal; }
+  }
 
   /* ─ Callouts ─ blockquotes render as tinted framed cards. A lone bold run in
      the first paragraph (`> **Label**`) becomes an eyebrow label line. */
@@ -1500,6 +1504,10 @@ html[data-contrast="high"][data-theme="dark"] .hue-ultraviolet {
     }
     .site-header nav .a11y-toggle:hover { color: var(--brand); }
     .site-header nav .a11y-toggle-text { display: inline; font-weight: 600; }
+
+    /* Left-align the language menu to its trigger so items aren't clipped off
+       the left edge in the narrow utility-nav row. */
+    .lang-menu { inset-inline-start: 0; inset-inline-end: auto; }
 
     /* Settings surface becomes a bottom sheet: fixed to the viewport bottom,
        full-width, rounded top corners only, above the slide-in nav panel. */

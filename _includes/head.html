@@ -283,6 +283,32 @@
     return { set: set };
   })();
 
+  // Swipe-down-to-close for the mobile a11y bottom sheet. Drags start only from
+  // the grabber/head/foot (not the scrollable body, so option scrolling is
+  // preserved); past a threshold the panel closes via the shared Disclosure.
+  (function () {
+    var panel = null, startY = 0, delta = 0;
+    document.addEventListener("touchstart", function (e) {
+      if (!e.target.closest) return;
+      var p = e.target.closest(".a11y-panel");
+      if (!p || e.target.closest(".a11y-panel-body")) return;
+      panel = p; startY = e.touches[0].clientY; delta = 0;
+      panel.style.transition = "none";
+    }, { passive: true });
+    document.addEventListener("touchmove", function (e) {
+      if (!panel) return;
+      delta = e.touches[0].clientY - startY;
+      panel.style.transform = delta > 0 ? "translateY(" + delta + "px)" : "";
+    }, { passive: true });
+    document.addEventListener("touchend", function () {
+      if (!panel) return;
+      var p = panel; panel = null;
+      p.style.transition = "";
+      p.style.transform = "";
+      if (delta > 80) Disclosure.set(document.querySelector(".a11y-toggle"), false, true);
+    }, { passive: true });
+  })();
+
   // Nav dropdowns — enhance each nested nav list into a disclosure button
   // (the leading label text node of the <li> becomes the button label).
   {% capture chevron_svg %}{% include icons/chevron.svg %}{% endcapture %}
