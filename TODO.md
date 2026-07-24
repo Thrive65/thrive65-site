@@ -26,8 +26,6 @@
 - pick theme/hue
 - logo, favicon (`assets/images/favicon.svg`)
 - hero art - colorize/tokenize
-- make borders consistent (buttons in nav, dropdowns, nav border bottom itself)
-- remove nav drop shadow
 
 ## pre launch
 ------------------------
