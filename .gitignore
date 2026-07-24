@@ -12,3 +12,6 @@ Gemfile.lock
 .github/.claude/
 .tokensave/
 assets/images/svgo.config.mjs
+
+# Node (PostCSS build step)
+node_modules/

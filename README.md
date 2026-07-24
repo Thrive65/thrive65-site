@@ -20,6 +20,7 @@ Markdown file committed to this repo (via GitHub's Contents API)
         v
 GitHub Actions (.github/workflows/deploy.yml)
         |  bundle exec jekyll build
+        |  npm run build:css   (PostCSS: PurgeCSS + preset-env + cssnano)
         v
 GitHub Pages (live site)
 ```
@@ -32,6 +33,22 @@ bundle exec jekyll serve --baseurl ""
 ```
 
 Visit `http://localhost:4000`.
+
+**CSS in dev vs production:** locally, Jekyll serves the authored
+`assets/css/main.css` as-is (comments and all). Minification only happens in
+CI: the deploy workflow runs PostCSS *after* the Jekyll build, rewriting
+`_site/assets/css/main.css` in place — PurgeCSS strips selectors unused by any
+rendered page (safelist in `postcss.config.cjs`), `postcss-preset-env` adds
+older-browser fallbacks per `.browserslistrc`, and cssnano minifies. To
+reproduce the production CSS locally (Node ≥ 20, see `.nvmrc`):
+
+```bash
+npm ci
+bundle exec jekyll build && npm run build:css
+```
+
+Files kept out of the built site (Gemfile, README, CLAUDE.md, the Node
+toolchain files, etc.) are listed under `exclude:` in `_config.yml`.
 
 ## Project layout
 
@@ -49,3 +66,4 @@ Visit `http://localhost:4000`.
 | `apps-script/appsscript.json` | Add-on manifest (scopes, URL allowlist, sidebar triggers) |
 | `apps-script/SETUP.md` | Full setup instructions for the publishing workflow |
 | `.github/workflows/deploy.yml` | Builds and deploys the site on every push to `main` |
+| `package.json` / `postcss.config.cjs` / `.browserslistrc` | CSS post-processing (minify, treeshake, fallbacks) run by CI on the built `_site` output |

@@ -21,6 +21,8 @@ Visit `http://localhost:4000`. The `--baseurl ""` override is needed locally bec
 
 **A dev server is always running on `http://localhost:4000/` — assume it's live.** Just reload the page to verify a change (Jekyll `--watch` rebuilds automatically); don't start, kill, or rebuild the server to check your work. If a change genuinely needs a full rebuild, run it but leave the server serving on `:4000` afterward.
 
+**CSS build step (production only).** CI post-processes the *built* `_site/assets/css/main.css` with PostCSS — PurgeCSS (treeshake against `_site/**/*.html`, safelist in `postcss.config.cjs`), then `postcss-preset-env` (fallbacks/autoprefix per `.browserslistrc`), then cssnano — via `npm ci && npm run build:css` after the Jekyll build in `.github/workflows/deploy.yml`. Dev serves the authored CSS untouched. Local one-off check (needs Node ≥20, see `.nvmrc`): `bundle exec jekyll build && npm run build:css`. **If you add a class that only ever appears via JS injection or third-party embed markup, add it to the PurgeCSS safelist** or production will strip it. Files kept out of `_site` (README/CLAUDE.md, the Node toolchain files, apps-script, etc.) are listed under `exclude:` in `_config.yml` — add any new repo-meta file there.
+
 ## How content flows
 
 ```

@@ -1,0 +1,6 @@
+# Drives postcss-preset-env fallbacks + autoprefixer.
+# Realistic floor: the site already requires @layer / CSS nesting-era browsers;
+# older ones get readable unstyled-ish content by design.
+> 0.5%
+last 2 versions
+not dead
