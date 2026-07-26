@@ -16,9 +16,9 @@ Community members who show up consistently and speak clearly can shift board pri
 
 Our board has 7 elected members who set policy, approve budgets, and hire the superintendent. They typically meet around twice a month in public sessions. One meeting is the Committee of the Whole, where all members of the board meet as a single committee to discuss topics in depth without taking final action, and the other is the formal Board Meeting where more formal actions take place. Both have time allotted for public comments at the beginning of the meeting. 
 
-| Board of Directors | Superintendent/District Staff |
+| Board of Directors Responsibilities | Governance Core Values and Beliefs Mission, Vision, and Goals Policies Action: Vote Monitoring Progress |
 | :---- | :---- |
-| Governance Core Values and Beliefs Mission, Vision, and Goals Policies Action: Vote Monitoring Progress  | Management Objectives Action plans Procedures Action: Recommend and Implement Evidence of Compliance |
+|  Superintendent/District Staff Responsibiities  | Management Objectives Action plans Procedures Action: Recommend and Implement Evidence of Compliance |
 
 Sourced from: [Illinois Association of School Boards](https://www.iasb.com/getcontentasset/573130d6-6f3d-4f7f-8b0b-7aa6f83bfd6e/dfc3d011-8f63-43f6-9ed8-4b444333a1d0/how_school_boards_work.pdf?language=en-US)
 
