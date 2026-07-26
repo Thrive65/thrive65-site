@@ -16,7 +16,9 @@ We gather the district's own records and outside reporting into one place and tr
 * **Property tax revenue is capped at the lesser of 5% or inflation**, and grows more slowly than the district's costs, especially benefits, building maintenance, and contractual obligations.   
 * **4 departures from District leadership in 2026,** including the superintendent, CFO, Assistant Superintendent of Instructional Leadership, and Director of Schools Management.   
 * **New Interim Superintendent and CFO started in July.** Interim Superintendent only here through December 2026\.   
-* **A six-month leadership gap in early 2027,** between the interim's departure on December 31, 2026 and the permanent hire's July 1, 2027 start. The next year's budget gets built during that window. 
+* **A six-month leadership gap in early 2027,** between the interim's departure on December 31, 2026 and the permanent hire's targeted July 1, 2027 start. The next year's budget gets built during that window.   
+    
+  
 
 
 ## What We Believe
