@@ -13,7 +13,7 @@ const purgecss = require("@fullhuman/postcss-purgecss").default;
 module.exports = {
   plugins: [
     purgecss({
-      content: ["_site/**/*.html"],
+      content: ["_site/**/*.html", "_site/**/*.js"],
       // Default extractor plus `/` and `:` stripped out; CUBE class names are
       // simple kebab-case, and this also catches classes inside JS string
       // literals in head.html's inline scripts (which are part of the HTML).
