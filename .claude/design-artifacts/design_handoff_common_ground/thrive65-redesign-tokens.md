@@ -71,7 +71,7 @@ hue; everything else is constant. **Marigold `accent` is the constant flame.**
 | muted | `hsla(150,16%,30%,1)` | `#A9BBAD` |
 | edge | `#0B0B0B` | `#0B0B0B` (shared) |
 | onAccent | `#221B05` | `#221B05` (shared) |
-| focus | `#0B0B0B` (edge) | `#8CE7B7` |
+| focus | `#D42A56` (bloom) | `#8CE7B7` |
 
 ### Shared — accents (constant across all hues)
 | Role | Light | Dark |

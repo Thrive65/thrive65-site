@@ -126,7 +126,7 @@
   --muted: hsla(150, 16%, 30%, 1);  /* secondary text */
   --edge:  #0B0B0B;                 /* 2px frames; focus outline on light */
   --on-accent: #221B05;             /* CTA label text (on Marigold) */
-  --focus: #D42A56;                 /* focus outline — edge on light */
+  --focus: #D42A56;                 /* focus outline — bloom on light */
 
   /* ---- Shared: accents (CONSTANT across all hues) ----------------------- */
   --secondary:    hsla(189, 65%, 22%, 1); /* Lakewater Teal — eyebrows, 2nd headings */

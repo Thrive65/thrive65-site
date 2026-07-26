@@ -41,8 +41,9 @@ invent, approximate, or substitute.
    `letter-spacing: -0.01em`. Remove Fraunces.
 
 4. **Base + theme.** Add the theme-init `<script>` (README) to `<head>` before
-   the stylesheet. Update `@layer base` to new token names; set link color
-   `--link` / hover `--brand-strong`; focus outline `3px solid var(--focus)`
+   the stylesheet. Update `@layer base` to new token names; links are `--ink`
+   text with a `--link` underline, hover swaps text to `--link` and underline
+   to `--brand-strong`; focus outline `3px solid var(--focus)` (bloom on light)
    offset 2px. Verify light + dark both render.
 
 5. **Blocks.** Rebuild `@layer block` components to match the reference, using
