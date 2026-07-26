@@ -4,26 +4,27 @@
 ------------------------
 
 - a11y menu
+  - make colorblind hue the default 
   - low pri: change a11y-segmented items to a radio group, slightly more specific semantically.
   - add letter spacing ticker & tokens
 
 ### Architecture
-- organize/clean up CSS & JS, add minification/build step
 - move content pages into subfolder
 - icons - figure an easier way to adjust size of icons
 
 ### Bugs
 
-### Functional
+### Features
 - [ ] Handling images in posts/pages
 - Highlighting text shows Medium-style share tooltip
 
 ### Design
+- style h4s (not italic)
+- hover anchor icon should only attach to H2s and FAQ items(?) or all h2 & h3s
 - style h6 within FAQ item, for "Sources"
 - Charts! Need JS charts.
 - full sweep of basic element margins & padding. (e.g. ul, ul > li). Reset defaults, convert all spacing to fluid --space vars.
     - more margins. We have defaults (using em, on specific elements) and .flow (lobotomized owl) - need to align these different systems. Use one everywhere, make it fluid, remove the old one.
-- pick theme/hue
 - logo, favicon (`assets/images/favicon.svg`)
 - hero art - colorize/tokenize
 
