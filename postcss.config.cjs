@@ -1,0 +1,67 @@
+/**
+ * PostCSS pipeline for the *built* CSS in _site (not the authored source).
+ * Runs after `bundle exec jekyll build`, so every rendered page in
+ * _site/**\/*.html is available as the exact content set to treeshake against.
+ *
+ * Plugin order matters:
+ *   1. PurgeCSS        — remove selectors unused by any rendered page
+ *   2. postcss-preset-env — older-browser fallbacks + autoprefixing (.browserslistrc)
+ *   3. cssnano         — strip comments, collapse whitespace, merge rules
+ */
+const purgecss = require("@fullhuman/postcss-purgecss").default;
+
+module.exports = {
+  plugins: [
+    purgecss({
+      content: ["_site/**/*.html", "_site/**/*.js"],
+      // Default extractor plus `/` and `:` stripped out; CUBE class names are
+      // simple kebab-case, and this also catches classes inside JS string
+      // literals in head.html's inline scripts (which are part of the HTML).
+      defaultExtractor: (content) => content.match(/[A-Za-z0-9_-]+/g) || [],
+      safelist: {
+        // JS-injected or JS-toggled classes that never appear as static
+        // class="" attributes in the rendered HTML.
+        standard: [
+          "js",
+          "toast",
+          "is-visible",
+          "nav-open",
+          "nav-dropdown-toggle",
+          "heading-anchor",
+          "faq-anchor",
+          "hidden",
+          "visible",
+        ],
+        // Attribute/state-driven selectors: a11y modes set data-* on <html> at
+        // runtime; ARIA states are toggled by JS; EmailOctopus injects its own
+        // form markup client-side, so none of its classes exist at build time.
+        greedy: [
+          /data-theme/,
+          /data-contrast/,
+          /data-cvd/,
+          /data-dyslexic/,
+          /data-textsize/,
+          /aria-expanded/,
+          /aria-checked/,
+          /aria-current/,
+          /aria-pressed/,
+          /aria-hidden/,
+          /^emailoctopus/,
+          /^main-form/,
+          /^form-control/,
+          /^mastfoot/,
+          /^inline-container/,
+          /^w-100/,
+          /^wave/, // :nth-of-type silhouette variants
+        ],
+      },
+    }),
+    require("postcss-preset-env")({
+      stage: 2,
+      // @layer, :has(), @starting-style intentionally degrade — the source
+      // already treats them as progressive enhancement. Don't polyfill layers.
+      features: { "cascade-layers": false },
+    }),
+    require("cssnano")({ preset: "default" }),
+  ],
+};

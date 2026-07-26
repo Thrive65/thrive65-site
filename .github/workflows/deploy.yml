@@ -37,6 +37,29 @@ jobs:
         env:
           JEKYLL_ENV: production
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      # Cache the resolved node_modules keyed on the lockfile. A Google Docs
+      # publish only touches content (no package-lock.json change), so it hits
+      # the cache and skips the install below — the full CSS toolchain is only
+      # reinstalled when dependencies actually change.
+      - name: Cache node_modules
+        id: node-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install CSS toolchain
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Optimize CSS (PurgeCSS + preset-env + cssnano)
+        run: npm run build:css
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

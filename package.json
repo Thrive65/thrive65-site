@@ -1,0 +1,18 @@
+{
+  "name": "thrive65-site",
+  "private": true,
+  "description": "CSS post-processing for the Jekyll build output (_site). Run after `bundle exec jekyll build`.",
+  "scripts": {
+    "build:css": "postcss _site/assets/css/main.css -o _site/assets/css/main.css --no-map"
+  },
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^7.0.2",
+    "cssnano": "^7.0.6",
+    "postcss": "^8.5.3",
+    "postcss-cli": "^11.0.0",
+    "postcss-preset-env": "^10.1.5"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
