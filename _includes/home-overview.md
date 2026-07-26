@@ -25,7 +25,7 @@ We gather the district's own records and outside reporting into one place and tr
 
 Every student deserves access to an equitable, excellent education that addresses the unique needs of each individual student and the communities they represent. We believe that equity and excellence are not competing goals but mutually supportive commitments. By focusing on great teaching, strong programs, and the whole-child development of every student, we can make sure each of our schools is an environment where all children can thrive and reach their full potential.
 
-**The core purpose of District 65is to cultivate thriving students.**
+**The core purpose of District 65 is to help students thrive.**
 
 ### Financial Responsibility
 
