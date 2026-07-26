@@ -1,6 +1,7 @@
 ---
 layout: "page"
 title: "D65 Deficit Explained"
+description: "The current situation"
 ---
 
 Most people come to this having heard fragments. Something at pickup, something in a group chat, something at a board meeting. If you're not sure what's actually true, that's a reasonable place to be. This is complicated, and almost nobody has the whole picture. Thrive65 was formed, in part, because most people in the district don’t have the time to sift through all the documents and attend every board meeting. We want to make sure folks still have a D65 CliffsNotes so they can feel informed and empowered to advocate. 
