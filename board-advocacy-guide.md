@@ -106,7 +106,9 @@ You don't have to speak in person to make an impact. Written communications, esp
 
 Formal written letters submitted before a board meeting are entered into official minutes. A brief, factual letter from 10-20 or more community members on the same issue carries significant weight.
 
-> Power Move Organize a letter-writing campaign. Coordinate a group to send individual emails or letters about the same issue in the week before a key vote — volume signals community concern.
+> **Power Move**
+>
+> Organize a letter-writing campaign. Coordinate a group to send individual emails or letters about the same issue in the week before a key vote — volume signals community concern.
 
 ### Building Long-Term Influence
 
