@@ -16,6 +16,12 @@ Community members who show up consistently and speak clearly can shift board pri
 
 Our board has 7 elected members who set policy, approve budgets, and hire the superintendent. They typically meet around twice a month in public sessions. One meeting is the Committee of the Whole, where all members of the board meet as a single committee to discuss topics in depth without taking final action, and the other is the formal Board Meeting where more formal actions take place. Both have time allotted for public comments at the beginning of the meeting. 
 
+| Board of Directors | Superintendent/District Staff |
+| :---- | :---- |
+| Governance Core Values and Beliefs Mission, Vision, and Goals Policies Action: Vote Monitoring Progress  | Management Objectives Action plans Procedures Action: Recommend and Implement Evidence of Compliance |
+
+Sourced from: [Illinois Association of School Boards](https://www.iasb.com/getcontentasset/573130d6-6f3d-4f7f-8b0b-7aa6f83bfd6e/dfc3d011-8f63-43f6-9ed8-4b444333a1d0/how_school_boards_work.pdf?language=en-US)
+
 | Board website | [https://www.district65.net/about/board-of-education/board-meetings](https://www.district65.net/about/board-of-education/board-meetings)  |
 | :---- | :---- |
 | **Meeting schedule** | Usually on Monday evenings, starting at 5 or 6 (depending on if there is a closed session portion. This should be noted on the agenda.  To receive an email notice when meeting agendas are posted, please contact Adeela Qureshi, Board Secretary, at (847) 859-8111 or at [qureshia@district65.net](mailto:qureshia@district65.net). |
@@ -24,11 +30,12 @@ Our board has 7 elected members who set policy, approve budgets, and hire the su
 
 ### Learn the Players
 
-* **Superintendent** \- the district's top administrator, they and their cabinet often present at meetings. Interim is Eric Witherspoon, Board will be starting a search for a new permanent Superintendent.  
-* **Board President/Chair** \- runs the meetings, sets the agenda tone. Nichole Pinkard, has 3 years remaining on board term.  
-* **Vice Chair** \- Fills in when Chair is absent. Chris Van Nostrand, last year of board term (due to board appointment to vacant seat).  
-* **Individual members** \- each may have a focus or committee role: Pat Anderson (former Chair, 3 years remaining), Sergio Hernandez (former Chair, last year of board term), Maria Opdyke (3 years remaining), Mya Wilkins (last year), Andrew Wymer (3 years remaining)  
+* **Superintendent** \- the district's top administrator, they and their cabinet often present at meetings. Interim is Dr. Eric Witherspoon through 12/31/2026.  Board will be starting a search for a new permanent Superintendent with a target start date of 7/1/2027.  
+* **Board President/Chair** \- runs the meetings, sets the agenda tone. Dr. Nichole Pinkard, has 3 years remaining on board term.  
+* **Vice Chair** \- Fills in when the Chair is absent. Chris Van Nostrand, last year of board term (due to board appointment to vacant seat).  
+* **Individual members** \- each may have a focus or committee role: Pat Anderson (former Chair, 3 years remaining), Sergio Hernandez (former Chair, last year of board term), Maria Opdyke (3 years remaining), Mya Wilkins (last year), Dr. Andrew Wymer (3 years remaining)  
 * **Board Secretary** \- manages official documents and meeting logistics. Adeela Qureshi, [qureshia@district65.net](mailto:qureshia@district65.net) 
+
 
 > **Quick Tip**
 >
@@ -42,7 +49,7 @@ Public comment is your right to address elected officials directly. Most meeting
 
 1. Review the [agenda](https://meetings.boardbook.org/Public/Organization/1247), Click on the word “agenda” to open that meeting’s document. You can comment on agenda items or general matters.  
 2. Prepare your remarks in writing. 3 minutes is roughly 330-450 words; practice out loud to feel more comfortable and to ensure you’re within the time limit.   
-3. Know that the board members will listen, but not provide comment or engage in dialogue with you during your comments. 
+3. Know that the board members will listen, but not provide comments or engage in dialogue with you during your comments. 
 
 ### Structure Your Statement
 
@@ -55,7 +62,7 @@ Public comment is your right to address elected officials directly. Most meeting
 
 ### The Meeting
 
-1. Arrive 15-20 minutes early. Depending on the topics of the meeting, seating fills up and sign-up lines can be long.  
+1. Arrive 15 minutes early. Depending on the topics of the meeting, seating fills up and sign-up lines can be long.  
 2. There will be a sign-up sheet on a table right outside the meeting room, to the left when you walk in.  
 3. After you add your name, you can go into the meeting room and take an open seat.  
 4. When the meeting starts, there may be a few minutes of business and then the board secretary will read off groups of names. When your name is called, you’ll get in line behind the speaking podium.  
@@ -80,7 +87,7 @@ You don't have to speak in person to make an impact. Written communications, esp
 * Keep it around 300 words — busy board members may skim long emails  
 * End with a clear ask and your contact information  
 * CC the superintendent or other relevant cabinet members for added visibility  
-* Follow up if you don't hear back within two weeks Letters to the Board
+* Follow up if you don't hear back within two weeks, but you won’t always get a response.
 
 ### Letters to the Board
 
@@ -141,4 +148,4 @@ Adapt this template to your specific issue. Fill in the bracketed sections with 
 
 - [ ] I know the next meeting date and have it on my calendar 
 
-*Democracy works when communities show up. Every meeting you attend, every comment you make, and every neighbor you bring along strengthens the schools our community deserves.*
+*Democracy works when communities show up. Every meeting you attend, every comment you make, and every neighbor you bring along helps D65 Thrive\!*
