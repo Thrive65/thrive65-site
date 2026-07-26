@@ -16,7 +16,7 @@ Community members who show up consistently and speak clearly can shift board pri
 
 Our board has 7 elected members who set policy, approve budgets, and hire the superintendent. They typically meet around twice a month in public sessions. One meeting is the Committee of the Whole, where all members of the board meet as a single committee to discuss topics in depth without taking final action, and the other is the formal Board Meeting where more formal actions take place. Both have time allotted for public comments at the beginning of the meeting. 
 
-Board Responsibilities
+#### *Board Responsibilities*
 
 * Governance   
 * Core Values and Beliefs   
@@ -24,7 +24,7 @@ Board Responsibilities
 * Action: Vote   
 * Monitoring Progress
 
-Superintendent/District Staff Responsibilities
+#### *Superintendent/District Staff Responsibilities*
 
 * Management   
 * Objectives   
