@@ -9,7 +9,7 @@ We gather the district's own records and outside reporting into one place and tr
 ## The current situation
 
 * **Enrollment down 25%** since 2018, a steeper drop than any nearby district   
-* **Foster opened this year; Kingsley and Bessie Rhodes closed.** Elementary schools are projected to be **less than 70% full in the coming school year.**  
+* **This year is projected to be less that 70%** utiliazation at our Elementary schools.  
 * **Aging buildings, with roughly $410 million in repairs coming due by 2037,** against a maintenance budget of $2.4 million a year.   
 * **About $10 million in additional operating cuts still to be found by 2030,** on top of what's already been done.   
 * **Cash reserves near the district's own floor of 90 days,** bottom 5% of school districts statewide  
