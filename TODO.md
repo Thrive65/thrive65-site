@@ -3,33 +3,17 @@
 ## Thrive65 Site
 ------------------------
 
-- a11y menu
-  - make colorblind hue the default 
-  - low pri: change a11y-segmented items to a radio group, slightly more specific semantically.
-  - add letter spacing ticker & tokens
 
-### Architecture
-- move content pages into subfolder
-- icons - figure an easier way to adjust size of icons
-
-### Bugs
-
-### Features
-- [ ] Handling images in posts/pages
-- Highlighting text shows Medium-style share tooltip
-
-### Design
-- style h4s (not italic)
-- hover anchor icon should only attach to H2s and FAQ items(?) or all h2 & h3s
-- style h6 within FAQ item, for "Sources"
-- Charts! Need JS charts.
-- full sweep of basic element margins & padding. (e.g. ul, ul > li). Reset defaults, convert all spacing to fluid --space vars.
-    - more margins. We have defaults (using em, on specific elements) and .flow (lobotomized owl) - need to align these different systems. Use one everywhere, make it fluid, remove the old one.
+### PRE SOFT LAUNCH - THIS WEEK
 - logo, favicon (`assets/images/favicon.svg`)
-- hero art - colorize/tokenize
+- hero art - colorize/tokenize, fix size & overlap
+- Get Domain, point build process
+- Google analytics
+- NAV: 
+    - remove board meeting recaps
+    - remove analysis 
 
-## pre launch
-------------------------
+## fast follow, before announcing
 - social media images/links ✅ scaffolded — replace PLACEHOLDER assets & set real handles/links:
     - [ ] `assets/images/og-default.png` — real 1200×630 social share image (currently placeholder)
     - [ ] `assets/images/logo.png` — real square brand mark (currently placeholder)
@@ -38,9 +22,32 @@
     - [ ] `_config.yml` → `social.links` — add real profile URLs (Facebook, X, Instagram…)
 - [ ] Google Search Console verification → `_config.yml` `webmaster_verifications: { google: <token> }`
 - [ ] `theme-color` meta tag (mobile browser chrome tint) in `_includes/head.html`
-- a11y scan
-- Google analytics
-- Domain
+- [ ] a11y scan 
+- [ ] performance scan fixes
+
+### Architecture
+- move content pages into subfolder
+- icons - figure an easier way to adjust size of icons
+
+### Bugs
+
+### Features
+- a11y menu
+  - [ ] make colorblind hue the default 
+  - [ ] add letter spacing ticker & tokens
+  - low pri: change a11y-segmented items to a radio group, slightly more specific semantically.
+- [ ] Hover anchor icon should only attach to H2s and FAQ items(?) or all h2 & h3s
+- [ ] Handling images in posts/pages
+- [ ] Highlighting text shows Medium-style share tooltip
+
+### Design
+- style h4s (not italic)
+- style h6 within FAQ item, for "Sources"
+- full sweep of basic element margins & padding. (e.g. ul, ul > li). Reset defaults, convert all spacing to fluid --space vars.
+    - more margins. We have defaults (using em, on specific elements) and .flow (lobotomized owl) - need to align these different systems. Use one everywhere, make it fluid, remove the old one.
+- Charts! Need JS charts.
+
+
 
 ## Docs CMS
 ------------------------

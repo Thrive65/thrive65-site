@@ -140,8 +140,7 @@
   --footer-ink:  #B7CCBD;
 
   /* ---- Illustration — constants (same across all hues) ------------------ */
-  --art-sky:   transparent;         /* hero-bg shows through */
-  --art-warm:  hsl(39 100% 55%);    /* marigold */
+  --art-sky:   transparent;         /* hero-bg shows through */ 
   --art-pop:   hsl(339 70% 50%);    /* rose */
   --art-clock: hsl(185 40% 97%);    /* near-white */
   --art-line:  hsl(190 45% 10%);    /* near-black */
@@ -172,9 +171,9 @@
   --footer-head: #EDF5EE;           /* shared */
   --footer-ink:  #B7CCBD;           /* shared */
 
-  --art-warm:  hsl(42 100% 60%);
+  --art-warm:  hsl(42 100% 70%);
   --art-pop:   hsl(342 90% 68%);
-  --art-clock: hsl(185 25% 93%);
+  --art-clock: hsl(185 25% 85%);
   --art-line:  hsl(190 45% 8%);
   --art-ink:   hsl(190 42% 12%);
 }
@@ -193,9 +192,18 @@
   --hero-muted: hsla(189, 65%, 13%, 1); 
   --hero-em: var(--accent);
   --band-alt: hsla(189, 30%, 92%, 1);
-  --art-cloud: hsl(191 40% 96%); --art-wall-2: hsl(185 26% 91%); --art-wall: hsl(200 30% 76%);
-  --art-roof: hsl(189 62% 27%); --art-foliage: hsl(150 55% 33%); --art-foliage-2: hsl(158 50% 55%);
-  --art-warm-2: hsl(189 85% 90%); --art-warm-3: hsl(9 90% 85%); --art-ground: hsl(193 16% 85%);
+  
+  --art-sunmoon: hsl(39, 100%, 55%);
+  --art-cloud: hsl(191 40% 96%); 
+  --art-wall: hsl(200 30% 76%);
+  --art-wall-2: hsl(185 26% 91%); 
+  --art-roof: hsl(189 62% 27%); 
+  --art-warm:  hsl(39 100% 80%);
+  --art-warm-2: hsl(189 85% 90%); 
+  --art-warm-3: hsl(9 90% 85%); 
+  --art-foliage: hsl(158 50% 35%); 
+  --art-foliage-2: hsl(158 50% 55%);
+  --art-ground: hsl(150 55% 33%);
 }
 
 /* ============================================================================
@@ -210,9 +218,18 @@
   --hero-muted: #F0F9F5;
   --hero-em: #FFC44F;
   --band-alt: hsla(189, 50%, 9%, 1);
-  --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
-  --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
-  --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
+   
+  --art-sunmoon: hsl(191 40% 96%);
+  --art-cloud: hsl(193 30% 46%);
+  --art-wall: hsl(190 22% 42%);
+  --art-wall-2: hsl(200 24% 52%);
+  --art-roof: hsl(189 50% 30%);   
+  --art-warm:  hsl(42 100% 70%);
+  --art-warm-2: hsl(189 80% 66%); 
+  --art-warm-3: hsl(12 88% 74%);
+  --art-foliage: hsl(154 55% 46%);
+  --art-foliage-2: hsl(160 52% 62%);
+  --art-ground: hsl(191 26% 20%);
 }
 
 /* ============================================================================
@@ -227,11 +244,11 @@
     --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
     --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
     --band-alt: hsla(189, 50%, 9%, 1);
-    --art-warm: hsl(42 100% 60%); --art-pop: hsl(342 90% 68%); --art-clock: hsl(185 25% 93%);
+    --art-warm: hsl(42 100% 70%); --art-pop: hsl(342 90% 68%); --art-clock: hsl(185 25% 85%);
     --art-line: hsl(190 45% 8%); --art-ink: hsl(190 42% 12%);
     --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
     --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
-    --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
+    --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 74%); --art-ground: hsl(191 26% 20%);
   }
 }
 
