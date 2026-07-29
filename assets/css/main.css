@@ -126,7 +126,7 @@
   --muted: hsla(150, 16%, 30%, 1);  /* secondary text */
   --edge:  #0B0B0B;                 /* 2px frames; focus outline on light */
   --on-accent: #221B05;             /* CTA label text (on Marigold) */
-  --focus: #0B0B0B;                 /* focus outline — edge on light */
+  --focus: #D42A56;                 /* focus outline — bloom on light */
 
   /* ---- Shared: accents (CONSTANT across all hues) ----------------------- */
   --secondary:    hsla(189, 65%, 22%, 1); /* Lakewater Teal — eyebrows, 2nd headings */
@@ -361,13 +361,16 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   p { margin: 0 0 1em; }
 
   a {
-    color: var(--link);
+    color: var(--ink);
     text-decoration-thickness: 2px;
     text-underline-offset: 0.2em;
     text-decoration-color: var(--link);
-    transition: color var(--transition-base) var(--ease);
+    transition: color var(--transition-base) var(--ease), text-decoration-color var(--transition-base) var(--ease);
   }
-  a:hover { color: var(--brand-strong); }
+  a:hover { 
+    color: var(--link); 
+    text-decoration-color: var(--brand-strong);
+  }
 
   *:focus-visible {
     outline: 3px solid var(--focus);

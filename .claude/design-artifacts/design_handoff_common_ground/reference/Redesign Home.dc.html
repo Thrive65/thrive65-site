@@ -29,7 +29,7 @@ body { margin: 0; }
   /* Shared — surfaces, structure, ink, edge (LIGHT) */
   --bg: #F7F5EC; --card: #FFFFFF; --tint: hsla(150, 30%, 91%, 1);
   --line: hsla(150, 20%, 83%, 1); --ink: #14231B; --muted: hsla(150, 16%, 30%, 1);
-  --edge: #0B0B0B; --on-accent: #221B05; --focus: #0B0B0B;
+  --edge: #0B0B0B; --on-accent: #221B05; --focus: #D42A56;
 
   /* Shared — accents (constant across hues) */
   --secondary: hsla(189, 65%, 22%, 1);
@@ -98,9 +98,9 @@ body { margin: 0; }
 }
 
 /* Link defaults (inline styles override where set) */
-.t65-root a { color: var(--link); }
-.t65-root a:hover { color: var(--brand-strong); }
-/* Focus rings — Common Ground: edge on light, #8CE7B7 on dark */
+.t65-root a { color: var(--ink); text-decoration-color: var(--link); }
+.t65-root a:hover { color: var(--link); text-decoration-color: var(--brand-strong); }
+/* Focus rings — Common Ground: bloom on light, #8CE7B7 on dark */
 .t65-root :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 </style>
 </helmet>

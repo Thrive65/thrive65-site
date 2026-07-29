@@ -68,7 +68,7 @@ All values live in **`tokens.css`** (this bundle) and in
 **Shared — light / dark**
 - bg `#F7F5EC` / `#0B1410` · card `#FFFFFF` / `#17251C` · tint `hsla(150,30%,91%)` / `#123122`
 - line `hsla(150,20%,83%)` / `#283A2E` · ink `#14231B` / `#E9F2EA` · muted `hsla(150,16%,30%)` / `#A9BBAD`
-- edge `#0B0B0B` (both) · on-accent `#221B05` (both) · focus `#0B0B0B` / `#8CE7B7`
+- edge `#0B0B0B` (both) · on-accent `#221B05` (both) · focus `#D42A56` / `#8CE7B7`
 - secondary `hsla(189,65%,22%)` / `hsla(189,65%,60%)`
 - accent `#FFB01A` (both, constant) · accent-hover `#FFC44F` (both) · bloom `#D42A56` / `#FF5D7B`
 - footer-bg `#070E0A` · footer-head `#EDF5EE` · footer-ink `#B7CCBD` (all shared)
@@ -164,9 +164,9 @@ Section transitions use SVG curve/wave dividers filled with the adjacent band co
 ---
 
 ## Interactions & behavior
-- **Links:** `--link` (= brand) default, `--brand-strong` on hover; underline, 3px offset.
+- **Links:** body `--ink` text with a `--link` underline (2px, 0.2em offset); on hover the text goes `--link` and the underline `--brand-strong`.
 - **Buttons:** hover swaps background per type (accent→accent-hover; secondary→10–12% edge/white wash; bloom→10–12% bloom wash). Pressed leans on `--brand-strong`.
-- **Focus:** visible outline everywhere — `3px solid var(--focus)`, offset 2px (edge on light, `#8CE7B7` on dark). Keep the skip link.
+- **Focus:** visible outline everywhere — `3px solid var(--focus)`, offset 2px (bloom on light, `#8CE7B7` on dark). Keep the skip link.
 - **Bloom:** reserved strictly for "the one thing that changed and needs you now" — never headlines of fear, never decorative.
 - **Motion:** honor `prefers-reduced-motion`.
 - **Theme toggle:** persist to `localStorage.theme` (`auto|light|dark`); reflect on `<html data-theme>`.
