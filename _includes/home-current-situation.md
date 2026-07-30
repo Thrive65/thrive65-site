@@ -5,7 +5,7 @@ Cliffsnotes
 * **Enrollment down 25%**   
   since 2018, a steeper drop than any nearby district   
 * **Less than 70% full**  
-  at our elementary schools, projected for this school year.  
+  in our elementary schools, projected for this school year.  
 * **$410 million in repairs due by 2037**   
   against a maintenance budget of $2.7 million a year.   
 * **$10 million in additional operating cuts by 2030**   
