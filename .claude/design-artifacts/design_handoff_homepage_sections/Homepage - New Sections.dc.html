@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,700;0,800;1,800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/main.css">
+</helmet>
+<div class="hue-default" ref="{{ rootRef }}" style="--stat-color: var(--brand); display: flex; flex-direction: column; min-height: 100vh; font-family: var(--font-body); font-size: var(--step-0); color: var(--ink); background: var(--bg); line-height: var(--lh-body);">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="wrapper repel wide">
+      <a class="brand cluster" href="#">
+        <span class="wordmark">Thrive<span class="wordmark-accent">65</span></span>
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-panel" onClick="{{ toggleNav }}">
+        <span class="nav-toggle-box" aria-hidden="true">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </span>
+      </button>
+      <div class="nav-backdrop"></div>
+      <div id="nav-panel" class="nav-panel">
+        <nav id="primary-nav" class="cluster" aria-label="Primary">
+          <ul>
+            <li><a href="#overview">About</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#">Analysis</a></li>
+            <li>
+              <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-controls="nav-menu-0" onClick="{{ toggleRes }}">Resources <svg width="10" height="7" viewBox="0 0 10 7" aria-hidden="true"><polyline points="1,1.5 5,5.5 9,1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg></button>
+              <ul id="nav-menu-0" hidden="{{ true }}">
+                <li><a href="https://thrive65.github.io/thrive65-site/board-advocacy-guide/">Board Advocacy Guide</a></li>
+                <li><a href="https://thrive65.github.io/thrive65-site/board-meeting-recaps/">Board Meeting Recaps</a></li>
+              </ul>
+            </li>
+          </ul>
+          <a class="nav-cta" href="#signup">Join us</a>
+        </nav>
+        <nav id="utility-nav" class="cluster" aria-label="Utilities">
+          <div class="lang-select">
+            <button type="button" class="lang-toggle" aria-label="Select language" aria-expanded="false">
+              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="6.4"></circle><line x1="1.6" y1="8" x2="14.4" y2="8"></line><ellipse cx="8" cy="8" rx="2.7" ry="6.4"></ellipse></svg>
+              <span class="lang-code">EN</span>
+              <svg width="10" height="7" viewBox="0 0 10 7" aria-hidden="true"><polyline points="1,1.5 5,5.5 9,1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+            </button>
+          </div>
+          <div class="a11y-select">
+            <button type="button" class="a11y-toggle" aria-label="Display and accessibility settings" aria-expanded="false">
+              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.4"></circle><circle cx="8" cy="4.4" r="0.9" fill="currentColor" stroke="none"></circle><line x1="8" y1="6" x2="8" y2="9.2"></line><line x1="4.8" y1="6.9" x2="11.2" y2="6.9"></line><line x1="8" y1="9.2" x2="6.4" y2="12.2"></line><line x1="8" y1="9.2" x2="9.6" y2="12.2"></line></svg>
+              <span class="a11y-toggle-text" aria-hidden="true">Accessibility</span>
+            </button>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero hero-hue" data-screen-label="Hero">
+      <div class="wide wrapper hero-grid">
+        <div class="hero-copy prose">
+          <p>Evanston / Skokie · District 65</p>
+          <h1 id="our-schools-thrive">Our schools <em>thrive</em> when communities show up for them.</h1>
+          <p>Community advocacy for District 65 schools</p>
+          <p><a href="#signup">Stay informed</a></p>
+        </div>
+        <div class="hero-art" aria-hidden="true" ref="{{ artRef }}"></div>
+      </div>
+    </section>
+    <div class="wave" style="--wave-above: var(--hero-bg); --wave-below: var(--bg);" aria-hidden="true"></div>
+    <section id="overview" class="region" data-screen-label="Who we are">
+      <div class="wrapper prose">
+        <p>The Coalition</p>
+        <h2 id="who-we-are">Who we are</h2>
+        <p>Thrive65 is a community-based coalition dedicated to supporting a strong, equitable, and financially sustainable future for all students in District 65. We bring together parents, caregivers, educators, community members, and neighbors who believe that equitable, excellent schools require bold vision, expert implementation, and responsible stewardship.</p>
+        <p>We gather the district&rsquo;s own records and outside reporting into one place and translate it into plain language, so you can understand what&rsquo;s happening and advocate for what you need. We share our own positions too, always clearly marked, so you can use the facts whether or not you agree with us.</p>
+      </div>
+    </section>
+    <div class="wave" style="--wave-above: var(--bg); --wave-below: var(--band-alt);" aria-hidden="true"></div>
+    <section id="what-we-believe" class="region bg-surface-alt" data-screen-label="What We Believe">
+      <div class="wide wrapper">
+        <p>Our Pillars</p>
+        <h2 id="what-we-believe-heading">What We Believe</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-s); margin-block-start: var(--space-m);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-xs); background: var(--pillar-bg, var(--card)); border: var(--pillar-border, var(--border-bold) solid var(--edge)); border-radius: var(--radius-card); padding: var(--pillar-pad, var(--space-m));">
+            <h3 style="margin: 0;">Equitable Excellence</h3>
+            <p style="margin: 0;">Every student deserves an equitable, excellent education. Equity and excellence are not competing goals &mdash; they are mutually supportive commitments, built on great teaching, strong programs, and the whole-child development of every student.</p>
+            <p style="margin: 0; margin-block-start: auto;"><strong>The core purpose of District 65 is to help students thrive.</strong></p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-xs); background: var(--pillar-bg, var(--card)); border: var(--pillar-border, var(--border-bold) solid var(--edge)); border-radius: var(--radius-card); padding: var(--pillar-pad, var(--space-m));">
+            <h3 style="margin: 0;">Financial Responsibility</h3>
+            <p style="margin: 0;">A thriving district needs maintained facilities, a strategically aligned budget, and stable reserves. A budget is only truly balanced when its fixes repeat every year &mdash; not one-time influxes, and not deferred maintenance.</p>
+            <p style="margin: 0; margin-block-start: auto;"><strong>Financial health is a foundation for thriving students.</strong></p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-xs); background: var(--pillar-bg, var(--card)); border: var(--pillar-border, var(--border-bold) solid var(--edge)); border-radius: var(--radius-card); padding: var(--pillar-pad, var(--space-m));">
+            <h3 style="margin: 0;">Valuing Our Educators</h3>
+            <p style="margin: 0;">Uncertainty has a cost, and our educators have carried it alongside us for years. Any real plan must treat teachers, support staff, administrators, and school employees with clarity, respect, and fairness &mdash; and support their growth.</p>
+            <p style="margin: 0; margin-block-start: auto;"><strong>Empowered and equipped educators are a foundation for thriving students.</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="wave" style="--wave-above: var(--band-alt); --wave-below: var(--bg);" aria-hidden="true"></div>
+    <section id="the-current-situation" class="region" data-screen-label="The current situation">
+      <div class="wide wrapper">
+        <p>By the numbers</p>
+        <h2 id="the-current-situation-heading">The current situation</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--stat-min, 18rem)), 1fr)); gap: var(--space-s); margin-block-start: var(--space-m);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2xs);">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); line-height: 1.1; letter-spacing: -0.01em; color: var(--stat-color, var(--brand)); text-wrap: balance;">&minus;25% Enrollment</span>
+            <p style="margin: 0; font-size: var(--step--1);">Enrollment is down since 2018 &mdash; a steeper drop than any nearby district.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-2xs);">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); line-height: 1.1; letter-spacing: -0.01em; color: var(--stat-color, var(--brand)); text-wrap: balance;">Under 70% Full</span>
+            <p style="margin: 0; font-size: var(--step--1);">Projected utilization at our elementary schools this year.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-2xs);">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); line-height: 1.1; letter-spacing: -0.01em; color: var(--stat-color, var(--brand)); text-wrap: balance;">$410M in Repairs</span>
+            <p style="margin: 0; font-size: var(--step--1);">In repairs coming due on aging buildings by 2037 &mdash; against a maintenance budget of $2.4 million a year.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-2xs);">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); line-height: 1.1; letter-spacing: -0.01em; color: var(--stat-color, var(--brand)); text-wrap: balance;">$10M More Cuts</span>
+            <p style="margin: 0; font-size: var(--step--1);">In additional operating cuts still to be found by 2030, on top of what&rsquo;s already been done.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-2xs);">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); line-height: 1.1; letter-spacing: -0.01em; color: var(--stat-color, var(--brand)); text-wrap: balance;">90 Days of Cash</span>
+            <p style="margin: 0; font-size: var(--step--1);">Cash reserves near the district&rsquo;s own floor &mdash; bottom 5% of school districts statewide.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-2xs);">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); line-height: 1.1; letter-spacing: -0.01em; color: var(--stat-color, var(--brand)); text-wrap: balance;">5% Revenue Cap</span>
+            <p style="margin: 0; font-size: var(--step--1);">Property tax revenue is capped at the lesser of 5% or inflation, and grows more slowly than the district&rsquo;s costs &mdash; especially benefits, building maintenance, and contractual obligations.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-2xs);">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); line-height: 1.1; letter-spacing: -0.01em; color: var(--stat-color, var(--brand)); text-wrap: balance;">4 Leadership Exits</span>
+            <p style="margin: 0; font-size: var(--step--1);">Departures from District leadership in 2026 &mdash; including the superintendent, CFO, Assistant Superintendent of Instructional Leadership, and Director of Schools Management.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-2xs);">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); line-height: 1.1; letter-spacing: -0.01em; color: var(--stat-color, var(--brand)); text-wrap: balance;">Interim Ends Dec 2026</span>
+            <p style="margin: 0; font-size: var(--step--1);">New interim superintendent and CFO started in July &mdash; and the interim superintendent is only here through December 2026.</p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-2xs);">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); line-height: 1.1; letter-spacing: -0.01em; color: var(--stat-color, var(--brand)); text-wrap: balance;">6-Month Leadership Gap</span>
+            <p style="margin: 0; font-size: var(--step--1);">A leadership gap in early 2027, between the interim&rsquo;s departure on December 31, 2026 and the permanent hire&rsquo;s targeted July 1, 2027 start. The next year&rsquo;s budget gets built during that window.</p>
+          </div>
+        </div>
+        <div class="text-center" style="margin-block-start: var(--space-l);">
+          <a href="#" style="display: inline-block; font-weight: 700; text-decoration: none; padding: 0.8em 1.7em; border: var(--border-bold) solid var(--edge); border-radius: var(--radius-pill); background: var(--accent); color: var(--on-accent);">Read more</a>
+        </div>
+      </div>
+    </section>
+    <div class="wave" style="--wave-above: var(--bg); --wave-below: var(--band-alt);" aria-hidden="true"></div>
+    <section id="faq" class="region bg-surface-alt" data-screen-label="FAQ">
+      <div class="wrapper">
+        <p>Questions</p>
+        <h2>FAQs</h2>
+        <div class="faq flow flow-space-xs">
+          <details class="faq-item" id="faq-when-did-this-structural-deficit-start-and-what-caused-it">
+            <summary class="cluster"><h3>When did this structural deficit start and what caused it?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>Earlier than most people realize, and it was never a surprise. The district was projecting this same structural deficit as far back as 2015&ndash;2016, publicly disclosing a projected cumulative deficit of $112 million by 2025 in community information sessions well before 2018. In March 2017, the board approved $5.1 million in contingency cuts to take effect automatically if a pending referendum failed. When voters approved that referendum in April 2017 (about 80% yes), the district&rsquo;s own projections showed operating deficits growing from $5.1 million in FY2018 to $24.4 million by FY2025 without it &mdash; and the $135.6 million the referendum was projected to raise over eight years was sized specifically to cover that gap through roughly the mid-2020s, after which further cuts were always going to be necessary.</p>
+              <p>In other words: the 2017 referendum wasn&rsquo;t a fix for an unknown problem &mdash; it was a deliberately time-limited bridge, sold to voters on the premise that the district would use the intervening years to restructure its cost base.</p>
+              <p>Structural pressure: enrollment has fallen roughly 22&ndash;25% since 2018 &mdash; nearly double the decline of comparable nearby districts &mdash; while the district&rsquo;s building footprint and staffing didn&rsquo;t shrink to match. Specific mismanagement: during Superintendent Devon Horton&rsquo;s tenure, rigorous budgeting practices were quietly abandoned and the district absorbed roughly $20 million in unbudgeted losses across two fiscal years.</p>
+              <h6><em><strong>Sources:</strong> Evanston RoundTable, &ldquo;80% Yes! D65 Referendum Passes&rdquo; (April 5, 2017); &ldquo;From a Referendum to Budget Deficits: How District 65 Got Here&rdquo; (March 23, 2025); Evanston Now, &ldquo;D65: budget cuts could hit classroom&rdquo; (Aug. 2024).</em></h6>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-what-has-the-district-done-about-it">
+            <summary class="cluster"><h3>What has the district done about it?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>The district has been executing a multi-year Structural Deficit Reduction Plan (SDRP) in three official phases:</p>
+              <ul>
+                <li><strong>Phase I (FY25):</strong> $6.5 million in cuts, 39 positions eliminated (mostly attrition/vacancies).</li>
+                <li><strong>Phase II (FY26):</strong> $13.2 million in cuts, roughly 100 positions eliminated, including nearly halving the superintendent&rsquo;s executive cabinet (11 &rarr; 7).</li>
+                <li><strong>Phase III (FY27&ndash;FY30):</strong> a cumulative target of <strong>$16&ndash;18 million</strong> by FY2030, including the closure of Kingsley Elementary and Bessie Rhodes.</li>
+              </ul>
+              <p>Beyond the SDRP, the district has engaged a forensic audit of 2020&ndash;2024 spending, commissioned a new Master Facilities Plan, and brought in new board members and interim leadership.</p>
+              <p><strong>Why this matters, in the district&rsquo;s own numbers:</strong> without these cuts, the district&rsquo;s own financial model shows it would run out of cash entirely by FY2030. With the Phase III cuts applied, it&rsquo;s projected to hold exactly 90 days of cash on hand through FY30.</p>
+              <h6><em><strong>Sources:</strong> District 65 Board of Education presentation, &ldquo;Expenditure Reduction Plan: SDRP Phase 3 Reductions&rdquo; (April 13, 2026).</em></h6>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-is-our-deficit-because-of-foster-school-s-construction">
+            <summary class="cluster"><h3>Is our deficit because of Foster School&rsquo;s construction?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>Our structural deficit was not caused by Foster&rsquo;s construction, but it is a recurring expense that we will have for decades. Foster was financed through <strong>lease certificates</strong> rather than a voter referendum &mdash; meaning Foster&rsquo;s roughly <strong>$3.2 million annual lease payment</strong> comes directly out of the same operating budget now being cut for staff and programs.</p>
+              <p>There&rsquo;s also an active, unresolved funding gap specific to finishing the building: roughly <strong>$4.8 million</strong> is still needed to complete the project, with proceeds projected to run out in August 2026 &mdash; the same month Foster opens.</p>
+              <h6><em><strong>Sources:</strong> Evanston RoundTable, &ldquo;Lease Certificates 101&rdquo; (Dec. 21, 2022); Evanston Now, &ldquo;D65 Needs More Money to Finish Foster&rdquo; (May 2026); District 65 FY27 Preliminary Budget memo (June 22, 2026).</em></h6>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-why-build-a-new-school-when-we-have-a-structural-deficit">
+            <summary class="cluster"><h3>Why build a new school when we have a structural deficit?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>Because Foster is answering a different, much older problem than the one driving the current deficit. Evanston&rsquo;s 5th Ward &mdash; a historic Black neighborhood &mdash; lost its only neighborhood school in 1967 and went without one for more than 50 years. Foster wasn&rsquo;t approved for construction until 2022 &mdash; 55 years after it closed.</p>
+              <p>Given that history, Foster is best understood as the long-overdue fulfillment of a decades-old promise, not an example of poor fiscal planning. Rightsizing the rest of the footprint while finally delivering Foster addresses both realities honestly.</p>
+              <p><em>Sources: Evanston RoundTable, &ldquo;Foster School: Its Role in Desegregating School District 65&rdquo;; the Daily Northwestern, &ldquo;From Foster to Family Focus&rdquo; (2022); ward-level 2012 referendum results.</em></p>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-why-are-we-spending-so-much-on-facilities">
+            <summary class="cluster"><h3>Why are we spending so much on facilities?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>Because the buildings are old and have been underfunded for years. The average District 65 building is more than <strong>80 years old</strong>. A rigorous new facilities study (StudioGC, 2026) found the district needs roughly <strong>$395&ndash;598 million</strong> in repairs over the next several decades. Only two district buildings are currently rated in good condition.</p>
+              <p>Spreading inadequate maintenance dollars across too many aging buildings means none of them gets properly fixed. Consolidating to fewer, better-maintained buildings is what makes real investment possible.</p>
+              <p><em>Sources: Evanston RoundTable (March 24, 2026); Evanston Now, &ldquo;D65: Almost $600M in Repairs Needed&rdquo; (March 2026); Cordogan Clark facilities report (2021).</em></p>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-is-lower-enrollment-at-our-schools-a-problem">
+            <summary class="cluster"><h3>Is lower enrollment at our schools a problem?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>Yes, and it&rsquo;s a core component of the &ldquo;rightsizing&rdquo; argument. District-wide elementary building utilization is below 60%. Every one of the district&rsquo;s ten K-5 elementary schools enrolls below the Illinois state average school size of 387 students. Salaries and benefits make up about 70% of the budget, so a shrinking number of students spread across a fixed number of buildings is mathematically where the deficit comes from.</p>
+              <p>The district&rsquo;s own demographer projects a decline of about 401 students (&minus;7.3%) over the next five years, then a near-flattening &mdash; which is exactly why rightsizing to the new normal, rather than waiting for a rebound that isn&rsquo;t coming, is the district&rsquo;s core challenge.</p>
+              <p><em>Sources: District 65, &ldquo;Updated Demography Study as of December 2024&rdquo; memo (Feb. 10, 2025); NCES Digest of Education Statistics 2022.</em></p>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-can-t-we-focus-on-bringing-back-kids-in-private-schools">
+            <summary class="cluster"><h3>Can&rsquo;t we focus on bringing back kids in private schools?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>The district&rsquo;s &ldquo;capture rate&rdquo; fell only modestly &mdash; from a median of 81.7% in 2020 to 79.3% in 2024. That&rsquo;s real, but it means voluntary departure is a contributing factor, not the dominant one. The bigger driver is that there are genuinely fewer school-age children living here now.</p>
+              <p>Growing enrollment is still a worthwhile goal, but recruitment can&rsquo;t substitute for aligning today&rsquo;s costs to today&rsquo;s enrollment. Pursue enrollment growth alongside rightsizing, not instead of it.</p>
+              <p><em>Sources: District 65, &ldquo;Updated Demography Study as of December 2024&rdquo; memo (Feb. 10, 2025); &ldquo;Whatever It Takes&rdquo; (WIT) alternative SDRP III proposal.</em></p>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-shouldn-t-we-just-cut-more-admin">
+            <summary class="cluster"><h3>Shouldn&rsquo;t we just cut more admin?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>Administrative cuts are legitimate, real, and already underway &mdash; the superintendent&rsquo;s cabinet has been nearly halved, and multiple independent community analyses show the district could still save roughly $1.4&ndash;1.6 million a year by bringing its admin-to-student ratio in line with peer districts.</p>
+              <p>But it&rsquo;s important to be honest about scale: administration is about 6.3% of the total budget, while salaries and benefits overall are about 70%. Even a full, aggressive rightsizing of administrative headcount doesn&rsquo;t come close to closing a $16&ndash;18 million structural gap on its own.</p>
+              <p><em>Sources: Legion of Data Nerds, &ldquo;Financial Levers Memo&rdquo; (Nov. 12, 2025); Invest in Neighborhood Schools proposal letter; Evanston RoundTable (Oct. 12, 2025); District 65 staff memo comparing peer districts (Nov. 2023).</em></p>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-what-about-all-the-community-ideas-i-ve-heard-about">
+            <summary class="cluster"><h3>What about all the community ideas I&rsquo;ve heard about?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>Several community coalitions have put forward alternatives to the district&rsquo;s own closure scenarios, and all of them converge on closing at most one additional school &mdash; a real point of consensus worth taking seriously. Ideas like administrative rightsizing and facility co-location show up credibly across multiple independent proposals; other &ldquo;creative revenue&rdquo; ideas are individually modest and mostly unverified. The most useful takeaway is that a genuine community consensus exists around a single-closure, trust-rebuilding path.</p>
+              <p><em>Sources: Legion of Data Nerds, &ldquo;Financial Levers Memo&rdquo; (Nov. 12, 2025); Invest in Neighborhood Schools; &ldquo;Whatever It Takes&rdquo; (WIT) proposal.</em></p>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-why-not-close-jeh-and-put-early-childhood-education-in-each-school">
+            <summary class="cluster"><h3>Why not close JEH and put early childhood education in each school?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer"><p>Lorem ipsom.</p></div>
+          </details>
+          <details class="faq-item" id="faq-does-closing-a-school-really-save-that-much">
+            <summary class="cluster"><h3>Does closing a school really save that much?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer"><p>Lorem ipsom.</p></div>
+          </details>
+          <details class="faq-item" id="faq-what-about-transportation-costs">
+            <summary class="cluster"><h3>What about transportation costs?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer"><p>Lorem ipsom.</p></div>
+          </details>
+          <details class="faq-item" id="faq-what-did-the-special-ed-audit-find">
+            <summary class="cluster"><h3>What did the special ed audit find?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer"><p>Lorem ipsom.</p></div>
+          </details>
+          <details class="faq-item" id="faq-why-doesn-t-the-board-get-more-input-from-the-community">
+            <summary class="cluster"><h3>Why doesn&rsquo;t the board get more input from the community?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer"><p>Lorem ipsom.</p></div>
+          </details>
+          <details class="faq-item" id="faq-are-walkable-schools-a-civil-right-am-i-in-a-school-desert">
+            <summary class="cluster"><h3>Are walkable schools a civil right? Am I in a school desert?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>Walkability isn&rsquo;t a formally recognized legal right, but it&rsquo;s a value District 65 families consistently rank as their top priority, and we think that&rsquo;s worth taking seriously for everyone in the district, not selectively.</p>
+              <p>The history matters: Evanston&rsquo;s 5th Ward lost its only neighborhood school in 1967 and went without one for more than 50 years. In the 2012 referendum that would have rebuilt it, the <strong>5th Ward itself voted 67% yes</strong> while the district&rsquo;s north-side wards voted against it by the widest margins of any wards in the entire election.</p>
+              <p>If walkability is genuinely our shared value, it has to apply evenly &mdash; including to the community that was asked to wait the longest for it.</p>
+              <p><em>Sources: Daily Northwestern, &ldquo;From Foster to Family Focus&rdquo; (2022); ward-level 2012 referendum results, compiled election data.</em></p>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-is-the-d65-board-overstepping-into-the-superintendent-s-job-right-now">
+            <summary class="cluster"><h3>Is the D65 board overstepping into the superintendent&rsquo;s job right now?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p><strong>Short answer: possibly, and it&rsquo;s worth watching.</strong></p>
+              <p>Two board members have each written detailed, multi-year operational plans for the district&rsquo;s facilities and finances &mdash; ELEVATE and Stabilize&rarr;Imagine&rarr;Plan&rarr;Invest. Under the Illinois Association of School Boards&rsquo; own governance framework, the board&rsquo;s job is to set <strong>values, mission, goals, and policy</strong>; turning those into an operating plan is the <strong>superintendent&rsquo;s</strong> job.</p>
+              <p><strong>Our ask:</strong> when a merged plan comes back, the board should adopt it as goals and policy, direct the superintendent&rsquo;s office to build and own the implementation plan, and keep the near-term financial deadlines fully in view.</p>
+              <p>Full analysis &rarr;</p>
+            </div>
+          </details>
+          <details class="faq-item" id="faq-who-was-devon-horton-and-how-did-his-tenure-affect-our-finances">
+            <summary class="cluster"><h3>Who was Devon Horton, and how did his tenure affect our finances?</h3><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <p>Devon Horton served as District 65 superintendent from June 2020 to June 2023. In October 2025, he was indicted on 17 federal counts &mdash; wire fraud, embezzlement, and tax evasion &mdash; tied to an alleged kickback scheme involving vendor contracts. He has pleaded not guilty; a trial is scheduled for October 2026.</p>
+              <p>Beyond the criminal case, a documented pattern of financial mismanagement during this period compounded the district&rsquo;s structural challenges: zero-based budgeting was quietly abandoned, financial statements were delivered late or not at all, and the district absorbed roughly $20 million in unbudgeted deficits across two fiscal years.</p>
+              <p><em>Sources: FOIA Gras newsletter (April 2026); Evanston RoundTable (Oct. 9, 2025; Oct. 12, 2025; Feb. 11, 2026).</em></p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+    <div class="wave" style="--wave-above: var(--band-alt); --wave-below: var(--hero-bg);" aria-hidden="true"></div>
+    <section id="signup" class="signup region hero-hue text-center" data-screen-label="Signup">
+      <div class="wrapper prose">
+        <p>Get involved</p>
+        <h2>Stay Informed</h2>
+        <p>Get occasional updates on board meetings, budget decisions, and ways to get involved.</p>
+        <div class="signup-embed">
+          <div class="emailoctopus-form-wrapper">
+            <form class="emailoctopus-form" onSubmit="{{ noopSubmit }}">
+              <div class="main-form">
+                <div>
+                  <div class="emailoctopus-form-row">
+                    <label for="signup-email">Email address</label>
+                    <input id="signup-email" class="form-control" type="email" name="field_0" placeholder="Your email address">
+                  </div>
+                </div>
+                <input type="submit" value="Subscribe">
+              </div>
+            </form>
+          </div>
+        </div>
+        <p class="text-meta text-deemphasized mt-xs">No spam. Unsubscribe anytime. <a href="https://thrive65.github.io/thrive65-site/privacy/">Privacy policy</a></p>
+      </div>
+    </section>
+    <div class="wave" style="--wave-above: var(--hero-bg); --wave-below: var(--footer-bg);" aria-hidden="true"></div>
+  </main>
+  <footer class="site-footer">
+    <div class="wrapper wide">
+      <p class="wordmark">Thrive<span class="wordmark-accent">65</span></p>
+      <p><strong>Community advocacy for District 65 schools</strong></p>
+      <p>Thrive65 is an independent community coalition and is not affiliated with or operated by D65.</p>
+      <p>&copy; 2026 Thrive65</p>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;theme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;light&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Theme&quot; },
+  &quot;statColor&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;brand&quot;, &quot;secondary&quot;, &quot;bloom&quot;], &quot;default&quot;: &quot;brand&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;The current situation&quot; },
+  &quot;statColumns&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;3 per row&quot;, &quot;4 per row&quot;], &quot;default&quot;: &quot;3 per row&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;The current situation&quot; },
+  &quot;pillarStyle&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;framed cards&quot;, &quot;open columns&quot;], &quot;default&quot;: &quot;framed cards&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;What We Believe&quot; }
+}">
+class Component extends DCLogic {
+  artRef = React.createRef();
+  rootRef = React.createRef();
+
+  componentDidMount() {
+    const de = document.documentElement;
+    de.classList.add("js");
+    document.body.classList.add("hue-default");
+    this.applyTweaks();
+    fetch("assets/hero-art.svg").then(r => r.text()).then(t => {
+      if (this.artRef.current) this.artRef.current.innerHTML = t;
+    });
+    this.onDocClick = (e) => {
+      const btn = document.querySelector(".nav-dropdown-toggle");
+      const menu = document.getElementById("nav-menu-0");
+      if (!btn || !menu || menu.hidden) return;
+      if (!e.target.closest(".nav-dropdown-toggle") && !menu.contains(e.target)) {
+        btn.setAttribute("aria-expanded", "false");
+        menu.hidden = true;
+      }
+    };
+    document.addEventListener("click", this.onDocClick);
+  }
+
+  componentDidUpdate() { this.applyTweaks(); }
+
+  componentWillUnmount() {
+    document.removeEventListener("click", this.onDocClick);
+    document.body.classList.remove("hue-default", "nav-open");
+  }
+
+  applyTweaks() {
+    document.documentElement.setAttribute("data-theme", this.props.theme ?? "light");
+    const el = this.rootRef.current;
+    if (!el) return;
+    el.style.setProperty("--stat-color", "var(--" + (this.props.statColor ?? "brand") + ")");
+    el.style.setProperty("--stat-min", (this.props.statColumns ?? "3 per row") === "4 per row" ? "13rem" : "18rem");
+    if ((this.props.pillarStyle ?? "framed cards") === "open columns") {
+      el.style.setProperty("--pillar-bg", "transparent");
+      el.style.setProperty("--pillar-border", "0");
+      el.style.setProperty("--pillar-pad", "0");
+    } else {
+      el.style.removeProperty("--pillar-bg");
+      el.style.removeProperty("--pillar-border");
+      el.style.removeProperty("--pillar-pad");
+    }
+  }
+
+  renderVals() {
+    return {
+      artRef: this.artRef,
+      rootRef: this.rootRef,
+      toggleRes: (e) => {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const menu = document.getElementById("nav-menu-0");
+        const open = btn.getAttribute("aria-expanded") !== "true";
+        btn.setAttribute("aria-expanded", String(open));
+        if (menu) menu.hidden = !open;
+      },
+      toggleNav: (e) => {
+        const header = e.currentTarget.closest(".site-header");
+        const open = header.classList.toggle("nav-open");
+        document.body.classList.toggle("nav-open", open);
+        e.currentTarget.setAttribute("aria-expanded", String(open));
+      },
+      noopSubmit: (e) => e.preventDefault()
+    };
+  }
+}
+</script>
+</body>
+</html>

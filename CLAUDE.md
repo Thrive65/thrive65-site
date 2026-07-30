@@ -10,6 +10,8 @@ A Jekyll 4 site for Thrive65 (community advocacy for District 65 schools), deplo
 
 Cross-agent handoffs, design specs, and reusable prompts live in `.claude/design-artifacts/` (see its `README.md` for the index). The active brand system is the **Common Ground** redesign under `design_handoff_common_ground/` — read its `CLAUDE.md` for the ordered work plan and token source of truth.
 
+**Code review scope:** treat everything under `.claude/design-artifacts/` as out of review scope. When running `/review` or `/code-review`, skip changes to those files (they're reference handoffs — large generated `.dc.html` mockups and their vendored `assets/`, excluded from the build) and review only the actual site source they touch. Mention in one line that the artifact changes were skipped, but don't line-review them. To avoid even fetching those (a single `.dc.html` mockup can be >1MB), exclude the path when gathering the diff — e.g. `gh pr diff N -- ':!.claude/design-artifacts/'` for a PR, or `git diff main...HEAD -- ':!.claude/design-artifacts/'` for a branch.
+
 ## Local development
 
 ```bash

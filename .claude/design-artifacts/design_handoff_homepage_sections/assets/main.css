@@ -78,7 +78,6 @@
      41rem ≈ 68ch of body text (Public Sans "0" ≈ 0.605rem wide). */
   --measure:      41rem;  /* body prose, header, footer — the default cap */
   --measure-wide: 66rem;  /* escape hatch for multi-column layouts (hero) */
-  --grid-wide-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));  /* reusable auto-fit card/stat grid tracks */
 
   /* ---- Line heights ----------------------------------------------------- */
   --lh-body: 1.6;
@@ -127,7 +126,7 @@
   --muted: hsla(150, 16%, 30%, 1);  /* secondary text */
   --edge:  #0B0B0B;                 /* 2px frames; focus outline on light */
   --on-accent: #221B05;             /* CTA label text (on Marigold) */
-  --focus: #D42A56;                 /* focus outline — bloom on light */
+  --focus: #D42A56;                 /* focus outline — edge on light */
 
   /* ---- Shared: accents (CONSTANT across all hues) ----------------------- */
   --secondary:    hsla(189, 65%, 22%, 1); /* Lakewater Teal — eyebrows, 2nd headings */
@@ -141,7 +140,8 @@
   --footer-ink:  #B7CCBD;
 
   /* ---- Illustration — constants (same across all hues) ------------------ */
-  --art-sky:   transparent;         /* hero-bg shows through */ 
+  --art-sky:   transparent;         /* hero-bg shows through */
+  --art-warm:  hsl(39 100% 55%);    /* marigold */
   --art-pop:   hsl(339 70% 50%);    /* rose */
   --art-clock: hsl(185 40% 97%);    /* near-white */
   --art-line:  hsl(190 45% 10%);    /* near-black */
@@ -172,9 +172,9 @@
   --footer-head: #EDF5EE;           /* shared */
   --footer-ink:  #B7CCBD;           /* shared */
 
-  --art-warm:  hsl(42 100% 70%);
+  --art-warm:  hsl(42 100% 60%);
   --art-pop:   hsl(342 90% 68%);
-  --art-clock: hsl(185 25% 85%);
+  --art-clock: hsl(185 25% 93%);
   --art-line:  hsl(190 45% 8%);
   --art-ink:   hsl(190 42% 12%);
 }
@@ -193,18 +193,9 @@
   --hero-muted: hsla(189, 65%, 13%, 1); 
   --hero-em: var(--accent);
   --band-alt: hsla(189, 30%, 92%, 1);
-  
-  --art-sunmoon: hsl(39, 100%, 55%);
-  --art-cloud: hsl(191 40% 96%); 
-  --art-wall: hsl(200 30% 76%);
-  --art-wall-2: hsl(185 26% 91%); 
-  --art-roof: hsl(189 62% 27%); 
-  --art-warm:  hsl(39 100% 80%);
-  --art-warm-2: hsl(189 85% 90%); 
-  --art-warm-3: hsl(9 90% 85%); 
-  --art-foliage: hsl(158 50% 35%); 
-  --art-foliage-2: hsl(158 50% 55%);
-  --art-ground: hsl(150 55% 33%);
+  --art-cloud: hsl(191 40% 96%); --art-wall-2: hsl(185 26% 91%); --art-wall: hsl(200 30% 76%);
+  --art-roof: hsl(189 62% 27%); --art-foliage: hsl(150 55% 33%); --art-foliage-2: hsl(158 50% 55%);
+  --art-warm-2: hsl(189 85% 90%); --art-warm-3: hsl(9 90% 85%); --art-ground: hsl(193 16% 85%);
 }
 
 /* ============================================================================
@@ -219,18 +210,9 @@
   --hero-muted: #F0F9F5;
   --hero-em: #FFC44F;
   --band-alt: hsla(189, 50%, 9%, 1);
-   
-  --art-sunmoon: hsl(191 40% 96%);
-  --art-cloud: hsl(193 30% 46%);
-  --art-wall: hsl(190 22% 42%);
-  --art-wall-2: hsl(200 24% 52%);
-  --art-roof: hsl(189 50% 30%);   
-  --art-warm:  hsl(42 100% 70%);
-  --art-warm-2: hsl(189 80% 66%); 
-  --art-warm-3: hsl(12 88% 74%);
-  --art-foliage: hsl(154 55% 46%);
-  --art-foliage-2: hsl(160 52% 62%);
-  --art-ground: hsl(191 26% 20%);
+  --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
+  --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
+  --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
 }
 
 /* ============================================================================
@@ -245,12 +227,11 @@
     --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
     --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
     --band-alt: hsla(189, 50%, 9%, 1);
-    --art-sunmoon: hsl(191 40% 96%);
-    --art-warm: hsl(42 100% 70%); --art-pop: hsl(342 90% 68%); --art-clock: hsl(185 25% 85%);
+    --art-warm: hsl(42 100% 60%); --art-pop: hsl(342 90% 68%); --art-clock: hsl(185 25% 93%);
     --art-line: hsl(190 45% 8%); --art-ink: hsl(190 42% 12%);
     --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
     --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
-    --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 74%); --art-ground: hsl(191 26% 20%);
+    --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
   }
 }
 
@@ -1003,10 +984,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     max-width: 42ch;
     margin-bottom: 1.75em;
   }
-  /* Pill CTA — shared by the hero links and the "Read more" link under the
-     stat list. Add future pill selectors (or a class) to this group. */
-  .hero a,
-  #the-current-situation ul + p a {
+  .hero a {
     display: inline-block;
     font-weight: 700;
     text-decoration: none;
@@ -1017,8 +995,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     background: var(--accent);
     color: var(--on-accent) !important;
   }
-  .hero a:hover,
-  #the-current-situation ul + p a:hover { background: var(--accent-hover); }
+  .hero a:hover { background: var(--accent-hover); }
 
   /* ─ Heading copy-link anchors (GitHub-style) ─
      Hover/focus reveals a chain icon in the left gutter; clicking copies an
@@ -1344,76 +1321,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     margin-bottom: var(--space-2xs);
     color: var(--secondary);
   }
-
-  /* ─ What We Believe ─ pillar cards from Google-Docs-authored Markdown
-     (<ul><li>). Docs can't nest a heading in a list item, so each card is a
-     list item whose first paragraph leads with a bold pseudo-heading (the
-     pillar name), a hard line break, then the body; a bold-only closing <p>
-     is the takeaway. Card frame matches .faq-item; the takeaway pins to the
-     card bottom so rows align across columns. */
-  #what-we-believe ul {
-    list-style: none;
-    padding: 0;
-    margin-block-start: var(--space-m);
-    display: grid;
-    grid-template-columns: var(--grid-wide-columns);
-    gap: var(--space-s);
-  }
-  #what-we-believe li {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    background: var(--card);
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-card);
-    padding: var(--space-m);
-    margin-top: 0;
-  }
-  #what-we-believe li > * { margin: 0; }
-  /* leading bold run of the first paragraph = pillar name; render as a global h3 */
-  #what-we-believe li > p:first-child > strong:first-child {
-    display: block;
-    font-family: var(--font-display);
-    font-weight: var(--display-weight);
-    font-size: var(--step-1);
-    line-height: var(--lh-heading);
-    margin-block-end: var(--space-2xs);
-  }
-  /* drop the Docs hard break after the name — the block strong already wraps */
-  #what-we-believe li > p:first-child > strong:first-child + br { display: none; }
-  /* bold-only closing paragraph = takeaway; pin to the card bottom */
-  #what-we-believe li > p:last-child:has(> strong:only-child) { margin-block-start: auto; }
-
-  /* ─ The current situation ─ open stat grid from Google-Docs-authored Markdown
-     (<ul><li>, tight list so items are unwrapped). Each item leads with a bold
-     pseudo-heading (the figure/label), a hard line break, then the support
-     sentence. No card frame — big brand figure over small support text. */
-  #the-current-situation ul {
-    list-style: none;
-    padding: 0;
-    margin-block-start: var(--space-m);
-    display: grid;
-    grid-template-columns: var(--grid-wide-columns);
-    gap: var(--space-s);
-  }
-  #the-current-situation li { font-size: var(--step--1); }
-  /* leading bold run = the figure/label */
-  #the-current-situation li > strong:first-child {
-    display: block;
-    font-family: var(--font-display);
-    font-weight: var(--display-weight);
-    font-size: var(--step-3);
-    line-height: var(--lh-display);
-    color: var(--brand);
-    text-wrap: balance;
-    margin-block-end: var(--space-2xs);
-  }
-  /* drop the Docs hard break after the figure — the block strong already wraps */
-  #the-current-situation li > strong:first-child + br { display: none; }
-
-  /* Read more CTA — the Markdown link in the paragraph after the stat list.
-     Pill styling is shared with .hero a above; only positioning is local. */
-  #the-current-situation ul + p { text-align: center; margin-block-start: var(--space-l); }
 
   /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
   @media (max-width: 784px) {
