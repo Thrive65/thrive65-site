@@ -78,6 +78,7 @@
      41rem ≈ 68ch of body text (Public Sans "0" ≈ 0.605rem wide). */
   --measure:      41rem;  /* body prose, header, footer — the default cap */
   --measure-wide: 66rem;  /* escape hatch for multi-column layouts (hero) */
+  --grid-wide-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));  /* reusable auto-fit card/stat grid tracks */
 
   /* ---- Line heights ----------------------------------------------------- */
   --lh-body: 1.6;
@@ -244,6 +245,7 @@
     --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
     --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
     --band-alt: hsla(189, 50%, 9%, 1);
+    --art-sunmoon: hsl(191 40% 96%);
     --art-warm: hsl(42 100% 70%); --art-pop: hsl(342 90% 68%); --art-clock: hsl(185 25% 85%);
     --art-line: hsl(190 45% 8%); --art-ink: hsl(190 42% 12%);
     --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
@@ -1001,7 +1003,10 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     max-width: 42ch;
     margin-bottom: 1.75em;
   }
-  .hero a {
+  /* Pill CTA — shared by the hero links and the "Read more" link under the
+     stat list. Add future pill selectors (or a class) to this group. */
+  .hero a,
+  #the-current-situation ul + p a {
     display: inline-block;
     font-weight: 700;
     text-decoration: none;
@@ -1012,7 +1017,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     background: var(--accent);
     color: var(--on-accent) !important;
   }
-  .hero a:hover { background: var(--accent-hover); }
+  .hero a:hover,
+  #the-current-situation ul + p a:hover { background: var(--accent-hover); }
 
   /* ─ Heading copy-link anchors (GitHub-style) ─
      Hover/focus reveals a chain icon in the left gutter; clicking copies an
@@ -1350,7 +1356,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     padding: 0;
     margin-block-start: var(--space-m);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: var(--grid-wide-columns);
     gap: var(--space-s);
   }
   #what-we-believe li {
@@ -1387,7 +1393,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     padding: 0;
     margin-block-start: var(--space-m);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    grid-template-columns: var(--grid-wide-columns);
     gap: var(--space-s);
   }
   #the-current-situation li { font-size: var(--step--1); }
@@ -1406,19 +1412,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   #the-current-situation li > strong:first-child + br { display: none; }
 
   /* Read more CTA — the Markdown link in the paragraph after the stat list.
-     Mirrors the classless .hero a pill. */
+     Pill styling is shared with .hero a above; only positioning is local. */
   #the-current-situation ul + p { text-align: center; margin-block-start: var(--space-l); }
-  #the-current-situation ul + p a {
-    display: inline-block;
-    font-weight: 700;
-    text-decoration: none;
-    padding: 0.8em 1.7em;
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-pill);
-    background: var(--accent);
-    color: var(--on-accent);
-  }
-  #the-current-situation ul + p a:hover { background: var(--accent-hover); }
 
   /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
   @media (max-width: 784px) {
