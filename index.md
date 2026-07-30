@@ -26,6 +26,24 @@ title: Thrive65 | Community advocacy for District 65 schools
 
 <div class="wave" style="--wave-above: var(--bg); --wave-below: var(--band-alt);" aria-hidden="true"></div>
 
+<section id="the-current-situation" class="region bg-surface-alt">
+  <div class="wide wrapper prose">
+    {% capture situation_md %}{% include home-current-situation.md %}{% endcapture %}
+    {{ situation_md | markdownify }}
+  </div>
+</section>
+
+<div class="wave" style="--wave-above: var(--band-alt); --wave-below: var(--bg);" aria-hidden="true"></div>
+
+<section id="what-we-believe" class="region">
+  <div class="wide wrapper prose">
+    {% capture believe_md %}{% include home-what-we-believe.md %}{% endcapture %}
+    {{ believe_md | markdownify }}
+  </div>
+</section>
+
+<div class="wave" style="--wave-above: var(--bg); --wave-below: var(--band-alt);" aria-hidden="true"></div>
+
 <section id="faq" class="region bg-surface-alt">
   <div class="wrapper">
     {% include faq.html %}
