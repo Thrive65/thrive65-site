@@ -1339,10 +1339,13 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     color: var(--secondary);
   }
 
-  /* ─ What We Believe ─ pillar cards from classless Markdown (<ol><li>): each
-     item is <h3> + body <p> + bold-only <p> takeaway. Card frame matches
-     .faq-item; the takeaway pins to the card bottom so rows align. */
-  #what-we-believe ol {
+  /* ─ What We Believe ─ pillar cards from Google-Docs-authored Markdown
+     (<ul><li>). Docs can't nest a heading in a list item, so each card is a
+     list item whose first paragraph leads with a bold pseudo-heading (the
+     pillar name), a hard line break, then the body; a bold-only closing <p>
+     is the takeaway. Card frame matches .faq-item; the takeaway pins to the
+     card bottom so rows align across columns. */
+  #what-we-believe ul {
     list-style: none;
     padding: 0;
     margin-block-start: var(--space-m);
@@ -1360,11 +1363,24 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     padding: var(--space-m);
   }
   #what-we-believe li > * { margin: 0; }
+  /* leading bold run of the first paragraph = pillar name; render as a global h3 */
+  #what-we-believe li > p:first-child > strong:first-child {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    font-size: var(--step-1);
+    line-height: var(--lh-heading);
+    margin-block-end: var(--space-2xs);
+  }
+  /* drop the Docs hard break after the name — the block strong already wraps */
+  #what-we-believe li > p:first-child > strong:first-child + br { display: none; }
+  /* bold-only closing paragraph = takeaway; pin to the card bottom */
   #what-we-believe li > p:last-child:has(> strong:only-child) { margin-block-start: auto; }
 
-  /* ─ The current situation ─ open stat grid from classless Markdown
-     (<ul><li>): each item is an <h3> figure/label + support <p>. No card
-     frame — big brand-colored figure over a one-line support sentence. */
+  /* ─ The current situation ─ open stat grid from Google-Docs-authored Markdown
+     (<ul><li>, tight list so items are unwrapped). Each item leads with a bold
+     pseudo-heading (the figure/label), a hard line break, then the support
+     sentence. No card frame — big brand figure over small support text. */
   #the-current-situation ul {
     list-style: none;
     padding: 0;
@@ -1373,20 +1389,20 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
     gap: var(--space-s);
   }
-  #the-current-situation li {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2xs);
-  }
-  #the-current-situation li h3 {
-    margin: 0;
+  #the-current-situation li { font-size: var(--step--1); }
+  /* leading bold run = the figure/label */
+  #the-current-situation li > strong:first-child {
+    display: block;
     font-family: var(--font-display);
+    font-weight: var(--display-weight);
     font-size: var(--step-3);
     line-height: var(--lh-display);
     color: var(--brand);
     text-wrap: balance;
+    margin-block-end: var(--space-2xs);
   }
-  #the-current-situation li p { margin: 0; font-size: var(--step--1); }
+  /* drop the Docs hard break after the figure — the block strong already wraps */
+  #the-current-situation li > strong:first-child + br { display: none; }
 
   /* Read more CTA — the Markdown link in the paragraph after the stat list.
      Mirrors the classless .hero a pill. */
