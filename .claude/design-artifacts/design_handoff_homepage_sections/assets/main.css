@@ -1,0 +1,1691 @@
+/* ==========================================================================
+   Thrive65 — CUBE CSS
+   Layers: reset → base → composition → block → utility → exception
+   ========================================================================== */
+
+@layer reset, base, composition, block, utility, exception;
+
+/* ============================================================================
+   Common Ground — design tokens (Thrive65 redesign)
+   :root = shared tokens + DEFAULT hue (Lake Teal), LIGHT theme.
+   [data-theme="dark"] = shared dark + default hue dark.
+   .hue-* = the 8 tokens that vary per hue (light + dark).
+   ============================================================================ */
+
+:root {
+  /* ---- Fluid root — THE four knobs (plain numbers, think px) ------------ */
+  /* Text is --root-min px at --screen-min and below, --root-max px at
+     --screen-max and above, linear in between. Tweak any knob (live in
+     devtools works) and the whole system — rem type, rlh space — follows.
+     px at width w ≈ root-min + (root-max − root-min) × (w − screen-min) / (screen-max − screen-min)
+     Defaults: 16 @320 · ~17.6 @768 · ~19.3 @1240 · ~21.3 @1800 · 24 @2560+ */
+  --root-min: 16;
+  --root-max: 24;
+  --screen-min: 320;
+  --screen-max: 2560;
+
+  /* derived — do not edit. Sizes are % of the user's default (16px) so
+     browser font-size preferences still scale everything. */
+  --root-slope: calc((var(--root-max) - var(--root-min)) / (var(--screen-max) - var(--screen-min)));
+  font-size: clamp(
+    calc(var(--root-min) / 16 * 100%),
+    calc((var(--root-min) - var(--root-slope) * var(--screen-min)) / 16 * 100% + var(--root-slope) * 100vw),
+    calc(var(--root-max) / 16 * 100%)
+  );
+  line-height: 1.5; /* rlh unit = 1.5 × root font-size; body sets its own leading */
+
+  /* ---- Typography ------------------------------------------------------- */
+  --font-display: "Archivo", sans-serif;                 /* was Fraunces */
+  --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --display-weight: 800;
+  --display-tracking: -0.01em;
+
+  /* ---- Type scale — proportional rem, minor third (1.2) ----------------- */
+  /* Plain rem: each step rides the fluid root, ratio stays constant. */
+  --step--2: 0.694rem;
+  --step--1: 0.833rem;
+  --step-0:  1rem;
+  --step-1:  1.2rem;
+  --step-2:  1.44rem;
+  --step-3:  1.728rem;
+  --step-4:  2.074rem;
+  --step-5:  2.488rem;
+
+  /* ---- Spacing — rlh line-counts (1rlh = one root line, 24px at min) ---- */
+  /* Doubles every two steps (s→l→2xl→4xl = 1·2·4·8, m→xl→3xl = 1.5·3·6). */
+  --space-2xs: 0.25rlh;   /* ¼ line   —   6px at min */
+  --space-xs:  0.5rlh;    /* ½ line   —  12px */
+  --space-s:   1rlh;      /* 1 line   —  24px */
+  --space-m:   1.5rlh;    /* 1½ lines —  36px */
+  --space-l:   2rlh;      /* 2 lines  —  48px */
+  --space-xl:  3rlh;      /* 3 lines  —  72px */
+  --space-2xl: 4rlh;      /* 4 lines  —  96px */
+  --space-3xl: 6rlh;      /* 6 lines  — 144px */
+  --space-4xl: 8rlh;      /* 8 lines  — 192px */
+
+  /* ---- Wrapper gutter — side padding on narrow screens ------------------ */
+  /* Only governs layout below the measure cap (~660px). Above that the
+     --measure cap wins and the leftover space becomes auto margins, so the
+     old desktop gutter steps were superfluous and were removed. */
+  --gutter: var(--space-s);  /* 1 line of breathing room at the edges */
+
+  /* ---- Measure — optimal line length, caps every .wrapper -------------- */
+  /* Anchored in rem, not ch: rem tracks the ROOT font size, so the cap is
+     identical in every context. (A ch cap would resolve against each
+     element's OWN font size, making the smaller-type footer narrower than
+     the body.) rem still rides the fluid root, so ~68 chars of body text —
+     the 50–75ch readability sweet spot — hold at every viewport.
+     41rem ≈ 68ch of body text (Public Sans "0" ≈ 0.605rem wide). */
+  --measure:      41rem;  /* body prose, header, footer — the default cap */
+  --measure-wide: 66rem;  /* escape hatch for multi-column layouts (hero) */
+
+  /* ---- Line heights ----------------------------------------------------- */
+  --lh-body: 1.6;
+  --lh-lead: 1.5;
+  --lh-heading: 1.15;
+  --lh-display: 1.1;
+
+  /* ---- Borders & radii (framed 2px-edge look) ---------------------- */
+  --border-thin: 1px;
+  --border-bold: 2px;
+  --radius-card: 12px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+  --radius-callout: 0 12px 12px 0;
+
+  /* ---- Menu surface (nav dropdowns, language menu, a11y panel) -------
+     One shared treatment so every floating menu matches. Surface/border
+     use var() so they track the current theme's --card / --edge at use. */
+  --menu-surface: var(--card);
+  --menu-border: var(--border-bold) solid var(--edge);
+  --menu-radius: var(--radius-card);
+  --menu-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.18);
+  --menu-offset: var(--space-2xs); /* gap between a toggle and its menu */
+  --menu-item-hover: var(--tint);  /* hover/focus fill on menu items */
+
+  /* ---- Motion (transition timing + easing) ----------------------
+     Three durations cover every UI transition; existing values were
+     rounded to the nearest to keep the set minimal. */
+  --ease: ease;
+  --transition-fast: 150ms;   /* hover reveals, icon rotations */
+  --transition-base: 200ms;   /* fades, toast */
+  --transition-slow: 300ms;   /* panel slide, larger transforms */
+
+  /* ---- Toggle geometry ---------------------- */
+  --toggle-size: 3.3em; /* hamburger menu, ~44px (em: scales with its own font) */
+  /* Shared nav-control height (theme/lang pills + CTA). Font-INDEPENDENT so
+     controls with different font sizes still line up at the 44px hit target. */
+  --control-height: 2.75rem;
+
+  /* ---- Shared: surfaces & structure · LIGHT ----------------------------- */
+  --bg:    #F7F5EC;                 /* warm page surface */
+  --card:  #FFFFFF;                 /* raised surfaces */
+  --tint:  hsla(150, 30%, 91%, 1);  /* soft callout wash (Meadow Tint) */
+  --line:  hsla(150, 20%, 83%, 1);  /* 1px hairlines, dividers */
+  --ink:   #14231B;                 /* headings & body text */
+  --muted: hsla(150, 16%, 30%, 1);  /* secondary text */
+  --edge:  #0B0B0B;                 /* 2px frames; focus outline on light */
+  --on-accent: #221B05;             /* CTA label text (on Marigold) */
+  --focus: #D42A56;                 /* focus outline — edge on light */
+
+  /* ---- Shared: accents (CONSTANT across all hues) ----------------------- */
+  --secondary:    hsla(189, 65%, 22%, 1); /* Lakewater Teal — eyebrows, 2nd headings */
+  --accent:       #FFB01A;                 /* Marigold — primary CTA fill (constant) */
+  --accent-hover: #FFC44F;                 /* CTA hover */
+  --bloom:        #D42A56;                 /* Accent 2 — moment-of-change only */
+
+  /* ---- Shared: footer family (shared across themes) --------------------- */
+  --footer-bg:   #070E0A;
+  --footer-head: #EDF5EE;
+  --footer-ink:  #B7CCBD;
+
+  /* ---- Illustration — constants (same across all hues) ------------------ */
+  --art-sky:   transparent;         /* hero-bg shows through */
+  --art-warm:  hsl(39 100% 55%);    /* marigold */
+  --art-pop:   hsl(339 70% 50%);    /* rose */
+  --art-clock: hsl(185 40% 97%);    /* near-white */
+  --art-line:  hsl(190 45% 10%);    /* near-black */
+  --art-ink:   hsl(190 38% 18%);    /* near-black */
+}
+
+/* ============================================================================
+   SHARED DARK surfaces + default hue (Lake Teal) DARK.
+   Set data-theme="dark" on <html>.
+   ============================================================================ */
+[data-theme="dark"] {
+  --bg:    #0B1410;
+  --card:  #17251C;
+  --tint:  #123122;
+  --line:  #283A2E;
+  --ink:   #E9F2EA;
+  --muted: #A9BBAD;
+  --edge:  #0B0B0B;                 /* shared */
+  --on-accent: #221B05;             /* shared */
+  --focus: #8CE7B7;                 /* focus outline — mint on dark */
+
+  --secondary:    hsla(189, 65%, 60%, 1);
+  --accent:       #FFB01A;          /* constant */
+  --accent-hover: #FFC44F;          /* constant */
+  --bloom:        #FF5D7B;
+
+  --footer-bg:   #070E0A;           /* shared */
+  --footer-head: #EDF5EE;           /* shared */
+  --footer-ink:  #B7CCBD;           /* shared */
+
+  --art-warm:  hsl(42 100% 60%);
+  --art-pop:   hsl(342 90% 68%);
+  --art-clock: hsl(185 25% 93%);
+  --art-line:  hsl(190 45% 8%);
+  --art-ink:   hsl(190 42% 12%);
+}
+
+/* ============================================================================
+   HUE WRAPPER CLASS — LIGHT (single standard hue; alternates archived in
+   .claude/design-artifacts/hue-archive.css)
+   Overrides only the hue tokens; everything else inherits from :root.
+   ============================================================================ */
+.hue-default {                                     /* LIVE BRAND (lake-teal, same as :root default) */
+  --brand: #0F7A45; 
+  --brand-strong: #0A5C34; 
+  --link: #0F7A45;
+  --hero-bg: hsla(189, 65%, 46%, 1); 
+  --hero-ink: hsla(189, 65%, 9%, 1);
+  --hero-muted: hsla(189, 65%, 13%, 1); 
+  --hero-em: var(--accent);
+  --band-alt: hsla(189, 30%, 92%, 1);
+  --art-cloud: hsl(191 40% 96%); --art-wall-2: hsl(185 26% 91%); --art-wall: hsl(200 30% 76%);
+  --art-roof: hsl(189 62% 27%); --art-foliage: hsl(150 55% 33%); --art-foliage-2: hsl(158 50% 55%);
+  --art-warm-2: hsl(189 85% 90%); --art-warm-3: hsl(9 90% 85%); --art-ground: hsl(193 16% 85%);
+}
+
+/* ============================================================================
+   HUE WRAPPER CLASS — DARK  (higher specificity than the light block above)
+   ============================================================================ */
+[data-theme="dark"] .hue-default {
+  --brand: #3FD9C0;
+  --brand-strong: #74E8D6;
+  --link: #3FD9C0;
+  --hero-bg: #1C7687;
+  --hero-ink: #E6F3EF;
+  --hero-muted: #F0F9F5;
+  --hero-em: #FFC44F;
+  --band-alt: hsla(189, 50%, 9%, 1);
+  --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
+  --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
+  --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
+}
+
+/* ============================================================================
+   OPTIONAL pure-CSS auto dark (no JS). Only needed if you do NOT set
+   data-theme on <html>. Covers shared surfaces + the DEFAULT hue only.
+   ============================================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --bg: #0B1410; --card: #17251C; --tint: #123122;
+    --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD; --focus: #8CE7B7;
+    --secondary: hsla(189, 65%, 60%, 1); --bloom: #FF5D7B;
+    --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
+    --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
+    --band-alt: hsla(189, 50%, 9%, 1);
+    --art-warm: hsl(42 100% 60%); --art-pop: hsl(342 90% 68%); --art-clock: hsl(185 25% 93%);
+    --art-line: hsl(190 45% 8%); --art-ink: hsl(190 42% 12%);
+    --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
+    --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
+    --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 64%); --art-ground: hsl(191 26% 20%);
+  }
+}
+
+/* ============================================================================
+   COLORBLIND-FRIENDLY (Okabe–Ito) — swaps the green brand/link family and the
+   pink "bloom" accent for a colorblind-safe blue/orange set. Marigold CTA is
+   unchanged (already CVD-safe). Toggled by data-cvd="on" on <html>.
+
+   Same targeting as HIGH CONTRAST below: overrides the hue tokens on the
+   .hue-default element. These come BEFORE the HC blocks so that when both
+   are on, HIGH CONTRAST WINS (equal specificity → later source wins).
+   ============================================================================ */
+html[data-cvd="on"]:not([data-theme="dark"]) .hue-default {
+  --brand: #0072B2; --brand-strong: #004E7C; --link: #0072B2;
+  --secondary: #005A82; --bloom: #C4560A;
+  /* Hero band swaps the per-hue color for the Okabe–Ito light blue (dark ink),
+     keeping the marigold emphasis, so it stays consistent with the CVD brand. */
+  --hero-bg: #56B4E9; --hero-ink: #06283D; --hero-muted: #0A3A5A; --hero-em: var(--accent);
+}
+html[data-cvd="on"][data-theme="dark"] .hue-default {
+  --brand: #56B4E9; --brand-strong: #8CCBF0; --link: #56B4E9;
+  --secondary: #7EC8E3; --bloom: #E69F00;
+  /* Darker Okabe–Ito blue band with light ink for the dark theme. */
+  --hero-bg: #0072B2; --hero-ink: #EAF4FB; --hero-muted: #C3DEEF; --hero-em: var(--accent);
+}
+
+/* ============================================================================
+   HIGH CONTRAST — flattens surfaces to pure black/white and forces ≥7:1 brand
+   and link colors, intentionally overriding the hue system (incl. the hero
+   band). Toggled by data-contrast="high" on <html>.
+
+   These blocks are the LAST token overrides in source ON PURPOSE: colorblind
+   (CVD) blocks live above so that when both are on, HIGH CONTRAST WINS. The hue
+   tokens (--brand, --hero-*) are set on <body> by the .hue-default class, so
+   the overrides target the .hue-default element; surface tokens
+   set on <html> cascade down from there. Selector specificity clears the
+   [data-theme="dark"] .hue-default block above.
+   ============================================================================ */
+   
+html[data-contrast="high"] {
+  --hc-color-light: hsl(130 40% 98% / 1); 
+  --hc-color-dark: #0B1410;
+}
+
+html[data-contrast="high"]:not([data-theme="dark"]) .hue-default {
+  --bg: var(--hc-color-light); --card: var(--hc-color-light); --tint: var(--hc-color-light);
+  --line: var(--hc-color-dark); --ink: var(--hc-color-dark); --muted: var(--hc-color-dark); --edge: var(--hc-color-dark); --focus: var(--hc-color-dark);
+  --brand: #005C31; --brand-strong: #00411F; --link: #005C31; --secondary: #00323C;
+  --hero-bg: var(--hc-color-light); --hero-ink: var(--hc-color-dark); --hero-muted: var(--hc-color-dark); --hero-em: #7A4C00;
+}
+html[data-contrast="high"][data-theme="dark"] .hue-default {
+  --bg: var(--hc-color-dark); --card: var(--hc-color-dark); --tint: var(--hc-color-dark);
+  --line: var(--hc-color-light); --ink: var(--hc-color-light); --muted: var(--hc-color-light); --edge: var(--hc-color-light); --focus: #FFFF00;
+  --brand: #4DFFA6; --brand-strong: #90FFC8; --link: #4DFFA6; --secondary: #9BE8FF;
+  --accent: #FFD34D; --accent-hover: #FFE58A; --on-accent: var(--hc-color-dark);
+  --hero-bg: var(--hc-color-dark); --hero-ink: var(--hc-color-light); --hero-muted: var(--hc-color-light); --hero-em: #FFD34D;
+}
+/* Underline every link and thicken the header hairline for HC legibility. */
+[data-contrast="high"] a { text-decoration: underline; }
+[data-contrast="high"] .site-header { border-bottom-width: var(--border-bold); }
+
+/* ============================================================================
+   DYSLEXIA-FRIENDLY FONT — swaps both font families to Atkinson Hyperlegible,
+   drops the display weight, zeroes tracking, and opens up body leading. The
+   webfont is lazy-loaded (panel open / boot-if-persisted) in head.html.
+   Toggled by data-dyslexic="on" on <html>.
+   ============================================================================ */
+[data-dyslexic="on"] {
+  --font-body: "Atkinson Hyperlegible", sans-serif;
+  --font-display: "Atkinson Hyperlegible", sans-serif;
+  --display-weight: 700;
+  --display-tracking: 0;
+  --lh-body: 1.7;
+}
+
+/* ============================================================================
+   TEXT SIZE — scales the fluid-root knobs only (NOT zoom), so type and rlh-based
+   spacing grow together. Toggled by data-textsize on <html>.
+   ============================================================================ */
+[data-textsize="87"]  { --root-min: 14; --root-max: 21; }
+[data-textsize="112"] { --root-min: 18; --root-max: 27; }
+[data-textsize="125"] { --root-min: 20; --root-max: 30; }
+[data-textsize="137"] { --root-min: 22; --root-max: 33; }
+[data-textsize="150"] { --root-min: 24; --root-max: 36; }
+
+/* ── reset ──────────────────────────────────────────────────────────────── */
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  img  { max-width: 100%; display: block; }
+}
+
+/* ── base ───────────────────────────────────────────────────────────────── */
+@layer base {
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    color: var(--ink);
+    background: var(--bg);
+    line-height: var(--lh-body);
+  }
+
+  /* Grow main to fill the viewport so the footer sits at the bottom
+     when page content is too short to push it there. */
+  #main {
+    flex: 1 0 auto;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
+    line-height: var(--lh-heading);
+    margin: 0 0 0.5em;
+  }
+  /* Global heading scale — descending steps. Override only where a context
+     genuinely differs (hero display); never re-declare a matching size. */
+  h1 { font-size: var(--step-3); }
+  h2 { font-size: var(--step-2); }
+  h3 { font-size: var(--step-1); }
+
+  p { margin: 0 0 1em; }
+
+  a {
+    color: var(--ink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: var(--link);
+    transition: color var(--transition-base) var(--ease), text-decoration-color var(--transition-base) var(--ease);
+  }
+  a:hover { 
+    color: var(--link); 
+    text-decoration-color: var(--brand-strong);
+  }
+
+  *:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -999px;
+    top: 0;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 0.75em 1.25em;
+    z-index: 100;
+    border-radius: 0 0 8px 0;
+  }
+  .skip-link:focus { left: 0; }
+
+  /* Highlighted text */
+  ::selection {
+    background-color: var(--accent);
+    color: var(--on-accent);
+  }
+}
+
+/* ── composition ─────────────────────────────────────────────────────────── */
+@layer composition {
+  /* Measure + gutter in one: below the cap, `100% - 2·gutter` wins and the
+     gutter reads as side padding; above it, `--measure` wins and the leftover
+     space becomes the auto margins that centre the content. */
+  .wrapper {
+    inline-size: min(100% - 2 * var(--gutter), var(--measure));
+    margin-inline: auto;
+  }
+
+  .region {
+    padding-block: var(--space-xl);
+  }
+
+  /* Lobotomised owl — spacing between flow children (default: one line) */
+  .flow > * + * {
+    margin-block-start: var(--flow-space, var(--space-s));
+  }
+
+  .cluster {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .repel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+  }
+}
+
+/* ── block ───────────────────────────────────────────────────────────────── */
+@layer block {
+
+  /* ─ Site header ─ */
+  .site-header {
+    border-bottom: var(--border-bold) solid var(--line);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  /* Add block padding to the repel wrapper inside the header */
+  .site-header .wrapper {
+    padding-block: var(--space-xs);
+  }
+  /* Wrapper around the primary + utility navs. On desktop it dissolves
+     (display: contents) so both navs sit as direct flex children of the
+     .repel wrapper — brand left, primary-nav centre, utility-nav right.
+     On mobile it becomes the slide-in panel (see the responsive block). */
+  .nav-panel { display: contents; }
+  .site-header nav {
+    font-weight: 600;
+    font-size: var(--step--1);
+  }
+  .site-header nav a:not(.nav-cta) {
+    display: block;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--ink);
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--menu-radius);
+    transition: background-color var(--transition-base) var(--ease);
+  }
+
+  .site-header nav a:not(.nav-cta):hover,
+  .site-header nav a:not(.nav-cta):focus-visible,
+  .site-header nav .nav-dropdown-toggle:hover,
+  .site-header nav .nav-dropdown-toggle:focus-visible { 
+    background-color: var(--menu-item-hover); 
+  }
+
+  /* Markdown-driven link list (from _includes/site-nav.md) — a flex row of
+     items that sits in the nav cluster alongside the toggle and CTA. Scoped
+     to the top-level list (`> ul`) so nested dropdown lists don't inherit it. */
+  .site-header nav > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+  .site-header nav li { position: relative; }
+
+  /* Dropdown: a list item that nests a list. JS replaces the label text node
+     with this button (chevron follows the text colour via currentColor) and
+     manages the nested list as a Disclosure region (shown via the `hidden`
+     attribute — see head.html). */
+  .site-header nav .nav-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: var(--space-2xs) var(--space-xs);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: none;
+    font: inherit;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background-color var(--transition-base) var(--ease);
+  }
+
+  .site-header nav .nav-dropdown-toggle svg { transition: transform var(--transition-fast) var(--ease); }
+  .site-header nav .nav-dropdown-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+  /* Nested list. Un-enhanced (no JS) it degrades to a plain indented sub-list
+     that stays visible and reachable; the floating-panel treatment is gated on
+     `html.js`, and the `[hidden]` utility hides it while collapsed. */
+  .site-header nav li ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    padding-inline-start: var(--space-s);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  html.js .site-header nav li ul {
+    position: absolute;
+    top: calc(100% + var(--menu-offset));
+    inset-inline-start: 0;
+    min-width: max-content;
+    padding: var(--space-2xs);
+    background: var(--menu-surface);
+    border: var(--menu-border);
+    border-radius: var(--menu-radius);
+    box-shadow: var(--menu-shadow);
+    z-index: 20;
+  }
+
+  /* Desktop only: stretch the nav-link list (and its items) to the full nav-row
+     height. The link list is shorter than the taller .lang-select / .a11y-select
+     pill controls beside it, so without this its dropdown anchored ~8px higher.
+     Filling the row makes every menu drop from the same baseline, so the shared
+     --menu-offset aligns all three. Scoped above the mobile breakpoint so the
+     stacked mobile submenu (li as a block with the submenu below) is untouched. */
+  @media (min-width: 785px) {
+    .site-header nav > ul { align-self: stretch; align-items: stretch; }
+    .site-header nav > ul > li { display: flex; align-items: center; }
+  }
+
+  /* Brand link — .cluster on the element supplies the flex display */
+  .brand {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
+    font-size: var(--step-1);
+    color: var(--ink);
+    text-decoration: none;
+    gap: 0.55em; /* tighter than .cluster default */
+  }
+  .brand .wordmark { line-height: 1; }
+  .brand .wordmark-accent { color: var(--brand); }
+
+  /* Primary CTA pill — the one Marigold accent per view (framed) */
+  .nav-cta {
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    background: var(--accent);
+    color: var(--on-accent);
+    min-height: var(--control-height);
+    padding: 0.55em 1.2em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    transition: background var(--transition-base) var(--ease), color var(--transition-base) var(--ease);
+  }
+  .nav-cta:hover { background: var(--accent-hover); color: var(--on-accent); }
+
+  /* Nav toggle pills — the accessibility trigger and the language dropdown
+     trigger share geometry; the language button does NOT reuse the .a11y-toggle
+     class (they carry different click handlers), so both are listed here. */
+  .a11y-toggle,
+  .lang-toggle {
+    min-width: var(--control-height);
+    min-height: var(--control-height);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .a11y-toggle:hover,
+  .lang-toggle:hover { border-color: var(--brand); color: var(--brand); }
+  /* Text label — hidden on desktop (icon-only), shown in the mobile nav panel. */
+  .a11y-toggle-text { display: none; }
+
+  /* Language dropdown — a globe pill in the nav-control family (inherits its
+     geometry, hover-brand, and focus ring) that widens to hold the code + a
+     chevron. The menu reuses the nav-dropdown panel treatment. */
+  .lang-select { position: relative; }
+  .lang-toggle {
+    gap: 0.4em;
+    padding-inline: 0.7em;
+    font-size: var(--step--1); /* match the theme toggle's context so 44px holds */
+  }
+  .lang-toggle .lang-code {
+    font-size: var(--step--1);
+    font-weight: 600;
+    line-height: 1;
+  }
+  .lang-toggle svg:last-child { transition: transform var(--transition-fast) var(--ease); }
+  .lang-toggle[aria-expanded="true"] svg:last-child { transform: rotate(180deg); }
+
+  .lang-menu {
+    position: absolute;
+    top: calc(100% + var(--menu-offset));
+    inset-inline-end: 0;
+    min-width: 11rem;
+    margin: 0;
+    padding: var(--space-2xs);
+    list-style: none;
+    background: var(--menu-surface);
+    border: var(--menu-border);
+    border-radius: var(--menu-radius);
+    box-shadow: var(--menu-shadow);
+    font-size: var(--step--1);
+    z-index: 30;
+  }
+  .lang-menu-item {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;       /* ≥44px tap target (acceptance checklist) */
+  }
+  .lang-menu .lang-check {
+    flex-shrink: 0;
+    color: var(--brand);
+    visibility: hidden;
+  }
+  .lang-menu-item[aria-current="true"] .lang-check { visibility: visible; }
+
+  /* Display & accessibility settings — the universal-access pill reuses the
+     nav-control geometry above; its panel is a wider version of the nav-dropdown
+     surface treatment. */
+  .a11y-select { position: relative; }
+  .a11y-toggle { gap: 0.4em; padding-inline: 0.7em; font-size: var(--step--1); }
+
+  .a11y-panel {
+    position: absolute;
+    top: calc(100% + var(--menu-offset));
+    inset-inline-end: 0;
+    /* Sizes to its widest row so longer labels (e.g. Spanish) never wrap; the
+       min keeps a comfortable base width, the max keeps it on-screen. */
+    min-width: 21rem;
+    width: max-content;
+    max-width: calc(100vw - 2 * var(--space-m));
+    /* Never taller than the space below the sticky header: if the rows would
+       overflow the viewport (small laptop, or enlarged text size), the head and
+       foot stay docked and the options scroll internally. The reserve is the
+       panel's own top offset — header block-padding + toggle height + gap — all
+       rem-derived, so it tracks the text-size scale. */
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - var(--space-xs) - var(--control-height) - var(--menu-offset) - var(--space-s));
+    background: var(--menu-surface);
+    border: var(--menu-border);
+    border-radius: var(--menu-radius);
+    box-shadow: var(--menu-shadow);
+    font-size: var(--step--1);
+    z-index: 40; /* above nav dropdowns/menus */
+  }
+  /* Head and foot are docked; only the options body scrolls. min-height:0 lets
+     the body shrink below its content height so overflow-y actually engages. */
+  .a11y-panel-head,
+  .a11y-panel-foot { flex-shrink: 0; }
+  .a11y-panel-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  /* Rows are separated by hairline dividers; the head and foot inherit them. */
+  .a11y-panel-head,
+  .a11y-row,
+  .a11y-panel-foot {
+    padding: var(--space-s) var(--space-m);
+    border-block-start: var(--border-thin) solid var(--line);
+  }
+  /* Head keeps a persistent bottom divider (matching the item borders) so it
+     reads as docked while the body scrolls beneath it. Drop the first body
+     row's own top border so the two don't stack into a double line. */
+  .a11y-panel-head { border-block-start: 0; border-block-end: var(--border-thin) solid var(--line); }
+  .a11y-panel-body .a11y-row:first-child { border-block-start: 0; }
+  .a11y-panel-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--step-0);
+    line-height: var(--lh-heading);
+    margin: 0;
+  }
+  .a11y-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .a11y-close:hover { border-color: var(--brand); color: var(--brand); }
+
+  .a11y-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
+  .a11y-row-label { font-weight: 600; white-space: nowrap; }
+  /* Superscript help marker: the full description lives in its native `title`
+     tooltip. Muted, cursor:help, and its icon sized off a fixed step so it never
+     couples to the label's font size the way a bare 1em would. */
+  .a11y-hint {
+    display: inline-flex;
+    margin-inline-start: 0.35em;
+    color: var(--muted);
+    cursor: help;
+  }
+  .a11y-hint svg { width: var(--step--1); height: var(--step--1); }
+
+  /* Switch — a pill track with a sliding knob; role="switch" + aria-checked
+     drive the on/off visuals. Off: page-bg track, ink knob left. On: brand
+     track, white knob right. */
+  .a11y-switch {
+    position: relative;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 1.6rem;
+    padding: 0;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    background: var(--bg);
+    cursor: pointer;
+    transition: background var(--transition-fast) var(--ease);
+  }
+  .a11y-switch-knob {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 0.15rem;
+    width: 1.05rem;
+    height: 1.05rem;
+    border-radius: var(--radius-pill);
+    background: var(--ink);
+    transform: translateY(-50%);
+    transition: transform var(--transition-fast) var(--ease), background var(--transition-fast) var(--ease);
+  }
+  .a11y-switch[aria-checked="true"] { background: var(--brand); }
+  .a11y-switch[aria-checked="true"] .a11y-switch-knob {
+    background: #fff;
+    transform: translate(1.15rem, -50%);
+  }
+
+  /* Text-size stepper — round bold-edge A−/A+ buttons around a framed value. */
+  .a11y-stepper { display: inline-flex; align-items: center; gap: var(--space-xs); }
+  .a11y-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color var(--transition-fast) var(--ease), color var(--transition-fast) var(--ease);
+  }
+  .a11y-step:hover:not(:disabled) { border-color: var(--brand); color: var(--brand); }
+  .a11y-step:disabled { opacity: 0.4; cursor: default; }
+  .a11y-step-value {
+    min-width: 3.4em;
+    padding: 0.15em 0.4em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+
+  /* Segmented control — a bold-edge pill split into equal segments; the pressed
+     segment inverts to ink-on-card. */
+  .a11y-segmented {
+    display: inline-flex;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+  }
+  .a11y-segment {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.3em 0.9em;
+    border: 0;
+    background: var(--card);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background var(--transition-fast) var(--ease), color var(--transition-fast) var(--ease);
+  }
+  .a11y-segment svg { width: 1em; height: 1em; flex-shrink: 0; }
+  .a11y-segment + .a11y-segment { border-inline-start: var(--border-thin) solid var(--edge); }
+  .a11y-segment:hover { color: var(--brand); }
+  .a11y-segment[aria-pressed="true"] { background: var(--brand); color: var(--card); }
+  .a11y-segment[aria-pressed="true"]:hover { color: var(--card); }
+  .a11y-segment:focus-visible { 
+    outline: 3px solid var(--focus); 
+    outline-offset: 4px; 
+  }
+  button.a11y-segment:first-child {
+    border-radius: var(--radius-pill) 0px 0 var(--radius-pill);
+  }
+  button.a11y-segment:last-child {
+    border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+  }
+
+  /* Hit-target expansion — the panel's compact controls (switch, stepper,
+     segment, close ✕) match the approved frames but read smaller than 44px.
+     A transparent, centered overlay guarantees a ≥44×44px pointer/tap target
+     (acceptance checklist) without altering the visual size or layout: it's
+     absolutely positioned, so it never changes the flex box it sits in. */
+  .a11y-step,
+  .a11y-segment,
+  .a11y-close,
+  .a11y-reset { position: relative; }
+  .a11y-switch::before,
+  .a11y-step::before,
+  .a11y-segment::before,
+  .a11y-close::before,
+  .a11y-reset::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .a11y-panel-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
+  .a11y-reset {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--link);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .a11y-reset:hover { color: var(--brand-strong); }
+  .a11y-saved { font-size: var(--step--2); }
+  /* The Done pill only surfaces in the mobile bottom sheet. */
+  .a11y-done { display: none; }
+
+  /* Hamburger button — hidden on desktop, shown in the mobile media query */
+  .nav-toggle {
+    display: none;
+    width: var(--toggle-size);
+    height: var(--toggle-size);
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+    z-index: 30;
+  }
+  .nav-toggle-box {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 1.15em;
+    height: 0.85em;
+  }
+  .nav-toggle-bar {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform var(--transition-slow) var(--ease), opacity var(--transition-base) var(--ease);
+  }
+  /* Morph the three bars into an X when the menu is open.
+     Box is 0.85em tall with three 2px bars spaced by space-between, so the
+     outer bars sit 1px in from each edge — translate each exactly to the box
+     centre ((0.85em − 2px) / 2) before rotating so the strokes cross cleanly. */
+  .nav-open .nav-toggle-bar:nth-child(1) { transform: translateY(calc(0.425em - 1px)) rotate(45deg); }
+  .nav-open .nav-toggle-bar:nth-child(2) { opacity: 0; }
+  .nav-open .nav-toggle-bar:nth-child(3) { transform: translateY(calc(-0.425em + 1px)) rotate(-45deg); }
+
+  /* Backdrop behind the slide-in panel (mobile only) */
+  .nav-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transition: opacity var(--transition-slow) var(--ease);
+    z-index: 15;
+  }
+
+  /* Lock page scroll behind the open slide-in panel (class toggled in head.html) */
+  body.nav-open {
+    overflow: hidden;
+  }
+
+  /* ─ Hero ─ (full-bleed colored band; the only context that overrides
+     the global heading scale) */
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-hue {
+    background: var(--hero-bg);
+    color: var(--hero-ink);
+  }
+  /* Two-column: copy left, line-art scene bleeding to the right edge */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: stretch;
+    gap: var(--space-l);
+  }
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+  .hero-art {
+    position: relative;
+    /* intrinsic size so the absolutely-positioned SVG has a box;
+       art scales down when the grid stacks on mobile.
+       Matches the illustration's 768×800 viewBox so it doesn't letterbox. */
+    aspect-ratio: 768 / 800;
+  }
+  .hero-art svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  /* Color for kicker/Eyebrows. Any first element that follows a heading */
+  .hero-hue *:first-child:has(+ h1, + h2) { 
+    color: var(--hero-muted); 
+  }
+  .hero h3 {  /* eyebrow */
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: var(--step--1);
+    line-height: var(--lh-heading);
+    margin: 0 0 0.75em;
+  }
+  .hero h1 {
+    font-size: var(--step-5);
+    line-height: var(--lh-display);
+    color: var(--hero-ink);
+    max-width: 16ch;
+  }
+  .hero h1 em {
+    color: var(--hero-em);
+    font-style: italic;
+  }
+  .hero p {
+    font-size: var(--step-1);
+    line-height: var(--lh-lead);
+    color: var(--hero-muted);
+    max-width: 42ch;
+    margin-bottom: 1.75em;
+  }
+  .hero a {
+    display: inline-block;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 0.8em 1.7em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    background: var(--accent);
+    color: var(--on-accent) !important;
+  }
+  .hero a:hover { background: var(--accent-hover); }
+
+  /* ─ Heading copy-link anchors (GitHub-style) ─
+     Hover/focus reveals a chain icon in the left gutter; clicking copies an
+     absolute deep link (JS in head.html). The anchor is injected for prose
+     headings and server-rendered for FAQ items. */
+  main :is(h2, h3, h4):has(> .heading-anchor) { position: relative; }
+  .heading-anchor {
+    position: absolute;
+    right: 100%;
+    margin-right: var(--space-2xs);
+    /* Span the heading's first line (1lh inherits the heading's font-size +
+       line-height) so align-items:center vertically centers the icon against
+       the heading text, whatever its step. */
+    top: 0;
+    height: 1lh;
+    display: inline-flex;
+    align-items: center;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity var(--transition-fast) var(--ease);
+  }
+  /* Icon sized with a fixed step (not 1em) so it's consistent across heading
+     levels and stays small enough for the narrow mobile gutter. */
+  .heading-anchor svg { width: var(--step-0); height: var(--step-0); }
+  .heading-anchor:hover { color: var(--brand); }
+  :is(h2, h3, h4):hover > .heading-anchor,
+  :is(h2, h3, h4):focus-within > .heading-anchor,
+  .faq-item:hover > summary > .faq-anchor,
+  .faq-item:focus-within > summary > .faq-anchor,
+  .heading-anchor:focus-visible { opacity: 1; }
+  /* Touch devices have no hover — keep anchors visible. */
+  @media (hover: none) {
+    .heading-anchor { opacity: 1; }
+  }
+
+  /* ─ "Link copied" toast ─ bottom-center, single reusable node. */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: var(--space-m);
+    transform: translate(-50%, 1rem);
+    z-index: 100;
+    padding: var(--space-2xs) var(--space-s);
+    border-radius: var(--radius-pill);
+    background: var(--ink);
+    color: var(--bg);
+    font-size: var(--step--1);
+    font-weight: 600;
+    box-shadow: 0 4px 16px hsla(0, 0%, 0%, 0.2);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  /* Global reduced-motion guard (end of file) collapses this when needed. */
+  .toast { transition: opacity var(--transition-base) var(--ease), transform var(--transition-base) var(--ease); }
+
+  /* ─ FAQ accordion (native <details>/<summary> — no JS required) ─ */
+  .faq-item {
+    background: var(--card);
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-card);
+    /* overflow visible so the gutter copy-link anchor (right:100%) isn't
+       clipped; children stay rectangular within the rounded frame anyway. */
+    position: relative;   /* gutter anchor positioning */
+  }
+  .faq-anchor {
+    /* summary is padded; center vertically against that first line */
+    top: calc(var(--space-xs) + 0.5em);
+    transform: translateY(-50%);
+  }
+  /* .cluster on the <summary> element supplies display:flex; override gap here */
+  .faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+    padding: var(--space-xs);
+    gap: 0.85em;
+    flex-wrap: nowrap;      /* keep the + icon on the same line as the question */
+    align-items: start;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary h3 {  /* match the summary size, not the global h3 step */
+    min-width: 0;  /* allow the question to shrink/wrap beside the icon */
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+    line-height: inherit;
+  }
+
+  .faq-icon {
+    flex-shrink: 0;
+    margin-inline-start: auto;   /* pin the +/− to the right edge */
+    width: 1.4em;
+    height: 1.4em;
+    border-radius: 50%;
+    background: var(--tint);
+    position: relative;
+  }
+  .faq-icon::before,
+  .faq-icon::after {
+    content: "";
+    position: absolute;
+    background: var(--brand);
+    border-radius: 2px;
+    transition: transform var(--transition-fast) var(--ease);
+  }
+  .faq-icon::before { left: 30%; right: 30%; top: 50%; height: 2px; transform: translateY(-50%); }
+  .faq-icon::after  { top: 30%; bottom: 30%; left: 50%; width: 2px; transform: translateX(-50%); }
+  .faq-item[open] .faq-icon::after { transform: translateX(-50%) rotate(90deg) scaleX(0); }
+
+  .faq-answer {
+    padding-block: 0 var(--space-s);
+    padding-inline: var(--space-xs) var(--space-s);
+    color: var(--muted);
+  }
+  .faq-answer :last-child { margin-bottom: 0; }
+
+  /* ─ Post / page prose ─ (headings inherit the global scale; only rhythm here) */
+  .post h2,
+  .page :is(h1, h2) { margin-block-start: var(--space-m); }
+  .post h3,
+  .page h3 { margin-block-start: var(--space-s); }
+  .post > *:first-child,
+  .page > *:first-child { margin-block-start: 0; }
+  /* Classless prose lists. `.prose` marks every markdown container — the
+     post/page articles and the homepage sections — so list styling is
+     consistent everywhere without per-section targeting. `.post-list` (the
+     blog index) opts out; it's a custom-classed component. */
+  .prose ul:not(.post-list), .prose ol { padding-left: 1.25em; }
+  .prose :is(ul:not(.post-list), ol) li + li { margin-block-start: var(--space-2xs); }
+  /* Google Docs sometimes wraps a list item's content in a <p>; drop its
+     inherited paragraph margin so it doesn't inflate item spacing. */
+  .prose li > p { margin-block: 0; }
+
+  /* ─ Page-header band ─ intro strip under the site header. Background comes
+     from the .bg-surface-alt utility; only the layout + h1 override live here. */
+  .page-header .wrapper {
+    padding-block: var(--space-xl) var(--space-m); /* less bottom space for wave */ 
+  }
+  .page-header h1 {
+    font-size: var(--step-4);
+    color: var(--ink);
+    margin-block: 0.1em 0;
+  }
+
+  /* ─ Brand-colored section headings ─ h2 marks a new major section and
+     retints per hue automatically. h3 stays neutral ink (no rule needed). */
+  .page h2,
+  .post h2 { color: var(--brand); }
+
+  /* ─ Standfirst / sign-off ─ a fully-italic opening or closing paragraph
+     (single <em> child) reads as a lead-in or a closing line. */
+  .page p:first-child:has(> em:only-child),
+  .post p:first-child:has(> em:only-child) {
+    font-size: var(--step-1);
+    font-style: italic;
+    color: var(--muted);
+  }
+  .page p:last-child:has(> em:only-child),
+  .post p:last-child:has(> em:only-child) {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  /* ─ Framed tables ─ classless, matching the FAQ card frame. These are
+     definition tables: the first column holds labels. GFM always promotes the
+     first row to <th> and Google Docs strips that row's bold, so a <strong>
+     can't mark the top-left label — position does. The label column is shaded
+     and bold; the base rule clears the <th> user-agent bold so the value
+     column (including the promoted header-row cell) reads plainly. */
+  .page table,
+  .post table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: var(--border-bold) solid var(--line);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+  .page :is(th, td),
+  .post :is(th, td) {
+    padding: 0.9em 1.1em;
+    text-align: left;
+    vertical-align: top;
+    font-weight: normal;
+    border-bottom: var(--border-thin) solid var(--line);
+  }
+  /* Long URLs used as link text must be breakable. `anywhere` (unlike
+     `break-word`) reduces the cell's min-content width, so under table-layout:
+     auto the column stops growing to fit the URL and the table stops
+     overflowing on mobile. */
+  .page :is(th, td) a,
+  .post :is(th, td) a {
+    overflow-wrap: anywhere;
+  }
+  .page tbody tr:last-child :is(th, td),
+  .post tbody tr:last-child :is(th, td) { border-bottom: 0; }
+  .page :is(th, td):first-child,
+  .post :is(th, td):first-child {
+    background: var(--tint);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  /* Mobile Table Styles */
+  @media (max-width: 784px) {
+    .page :is(th, td):first-child,
+    .post :is(th, td):first-child { 
+      white-space: normal; 
+      font-size: var(--step--1);
+    }
+    .page :is(th, td), .post :is(th, td) { 
+      padding: var(--space-xs) var(--space-2xs); 
+    }
+  }
+
+  /* ─ Callouts ─ blockquotes render as tinted framed cards. A lone bold run in
+     the first paragraph (`> **Label**`) becomes an eyebrow label line. */
+  .page blockquote,
+  .post blockquote {
+    margin: 0;
+    background: var(--tint);
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-card);
+    padding: var(--space-s);
+  }
+  .page blockquote :last-child,
+  .post blockquote :last-child { margin-bottom: 0; }
+  .page blockquote p:first-child:has(> strong:only-child),
+  .post blockquote p:first-child:has(> strong:only-child) {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: var(--step--2);
+    color: var(--secondary);
+    margin-bottom: var(--space-2xs);
+  }
+
+  /* ─ Checklist ─ kramdown task lists (`- [ ]`): brand-outlined boxes replace
+     bullets and native checkboxes. kramdown wraps each item's content in a <p>
+     (`<li><p><input>text</p></li>`), so the checkbox is inline before the text
+     — space it with its own margin rather than a flex gap. */
+  .page .task-list,
+  .post .task-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  .page .task-list-item-checkbox,
+  .post .task-list-item-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1em;
+    height: 1em;
+    margin-inline-end: 0.5em;
+    border: var(--border-bold) solid var(--brand);
+    border-radius: 0.25em;
+    vertical-align: -0.1em;
+  }
+
+  /* ─ Post list ─ */
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  /* .repel on each <li> handles flex layout; add spacing + divider here */
+  .post-list li {
+    padding: var(--space-xs) 0;
+    border-bottom: var(--border-thin) solid var(--line);
+  }
+
+  /* ─ Site footer ─ */
+  .site-footer {
+    background: var(--footer-bg);
+    padding-block: var(--space-l);
+    color: var(--footer-ink);
+    font-size: var(--step--1);
+  }
+  .site-footer .wordmark {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
+    color: var(--footer-head);
+    font-size: var(--step-1);
+    margin: 0 0 0.35em;
+  }
+  .site-footer .wordmark-accent { color: var(--accent); }
+  .site-footer strong {
+    color: var(--footer-head);
+    font-weight: 600;
+  }
+  .site-footer a { color: var(--footer-head); }
+
+  /* ─ Signup band (colored hero band; matches the reference) ─ */
+  .signup {
+    background: var(--hero-bg);
+    color: var(--hero-ink);
+  }
+  .signup h2 { color: var(--hero-ink); }
+  .signup p { color: var(--hero-muted); }
+  .signup .text-deemphasized { color: var(--hero-muted); }
+  .signup a { color: var(--hero-ink); }
+  .signup a:hover { color: var(--accent); }
+
+  /* ─ Section eyebrow ─ kicker above a section heading. Classless: the first
+     <p> in a section's content, when it directly precedes the heading. Authored
+     as the first line of the published Markdown (Overview, Signup) or the FAQ
+     include, so it survives a Google-Docs re-publish without needing a class. */
+  section p:first-child:has(+ h1, + h2) {
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: var(--step--1);
+    line-height: var(--lh-heading);
+    margin-bottom: var(--space-2xs);
+    color: var(--secondary);
+  }
+
+  /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
+  @media (max-width: 784px) {
+    .nav-toggle { display: inline-flex; }
+
+    /* The .nav-panel wrapper (holding both navs) becomes the panel that slides
+       in from the right edge. Both navs stack vertically inside it as full-width
+       blocks, so the primary links and the utility controls share one surface
+       instead of overlapping as two separate fixed panels. */
+    .site-header .nav-panel {
+      display: block;
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: 90vw;
+      padding: calc(var(--space-xl) + env(safe-area-inset-top)) var(--space-s) var(--space-l);
+      background: var(--bg);
+      border-left: var(--border-thin) solid var(--line);
+      box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
+      transform: translateX(100%);
+      transition: transform var(--transition-slow) var(--ease);
+      z-index: 20;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .site-header.nav-open .nav-panel { transform: translateX(0); }
+    .site-header .nav-panel nav {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 0;
+      width: 100%;
+    }
+
+    /* Nav link list stacks; dropdown menu opens inline (indented) rather than
+       as a floating panel — visibility still driven by the toggle. */
+    .site-header nav > ul { flex-direction: column; align-items: flex-start; gap: 0; width: 100%; }
+    .site-header nav li { width: 100%; }
+    /* Same `html.js` specificity as the desktop floating-panel rule, so this
+       inline treatment wins here regardless of source order. */
+    html.js .site-header nav li ul {
+      position: static;
+      padding: 0;
+      padding-inline-start: var(--space-s);
+      background: none;
+      border: 0;
+      box-shadow: none;
+    }
+
+    /* Even top/bottom padding gives each link a balanced tap target,
+       and drives the vertical rhythm instead of a gap on the parent. */
+    .site-header nav a:not(.nav-cta),
+    .site-header nav .nav-dropdown-toggle {
+      font-size: var(--step-1);
+      padding-block: var(--space-xs);
+    }
+    /* Block-level so each link's padding becomes part of the li's height. 
+       The toggle stays flex to keep its label + chevron aligned. */
+    .site-header nav a:not(.nav-cta) { display: block; }
+    .site-header nav .nav-dropdown-toggle { display: flex; }
+    .site-header nav .nav-cta { 
+      font-size: var(--step-0);
+      margin-block-start: var(--space-xs); 
+      margin-inline-start: var(--space-xs); 
+    }
+
+    /* Utility navs (Language, Accessibility) display inline
+       at top of the panel, left of the ✕. */
+    .site-header #utility-nav {
+      width: auto;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: var(--space-2xs);
+      padding-inline: var(--space-xs);
+      position: absolute;
+      top: var(--space-xs);
+      right: var(--space-xl);
+    }
+    .site-header nav .a11y-toggle:hover { color: var(--brand); }
+    .site-header nav .a11y-toggle-text { display: inline; font-weight: 600; }
+
+    /* Left-align the language menu to its trigger so items aren't clipped off
+       the left edge in the narrow utility-nav row. */
+    .lang-menu { inset-inline-start: 0; inset-inline-end: auto; }
+
+    /* Settings surface becomes a bottom sheet: fixed to the viewport bottom,
+       full-width, rounded top corners only, above the slide-in nav panel. */
+    .a11y-panel {
+      position: fixed;
+      inset: auto 0 0 0;
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+      /* Sheet caps a clear gap below the viewport top; the flex column + body
+         scroll from the base rule keep the grabber/head and foot docked. */
+      max-height: calc(100dvh - var(--space-xl));
+      padding-block-start: var(--space-s);
+      border: var(--border-bold) solid var(--edge);
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      box-shadow: 0 -8px 24px hsla(0, 0%, 0%, 0.24);
+      z-index: 50;
+      padding-block-end: env(safe-area-inset-bottom);
+    }
+    /* Centered grabber bar. */
+    .a11y-panel::before {
+      content: "";
+      display: block;
+      width: 2.5rem;
+      height: 0.25rem;
+      margin: 0 auto var(--space-xs);
+      border-radius: var(--radius-pill);
+      background: var(--line);
+    }
+    /* The ✕ is redundant with the Done pill on the sheet — hide it, swap in Done. */
+    .a11y-panel-head .a11y-close { display: none; }
+    .a11y-saved { display: none; }
+    .a11y-done {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--control-height);
+      padding: 0.4em 1.4em;
+      border: var(--border-bold) solid var(--edge);
+      border-radius: var(--radius-pill);
+      background: var(--ink);
+      color: var(--card);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .a11y-panel-foot { justify-content: flex-end; }
+
+    /* Progressive-enhancement slide-up; snaps where @starting-style is unsupported
+       (the disclosure toggles `hidden`, which can't itself transition). The global
+       reduced-motion guard collapses the transition when the OS asks. */
+    .a11y-panel {
+      transition: transform var(--transition-slow) var(--ease), opacity var(--transition-slow) var(--ease);
+    }
+    @starting-style {
+      .a11y-panel { transform: translateY(100%); opacity: 0; }
+    }
+
+    /* Show + fade the backdrop while the panel is open */
+    .site-header.nav-open .nav-backdrop {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Trim the empty space above the hero on mobile */
+    .hero-copy {
+      padding-block: var(--space-l);
+    }
+  }
+}
+
+/* ── utility ─────────────────────────────────────────────────────────────── */
+@layer utility {
+  /* Layout / alignment */
+  .text-center    { text-align: center; }
+  .measure        { max-width: 50ch; }
+  .measure-narrow { max-width: 16ch; }
+  .nowrap         { white-space: nowrap; }
+
+  /* Semantic surface + text colors */
+  .bg-surface       { background: var(--bg); }
+  .bg-surface-alt   { background: var(--band-alt); }
+  .bg-brand         { background: var(--brand); }
+  .bg-accent        { background: var(--accent); }
+  .text-base        { color: var(--ink); }
+  .text-deemphasized{ color: var(--muted); }
+  .text-brand       { color: var(--brand); }
+
+  /* Semantic type sizes (line-height paired to size, per the scale above) */
+  .text-meta {
+    font-size: var(--step--1);
+    line-height: var(--lh-body);
+  }
+  .text-eyebrow {  /* kicker/overline — sits tight above a heading */
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: var(--lh-heading);
+    color: var(--secondary);
+    margin: 0;
+  }
+
+  .font-display   { font-family: var(--font-display); }
+
+  /* Flow rhythm + margin helpers */
+  .flow-space-2xs { --flow-space: var(--space-2xs); }
+  .flow-space-xs  { --flow-space: var(--space-xs); }
+  .flow-space-s   { --flow-space: var(--space-s); }
+  .flow-space-m   { --flow-space: var(--space-m); }
+  .flow-space-l   { --flow-space: var(--space-l); }
+
+  .mt-xs { margin-block-start: var(--space-xs); }
+  .mt-s  { margin-block-start: var(--space-s); }
+  .mt-m  { margin-block-start: var(--space-m); }
+  .mt-l  { margin-block-start: var(--space-l); }
+  .mt-xl { margin-block-start: var(--space-xl); }
+
+  /* wide cap wrapper */
+  .wide.wrapper {
+    inline-size: min(100% - 2 * var(--gutter), var(--measure-wide));
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+  }
+
+  /* ─ Show / hide ─ generic helpers to toggle an element in/out of layout.
+     .hidden removes it entirely; .visible restores its default display.
+     [hidden] makes the native attribute authoritative over component display
+     rules, so the Disclosure controller (see head.html) can reliably collapse
+     any region by toggling it. */
+  [hidden] { display: none !important; }
+  .hidden { display: none !important; }
+  .visible { display: revert !important; }
+
+  /* ─ Wave / curve divider ─ a full-bleed transition placed between two bands.
+     Set the two adjacent band colors per instance:
+       <div class="wave" style="--wave-above: var(--hero-bg); --wave-below: var(--bg);"></div>
+     The element paints the lower band's color; the ::before paints the upper
+     band's color, masked to a curve so the lower color shows through the cut.
+     Shape varies automatically by position — a single .wave class yields three
+     alternating silhouettes via :nth-of-type(). Masks are token-blind, so the
+     curve retints with hue + theme for free. */
+  .wave {
+    --wave-above: var(--hero-bg);
+    --wave-below: var(--bg);
+    /* default silhouette (also used by :nth-of-type(3n+1)) — sweeps left */
+    --wave-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 64' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L1440,0 L1440,10 C980,24 320,62 0,44 Z' fill='%23000'/%3E%3C/svg%3E");
+    position: relative;
+    height: clamp(28px, 4vw, 56px);
+    background: var(--wave-below);
+  }
+  .wave::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--wave-above);
+    -webkit-mask: var(--wave-shape) center / 100% 100% no-repeat;
+            mask: var(--wave-shape) center / 100% 100% no-repeat;
+  }
+  /* :nth-of-type cycles the silhouette every three waves for variety */
+  .wave:nth-of-type(3n+2) {  /* sweeps right */
+    --wave-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 64' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L1440,0 L1440,44 C1120,62 460,24 0,10 Z' fill='%23000'/%3E%3C/svg%3E");
+  }
+  .wave:nth-of-type(3n) {    /* waves through the middle */
+    --wave-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 64' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L1440,0 L1440,26 C1230,26 1160,46 1010,46 C870,46 830,16 710,16 C590,16 550,46 410,46 C260,46 200,26 0,26 Z' fill='%23000'/%3E%3C/svg%3E");
+  }
+}
+
+/* ── exception ───────────────────────────────────────────────────────────── */
+@layer exception {
+  /* EmailOctopus embed restyle — scoped under .signup; !important overrides injected styles */
+  .signup .inline-container {
+    margin-inline: auto;
+  }
+  .signup .emailoctopus-form-wrapper {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: var(--space-s) auto 0 !important;
+    max-width: 560px;
+  }
+  /* EmailOctopus nests the email input inside an unnamed <div>, with the
+     submit button as its sibling — both direct children of .main-form.
+     Make .main-form the flex row so they sit on one line. */
+  .signup .emailoctopus-form .main-form {
+    display: flex !important;
+    flex-wrap: nowrap !important;   /* keep the input and Subscribe button on one line */
+    justify-content: center !important;
+    align-items: stretch !important;
+  }
+  .signup .emailoctopus-form .emailoctopus-form-row { margin: 0 !important; }
+  /* the input's wrapper grows to fill; the submit button stays its natural width */
+  .signup .emailoctopus-form .main-form > div {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    /* Flex container so the stretch cascades to the nested input, matching
+       the (intrinsically taller) submit button's height exactly. */
+    display: flex !important;
+    align-items: stretch !important;
+  }
+  .signup .emailoctopus-form .emailoctopus-form-row {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex !important;
+    align-items: stretch !important;
+  }
+  .signup .emailoctopus-form .main-form > input[type="submit"] {
+    flex: 0 0 auto !important;
+    width: auto !important;   /* override EmailOctopus's .w-100 */
+  }
+  .signup .emailoctopus-form label {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0);
+    white-space: nowrap; border: 0;
+  }
+  /* common input styles */
+  .signup .emailoctopus-form input[type="submit"],
+  .signup .emailoctopus-form .form-control {
+    /* Set family AND size explicitly — `font: var(--font-body)` is an invalid
+       shorthand (no size) and was dropped, letting the input and button fall
+       back to different UA font sizes and thus mismatched heights. */
+    font-family: var(--font-body) !important;
+    font-size: var(--step-0) !important;
+    line-height: .85 !important;
+    min-height: 40px !important;
+    padding: 0.75em 1em !important;
+    margin: 0 !important;
+  }
+  /* signup input */
+  .signup .emailoctopus-form .form-control {
+    border-radius:  999px 0 0 999px !important;
+    border: var(--border-bold) solid var(--edge) !important;
+    border-right: none !important;
+    background: var(--card) !important;
+    color: var(--ink) !important;
+    min-width: 0;
+    width: 100% !important;
+    /* Chrome renders text inputs a few px shorter than buttons and won't
+       stretch them via align-items; the flex row has a definite height (set by
+       the taller button), so fill it explicitly to match the button exactly. */
+    height: 100% !important;
+  }
+  /* signup submit button */
+  .signup .emailoctopus-form input[type="submit"] {
+    font-weight: 700 !important;
+    background: var(--accent) !important;
+    color: var(--on-accent) !important;
+    border: var(--border-bold) solid var(--edge) !important;
+    border-radius: 0 999px 999px 0 !important;
+    width: auto !important;
+    cursor: pointer !important;
+  }
+  .signup .emailoctopus-form input[type="submit"]:hover {
+    background: var(--accent-hover) !important;
+  }
+
+  /* EO "powered by" */
+  .signup .mastfoot {
+    display: none !important;
+  }
+
+}
+
+/* Global reduced-motion guard (unlayered !important wins over every layer).
+   Individual transitions still use motion tokens; this collapses them to a
+   near-instant snap when the OS asks for reduced motion, and stops smooth
+   scrolling. Not fully 0s so transitionend/animationend listeners still fire. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
