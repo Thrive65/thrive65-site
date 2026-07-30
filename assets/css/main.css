@@ -1361,6 +1361,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     border: var(--border-bold) solid var(--edge);
     border-radius: var(--radius-card);
     padding: var(--space-m);
+    margin-top: 0;
   }
   #what-we-believe li > * { margin: 0; }
   /* leading bold run of the first paragraph = pillar name; render as a global h3 */
