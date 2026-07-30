@@ -16,7 +16,7 @@ Cliffsnotes
   Cap on revenue each year. grows more slowly than the district's costs  
 * **4 Leadership departures in 2026**   
   including the Superintendent, CFO, Assistant Superintendent of Instructional Leadership, and Director of Schools Management.   
-* **6-month cap on New Interim Superintendent**   
+* **6-month cap on Interim Superintendent**   
   Interim Superintendent here July-December 2026\. CFO started in July and Asst. Superintendent of Academics starts August 10\.  
 * **6-month leadership gap in 2027**   
   between the interim's December departure and the permanent hire's targeted July 1 start. **The next year's budget gets built during that window.** 
