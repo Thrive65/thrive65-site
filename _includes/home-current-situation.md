@@ -8,7 +8,7 @@ Cliffsnotes
   at our elementary schools, projected for this school year.  
 * **$410 million in repairs due by 2037**   
   against a maintenance budget of $2.7 million a year.   
-* **$10 million in additional operating cuts by 2030,**   
+* **$10 million in additional operating cuts by 2030**   
   To maintain at least 90 days cash on hand.   
 * **90 Days of cash**  
   District’s minimum per policy, bottom 5% of school districts statewide  
@@ -18,7 +18,7 @@ Cliffsnotes
   including the Superintendent, CFO, Assistant Superintendent of Instructional Leadership, and Director of Schools Management.   
 * **6-month cap on New Interim Superintendent**   
   Interim Superintendent here July-December 2026\. CFO started in July and Asst. Superintendent of Academics starts August 10\.  
-* **6-month leadership gap in 2027,**   
+* **6-month leadership gap in 2027**   
   between the interim's December departure and the permanent hire's targeted July 1, start. **The next year's budget gets built during that window.** 
 
 [Read More](https://thrive65.github.io/thrive65-site/d65-deficit-explained/)
