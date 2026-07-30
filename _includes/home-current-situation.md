@@ -39,3 +39,24 @@ Interim Superintendent only here through December 2026\.
 between the interim's departure on December 31, 2026 and the permanent hire's targeted July 1, 2027 start. The next year's budget gets built during that window. 
 
 [Read More](https://thrive65.github.io/thrive65-site/d65-deficit-explained/)
+
+## Testing MD Export
+
+\== bullets \==
+
+* **Enrollment down 25%**  
+  since 2018, a steeper drop than any nearby district  
+
+\== numbers \==
+
+1. **Equitable Excellence**  
+   Every student deserves access to an equitable, excellent education that addresses the unique needs of each individual student and the communities they represent. We believe that equity and excellence are not competing goals but mutually supportive commitments. By focusing on great teaching, strong programs, and the whole-child development of every student, we can make sure each of our schools is an environment where all children can thrive and reach their full potential.  
+
+   **The core purpose of District 65 is to help students thrive.**
+
+\== copy/pasted heading style \==
+
+2. Equitable Excellence  
+   Every student deserves access to an equitable, excellent education that addresses the unique needs of each individual student and the communities they represent. We believe that equity and excellence are not competing goals but mutually supportive commitments. By focusing on great teaching, strong programs, and the whole-child development of every student, we can make sure each of our schools is an environment where all children can thrive and reach their full potential.  
+
+   **The core purpose of District 65 is to help students thrive.**
