@@ -5,7 +5,7 @@ Cliffsnotes
 * **Enrollment down 25%**   
   since 2018, a steeper drop than any nearby district   
 * **Less than 70% full**  
-  in our elementary schools, projected for this school year.  
+   elementary schools, projected for this school year.  
 * **$410 million in repairs due by 2037**   
   against a maintenance budget of $2.7 million a year.   
 * **$10 million in additional operating cuts by 2030**   
@@ -13,7 +13,7 @@ Cliffsnotes
 * **90 Days of cash**  
   District’s minimum per policy, bottom 5% of school districts statewide  
 * **Lesser of 5% or inflation**   
-  Cap on revenue each year. grows more slowly than the district's costs  
+  Cap on revenue each year. grows more slowly than our costs  
 * **4 Leadership departures in 2026**   
   including the Superintendent, CFO, Assistant Superintendent of Instructional Leadership, and Director of Schools Management.   
 * **6-month cap on Interim Superintendent**   
