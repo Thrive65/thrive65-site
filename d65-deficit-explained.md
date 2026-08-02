@@ -35,6 +35,8 @@ For the coming 2026-27 school year, our ten K-5 elementary schools are projected
 
 **We would need to enroll 628 more children *this year* to reach 80%** (referred to in the quote from our board as the lower end of the recommended range). The board’s resolution from January states a goal of 75% enrollment, which would still mean **381 more children need to enroll to reach the lowered occupancy target of 75% for this school year.** Our former and our current board president wrote a letter to our community a year ago saying that this level of underenrollment “*detracts from our ability to improve the quality of our instruction.” [5]*
 
+### 
+
 ### 3\. The buildings are old, the repair bill is large, and it has been growing for twenty years.
 
 The average D65 building is over 80 years old. A 2026 assessment by the architecture firm StudioGC estimated **roughly $598 million in needed repairs.** That total covers a 49-year horizon, so it isn't a bill due all at once. But it is heavily front-loaded: by the assessment's own year-by-year schedule, **about $409.6 million of it, close to 70%, falls in the first ten years.** [7] The scale of the problem is long-term. The timing of it is not.
