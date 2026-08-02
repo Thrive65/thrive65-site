@@ -118,9 +118,8 @@ The audit is to include items such as many standard financial control and risk a
 
 **Still pending.** **The results of an internal “HR Audit.”**  which the board noted during the May 4, 2026 board meeting would be presented at the June Committee of the Whole meeting (it has not been presented as of July 2026). [25]
 
-**This Fall:** FY27 budget will be finalized and voted on by the board.
+We’re a big, diverse community that cares about our schools. It’s complicated and there’s always a tension between the present and the future. We’ve presented a lot of info on this site, including what we believe is some really compelling data. But **no one should be silenced by a spreadsheet**. Your lived experience and unique circumstances deserve to be heard. We hope you feel more equipped to speak up using some of the resources we’ve provided. 
 
-We’re a big, diverse community that cares about our schools. It’s complicated and there’s always a tension between the present and the future. We’ve presented a lot of info on this site, including what we believe is some really compelling data. But **no one should be silenced by a spreadsheet**. Your lived experience and unique circumstances deserve to be heard. We hope you feel more equipped to speak up using some of the resources we’ve provided.   
 [Check out our Board Advocacy Guide\!](https://thrive65.github.io/thrive65-site/board-advocacy-guide/) 
 
 ---
@@ -157,8 +156,8 @@ The district's numbers aren't beyond question either. Several of them deserve ha
 
 ## Go deeper
 
-- **The 20 questions people regularly ask** → [FAQ]  
-- **How to speak at a board meeting** → [Advocacy Guide]
+- **The 20 questions people regularly ask** → [[FAQ](https://thrive65.github.io/thrive65-site/#faq)]  
+- **How to speak at a board meeting** → [[Advocacy Guide](https://thrive65.github.io/thrive65-site/board-advocacy-guide/)]
 
 ---
 
