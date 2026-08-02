@@ -1,5 +1,3 @@
-Cliffsnotes
-
 ## The current situation
 
 * **Enrollment down 25%**   
