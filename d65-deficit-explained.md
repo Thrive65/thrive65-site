@@ -191,3 +191,7 @@ The district's numbers aren't beyond question either. Several of them deserve ha
 25. District 65 Board of Education, minutes of the May 4, 2026 board meeting, noting the HR audit was to be presented at the June Committee of the Whole [[link]](https://meetings.boardbook.org/Documents/CustomMinutesForMeeting/1247?meeting=742611).
 
 *Thrive65 is an independent community coalition and is not affiliated with or operated by District 65\.*
+
+*This FAQ reflects information available as of mid-2026 and will be updated as new board decisions, reports, and community proposals develop.*
+
+*Thrive65 assembled our FAQs with help from [Claude.ai](http://Claude.ai) on summarizing trends and visualizing data sets from multiple sources like news articles, board meeting presentations and comments, D65 SDRP resources, etc. Also a lot of nerding out on history and data from a few of us.* *Note that we used Claude to help with inline sourcing, if anything is off on sourcing (or anything else\!) let us know. This was mostly written and assembled by one person who loves our community and hates free time so there’s bound to be mistakes\!*
