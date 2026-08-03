@@ -1,5 +1,6 @@
 ---
-title: Privacy Policy
+layout: "page"
+title: "Privacy Policy"
 ---
 
 Thrive65 is a community advocacy coalition. This page explains how we handle the information you share with us.
@@ -22,6 +23,6 @@ Every email we send includes an unsubscribe link. You can also contact us at [ch
 
 ## Questions
 
-If you have questions about this policy, email [chetfarley@gmail.com](mailto:chetfarley@gmail.com).
+If you have questions about this policy, email [wethrive65@gmail.com](mailto:wethrive65@gmail.com).
 
-*Last updated: June 2026*
+*Last updated: Aug 2026*
