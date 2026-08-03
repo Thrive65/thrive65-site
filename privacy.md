@@ -19,7 +19,7 @@ Email addresses are stored and managed through [EmailOctopus](https://emailoctop
 
 ## Unsubscribing
 
-Every email we send includes an unsubscribe link. You can also contact us at [chetfarley@gmail.com](mailto:chetfarley@gmail.com) to be removed from the list.
+Every email we send includes an unsubscribe link. You can also contact us at [wethrive65@gmail.com](mailto:wethrive65@gmail.com) to be removed from the list.
 
 ## Questions
 
