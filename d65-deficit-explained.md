@@ -4,7 +4,7 @@ title: "The current situation with D65"
 description: "~20 min read"
 ---
 
-Thrive65 was formed, in part, because most people in the district don’t have the time to sift through all the documents and attend every board meeting. We want to make sure folks have a D65 CliffsNotes so they can feel informed and empowered to advocate. 
+Thrive65 was formed, in part, because most people in the district don’t have the time to sift through all the documents and attend every board meeting. We want to make sure folks have a D65 CliffsNotes so they can feel informed and empowered to [advocate](https://thrive65.github.io/thrive65-site/board-advocacy-guide/). 
 
 Most people come to this having heard fragments. Something at pickup, something in a group chat, something at a board meeting. If you're not sure what's going on, that's a reasonable place to be. This is complicated, and almost nobody has the whole picture.
 
@@ -34,8 +34,6 @@ In September of last year, our current board president, Dr. Pinkard, and fellow 
 For the coming 2026-27 school year, our ten K-5 elementary schools are projected to average about 333 students, with an average capacity of 495\. **The district is projecting  67% occupancy in our K-5 schools**. [6] 
 
 **We would need to enroll 628 more children *this year* to reach 80%** (referred to in the quote from our board as the lower end of the recommended range). The board’s resolution from January states a goal of 75% enrollment, which would still mean **381 more children need to enroll to reach the lowered occupancy target of 75% for this school year.** Our former and our current board president wrote a letter to our community a year ago saying that this level of underenrollment “*detracts from our ability to improve the quality of our instruction.” [5]*
-
-### 
 
 ### 3\. The buildings are old, the repair bill is large, and it has been growing for twenty years.
 
