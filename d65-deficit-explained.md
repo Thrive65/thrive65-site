@@ -142,7 +142,7 @@ We raise this to explain how the word gets used now, not to relitigate a fourtee
 
 ## What we're not saying
 
-We're not saying any particular school should close. We're saying the decision should follow the utilization and facilities condition data, applied consistently across the district.
+We're not saying any particular school should close. We're saying the decision should follow the utilization and facilities condition data, minimizing impact to students who would be disproportionately impacted, applied consistently across the district.
 
 We're not saying administrators are the problem, or that staff are line items. The people doing this work have absorbed years of uncertainty on our behalf.
 
