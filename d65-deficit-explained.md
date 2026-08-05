@@ -150,14 +150,7 @@ Foster didn't cause the deficit. How it was financed is a fair question, and it'
 
 The district's numbers aren't beyond question either. Several of them deserve harder scrutiny, and we've said so where that's the case.
 
----
-
-## Go deeper
-
-- **The 20 questions people regularly ask** → [[FAQ](https://thrive65.github.io/thrive65-site/#faq)]  
-- **How to speak at a board meeting** → [[Advocacy Guide](https://thrive65.github.io/thrive65-site/board-advocacy-guide/)]
-
----
+> Go deeper [The 20 questions people regularly ask → FAQ](https://thrive65.github.io/thrive65-site/#faq) [How to speak at a board meeting → Advocacy Guide](https://thrive65.github.io/thrive65-site/board-advocacy-guide/)
 
 ## Sources
 
