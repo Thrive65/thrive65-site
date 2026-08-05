@@ -1,7 +1,7 @@
 Evanston / Skokie · District 65
 
-# Informed communities help our schools *thrive*.
+# Informed communities help schools *thrive*.
 
-Summarizing the details to empower community engagement for District 65 schools
+Turning the details into something you can use. 
 
 [Stay informed](#signup)
