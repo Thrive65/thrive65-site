@@ -94,7 +94,7 @@ Both levers land hard on our school community. Waiting doesn't spare anyone the 
 
 ---
 
-### What happens next
+## What happens next
 
 **August 7, 2026\.** Foster School ribbon-cutting.
 
