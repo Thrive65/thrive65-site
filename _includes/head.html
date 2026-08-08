@@ -1,6 +1,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+{%- comment -%} Tint mobile browser chrome to match the header (--bg) per theme {%- endcomment -%}
+<meta name="theme-color" content="#F7F5EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B1410" media="(prefers-color-scheme: dark)">
+
 {% seo %}
 
 <link rel="icon" href="{{ '/assets/images/favicon.svg' | relative_url }}" type="image/svg+xml">
@@ -12,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,700;0,800;1,800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
 {% if site.google_analytics and jekyll.environment == "production" %}
-<!-- Google Analytics 4 (gtag.js) — production only; ID set in _config.yml -->
+{%- comment -%} Google Analytics 4 (gtag.js) — production only; ID set in _config.yml {%- endcomment -%}
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -24,37 +28,49 @@
 
 <script>
   (function () {
+    {% comment %}
     // Progressive-enhancement flag: components that collapse content only do
     // so once JS can reveal it again (see the `html.js` guards in main.css).
+    {% endcomment %}
     var html = document.documentElement;
     html.classList.add("js");
 
+    {% comment %}
     // Theme — stored light/dark, or "auto" (absent) following the OS.
+    {% endcomment %}
     var t = localStorage.getItem("theme") || "auto";
     var dark = t === "dark" ||
       (t === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
     html.setAttribute("data-theme", dark ? "dark" : "light");
 
+    {% comment %}
     // Accessibility toggles — restore each attribute before paint from its key.
     // Stored value === the "on" value applies it; "off"/absent leaves it off.
     // (Shared with the switch handler + Reset below; keep the table in sync.)
+    {% endcomment %}
     [["a11y-contrast", "data-contrast", "high"],
      ["a11y-cvd", "data-cvd", "on"],
      ["a11y-dyslexic", "data-dyslexic", "on"]].forEach(function (s) {
       if (localStorage.getItem(s[0]) === s[2]) html.setAttribute(s[1], s[2]);
     });
+    {% comment %}
     // High contrast auto-enables on `prefers-contrast: more` when unchosen
     // (mirrors theme auto). An explicit off is stored, so it wins over this.
+    {% endcomment %}
     if (!localStorage.getItem("a11y-contrast") &&
         matchMedia("(prefers-contrast: more)").matches) {
       html.setAttribute("data-contrast", "high");
     }
+    {% comment %}
     // Text size scales the fluid-root knobs (Phase 5c).
+    {% endcomment %}
     var ts = localStorage.getItem("a11y-textsize");
     if (["87", "112", "125", "137", "150"].indexOf(ts) !== -1) html.setAttribute("data-textsize", ts);
 
+    {% comment %}
     // Dyslexia font is lazy, but if it's already on, pull it in now so the
     // switch to Atkinson doesn't flash unstyled on first paint.
+    {% endcomment %}
     if (localStorage.getItem("a11y-dyslexic") === "on") {
       var l = document.createElement("link");
       l.id = "atkinson-font";
@@ -64,12 +80,14 @@
     }
   })();
 
+  {% comment %}
   // ---------------------------------------------------------------------- //
   // announce(msg) — one polite live-region toast, shared by the copy-link
   // confirmation and every a11y settings change. Visual + screen-reader in a
   // single mechanism (role=status aria-live=polite); each call re-sets the
   // text, which fires exactly one announcement — so no double-announce.
   // ---------------------------------------------------------------------- //
+  {% endcomment %}
   var announce = (function () {
     var el, timer;
     return function (msg) {
@@ -81,7 +99,9 @@
         document.body.appendChild(el);
       }
       el.textContent = msg;
+      {% comment %}
       // Force reflow so re-triggering restarts the transition.
+      {% endcomment %}
       el.classList.remove("is-visible");
       void el.offsetWidth;
       el.classList.add("is-visible");
@@ -90,6 +110,7 @@
     };
   })();
 
+  {% comment %}
   // ---------------------------------------------------------------------- //
   // Display & accessibility settings.
   //
@@ -97,34 +118,43 @@
   // before paint by the IIFE above (theme) / its Phase 4+ siblings. The panel
   // itself is a Disclosure (see below); this block wires the controls inside it.
   // ---------------------------------------------------------------------- //
+  {% endcomment %}
   (function () {
     var html = document.documentElement;
 
+    {% comment %}
     // Switch settings — one row each. A switch button carries data-setting="KEY"
     // (the object key below); the table maps it to its <html> attribute, its
     // "on" value, and its localStorage key. Phases 5a/5b add rows here only.
+    {% endcomment %}
     var SETTINGS = {
       contrast: { attr: "data-contrast", on: "high", key: "a11y-contrast", label: "High contrast" },
       cvd:      { attr: "data-cvd", on: "on", key: "a11y-cvd", label: "Colorblind-friendly colors" },
       dyslexic: { attr: "data-dyslexic", on: "on", key: "a11y-dyslexic", label: "Dyslexia-friendly font" }
     };
 
+    {% comment %}
     // Keep the Light | Dark segmented control's aria-pressed in sync with theme.
+    {% endcomment %}
     function syncTheme() {
       var cur = html.getAttribute("data-theme");
       document.querySelectorAll(".a11y-segment").forEach(function (b) {
         b.setAttribute("aria-pressed", b.getAttribute("data-theme-value") === cur ? "true" : "false");
       });
     }
+    {% comment %}
     // Reflect each switch's aria-checked from whether its attribute is applied.
+    {% endcomment %}
     function syncSwitches() {
       document.querySelectorAll(".a11y-switch[data-setting]").forEach(function (b) {
         var s = SETTINGS[b.getAttribute("data-setting")];
         if (s) b.setAttribute("aria-checked", html.getAttribute(s.attr) === s.on ? "true" : "false");
       });
     }
+    {% comment %}
     // Text size stepper — three stops; "100" means the attribute is absent
     // (default fluid root). End buttons disable at the extremes.
+    {% endcomment %}
     var TEXT_STEPS = ["87", "100", "112", "125", "137", "150"];
     function textIndex() {
       var i = TEXT_STEPS.indexOf(html.getAttribute("data-textsize"));
@@ -149,8 +179,10 @@
 
     document.addEventListener("DOMContentLoaded", function () { syncTheme(); syncSwitches(); syncText(); });
 
+    {% comment %}
     // Atkinson Hyperlegible backs the dyslexia-friendly font. Loaded lazily on
     // first panel open (or already at boot if the setting was persisted).
+    {% endcomment %}
     function loadFont() {
       if (document.getElementById("atkinson-font")) return;
       var l = document.createElement("link");
@@ -163,7 +195,9 @@
     document.addEventListener("click", function (e) {
       if (!e.target.closest) return;
 
+      {% comment %}
       // Theme segmented control — flip the attribute, persist, resync pressed.
+      {% endcomment %}
       var seg = e.target.closest(".a11y-segment");
       if (seg) {
         var val = seg.getAttribute("data-theme-value");
@@ -174,7 +208,9 @@
         return;
       }
 
+      {% comment %}
       // Switches — flip the mapped attribute, persist ("on" value / "off"), sync.
+      {% endcomment %}
       var sw = e.target.closest(".a11y-switch[data-setting]");
       if (sw) {
         var s = SETTINGS[sw.getAttribute("data-setting")];
@@ -187,7 +223,9 @@
         return;
       }
 
+      {% comment %}
       // Text size stepper — nudge one stop within bounds.
+      {% endcomment %}
       var step = e.target.closest(".a11y-step[data-textstep]");
       if (step && !step.disabled) {
         var dir = step.getAttribute("data-textstep") === "up" ? 1 : -1;
@@ -195,16 +233,22 @@
         return;
       }
 
+      {% comment %}
       // First open of the panel pulls in the dyslexia font.
+      {% endcomment %}
       if (e.target.closest(".a11y-toggle")) { loadFont(); return; }
 
+      {% comment %}
       // ✕ and Done both close the panel and return focus to the trigger.
+      {% endcomment %}
       if (e.target.closest("[data-a11y-close]")) {
         Disclosure.set(document.querySelector(".a11y-toggle"), false, true);
         return;
       }
 
+      {% comment %}
       // Reset all — clear every a11y key + attribute and return theme to Light.
+      {% endcomment %}
       if (e.target.closest(".a11y-reset")) {
         Object.keys(SETTINGS).forEach(function (k) {
           localStorage.removeItem(SETTINGS[k].key);
@@ -214,8 +258,10 @@
         html.removeAttribute("data-textsize");
         html.setAttribute("data-theme", "light");
         localStorage.setItem("theme", "light");
+        {% comment %}
         // Re-run the boot-time auto check: with a11y-contrast now cleared, an OS
         // "more contrast" preference re-enables high contrast (matches paint).
+        {% endcomment %}
         if (matchMedia("(prefers-contrast: more)").matches) html.setAttribute("data-contrast", "high");
         syncTheme();
         syncSwitches();
@@ -226,6 +272,7 @@
     });
   })();
 
+  {% comment %}
   // ---------------------------------------------------------------------- //
   // Disclosure — a generic show/hide controller for any trigger + region.
   //
@@ -242,6 +289,7 @@
   // markup (no JS) stays visible and reachable. Closing via Escape returns
   // focus to the trigger.
   // ---------------------------------------------------------------------- //
+  {% endcomment %}
   var Disclosure = (function () {
     function region(trigger) { return document.getElementById(trigger.getAttribute("aria-controls")); }
     function isOpen(trigger) { return trigger.getAttribute("aria-expanded") === "true"; }
@@ -269,7 +317,9 @@
       if (!e.target.closest) return;
       var trigger = e.target.closest("[data-disclosure]");
       if (trigger) { set(trigger, !isOpen(trigger)); return; }
+      {% comment %}
       // A click outside an open region closes triggers that opt into "outside".
+      {% endcomment %}
       openTriggers().forEach(function (t) {
         var r = region(t);
         if (dismiss(t).indexOf("outside") !== -1 && r && !r.contains(e.target)) set(t, false);
@@ -294,9 +344,11 @@
     return { set: set };
   })();
 
+  {% comment %}
   // Swipe-down-to-close for the mobile a11y bottom sheet. Drags start only from
   // the grabber/head/foot (not the scrollable body, so option scrolling is
   // preserved); past a threshold the panel closes via the shared Disclosure.
+  {% endcomment %}
   (function () {
     var panel = null, startY = 0, delta = 0;
     document.addEventListener("touchstart", function (e) {
@@ -320,8 +372,10 @@
     }, { passive: true });
   })();
 
+  {% comment %}
   // Nav dropdowns — enhance each nested nav list into a disclosure button
   // (the leading label text node of the <li> becomes the button label).
+  {% endcomment %}
   {% capture chevron_svg %}{% include icons/chevron.svg %}{% endcapture %}
   var CHEVRON_SVG = {{ chevron_svg | strip | jsonify }};
   document.addEventListener("DOMContentLoaded", function () {
@@ -346,16 +400,20 @@
     });
   });
 
+  {% comment %}
   // Language dropdown — the visible EN/ES control. Elfsight does the actual
   // translation: it reads a `?lang=<code>` query param on load and persists the
   // choice itself, so selecting a language just reloads with the new param.
+  {% endcomment %}
   (function () {
     var LANGS = { "en-US": "EN", "es-MX": "ES" };
     var LS_KEY = "WebsiteTranslator.language.91448ae8-7a99-4960-b854-caa497c1ea85";
+    {% comment %}
     // Resolve the active language. The ?lang= param wins because on an explicit
     // switch it is correct immediately, whereas Elfsight only writes its own
     // store *after* translating (so it's stale on that first post-click load).
     // Fall back to Elfsight's persisted value for a bare URL (no param yet).
+    {% endcomment %}
     function current() {
       var p = new URLSearchParams(location.search).get("lang");
       if (LANGS[p]) return p;
@@ -365,12 +423,14 @@
       } catch (e) {}
       return "en-US"; // nothing chosen → English default
     }
+    {% comment %}
     // Reflect the active language in the trigger label and mark the current menu
     // item with aria-current. The menu items are plain links (href="?lang=<code>")
     // that reload the page natively — the Elfsight widget reads ?lang and applies
     // it — so there's no click handler here; this only keeps the UI state honest.
     // The .lang-code text is excluded from translation in the Elfsight dashboard,
     // so it's safe to set as plain text.
+    {% endcomment %}
     function reflect(active) {
       var code = document.querySelector(".lang-toggle .lang-code");
       if (code) code.textContent = LANGS[active];
@@ -382,7 +442,9 @@
     document.addEventListener("DOMContentLoaded", function () { reflect(current()); });
   })();
 
+  {% comment %}
   // Mobile nav — hamburger toggles a slide-in panel (delegated)
+  {% endcomment %}
   function closeNav() {
     var header = document.querySelector(".site-header");
     if (!header) return;
@@ -401,18 +463,23 @@
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
       return;
     }
+    {% comment %}
     // Close the mobile panel when tapping the backdrop or following a nav link
     // (dropdown toggles are buttons, so they don't match and don't close it).
+    {% endcomment %}
     if (e.target.closest(".nav-backdrop") || e.target.closest(".site-header nav a")) {
       closeNav();
     }
   });
   document.addEventListener("keydown", function (e) {
+    {% comment %}
     // Dropdowns handle their own Escape (via the Disclosure controller); this
     // closes the mobile slide-in panel.
+    {% endcomment %}
     if (e.key === "Escape") closeNav();
   });
 
+  {% comment %}
   // ---------------------------------------------------------------------- //
   // Heading anchors — GitHub-style copy-link on content headings + FAQ items.
   //
@@ -421,8 +488,11 @@
   // anchor server-side (see faq.html); the shared click handler and the
   // open-on-hash routine handle the accordion case too.
   // ---------------------------------------------------------------------- //
+  {% endcomment %}
   (function () {
+    {% comment %}
     // Shared with faq.html's server-rendered anchor (see _includes/icons/link.svg).
+    {% endcomment %}
     {% capture anchor_svg %}{% include icons/link.svg %}{% endcapture %}
     var ANCHOR_SVG = {{ anchor_svg | strip | jsonify }};
 
@@ -448,9 +518,11 @@
       }
     }
 
+    {% comment %}
     // Inject copy-link anchors into prose headings that carry an id (kramdown
     // emits these). FAQ anchors are server-rendered, so skip anything already
     // holding one.
+    {% endcomment %}
     document.addEventListener("DOMContentLoaded", function () {
       document.querySelectorAll("main :is(h2, h3, h4)[id]").forEach(function (h) {
         if (h.closest(".page-header") || h.querySelector(".heading-anchor")) return;
@@ -464,7 +536,9 @@
       openHash();
     });
 
+    {% comment %}
     // Shared click handler for every .heading-anchor (prose + FAQ).
+    {% endcomment %}
     document.addEventListener("click", function (e) {
       if (!e.target.closest) return;
       var a = e.target.closest(".heading-anchor");
@@ -478,7 +552,9 @@
       if (item && item.classList.contains("faq-item")) item.open = true;
     });
 
+    {% comment %}
     // Expand and reveal a FAQ item when its id is the URL fragment.
+    {% endcomment %}
     function openHash() {
       var id = location.hash.slice(1);
       if (!id) return;
