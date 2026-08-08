@@ -15,18 +15,17 @@
     - [ ] `assets/images/favicon.ico` + `apple-touch-icon.png` — real favicons (currently placeholder)
     - [ ] `_config.yml` → `twitter.username` — set real X/Twitter handle (uncomment)
     - [ ] `_config.yml` → `social.links` — add real profile URLs (Facebook, X, Instagram…)
-- [ ] Google Search Console verification → `_config.yml` `webmaster_verifications: { google: <token> }`
-- [ ] `theme-color` meta tag (mobile browser chrome tint) in `_includes/head.html`
 - [ ] a11y scan 
 - [ ] performance scan fixes
 
-### Architecture
-- move content pages into subfolder
+### Repo Architecture
+- move content .md pages into subfolder
 - icons - figure an easier way to adjust size of icons
 
 ### Bugs
 
 ### Features
+- source citations: hover shows tooltip w/ inline links, or clicking opens flyout menu with all sources
 - scrollspy bar, showing length of page
 - a11y menu
   - [ ] make colorblind hue the default 
