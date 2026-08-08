@@ -6,6 +6,11 @@ description: >-
 url: "https://wethrive65.org" # primary custom domain (wethrive65.com forwards here at the registrar)
 baseurl: "" # blank: served at the root of the custom domain (see CNAME)
 
+# Google Analytics 4 — Measurement ID (G-XXXXXXXXXX). Only loads in the
+# production build (see _includes/head.html), so localhost/PR builds don't
+# pollute stats. Leave blank to disable analytics entirely.
+google_analytics: "G-X35S9LPMK8"
+
 # Contact / signup
 # The homepage embeds the EmailOctopus signup form directly in index.md (see the #signup section).
 signup_form_action: "" # (optional/unused) generic form POST URL — kept for reference only

@@ -7,11 +7,6 @@
 ### PRE SOFT LAUNCH - THIS WEEK
 - logo, favicon (`assets/images/favicon.svg`)
 - hero art - colorize/tokenize, fix size & overlap
-- Get Domain, point build process
-- Google analytics
-- NAV: 
-    - remove board meeting recaps
-    - remove analysis 
 
 ## fast follow, before announcing
 - social media images/links ✅ scaffolded — replace PLACEHOLDER assets & set real handles/links:
@@ -32,6 +27,7 @@
 ### Bugs
 
 ### Features
+- scrollspy bar, showing length of page
 - a11y menu
   - [ ] make colorblind hue the default 
   - [ ] add letter spacing ticker & tokens
@@ -46,6 +42,7 @@
 - full sweep of basic element margins & padding. (e.g. ul, ul > li). Reset defaults, convert all spacing to fluid --space vars.
     - more margins. We have defaults (using em, on specific elements) and .flow (lobotomized owl) - need to align these different systems. Use one everywhere, make it fluid, remove the old one.
 - Charts! Need JS charts.
+- smoll city graphic at footer
 
 
 
