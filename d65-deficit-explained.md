@@ -30,18 +30,20 @@ A second caution: next year's count isn't settled, and there is reason to think 
 
 ### 2\. The district kept a footprint built for the larger enrollment.
 
-In September of last year, our current board president, Dr. Pinkard, and fellow board member (and former president), Mr. Hernandez wrote a letter to the community: *“With long term declining enrollment, staffing and maintaining so many buildings increases our administrative costs and detracts from our ability to improve the quality of our instruction. To increase our utilization rate to the recommended 80%-90%, we must consolidate schools.”*   
+In September of last year, our current board president and a former president), wrote a letter to the community which said, in part, *“With long term declining enrollment, staffing and maintaining so many buildings increases our administrative costs and detracts from our ability to improve the quality of our instruction. To increase our utilization rate to the recommended 80%-90%, we must consolidate schools.”* [5]  
 For the coming 2026-27 school year, our ten K-5 elementary schools are projected to average about 333 students, with an average capacity of 495\. **The district is projecting  67% occupancy in our K-5 schools**. [6] 
 
-**We would need to enroll 628 more children *this year* to reach 80%** (referred to in the quote from our board as the lower end of the recommended range). The board’s resolution from January states a goal of 75% enrollment, which would still mean **381 more children need to enroll to reach the lowered occupancy target of 75% for this school year.** Our former and our current board president wrote a letter to our community a year ago saying that this level of underenrollment “*detracts from our ability to improve the quality of our instruction.” [5]*
+**We would need to enroll 628 more children *this year* to reach 80%** (referred to in the quote from our board as the lower end of the recommended range). The board’s resolution from January states a goal of 75% enrollment, which would still mean **381 more children need to enroll to reach the lowered occupancy target of 75% for this school year.** 
 
 ### 3\. The buildings are old, the repair bill is large, and it has been growing for twenty years.
 
-The average D65 building is over 80 years old. A 2026 assessment by the architecture firm StudioGC estimated **roughly $598 million in needed repairs.** That total covers a 49-year horizon, so it isn't a bill due all at once. But it is heavily front-loaded: by the assessment's own year-by-year schedule, **about $409.6 million of it, close to 70%, falls in the first ten years.** [7] The scale of the problem is long-term. The timing of it is not.
+The average D65 building is over 80 years old. A 2026 assessment by the architecture firm StudioGC estimated **roughly $598 million in needed repairs.** That total covers a 49-year horizon, so it isn't a bill due all at once. But it is heavily front-loaded: by the assessment's own year-by-year schedule, **about $409.6 million of it, roughly 68%, falls in the first ten years.** [7] The scale of the problem is long-term. The timing of it is not.
 
 The problem isn’t new, but it is growing.  A district life-safety survey flagged $16 million in work back in 2005, that still hadn’t been completed by 2015\. By then, the identified need had reached roughly $90 million. [8] In 2022, Cordogan Clark provided the board a facilities plan for 20 years (2021-2040), totalling $263 million. The total keeps climbing in part  because the work has never been adequately funded. Last year, the board committed $2.7 million a year toward the backlog, then reduced that to $2.4 million to help close the FY27 budget gap. [11]
 
-**For most families, this is where the problem becomes visible.** Maintenance money spread across too many aging buildings means none of them gets properly fixed. The work that does get done is the emergency repair rather than the one that would have prevented the emergency, and every building gets a little worse each year while the bill for fixing it grows. A capital referendum may be necessary to make meaningful progress on updating our buildings.
+**Part of that bill is not optional.** In August 2026 the administration brought the board the 10-Year Health/Life Safety Survey that Illinois requires of every district once a decade. It identifies **$128.8 million** in health and life safety work, sorted by whether it must be corrected within one year, five years, or ten. [27] That figure is a portion of the facilities totals above rather than an addition to them, roughly 31% of the identified ten-year need. The difference is that most of the backlog is a question of priorities, while this part carries legal deadlines. The memo gives one combined figure and does not break out how much falls due within a year, so that piece is not yet public. [27] Some of that 128.8 million could be funded through increased levies that do not require a referendum. See the [FAQ](https://wethrive65.org/#faq-will-there-be-a-referendum-and-what-would-it-pay-for) on this for more detail. 
+
+**For most families, this is where the problem becomes visible.** Maintenance money spread across too many aging buildings means none of them gets properly fixed. The work that does get done is the emergency repair rather than the one that would have prevented the emergency, and every building gets a little worse each year while the bill for fixing it grows. A capital referendum may be necessary to make meaningful progress on updating our buildings.  And the deferred maintenance that leads to serious issues can result in higher taxes with no vote for D65 residents, because Illinois law lets a board levy and issue bonds for state-approved life safety work without a referendum. [28]
 
 Note: With the closure of Bessie Rhodes and Kingsley, the district will be able to save about $37 million dollars of that $409.6 million due over the next 10 years, assuming they do not keep the buildings. [7]
 
@@ -57,12 +59,13 @@ That do-nothing scenario is no longer the baseline, but the plan is not finished
 
 Hitting 90 days of cash also isn't the same as being comfortable. **Ninety days is the floor the board set for itself, not a healthy cushion.** Money goes out on a steady schedule and comes in on an unpredictable one, and that ordinary mismatch can burn through the reserve quickly. In November 2025, when Cook County's payment ran late, the district had to borrow $15 million to make payroll, and after setting aside funds to repay that loan it was down to roughly two months of operating expenses. [12]
 
-**What's left is roughly $10 million in further reductions across FY28 through FY30**, and the FY27 round is a fair preview of what that costs. Closing $6.3 million meant cutting crossing guards, removing hazard designations that had required busing on two routes, eliminating a STEM program, and reversing planned counselor and librarian cuts only by taking the money from somewhere else. [10] The next $10 million will be harder than that was.
+**What's left is roughly $10 million in further reductions across FY28 through FY30**, and the FY27 round is a fair preview of what that costs. Closing $6.3 million meant cutting crossing guards, removing hazard designations that had required busing on two routes, eliminating a STEM program, and reversing planned counselor and librarian cuts only by taking the money from somewhere else. [10] The next $10 million will be harder than that was. The new CFO's year-end report points the same direction, stating that district expenses must be contained and that appropriate measures must be taken in the fall to realign resources. [26] 
 
 ### 5\. No single change closes the gap. It takes several at once.
 
-**Reducing administrative overhead produces genuine savings.** Independent community analysis puts the remaining opportunity at roughly $2.8 million to $5.5 million a year, depending on how deep a reduction you're willing to make. [14] The district itself identified an $8.3 million pool, but that number should be treated carefully. Reaching it would mean eliminating 64 positions, roughly 40% of the district's entire administrative payroll. It more plausibly describes everything eligible for review than anything recommended to cut in a year. [22]  
-**Closing an elementary school produces genuine savings too.** The district estimated about $2.0 million a year for Kingsley and $2.1 million for Lincolnwood. [13] Independent community analyses put a single closure closer to $1.69 \-1.8 million. [14] Selling a closed building saves more still, because it also sheds that building's share of the repair backlog. Bessie Rhodes and Kingsley together carry roughly $37 million of the district's near-term capital needs through 2036\. [7]
+**Reducing administrative overhead produces genuine savings.** Independent community analysis puts the remaining opportunity at roughly $2.8 million to $5.5 million a year, depending on how deep a reduction you're willing to make. [14] The district itself identified an $8.3 million pool, but that number should be treated carefully. Reaching it would mean eliminating 64 positions, roughly 40% of the district's entire administrative payroll. It more plausibly describes everything eligible for review than anything recommended to cut in a year. [22]
+
+**Closing an elementary school produces genuine savings too.** The district estimated about $2.0 million a year for Kingsley and $2.1 million for Lincolnwood. [13] Independent community analyses put a single closure closer to $1.69 \-1.8 million. [14] Selling a closed building saves more still, because it also sheds that building's share of the repair backlog. For context, Bessie Rhodes and Kingsley together carry roughly $37 million of the district's near-term capital needs through 2036\. [7]
 
 That last part warrants caution. Selling is permanent. Evanston is landlocked and considerably built out, so sites are scarce as well as expensive, school construction costs far more than upkeep (if maintenance is not deferred regularly), and a district that has sold its spare capacity has no realistic way to get it back if enrollment steadies or a program needs a new home. Closing a building and selling it are two separate decisions, and the second one should be argued on its own terms. [21]
 
@@ -72,7 +75,7 @@ Set those against a Phase III target of $16 to $18 million in cumulative reducti
 
 ## What about special education costs?
 
-Special education spending rose sharply, from $27.8 million to $45.1 million in state and local funds between 2021-22 and 2023-24, while the number of students with IEPs actually fell slightly. [15]
+Special education spending rose sharply, from $27.8 million to $45.1 million in state and local funds between 2021-22 and 2023-24, while the number of students with IEPs actually fell slightly. [15] In FY2026 the district finished about $3.0 million over budget on special education, split roughly evenly between staffing and tuition for students placed outside the district, the largest single expenditure variance in the year. [26] 
 
 The audit the district commissioned to explain that increase says close to the opposite of what most people assume. It found D65's programs comply with federal law, that placement processes follow best practice, and that the district's inclusion rate is higher than the state average and higher than every comparison district. **Nothing in it suggests any student receives services they don't need, and nothing in it gives the district license to reduce any child's services.** Those are set by that child's IEP team under federal law, not by a budget. [15]
 
@@ -86,7 +89,7 @@ What the auditors could not do was explain where the money went. Transportation 
 
 Closing a school is a real loss, and it lands differently on different families. Children lose teachers they trust and the walk home with friends. Some will be assigned to a different school than the children down the street. Staff lose jobs and the school communities they helped build. A neighborhood loses an institution that anchored it, which appears on no budget line anywhere. For some families the hardest part will be a longer trip and less room in the day to absorb it. For others it will be watching a place their family has been tied to for a generation close for good.
 
-The other lever has a human impact too.The district has already eliminated roughly 140 positions across the first two phases of this plan, and cut another 52.5 in the FY27 round the board approved in May 2026\. [23]
+The other lever has a human impact too.The district has already eliminated roughly 130 positions across the first two phases of this plan, and cut another 52.5 in the FY27 round the board approved in May 2026\. [22][23]
 
 Many of those positions are directly student-facing staff. “Cutting administration" sounds like it means executives, and some of it does. It also means people who process payroll, staff front offices, and keep buildings running, who earn considerably less and have far less cushion when a job ends. Many of these people live nearby. Some of them are neighbors.
 
@@ -114,10 +117,6 @@ The audit is to include items such as many standard financial control and risk a
 
 **Still pending.** **The results of an internal “HR Audit.”**  which the board noted during the May 4, 2026 board meeting would be presented at the June Committee of the Whole meeting (it has not been presented as of July 2026). [25]
 
-We’re a big, diverse community that cares about our schools. It’s complicated and there’s always a tension between the present and the future. We’ve presented a lot of info on this site, including what we believe is some really compelling data. But **no one should be silenced by a spreadsheet**. Your lived experience and unique circumstances deserve to be heard. We hope you feel more equipped to speak up using some of the resources we’ve provided. 
-
-[Check out our Board Advocacy Guide\!](https://thrive65.github.io/thrive65-site/board-advocacy-guide/) 
-
 ---
 
 ## Where Thrive65 lands
@@ -142,7 +141,7 @@ We raise this to explain how the word gets used now, not to relitigate a fourtee
 
 We're not saying any particular school should close. We're saying the decision should follow the utilization and facilities condition data, minimizing impact to students who would be disproportionately impacted, applied consistently across the district.
 
-We're not saying administrators are the problem, or that staff are line items. The people doing this work have absorbed years of uncertainty on our behalf.
+We're not saying administrators are the problem, or that staff are line items. The people doing this work have absorbed years of uncertainty alongside the rest of the community.
 
 Foster didn't cause the deficit. How it was financed is a fair question, and it's separate from whether the 5th Ward was owed a school.
 
@@ -150,7 +149,7 @@ The district's numbers aren't beyond question either. Several of them deserve ha
 
 > **Go deeper**
 >
-> [The 20 questions people regularly ask → FAQ](https://thrive65.github.io/thrive65-site/#faq)
+> [The 21 questions people regularly ask → FAQ](https://thrive65.github.io/thrive65-site/#faq)
 >
 > [How to speak at a board meeting → Advocacy Guide](https://thrive65.github.io/thrive65-site/board-advocacy-guide/)
 
@@ -181,7 +180,12 @@ The district's numbers aren't beyond question either. Several of them deserve ha
 22. District 65 “Expenditure Reduction Plan SDRP Phase 3 Reductions” (Apr. 20, 2026\) [[link]](https://meetings.boardbook.org/Public/Agenda/1247?meeting=740748)  
 23. SDRP staff cuts: Evanston Now, “More cuts at District 65” (April 2024\) [[link]](https://evanstonnow.com/more-cuts-at-district-65/), Evanston Roundtable,”District 65 reveals position cuts; net loss of 91 employees” (May 2025\)  [[link]](https://evanstonroundtable.com/2025/05/05/evanston-skokie-school-cuts/%20), District 65 “Expenditure Reduction Plan SDRP Phase 3 Reductions” (Apr. 20, 2026\) [[link]](https://meetings.boardbook.org/Documents/CustomMinutesForMeeting/1247?meeting=740748)  
 24. Crowe LLP forensic audit scope and status, per District 65 board materials: engagement documents [[link]](https://meetings.boardbook.org/Public/File/1247?file=ccfb0b58-c755-4495-bc15-5076ff03bd77) and [[link]](https://meetings.boardbook.org/Public/File/1247?file=c089a626-f912-45bf-929e-71648b255136); June 22, 2026 board packet update from board leadership [[link]](https://meetings.boardbook.org/Documents/WebViewer/1247?file=3d5c6730-e6cb-48c6-8962-5407eb264bcc).  
-25. District 65 Board of Education, minutes of the May 4, 2026 board meeting, noting the HR audit was to be presented at the June Committee of the Whole [[link]](https://meetings.boardbook.org/Documents/CustomMinutesForMeeting/1247?meeting=742611).
+25. District 65 Board of Education, minutes of the May 4, 2026 board meeting, noting the HR audit was to be presented at the June Committee of the Whole [[link]](https://meetings.boardbook.org/Documents/CustomMinutesForMeeting/1247?meeting=742611).  
+26. District 65, "FY2026 Unaudited Financial Year in Review," memo (August 3, 2026). [[link]](https://meetings.boardbook.org/Documents/WebViewer/1247?file=a2e91368-1ea9-49ad-8d8e-fd4ee1cb52a9)  
+27. District 65, "HLS Approval for Submission to ISBE," memo (August 4, 2026), presenting the StudioGC 10-Year Health/Life Safety Survey. [[link]](https://meetings.boardbook.org/Documents/WebViewer/1247?file=20ed39e8-8d7c-40bd-9b6f-2774b70e9e47)  
+28. 105 ILCS 5/17-2.11, school board authority to levy taxes or issue bonds for fire prevention, safety, and specified repair purposes, including issuance without referendum where levy proceeds are insufficient. [[link]](https://codes.findlaw.com/il/chapter-105-schools/il-st-sect-105-5-17-2-11/)  
+29. Illinois State Board of Education, "2025 School District Financial Profile Scores, Based on Fiscal Year 2024 Annual Financial Reports" (October 2025), Table 7\. Of 849 districts reporting, 38 (4.5%) held fewer than 100 days cash on hand; ISBE requires a minimum of 180 days to earn the highest score on that indicator. [[link]](https://www.isbe.net/Documents/School-District-Financial-Profile-Report.pdf)  
+    
 
 *Thrive65 is an independent community coalition and is not affiliated with or operated by District 65\.*
 
