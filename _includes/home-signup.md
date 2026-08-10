@@ -1,5 +1,3 @@
-Get involved
-
 ## Stay Informed
 
-Get occasional updates on board meetings, budget decisions, and ways to get involved.
+Sign up for our email list to receive occasional updates and analysis on what’s going on in the district, what’s in the board materials, and ways to get involved.
