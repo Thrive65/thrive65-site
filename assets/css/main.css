@@ -146,7 +146,18 @@
   --art-clock: hsl(185 40% 97%);    /* near-white */
   --art-line:  hsl(190 45% 10%);    /* near-black */
   --art-ink:   hsl(190 38% 18%);    /* near-black */
+
+  /* ---- Breakpoints: defined as @custom-media rules below ---- */
 }
+
+/* Media Queries Level 5 @custom-media — the single source of truth for
+   breakpoints. var() is NOT valid inside a media condition, so these are
+   resolved at build time by postcss-custom-media (see postcss.config.cjs).
+   NOTE: authored CSS is served untouched in dev, and browsers don't yet
+   support @custom-media natively, so these only take effect in the built
+   (PostCSS-processed) CSS — not the local `jekyll serve` output. */
+@custom-media --sm-and-down (max-width: 784px);
+@custom-media --md-and-up   (min-width: 785px);
 
 /* ============================================================================
    SHARED DARK surfaces + default hue (Lake Teal) DARK.
@@ -558,7 +569,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      Filling the row makes every menu drop from the same baseline, so the shared
      --menu-offset aligns all three. Scoped above the mobile breakpoint so the
      stacked mobile submenu (li as a block with the submenu below) is untouched. */
-  @media (min-width: 785px) {
+  @media (--md-and-up) {
     .site-header nav > ul { align-self: stretch; align-items: stretch; }
     .site-header nav > ul > li { display: flex; align-items: center; }
   }
@@ -1229,7 +1240,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     white-space: nowrap;
   }
   /* Mobile Table Styles */
-  @media (max-width: 784px) {
+  @media (--sm-and-down) {
     .page :is(th, td):first-child,
     .post :is(th, td):first-child { 
       white-space: normal; 
@@ -1416,7 +1427,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   #the-current-situation ul + p { text-align: center; margin-block-start: var(--space-l); }
 
   /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
-  @media (max-width: 784px) {
+  @media (--sm-and-down) {
     .nav-toggle { display: inline-flex; }
 
     /* The .nav-panel wrapper (holding both navs) becomes the panel that slides
@@ -1637,6 +1648,16 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   [hidden] { display: none !important; }
   .hidden { display: none !important; }
   .visible { display: revert !important; }
+
+  @media (--sm-and-down) {
+    .sm\:hidden { display: none !important; }
+    .sm\:visible { display: revert !important; }
+  }
+
+  @media (--md-and-up) {
+    .md\:hidden { display: none !important; }
+    .md\:visible { display: revert !important; }
+  }
 
   /* ─ Wave / curve divider ─ a full-bleed transition placed between two bands.
      Set the two adjacent band colors per instance:

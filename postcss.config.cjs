@@ -5,8 +5,9 @@
  *
  * Plugin order matters:
  *   1. PurgeCSS        — remove selectors unused by any rendered page
- *   2. postcss-preset-env — older-browser fallbacks + autoprefixing (.browserslistrc)
- *   3. cssnano         — strip comments, collapse whitespace, merge rules
+ *   2. postcss-custom-media — resolve @custom-media breakpoint vars (Level 5)
+ *   3. postcss-preset-env — older-browser fallbacks + autoprefixing (.browserslistrc)
+ *   4. cssnano         — strip comments, collapse whitespace, merge rules
  */
 const purgecss = require("@fullhuman/postcss-purgecss").default;
 
@@ -14,10 +15,17 @@ module.exports = {
   plugins: [
     purgecss({
       content: ["_site/**/*.html", "_site/**/*.js"],
-      // Default extractor plus `/` and `:` stripped out; CUBE class names are
-      // simple kebab-case, and this also catches classes inside JS string
-      // literals in head.html's inline scripts (which are part of the HTML).
-      defaultExtractor: (content) => content.match(/[A-Za-z0-9_-]+/g) || [],
+      // CUBE class names are simple kebab-case, but we also use a few
+      // Tailwind-style responsive utilities (`sm:hidden`, `md:hidden`) whose
+      // `:` must be kept so the whole token survives — otherwise the extractor
+      // would split `sm:hidden` into `sm` + `hidden` and purge the real
+      // selector. Trailing `:` (e.g. a stray `foo:`) is trimmed so pseudo
+      // syntax doesn't leak in. Also catches classes inside JS string literals
+      // in head.html's inline scripts (which are part of the HTML).
+      defaultExtractor: (content) =>
+        (content.match(/[A-Za-z0-9_:-]+/g) || []).map((t) =>
+          t.replace(/:+$/, "")
+        ),
       safelist: {
         // JS-injected or JS-toggled classes that never appear as static
         // class="" attributes in the rendered HTML.
@@ -56,6 +64,9 @@ module.exports = {
         ],
       },
     }),
+    // Resolve @custom-media (--sm-and-down, --md-and-up) into real media
+    // conditions before preset-env/cssnano see them.
+    require("postcss-custom-media"),
     require("postcss-preset-env")({
       stage: 2,
       // @layer, :has(), @starting-style intentionally degrade — the source
