@@ -929,18 +929,18 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     position: relative;
     overflow: hidden;
 
-    /* image v2, temp */
+    /* image v2, temp until img is reworked as inline svg */
     background-image: url("../images/artv2.svg");
     background-position: right center;
     background-size: cover;
     background-repeat: no-repeat;
   }
   @media (--sm-and-down) { 
-      .hero {
-        background-position: right bottom;
-        background-size: contain;
-        padding-block-end: var(--space-xl);
-      }
+    .hero {
+      background-position: right bottom;
+      background-size: contain;
+      padding-block-end: var(--space-xl);
+    }
   }
   .hero-hue {
     background-color: var(--hero-bg);
