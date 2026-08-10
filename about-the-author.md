@@ -11,4 +11,4 @@ This site is the result of too many hours I should have been sleeping, and getti
 
 Thrive65’s goal is to provide resources to help everyone in our community be advocates for what they want to see in D65. We’ve created a [guide to board advocacy](https://wethrive65.org/board-advocacy-guide/), a timeline and cliff’s notes version of relevant parts of our District’s history around structural deficits, facilities, staffing, equity and more. We also lay out our own thoughts, but try to keep opinion separate from the facts. We don’t need to agree on everything; each of us brings our own unique lived experiences to our advocacy and our priorities may be slightly different based on our own circumstances. Even still, if we’re all rowing in the same direction towards these pillars, we believe we can Thrive in D65.
 
-[Join](https://wethrive65.org/#stay-informed) the hundreds of people already engaged\! We’ll share more history, information, and analysis as we’re able. .
+[Join](https://wethrive65.org/#stay-informed) the hundreds of people already engaged\! We’ll share more history, information, and analysis as we’re able.
