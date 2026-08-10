@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {%- comment -%}
+    Marketing short-link redirector for /r/ pages. Each redirect file sets a
+    `destination:` (an absolute or site-relative URL, UTM params and all) and
+    this layout bounces the visitor there instantly. Kept out of search
+    indexes and the sitemap so short links never compete with real pages.
+  {%- endcomment -%}
+  <meta name="robots" content="noindex, nofollow">
+  <title>Redirecting…</title>
+  <link rel="canonical" href="{{ page.destination }}">
+  <meta http-equiv="refresh" content="0; url={{ page.destination }}">
+  <script>window.location.replace({{ page.destination | jsonify }});</script>
+</head>
+<body>
+  <p>Redirecting to <a href="{{ page.destination }}">{{ page.destination }}</a>…</p>
+</body>
+</html>
