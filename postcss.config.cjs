@@ -46,7 +46,6 @@ module.exports = {
         greedy: [
           /data-theme/,
           /data-contrast/,
-          /data-cvd/,
           /data-dyslexic/,
           /data-textsize/,
           /aria-expanded/,
