@@ -16,9 +16,9 @@ Long Story Short
   Capped at 5% or inflation rate, *whichever is less*. grows more slowly than our costs  
 * **4 Leadership departures**  
   This year. includes Superintendent, CFO, Asst. Superintendent of Instructional Leadership, and Director of Schools Management.   
-* **6-month cap on Interim Superintendent**   
+* **120 day cap on Interim Superintendent**   
   Interim Superintendent here July-January 2027\. CFO started in July and Asst. Superintendent of Academics starts August 10\.  
 * **5-month leadership gap in 2027**   
-  Interim departs in January. Goal of July 1 start date for TBD superintendent. **Next year's budget gets built during that window.** 
+  Interim departs January 31\. Goal of July 1 start date for TBD superintendent. **Next year's budget gets built during that window.** 
 
 [Read More](https://thrive65.github.io/thrive65-site/d65-deficit-explained/)
