@@ -130,10 +130,10 @@
   --focus: #D42A56;                 /* focus outline — bloom on light */
 
   /* ---- Shared: accents (CONSTANT across all hues) ----------------------- */
-  --secondary:    hsla(189, 65%, 22%, 1); /* Lakewater Teal — eyebrows, 2nd headings */
+  --secondary:    #005A82;                 /* Okabe–Ito blue — eyebrows, 2nd headings */
   --accent:       #FFB01A;                 /* Marigold — primary CTA fill (constant) */
   --accent-hover: #FFC44F;                 /* CTA hover */
-  --bloom:        #D42A56;                 /* Accent 2 — moment-of-change only */
+  --bloom:        #C4560A;                 /* Accent 2 (Okabe–Ito orange) — moment-of-change only */
 
   /* ---- Shared: footer family (shared across themes) --------------------- */
   --footer-bg:   #070E0A;
@@ -174,10 +174,10 @@
   --on-accent: #221B05;             /* shared */
   --focus: #8CE7B7;                 /* focus outline — mint on dark */
 
-  --secondary:    hsla(189, 65%, 60%, 1);
+  --secondary:    #7EC8E3;          /* Okabe–Ito light blue on dark */
   --accent:       #FFB01A;          /* constant */
   --accent-hover: #FFC44F;          /* constant */
-  --bloom:        #FF5D7B;
+  --bloom:        #E69F00;          /* Okabe–Ito orange on dark */
 
   --footer-bg:   #070E0A;           /* shared */
   --footer-head: #EDF5EE;           /* shared */
@@ -195,13 +195,13 @@
    .claude/design-artifacts/hue-archive.css)
    Overrides only the hue tokens; everything else inherits from :root.
    ============================================================================ */
-.hue-default {                                     /* LIVE BRAND (lake-teal, same as :root default) */
-  --brand: #0F7A45; 
-  --brand-strong: #0A5C34; 
-  --link: #0F7A45;
-  --hero-bg: hsla(189, 65%, 46%, 1); 
-  --hero-ink: hsla(189, 65%, 9%, 1);
-  --hero-muted: hsla(189, 65%, 13%, 1); 
+.hue-default {                                     /* LIVE BRAND (Okabe–Ito colorblind-safe blue) */
+  --brand: #0072B2;
+  --brand-strong: #004E7C;
+  --link: #0072B2;
+  --hero-bg: #56B4E9;
+  --hero-ink: #06283D;
+  --hero-muted: #0A3A5A;
   --hero-em: var(--accent);
   --band-alt: hsla(189, 30%, 92%, 1);
   
@@ -222,13 +222,13 @@
    HUE WRAPPER CLASS — DARK  (higher specificity than the light block above)
    ============================================================================ */
 [data-theme="dark"] .hue-default {
-  --brand: #3FD9C0;
-  --brand-strong: #74E8D6;
-  --link: #3FD9C0;
-  --hero-bg: #1C7687;
-  --hero-ink: #E6F3EF;
-  --hero-muted: #F0F9F5;
-  --hero-em: #FFC44F;
+  --brand: #56B4E9;
+  --brand-strong: #8CCBF0;
+  --link: #56B4E9;
+  --hero-bg: #0072B2;
+  --hero-ink: #EAF4FB;
+  --hero-muted: #C3DEEF;
+  --hero-em: var(--accent);
   --band-alt: hsla(189, 50%, 9%, 1);
    
   --art-sunmoon: hsl(191 40% 96%);
@@ -252,9 +252,9 @@
   :root:not([data-theme="light"]):not([data-theme="dark"]) {
     --bg: #0B1410; --card: #17251C; --tint: #123122;
     --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD; --focus: #8CE7B7;
-    --secondary: hsla(189, 65%, 60%, 1); --bloom: #FF5D7B;
-    --brand: #3FD9C0; --brand-strong: #74E8D6; --link: #3FD9C0;
-    --hero-bg: #1C7687; --hero-ink: #E6F3EF; --hero-muted: #F0F9F5; --hero-em: #FFC44F;
+    --secondary: #7EC8E3; --bloom: #E69F00;
+    --brand: #56B4E9; --brand-strong: #8CCBF0; --link: #56B4E9;
+    --hero-bg: #0072B2; --hero-ink: #EAF4FB; --hero-muted: #C3DEEF; --hero-em: var(--accent);
     --band-alt: hsla(189, 50%, 9%, 1);
     --art-sunmoon: hsl(191 40% 96%);
     --art-warm: hsl(42 100% 70%); --art-pop: hsl(342 90% 68%); --art-clock: hsl(185 25% 85%);
@@ -266,39 +266,15 @@
 }
 
 /* ============================================================================
-   COLORBLIND-FRIENDLY (Okabe–Ito) — swaps the green brand/link family and the
-   pink "bloom" accent for a colorblind-safe blue/orange set. Marigold CTA is
-   unchanged (already CVD-safe). Toggled by data-cvd="on" on <html>.
-
-   Same targeting as HIGH CONTRAST below: overrides the hue tokens on the
-   .hue-default element. These come BEFORE the HC blocks so that when both
-   are on, HIGH CONTRAST WINS (equal specificity → later source wins).
-   ============================================================================ */
-html[data-cvd="on"]:not([data-theme="dark"]) .hue-default {
-  --brand: #0072B2; --brand-strong: #004E7C; --link: #0072B2;
-  --secondary: #005A82; --bloom: #C4560A;
-  /* Hero band swaps the per-hue color for the Okabe–Ito light blue (dark ink),
-     keeping the marigold emphasis, so it stays consistent with the CVD brand. */
-  --hero-bg: #56B4E9; --hero-ink: #06283D; --hero-muted: #0A3A5A; --hero-em: var(--accent);
-}
-html[data-cvd="on"][data-theme="dark"] .hue-default {
-  --brand: #56B4E9; --brand-strong: #8CCBF0; --link: #56B4E9;
-  --secondary: #7EC8E3; --bloom: #E69F00;
-  /* Darker Okabe–Ito blue band with light ink for the dark theme. */
-  --hero-bg: #0072B2; --hero-ink: #EAF4FB; --hero-muted: #C3DEEF; --hero-em: var(--accent);
-}
-
-/* ============================================================================
    HIGH CONTRAST — flattens surfaces to pure black/white and forces ≥7:1 brand
    and link colors, intentionally overriding the hue system (incl. the hero
    band). Toggled by data-contrast="high" on <html>.
 
-   These blocks are the LAST token overrides in source ON PURPOSE: colorblind
-   (CVD) blocks live above so that when both are on, HIGH CONTRAST WINS. The hue
-   tokens (--brand, --hero-*) are set on <body> by the .hue-default class, so
-   the overrides target the .hue-default element; surface tokens
-   set on <html> cascade down from there. Selector specificity clears the
-   [data-theme="dark"] .hue-default block above.
+   These blocks are the only hue-token overrides. The hue tokens (--brand,
+   --hero-*) are set on <body> by the .hue-default class, so the overrides
+   target the .hue-default element; surface tokens set on <html> cascade down
+   from there. Selector specificity clears the [data-theme="dark"] .hue-default
+   block above.
    ============================================================================ */
    
 html[data-contrast="high"] {
@@ -952,9 +928,22 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .hero {
     position: relative;
     overflow: hidden;
+
+    /* image v2, temp */
+    background-image: url("../images/artv2.svg");
+    background-position: right center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  @media (--sm-and-down) { 
+      .hero {
+        background-position: right bottom;
+        background-size: contain;
+        padding-block-end: var(--space-xl);
+      }
   }
   .hero-hue {
-    background: var(--hero-bg);
+    background-color: var(--hero-bg);
     color: var(--hero-ink);
   }
   /* Two-column: copy left, line-art scene bleeding to the right edge */

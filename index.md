@@ -9,13 +9,16 @@ title: Thrive65 | Community advocacy for District 65 schools
       {% capture hero_md %}{% include home-hero.md %}{% endcapture %}
       {{ hero_md | markdownify }}
     </div>
-    <div class="hero-art" aria-hidden="true">
-      {% include hero-art.svg %}
+    <div class="hero-art sm:hidden" aria-hidden="true">
+      {% comment %} {% include hero-art.svg %} {% endcomment %}
     </div>
   </div>
 </section>
 
+{% comment %}
+removed until final art completed 
 <div class="wave" style="--wave-above: var(--hero-bg); --wave-below: var(--bg);" aria-hidden="true"></div>
+{% endcomment %}
 
 <section id="overview" class="region">
   <div class="wrapper prose">
