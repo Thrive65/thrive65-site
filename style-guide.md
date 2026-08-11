@@ -3,6 +3,9 @@ layout: "page"
 title: "Style Guide"
 description: "Text style guide displaying all the various Markdown to HTML elements."
 image: "https://pic.fish/#https%3A%2F%2Fthrive65.github.io%2Fthrive65-site%2Fstyle-guide%2F"
+# Internal reference page: stays live for authors, but kept out of search.
+noindex: true      # emits <meta name="robots" content="noindex, follow"> (head.html)
+sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
 ---
 
 ## Headings
