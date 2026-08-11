@@ -162,6 +162,7 @@
    (desktop) layout at every width against the dev server. */
 @custom-media --sm-and-down (max-width: 784px);
 @custom-media --md-and-up   (min-width: 785px);
+@custom-media --lg-and-up   (min-width: 1115px);
 
 /* ============================================================================
    SHARED DARK surfaces + default hue (Lake Teal) DARK.
@@ -945,7 +946,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     background-size: 100% auto;
     background-repeat: no-repeat;
   }
-  @media (--md-and-up) {
+  @media (--lg-and-up) {
     .hero { background-position: right center; }
   }
   .hero-hue {
@@ -955,7 +956,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   /* Two-column: copy left, line-art scene bleeding to the right edge */
   .hero-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(339px, 1fr)); /* 339px is the min-width of the right column (the art) */
     align-items: stretch;
     gap: var(--space-l);
   }
