@@ -49,7 +49,6 @@
     // (Shared with the switch handler + Reset below; keep the table in sync.)
     {% endcomment %}
     [["a11y-contrast", "data-contrast", "high"],
-     ["a11y-cvd", "data-cvd", "on"],
      ["a11y-dyslexic", "data-dyslexic", "on"]].forEach(function (s) {
       if (localStorage.getItem(s[0]) === s[2]) html.setAttribute(s[1], s[2]);
     });
@@ -129,7 +128,6 @@
     {% endcomment %}
     var SETTINGS = {
       contrast: { attr: "data-contrast", on: "high", key: "a11y-contrast", label: "High contrast" },
-      cvd:      { attr: "data-cvd", on: "on", key: "a11y-cvd", label: "Colorblind-friendly colors" },
       dyslexic: { attr: "data-dyslexic", on: "on", key: "a11y-dyslexic", label: "Dyslexia-friendly font" }
     };
 

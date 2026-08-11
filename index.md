@@ -10,12 +10,20 @@ title: Thrive65 | Community advocacy for District 65 schools
       {{ hero_md | markdownify }}
     </div>
     <div class="hero-art" aria-hidden="true">
-      {% include hero-art.svg %}
+      {%- comment -%}
+        v1 inline art, retired while art v2 is in progress. This Liquid comment is
+        the ONLY thing disabling it — hero-art.svg itself is live markup, so
+        uncommenting the include here restores it.
+        {% include hero-art.svg %}
+      {%- endcomment -%}
     </div>
   </div>
 </section>
 
+{% comment %}
+removed until final art completed 
 <div class="wave" style="--wave-above: var(--hero-bg); --wave-below: var(--bg);" aria-hidden="true"></div>
+{% endcomment %}
 
 <section id="overview" class="region">
   <div class="wrapper prose">
