@@ -149,7 +149,9 @@ The district's numbers aren't beyond question either. Several of them deserve ha
 
 > **Go deeper**
 >
-> [The 21 questions people regularly ask → FAQ](https://thrive65.github.io/thrive65-site/#faq) [How to speak at a board meeting → Advocacy Guide](https://thrive65.github.io/thrive65-site/board-advocacy-guide/)
+> [The 21 questions people regularly ask → FAQ](https://thrive65.github.io/thrive65-site/#faq)
+>
+> [How to speak at a board meeting → Advocacy Guide](https://thrive65.github.io/thrive65-site/board-advocacy-guide/)
 
 ## Sources
 
