@@ -1,4 +1,7 @@
 ---
+# TEMPORARILY UNPUBLISHED — Board Meeting Recaps are on hold.
+# Flip to `true` (or delete this line) to restore the post.
+published: false
 layout: "post"
 title: "June 13, 2026 Board Meeting Recap"
 date: "2026-06-13"

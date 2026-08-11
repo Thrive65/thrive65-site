@@ -1,4 +1,8 @@
 ---
+# TEMPORARILY UNPUBLISHED — Board Meeting Recaps are on hold.
+# Flip to `true` (or delete this line) to restore the index page. The two
+# recap posts in _posts/ carry the same switch and must be restored with it.
+published: false
 layout: page
 title: Board Meeting Recaps
 permalink: /board-meeting-recaps/

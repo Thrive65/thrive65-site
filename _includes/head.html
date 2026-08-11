@@ -7,6 +7,13 @@
 
 {% seo %}
 
+{%- comment -%}
+  Per-page search opt-out. Set `noindex: true` in a page's front matter to keep
+  it out of search results; pair it with `sitemap: false` so the URL is also
+  dropped from sitemap.xml. "follow" so links on the page still pass through.
+{%- endcomment -%}
+{% if page.noindex %}<meta name="robots" content="noindex, follow">{% endif %}
+
 <link rel="icon" href="{{ '/assets/images/favicon.svg' | relative_url }}" type="image/svg+xml">
 <link rel="icon" href="{{ '/assets/images/favicon.ico' | relative_url }}" sizes="any">
 <link rel="apple-touch-icon" href="{{ '/assets/images/apple-touch-icon.png' | relative_url }}">

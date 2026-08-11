@@ -1,4 +1,7 @@
 ---
+# TEMPORARILY UNPUBLISHED — Board Meeting Recaps are on hold.
+# Flip to `true` (or delete this line) to restore the post.
+published: false
 layout: "post"
 title: "D65 School Board meeting recap 6-22-2026"
 date: "2026-06-22"
