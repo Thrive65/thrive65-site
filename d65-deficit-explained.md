@@ -143,7 +143,7 @@ We're not saying any particular school should close. We're saying the decision s
 
 We're not saying administrators are the problem, or that staff are line items. The people doing this work have absorbed years of uncertainty alongside the rest of the community.
 
-Foster didn't cause the deficit. How it was financed is a fair question, and it's separate from whether the 5th Ward was owed a school.
+Foster didn't cause the deficit. How it was financed is a fair question, and it's separate from whether the 5th Ward deserved a school.
 
 The district's numbers aren't beyond question either. Several of them deserve harder scrutiny, and we've said so where that's the case.
 
