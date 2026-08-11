@@ -23,6 +23,7 @@
 - icons - figure an easier way to adjust size of icons
 
 ### Bugs
+- [ ] `@custom-media` breakpoints are inert in dev (authored CSS is served unprocessed; no browser ships it on by default). Dev workaround: Firefox `about:config` → `layout.css.custom-media.enabled = true`. Acceptable while solo — revisit (dev-time PostCSS pass, or literal queries) if another dev joins or Firefox stops being the dev browser.
 
 ### Features
 - source citations: hover shows tooltip w/ inline links, or clicking opens flyout menu with all sources
@@ -36,6 +37,10 @@
 - [ ] Highlighting text shows Medium-style share tooltip
 
 ### Design
+- [ ] off-palette leftovers from the retired teal/rose brand — move to Okabe–Ito:
+    - `--focus: #D42A56` (light, `main.css` ~line 130) is the rose the colorblind-safe palette exists to avoid, and its `/* bloom on light */` comment is stale (`--bloom` is now `#C4560A`)
+    - `--focus: #8CE7B7` (dark) is leftover Lake Teal mint
+    - now that Okabe–Ito is the default for everyone, the focus ring should come from it too — sweep for any other stragglers while in there
 - style h4s (not italic)
 - style h6 within FAQ item, for "Sources"
 - full sweep of basic element margins & padding. (e.g. ul, ul > li). Reset defaults, convert all spacing to fluid --space vars.

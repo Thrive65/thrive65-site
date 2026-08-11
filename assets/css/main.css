@@ -155,7 +155,11 @@
    resolved at build time by postcss-custom-media (see postcss.config.cjs).
    NOTE: authored CSS is served untouched in dev, and browsers don't yet
    support @custom-media natively, so these only take effect in the built
-   (PostCSS-processed) CSS — not the local `jekyll serve` output. */
+   (PostCSS-processed) CSS — not the local `jekyll serve` output.
+   DEV WORKAROUND: Firefox about:config →
+   layout.css.custom-media.enabled = true. Verify responsive work in
+   Firefox with that flag on; other browsers will show the unprefixed
+   (desktop) layout at every width against the dev server. */
 @custom-media --sm-and-down (max-width: 784px);
 @custom-media --md-and-up   (min-width: 785px);
 
@@ -929,18 +933,20 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     position: relative;
     overflow: hidden;
 
-    /* image v2, temp until img is reworked as inline svg */
+    /* image v2, temp until img is reworked as inline svg.
+       The art is transparent, so it composites over --hero-bg and the hue
+       token still governs the field behind the copy.
+       `100% auto` + `right bottom` pins it to the band's full width at its
+       natural 1272×670 ratio and lands the full-width ground strip exactly
+       on the hero's bottom edge; the overflow crops off the empty top.
+       (`cover` cropped top *and* bottom, losing the ground.) */
     background-image: url("../images/artv2.svg");
-    background-position: right center;
-    background-size: cover;
+    background-position: right bottom;
+    background-size: 100% auto;
     background-repeat: no-repeat;
   }
-  @media (--sm-and-down) { 
-    .hero {
-      background-position: right bottom;
-      background-size: contain;
-      padding-block-end: var(--space-xl);
-    }
+  @media (--md-and-up) {
+    .hero { background-position: right center; }
   }
   .hero-hue {
     background-color: var(--hero-bg);
@@ -961,10 +967,19 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   }
   .hero-art {
     position: relative;
-    /* intrinsic size so the absolutely-positioned SVG has a box;
-       art scales down when the grid stacks on mobile.
-       Matches the illustration's 768×800 viewBox so it doesn't letterbox. */
-    aspect-ratio: 768 / 800;
+    /* Empty spacer while art v2 is painted as a background on .hero: it
+       reserves the height the illustration needs so the copy never lands on
+       the subject matter. The building occupies the right half of the
+       1272×670 viewBox, so the right column matches that half. When the art
+       returns as an inline SVG this is also the box it positions against. */
+    aspect-ratio: 636 / 670;
+  }
+  @media (--sm-and-down) {
+    /* Stacked: the art spans the full band, so reserve its whole ratio.
+       Must stay visible — hiding it removes the reserve but not the paint. */
+    .hero-art {
+      aspect-ratio: 4 / 1;
+    }
   }
   .hero-art svg {
     position: absolute;
