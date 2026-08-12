@@ -11,7 +11,7 @@ Long Story Short
 * **$10 million in cuts needed by 2030**   
   To maintain at least 90 days cash on hand.   
 * **90 Days of cash**  
-  District’s minimum per policy, bottom 5% of school districts statewide  
+  District’s minimum per policy Fewer than 5% hold less than 100 days.  
 * **5% cap on revenue**  
   Capped at 5% or inflation rate, *whichever is less*. grows more slowly than our costs  
 * **4 Leadership departures**  
