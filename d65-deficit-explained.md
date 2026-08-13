@@ -4,7 +4,7 @@ title: "The current situation with D65"
 description: "~20 min read"
 ---
 
-Thrive65 was formed, in part, because most people in the district don’t have the time to sift through all the documents and attend every board meeting. We want to make sure folks have a D65 CliffsNotes so they can feel informed and empowered to [advocate](https://thrive65.github.io/thrive65-site/board-advocacy-guide/). 
+Thrive65 was formed, in part, because most people in the district don’t have the time to sift through all the documents and attend every board meeting. We want to make sure folks have a plain-language guide to D65 so they can feel informed and empowered to [advocate](https://thrive65.github.io/thrive65-site/board-advocacy-guide/). 
 
 Most people come to this having heard fragments. Something at pickup, something in a group chat, something at a board meeting. If you're not sure what's going on, that's a reasonable place to be. This is complicated, and almost nobody has the whole picture.
 
