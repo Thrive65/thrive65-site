@@ -4,7 +4,7 @@ title: Board Meeting Recaps
 permalink: /board-meeting-recaps/
 ---
 
-Community-written recaps of District 65 Board of Education meetings, highlighting public comments and key decisions.
+Recaps of District 65 Board of Education meetings, highlighting key topics discussed and decisions. Observations from Thrive65 clearly noted.
 
 <ul class="post-list">
   {% assign recaps = site.posts | where: "category", "Board Meeting Recaps" | sort: "date" | reverse %}
