@@ -69,7 +69,7 @@ Board received presentations from three firms:
 
 ### Health/Life Safety (HLS)
 
-* Dr. Beardsley reviewed the [HLS Memo](https://meetings.boardbook.org/Documents/FileViewerOrPublic/1247?file=6407369) from the board packet. The TL;DR is that there is $128.8 million of maintenance that is considered a Health/Life Safety item. The memo explains this is a requirement from the state board of education, ISBE, to complete every 10 years. The memo presents this amount as the total 10 year items in categories A, B, and C. 
+* Dr. Beardsley reviewed the [HLS Memo](https://meetings.boardbook.org/Documents/FileViewerOrPublic/1247?file=6407369) from the board packet. There is $128.8 million of maintenance that is considered a Health/Life Safety item. The memo explains this is a requirement from the state board of education, ISBE, to complete every 10 years. The memo presents this amount as the total 10 year items in categories A, B, and C. 
 
 > **Thrive65 Note**
 >
