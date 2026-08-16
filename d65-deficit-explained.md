@@ -4,11 +4,11 @@ title: "The current situation with D65"
 description: "~20 min read"
 ---
 
-Thrive65 was formed, in part, because most people in the district don’t have the time to sift through all the documents and attend every board meeting. We want to make sure folks have a D65 CliffsNotes so they can feel informed and empowered to [advocate](https://thrive65.github.io/thrive65-site/board-advocacy-guide/). 
+Thrive65 was formed, in part, because most people in the district don’t have the time to sift through all the documents and attend every board meeting. We want to make sure folks have a plain-language guide to D65 so they can feel informed and empowered to [advocate](https://thrive65.github.io/thrive65-site/board-advocacy-guide/). 
 
 Most people come to this having heard fragments. Something at pickup, something in a group chat, something at a board meeting. If you're not sure what's going on, that's a reasonable place to be. This is complicated, and almost nobody has the whole picture.
 
-Below are five things we believe are true, each traceable to a document you can open yourself. After that, what's coming up on the calendar, and our own take. We've kept our opinions in a clearly marked section at the bottom so you can read the facts without having to take our word for anything.
+Below are five things we believe are true, each [traceable to a document](https://wethrive65.org/d65-deficit-explained/#sources) you can open yourself. After that, [what's coming up on the calendar](https://wethrive65.org/d65-deficit-explained/#what-happens-next), and [our own take](https://wethrive65.org/d65-deficit-explained/#where-thrive65-lands). We've kept our opinions in a clearly marked section at the bottom so you can read the facts without having to take our word for anything.
 
 ---
 
