@@ -60,7 +60,9 @@ Board received presentations from three firms:
 
 * Dr. Beardsley reviewed the [HLS Memo](https://meetings.boardbook.org/Documents/FileViewerOrPublic/1247?file=6407369) from the board packet. The TL;DR is that there is $128.8 million of maintenance that is considered a Health/Life Safety item. The memo explains this is a requirement from the state board of education, ISBE, to complete every 10 years. The memo presents this amount as the total 10 year items in categories A, B, and C. 
 
-> Thrive65 Note A, B, and C correlate to ISBE’s definitions of urgency. A is “Urgent” and requires repairs in 1 year. B is “Required” and requires repairs within 5 years. C is “Expedient” and requires repairs within 10 years. The discussion at the board meeting clarified that Urgent repairs total $1 million, Required repairs are $20.6 million, and the rest is in the Expedient category.
+> **Thrive65 Note**
+>
+> A, B, and C correlate to ISBE’s definitions of urgency. A is “Urgent” and requires repairs in 1 year. B is “Required” and requires repairs within 5 years. C is “Expedient” and requires repairs within 10 years. The discussion at the board meeting clarified that Urgent repairs total $1 million, Required repairs are $20.6 million, and the rest is in the Expedient category.
 
 * The board approved submission to ISBE. When ISBE approves, the district will be able to issue Life Safety bonds without a referendum vote, per Illinois school code. 
 
