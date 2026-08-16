@@ -40,10 +40,21 @@ Board received presentations from three firms:
     * For comparison to the Alma’s proposal, HYA’s rate would be the same range of 80-95k if the total compensation of the new superintendent’s total salary and benefits totalled 320,000-380,000. (Dr. Turner’s total compensation was 324,000 in the most current info)  
   * Provided an “Optional Services” section with items for added costs (page 39).   
   * Conducted D65’s superintendent process in 2014  
-  * The [FOIA Gras blog](https://foiagras.com/p/simone-griffin-bhas) reported that HYA facilitated a search for Benton Harbor, MI’s superintendent, where they selected a candidate who was formerly D65’s Director of Research, Accountability and Data from 2022-2023. The blog reports that this person left before the first year had completed, with some controversy explained in the blog.   
-      
+  
+
+
+> **Thrive65 Note**
+>
+> The [FOIA Gras blog](https://foiagras.com/p/simone-griffin-bhas) reported that HYA facilitated a search for Benton Harbor, MI’s superintendent, where they selected a candidate who was formerly D65’s Director of Research, Accountability and Data from 2022-2023. The blog reports that this person left before the first year had completed, with some controversy explained in the blog.
+
+    
+
+    
+
 * IASB ([Proposal](https://meetings.boardbook.org/Documents/FileViewerOrPublic/1247?file=6407374), [Presentation](https://meetings.boardbook.org/Documents/WebViewer/1247?file=6407376)) \- Lombard  
-  * Cost is not to exceed $11,900, with optional add ons such as “Conduct Focus Groups” ($4,500), “Facilitate Stakeholder Group with Finalists” ($1,500), “Conduct Mock Interview” ($4,500). 
+  * Cost is not to exceed $11,900, with optional add ons such as “Conduct Focus Groups” ($4,500), “Facilitate Stakeholder Group with Finalists” ($1,500), “Conduct Mock Interview” ($4,500).  
+  * Total with the above optional items is $21,900. IASB indicated in their presentation that their fees are lower since D65 is a member. (IASB is the Illinois Association of School Boards)  
+  * Conducted D65’s superintendent and CFO processes in 2023-2024.
 
 ### Financial Report
 
