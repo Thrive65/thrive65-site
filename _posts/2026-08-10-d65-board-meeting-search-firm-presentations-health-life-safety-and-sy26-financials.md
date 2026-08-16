@@ -7,13 +7,12 @@ permalink: "/board-meeting-recaps/2026/8-10/"
 description: "Search Firm Presentations, Health Life Safety, and SY26 Financials"
 ---
 
-**Date**: Aug 10 2026  
 [Agenda](https://meetings.boardbook.org/Public/Agenda/1247?meeting=759103)  
 Minutes \- not uploaded as of 8/16
 
 ## Thrive65’s TL;DR 
 
-## (this is our take on what you may want to know from this meeting, more detail is below)
+Top takeaways from this meeting, [more detail below](https://wethrive65.org/board-meeting-recaps/2026/8-10/#the-details).
 
 1. Board received presentations from the 3 firms bidding to do the superintendent search. 2 are similar in cost at \~80k, one is \~20k.   
 2. New CFO, Eric Miller, reports that our SY26 revenue was $6.8 million under projections. Expenses were $5.2 million under expected. This is a $1.6 million deficit under the former way we have seen financials, but a $3.4 million deficit excluding certain restricted funds.   
@@ -61,10 +60,14 @@ Board received presentations from three firms:
 
 * Dr. Beardsley reviewed the [HLS Memo](https://meetings.boardbook.org/Documents/FileViewerOrPublic/1247?file=6407369) from the board packet. The TL;DR is that there is $128.8 million of maintenance that is considered a Health/Life Safety item. The memo explains this is a requirement from the state board of education, ISBE, to complete every 10 years. The memo presents this amount as the total 10 year items in categories A, B, and C. 
 
-> Thrive65 Note A, B, and C correlate to ISBE’s definitions of urgency. A is “Urgent” and requires repairs in 1 year. B is “Required” and requires repairs within 5 years. C is “Expedient” and requires repairs within 10 years. The discussion at the board meeting clarified that Urgent repairs total $1 million, Required repairs are $20.6 million, and the rest is in the Expedient category.
+> **Thrive65 Note**
+>
+> A, B, and C correlate to ISBE’s definitions of urgency. A is “Urgent” and requires repairs in 1 year. B is “Required” and requires repairs within 5 years. C is “Expedient” and requires repairs within 10 years. The discussion at the board meeting clarified that Urgent repairs total $1 million, Required repairs are $20.6 million, and the rest is in the Expedient category.
 
 * The board approved submission to ISBE. When ISBE approves, the district will be able to issue Life Safety bonds without a referendum vote, per Illinois school code. 
 
-> Thrive65 Note The community may want to seek clarity and more proactive communications from the District on what that means for their taxes, especially as future operating and/or capital referendums are likely.
+> **Thrive65 Note**
+>
+> The community may want to seek clarity and more proactive communications from the District on what that means for their taxes, especially as future operating and/or capital referendums are likely.
 
 * Chris Van Nostrand asked Dr. Beardsley how we ensure we do not invest in buildings that will be closed. She noted that in board materials (not on their website), it is broken out by building. Beardsley also noted that her team is working on bundling work in the Urgent and Required categories with other repairs that would make sense to prioritize for cost and time efficiency, in collaboration with StudioGC.
