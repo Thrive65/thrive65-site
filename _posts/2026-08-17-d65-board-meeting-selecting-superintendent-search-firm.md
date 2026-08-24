@@ -1,6 +1,6 @@
 ---
 layout: "post"
-title: "D65 Board Meeting: Selecting Superintendent Search Firm"
+title: "D65 Board Meeting: Selecting Superintendent Search Firm                                                       "
 date: "2026-08-17"
 category: "Board Meeting Recaps"
 permalink: "/board-meeting-recaps/d65-board-meeting-selecting-superintendent-search-firm/"
