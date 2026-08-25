@@ -3,7 +3,7 @@ layout: "post"
 title: "Preview: Doubleheader Special Meeting for Tax Warrants and City-School Meeting on TIFs"
 date: "2026-08-24"
 category: "Board Meeting Previews"
-permalink: "/board-meeting-previews/preview-doubleheader-special-meeting-for-tax-warrants-and-city-school-meeting-on-tifs/"
+permalink: "/board-meeting-previews/2026/8-24/"
 ---
 
 [Agenda](https://meetings.boardbook.org/Public/Agenda/1247?meeting=763178)\-Special Meeting @ 4:45  
