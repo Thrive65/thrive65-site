@@ -3,16 +3,9 @@
 ## Thrive65 Site
 ------------------------
 
-
-### PRE SOFT LAUNCH - THIS WEEK
-- logo, favicon (`assets/images/favicon.svg`)
-- hero art - colorize/tokenize, fix size & overlap
-
-## fast follow, before announcing
-- social media images/links ✅ scaffolded — replace PLACEHOLDER assets & set real handles/links:
-    - [ ] `assets/images/og-default.png` — real 1200×630 social share image (currently placeholder)
-    - [ ] `assets/images/logo.png` — real square brand mark (currently placeholder)
-    - [ ] `assets/images/favicon.ico` + `apple-touch-icon.png` — real favicons (currently placeholder)
+## Priority
+- hero art - finish trace, colorize/tokenize
+- social media links 
     - [ ] `_config.yml` → `twitter.username` — set real X/Twitter handle (uncomment)
     - [ ] `_config.yml` → `social.links` — add real profile URLs (Facebook, X, Instagram…)
 - [ ] a11y scan 
