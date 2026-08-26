@@ -46,6 +46,9 @@
 ## Docs CMS
 ------------------------
 
+### Bug
+- if you publish a page, then change the name of the page and publish again, the original page is not deleted.
+
 ### Functional
 - Allow publishing and showing of Docs CMS in docs within subfolders of the configured website folder. (i.e. thrive65-site/posts/)
 - Overall review of Code.gs to confirm it is generic. Create Plan to convert to standalone Add-On.
