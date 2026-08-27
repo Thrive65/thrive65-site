@@ -486,11 +486,14 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   /* Fragment landing offset. `.site-header` is position:sticky, so without this
      every in-page jump on the site — heading anchors, #faq-*, #sources, and now
      every #source-N citation — lands underneath it. :where() keeps specificity
-     at 0 so anything can override it. --space-xl (3rlh) is the smallest token
-     that clears the sticky header's measured height (~83px at the default root)
-     with a little breathing room; --space-l (2rlh, ~57px) left targets tucked
-     under it. Both scale with the root, so this holds at every text size. */
-  :where([id]) { scroll-margin-block-start: var(--space-xl); }
+     at 0 so anything can override it. The header measures ~83px at the default
+     root, so --space-l (2rlh, ~57px) tucks targets under it and --space-xl
+     (3rlh, ~86px) clears it by only ~3px — enough to be correct, too tight to
+     read as deliberate. --space-2xl (4rlh, ~114px) lands the target ~31px below
+     the header so it reads as a heading with air above it rather than one
+     wedged against the chrome. Token, not px: it scales with the fluid root, so
+     the clearance holds at every text size. */
+  :where([id]) { scroll-margin-block-start: var(--space-2xl); }
 }
 
 /* ── composition ─────────────────────────────────────────────────────────── */
