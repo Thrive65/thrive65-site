@@ -358,8 +358,8 @@
     var panel = null, startY = 0, delta = 0;
     document.addEventListener("touchstart", function (e) {
       if (!e.target.closest) return;
-      var p = e.target.closest(".a11y-panel");
-      if (!p || e.target.closest(".a11y-panel-body")) return;
+      var p = e.target.closest(".a11y-panel, .source-panel");
+      if (!p || e.target.closest(".a11y-panel-body, .source-panel-body")) return;
       panel = p; startY = e.touches[0].clientY; delta = 0;
       panel.style.transition = "none";
     }, { passive: true });
@@ -373,7 +373,14 @@
       var p = panel; panel = null;
       p.style.transition = "";
       p.style.transform = "";
-      if (delta > 80) Disclosure.set(document.querySelector(".a11y-toggle"), false, true);
+      {% comment %}
+      // One drag implementation, two consumers — dispatch on which sheet was
+      // grabbed. The a11y panel is a Disclosure; the source panel owns its own
+      // open/close (see SourcePanel below, hoisted into this scope).
+      {% endcomment %}
+      if (delta <= 80) return;
+      if (p.classList.contains("source-panel")) SourcePanel.close(true);
+      else Disclosure.set(document.querySelector(".a11y-toggle"), false, true);
     }, { passive: true });
   })();
 
@@ -554,23 +561,185 @@
       copy(location.origin + location.pathname + a.getAttribute("href"));
       history.replaceState(null, "", "#" + id);
       var item = document.getElementById(id);
-      if (item && item.classList.contains("faq-item")) item.open = true;
+      var d = item && item.closest("details");
+      if (d) d.open = true;
     });
 
     {% comment %}
-    // Expand and reveal a FAQ item when its id is the URL fragment.
+    // Reveal a fragment target that sits inside a collapsed <details> — a FAQ
+    // item addressed directly, or a citation/back-link landing inside a closed
+    // answer. The browser has already done its own (failed) scroll by now, so
+    // re-scroll once the disclosure is open. Targets outside a <details> need
+    // nothing; native fragment navigation plus scroll-margin handles them.
     {% endcomment %}
     function openHash() {
       var id = location.hash.slice(1);
       if (!id) return;
       var el = document.getElementById(id);
-      if (el && el.classList.contains("faq-item")) {
-        el.open = true;
-        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-        el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-      }
+      if (!el) return;
+      var d = el.closest("details");
+      if (!d) return;
+      d.open = true;
+      var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     }
     window.addEventListener("hashchange", openHash);
+  })();
+
+  {% comment %}
+  // ---------------------------------------------------------------------- //
+  // Source panel — the contextual sidebar behind every [n] citation marker.
+  //
+  // NON-MODAL. See the rationale block in _includes/source-panel.html: no focus
+  // trap, no inert, no scroll lock, no scrim, no outside-click close. The reader
+  // is meant to keep reading and keep clicking markers while it stays open.
+  //
+  // Deliberately NOT built on Disclosure. Disclosure's contract is one
+  // persistent trigger owning aria-expanded/aria-controls; here the triggers are
+  // 40–200 inline links, and putting aria-expanded on a citation marker would
+  // make every marker announce "collapsed" mid-sentence. Its data-dismiss
+  // "outside" rule would also close the panel on every article click — the exact
+  // opposite of what this is for. What is reused: the shared announce(), the
+  // swipe-close handler above, and its conventions (delegated listeners).
+  //
+  // Content is cloned from the <li id="source-N"> already on the page, so there
+  // is no second copy of the source data to drift.
+  // ---------------------------------------------------------------------- //
+  {% endcomment %}
+  var SourcePanel = (function () {
+    var panel, list, title, lastTrigger = null;
+
+    function ready() {
+      if (panel === undefined) panel = document.getElementById("source-panel");
+      if (!panel) return false;
+      list = list || panel.querySelector(".source-panel-list");
+      title = title || panel.querySelector(".source-panel-title");
+      return !!(list && title);
+    }
+
+    function heading(nums) {
+      if (nums.length === 1) return "Source " + nums[0];
+      if (nums.length === 2) return "Sources " + nums[0] + " and " + nums[1];
+      return "Sources " + nums.slice(0, -1).join(", ") + " and " + nums[nums.length - 1];
+    }
+
+    function populate(nums, current) {
+      list.textContent = "";
+      nums.forEach(function (n) {
+        var src = document.getElementById("source-" + n);
+        if (!src) return;
+        var li = src.cloneNode(true);
+        {% comment %}
+        // Strip every id — duplicates would break fragment nav and the
+        // copy-link anchors — and drop the back-links, which are meaningless
+        // here. `value` keeps the numbering correct for a non-contiguous run
+        // like [4][20], which <ol start> cannot express.
+        {% endcomment %}
+        li.removeAttribute("id");
+        li.querySelectorAll("[id]").forEach(function (el) { el.removeAttribute("id"); });
+        var back = li.querySelector(".source-backlinks");
+        if (back) back.parentNode.removeChild(back);
+        li.value = n;
+        if (n === current) {
+          {% comment %}
+          // Never colour-only: aria-current plus a visually-hidden prefix, which
+          // also makes Windows forced-colors mode correct for free.
+          {% endcomment %}
+          li.classList.add("is-current");
+          li.setAttribute("aria-current", "true");
+          var flag = document.createElement("span");
+          flag.className = "visually-hidden";
+          flag.textContent = "Selected: ";
+          li.insertBefore(flag, li.firstChild);
+        }
+        list.appendChild(li);
+      });
+      title.textContent = heading(nums);
+    }
+
+    function open(link, keyboard) {
+      if (!ready()) return;
+      {% comment %}
+      // Show the whole run, not just the marker clicked: [4][20] means "these
+      // two together support this sentence", so showing one hides half the
+      // evidence. The <sup class="source-ref-group"> wrapper emitted by
+      // _plugins/source_refs.rb is what makes this exact rather than heuristic.
+      {% endcomment %}
+      var group = link.closest(".source-ref-group");
+      var links = group ? group.querySelectorAll("a.source-ref") : [link];
+      var nums = Array.prototype.map.call(links, function (a) {
+        return parseInt(a.getAttribute("data-source"), 10);
+      });
+      var current = parseInt(link.getAttribute("data-source"), 10);
+      if (!nums.length) return;
+
+      populate(nums, current);
+      lastTrigger = links[0];
+      panel.classList.add("is-open");
+      document.body.classList.add("source-open");
+
+      {% comment %}
+      // Pointer: leave focus alone — yanking the reading position is the classic
+      // non-modal bug. Keyboard (e.detail === 0, true for Enter on a link): move
+      // focus in, or the panel is unreachable, since it sits at the end of the
+      // document.
+      {% endcomment %}
+      if (keyboard) title.focus();
+
+      {% comment %}
+      // On the mobile sheet the panel may cover the marker itself; pull it into
+      // the visible band above the sheet.
+      {% endcomment %}
+      if (matchMedia("(max-width: 784px)").matches) {
+        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        link.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+      }
+
+      announce(heading(nums) + ". " + nums.length +
+        (nums.length === 1 ? " source" : " sources") + " shown in the source panel.");
+    }
+
+    function close(returnFocus) {
+      if (!panel || !panel.classList.contains("is-open")) return;
+      panel.classList.remove("is-open");
+      document.body.classList.remove("source-open");
+      if (returnFocus && lastTrigger) lastTrigger.focus();
+      lastTrigger = null;
+    }
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest) return;
+      if (e.target.closest("[data-source-close]")) { close(true); return; }
+
+      var link = e.target.closest("a.source-ref");
+      if (!link || link.closest("#source-panel")) return;
+      {% comment %}
+      // Let modified clicks fall through so "open in new tab" still works.
+      {% endcomment %}
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      if (!document.getElementById("source-panel")) return;
+
+      e.preventDefault();
+      {% comment %}
+      // Repopulate in place; never toggle closed. With 200 markers on a page,
+      // toggle semantics makes the panel flicker whenever a reader re-checks a
+      // citation they have already opened.
+      {% endcomment %}
+      open(link, e.detail === 0);
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      {% comment %}
+      // Three handlers listen for Escape (Disclosure, closeNav, this one). Bail
+      // if something nested is open, so one press closes one thing.
+      {% endcomment %}
+      if (document.querySelector("[data-disclosure][aria-expanded='true']")) return;
+      if (document.querySelector(".site-header.nav-open")) return;
+      close(true);
+    });
+
+    return { close: close };
   })();
 </script>
 

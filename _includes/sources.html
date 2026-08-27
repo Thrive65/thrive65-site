@@ -1,0 +1,42 @@
+{% comment %}
+  Bottom-of-page source list — the no-JS baseline for the whole citation system.
+  Every marker on the page is a real <a href="#source-N"> pointing here, so the
+  page works fully without JavaScript; the source panel is pure enhancement.
+
+  Usage: {% include sources.html %}                 (reads page.sources)
+         {% include sources.html key="faq" %}       (explicit set)
+
+  Data lives in _data/sources/<key>.yml. The number is positional — items[i] is
+  source i+1 — so `value` is emitted unconditionally: a dropped or reordered
+  entry silently renumbering the whole list is this system's worst failure mode.
+{% endcomment %}
+{% assign set_key = include.key | default: page.sources %}
+{% assign set = site.data.sources[set_key] %}
+{% if set and set.items %}
+<section class="sources" id="sources" aria-labelledby="sources-heading">
+  <h2 id="sources-heading">{{ include.heading | default: set.title | default: "Sources" }}</h2>
+  <ol class="source-list">
+    {% for src in set.items %}
+      <li class="source" id="source-{{ forloop.index }}" value="{{ forloop.index }}">
+        {% comment %}
+          Link text is the document's own title. This is the single biggest a11y
+          win in the system: it replaces source lists where every link announced
+          as "link" (WCAG 2.4.9). Entries with no `url:` render as honest
+          unlinked citations rather than a dead or placeholder link.
+        {% endcomment %}
+        {% comment %}
+          `| escape` on the href is load-bearing, not defensive tidying: real
+          BoardBook URLs are query-string heavy, and a bare `&` before `copy=`,
+          `reg=` or `sect=` is a valid HTML named entity — the browser would
+          silently rewrite the link. Escaping emits `&amp;`, which parses back
+          to `&` in the resolved URL.
+        {% endcomment %}
+        {% if src.url %}<a class="source-title" href="{{ src.url | escape }}" rel="noopener">{{ src.title | escape }}</a>{% else %}<span class="source-title">{{ src.title | escape }}</span>{% endif %}
+        {% if src.publisher or src.date %}<p class="source-meta">{{ src.publisher | escape }}{% if src.publisher and src.date %} · {% endif %}{{ src.date | escape }}</p>{% endif %}
+        {% if src.note %}<p class="source-note">{{ src.note | escape }}</p>{% endif %}
+        {% include source-backlinks.html n=forloop.index %}
+      </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endif %}

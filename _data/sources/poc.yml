@@ -1,0 +1,70 @@
+# Proof-of-concept source set (Phase 0). Paired with /sources-poc/, which is
+# unlinked and noindexed. Delete both once the design is proven — or keep them
+# as a permanent regression fixture (decided at Gate 3).
+#
+# One entry = one document. The number is POSITIONAL: items[i] is source i+1.
+# Never add an `n:` key — a stored number and a list position drift the first
+# time anyone reorders. Append new entries at the end.
+#
+# Only `title` is required. Omit `url:` entirely when there is no link; the entry
+# then renders as an honest unlinked citation instead of a placeholder.
+key: poc
+title: "Sources"
+items:
+  - title: "Analysis and viewpoint: District 65 has 25% fewer students, but 10% more staff. Why?"
+    publisher: "Evanston RoundTable"
+    date: "March 22, 2026"
+    url: "https://evanstonroundtable.com/2026/03/22/analysis-and-viewpoint-district-65-has-25-fewer-students-but-10-more-staff-why/"
+    note: "Reports ISBE enrollment data for 2018-19 against district-reported 2025-26 staffing."
+
+  - title: "District 65 kindergarten registration lags; administrators cite delayed start"
+    publisher: "Evanston RoundTable"
+    date: "May 19, 2026"
+    url: "https://evanstonroundtable.com/2026/05/19/district-65-kindergarten-registration-lags-administrators-cite-delayed-start/"
+
+  - title: "2026-2027 (FY27) Preliminary Budget memo"
+    publisher: "District 65 Business Office"
+    date: "June 22, 2026"
+    url: "https://meetings.boardbook.org/Documents/WebViewer/1247?file=743aaac6-f0a5-4c4d-9b06-093cc9f93310"
+    note: "Target for the author-written anchor case — see the prose above."
+
+  - title: "Expenditure Reduction Plan: SDRP Phase 3 Reductions, board agenda"
+    publisher: "District 65 (BoardBook)"
+    date: "April 20, 2026"
+    url: "https://meetings.boardbook.org/Public/Agenda/1247?meeting=740748"
+
+  - title: "Board minutes, April 20 2026 regular meeting"
+    publisher: "District 65"
+    date: "approved May 18, 2026"
+    note: >-
+      Deliberately has no `url:` — exercises the unlinked-citation render.
+      Records FY27 position reductions: 53.5 cut, 1 added, net 52.5 FTE.
+
+  - title: "A source that is cited nowhere on the page"
+    publisher: "Nobody"
+    date: "never"
+    note: "Exercises the build warning for an uncited source. Expect one warning per build."
+
+  - title: "105 ILCS 5/17-1 — school district budgets"
+    publisher: "Illinois General Assembly"
+    date: "current through P.A. 103-1055"
+    url: "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=1005"
+
+  - title: "StudioGC 10-Year Facilities Master Plan"
+    publisher: "District 65 (BoardBook)"
+    date: "March 23, 2026"
+    url: "https://meetings.boardbook.org/Public/File/1247?file=6c6c7c3e-ff7b-4cf5-b76d-0408c220dc22"
+
+  - title: "5-Year Enrollment & Projections memo to the Board of Education"
+    publisher: "District 65 (BoardBook)"
+    date: "November 2025"
+    url: "https://meetings.boardbook.org/Search/GoToResult/9c147bc4-3c76-438c-ab41-ea3635e5f7d8?Index=sparqmeetingsdocuments&PublicOrgID=1247&returnUrl=%2FSearch%2FAjaxSearch%2F1247%3Fq%3D%25225-Year%2520Enrollment%2520%2526%2520Projections%2522%26returnUrl%3D%252FPublic%252FOrganization%252F1247%26i%3D8%26from%3D%26to%3D%26_%3D1785564123631"
+    note: >-
+      Cited from inside a collapsed disclosure, to exercise the collapsed-target
+      case. Its URL is deliberately the longest and most query-string-heavy one
+      in the real corpus — the escaping stress test for the whole pipeline.
+
+  - title: "Board of Education meeting recording, June 22 2026"
+    publisher: "District 65 on YouTube"
+    date: "June 22, 2026"
+    url: "https://www.youtube.com/watch?v=aj2vaR6N21s"

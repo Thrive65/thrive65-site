@@ -1,0 +1,36 @@
+{% comment %}
+  Contextual source panel — slides in from the right (bottom sheet on mobile)
+  when a citation marker is clicked, showing only the sources in that run.
+
+  NON-MODAL BY DESIGN. Every reviewer's instinct will be "this should be
+  role=dialog with a focus trap". It must not be. The whole point is that the
+  reader keeps reading the article while the panel is open, so:
+    · <aside> → role="complementary" — a landmark, so screen-reader users have a
+      jump route in, rather than a trap they have to escape.
+    · no aria-modal — that tells AT everything outside is unavailable, the exact
+      opposite of the requirement, and NVDA/JAWS switch to forms mode inside a
+      dialog, which breaks browse-mode reading of the source text.
+    · no focus trap, no inert, no scroll lock, no scrim, no outside-click close.
+
+  It carries NO copy of the source text: on open it clones the <li id="source-N">
+  already rendered by sources.html, so the two can never drift and the page
+  carries no duplicated JSON payload. See the SourcePanel IIFE in head.html.
+
+  Hidden with visibility + an off-screen transform rather than the `hidden`
+  attribute: `hidden` gives an entry-only animation via @starting-style and snaps
+  shut, and this panel opens and closes dozens of times per reading session.
+{% endcomment %}
+<aside id="source-panel" class="source-panel" aria-labelledby="source-panel-title">
+  <div class="source-panel-head repel">
+    <h2 class="source-panel-title" id="source-panel-title" tabindex="-1">Sources</h2>
+    <button type="button" class="close-button" aria-label="Close sources" data-source-close>
+      {% include icons/close.svg %}
+    </button>
+  </div>
+  <div class="source-panel-body">
+    <ol class="source-panel-list"></ol>
+  </div>
+  <div class="source-panel-foot">
+    <a class="source-panel-all" href="#sources">All sources on this page</a>
+  </div>
+</aside>
