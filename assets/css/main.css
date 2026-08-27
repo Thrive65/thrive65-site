@@ -1994,7 +1994,18 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     color: var(--card);
   }
   .chip:active { background: var(--brand-strong); border-color: var(--brand-strong); }
-  .source-ref::before {
+  /* Enlarges the chip to a 24px pointer target (WCAG 2.2 SC 2.5.8) without
+     changing its visual size or its line box.
+
+     Scoped to `.chip`, NOT `.source-ref` — load-bearing. `.chip` is what sets
+     `position: relative`, so it is the containing block for this overlay. On a
+     `.source-ref` without `.chip` (the inline variant) the overlay would have no
+     positioned ancestor and would resolve against whatever is — and the instant
+     `body.source-open` transforms <main>, that becomes <main> itself, so
+     `width/height: 100%` blows the overlay up to cover the entire article and
+     swallows every click in it. The inline variant is a whole phrase of text and
+     needs no target enlargement anyway. */
+  .chip::before {
     content: "";
     position: absolute;
     top: 50%;
@@ -2008,7 +2019,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   /* Spaces adjacent chips so their 24px ::before targets sit ~one pitch apart
      rather than overlapping (WCAG 2.2 SC 2.5.8). Measured at the 320px root
      minimum, the worst case. */
-  .source-ref + .source-ref { margin-inline-start: 0.7em; }
+  .chip + .chip { margin-inline-start: 0.7em; }
 
   /* An author-written link to a source ([the FY27 memo](#source-3)) keeps its
      own text and reads as prose, so it is not superscripted — and it opts out
@@ -2123,7 +2134,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     width: var(--source-panel-w);
     display: flex;
     flex-direction: column;
-    padding-block-start: var(--space-2xl); /* clears the sticky header */
+    padding-block-start: var(--space-xl); /* clears the sticky header */
     background: var(--menu-surface);
     border-inline-start: var(--menu-border);
     box-shadow: var(--menu-shadow);
@@ -2143,23 +2154,30 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      not exist. Gated on html.js — never a bare `.source-panel { display:none }`. */
   html:not(.js) .source-panel { display: none; }
 
-  /* Head and foot dock; only the body scrolls. min-height:0 lets the body
-     shrink below its content height so overflow-y actually engages. */
-  .source-panel-head,
-  .source-panel-foot { flex-shrink: 0; }
+  /* The head docks; only the body scrolls. min-height:0 lets the body shrink
+     below its content height so overflow-y actually engages — and that scroll
+     container is what SourcePanel scrolls to the selected source. */
+  .source-panel-head { flex-shrink: 0; }
   .source-panel-body {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
+    /* Deliberately NOT scroll-behavior: smooth. SourcePanel scrolls this
+       container to the selected source by assigning scrollTop; under smooth the
+       assignment was observed to never apply at all (as does the scripted
+       scrollTo({behavior:"smooth"}) form), leaving the panel open on the wrong
+       entry. Landing on the right source is the whole interaction, so it is not
+       allowed to depend on an animation that can silently no-op. */
   }
-  .source-panel-head,
-  .source-panel-foot {
+  .source-panel-head {
     padding: var(--space-s) var(--space-m);
-    border-block-start: var(--border-thin) solid var(--line);
+    border-block-end: var(--border-thin) solid var(--line);
   }
-  .source-panel-head { border-block-start: 0; border-block-end: var(--border-thin) solid var(--line); }
-  .source-panel-title { font-size: var(--step-1); }
+  .source-panel-title { 
+    font-size: var(--step-1); 
+    margin-block-end: 0;
+  }
   .source-panel-title:focus-visible { outline: 3px solid var(--focus); }
   .source-panel-list {
     list-style: none;
@@ -2222,7 +2240,16 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      position:fixed descendant. <main> has none today — the toast appends to
      <body> and every nav/a11y surface lives in <header>, which is a sibling.
      If one is ever added inside <main> it will anchor to <main>, not the
-     viewport. That is why the panel is a sibling of <main>, not a child. */
+     viewport. That is why the panel is a sibling of <main>, not a child.
+
+     ⚠ It also captures position:absolute descendants that have no positioned
+     ancestor — and only while the panel is open, so the breakage is invisible
+     in the default state. This already bit once: the citation hit-target
+     overlay was scoped to `.source-ref` rather than `.chip`, so on the inline
+     variant (no `.chip`, hence static) it resolved against <main> and its
+     `width/height: 100%` covered the whole article, swallowing every click.
+     Any absolutely positioned thing inside <main> must have an explicitly
+     positioned ancestor. */
   @media (--lg-and-up) {
     :root {
       --source-shift: min(

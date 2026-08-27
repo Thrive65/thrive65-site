@@ -1,6 +1,8 @@
 {% comment %}
   Contextual source panel — slides in from the right (bottom sheet on mobile)
-  when a citation marker is clicked, showing only the sources in that run.
+  when a citation marker is clicked. It lists EVERY source on the page; clicking
+  a marker scrolls the panel to that one and marks it current, so the reader can
+  also see what sits either side of it. The heading is therefore static.
 
   NON-MODAL BY DESIGN. Every reviewer's instinct will be "this should be
   role=dialog with a focus trap". It must not be. The whole point is that the
@@ -12,7 +14,7 @@
       dialog, which breaks browse-mode reading of the source text.
     · no focus trap, no inert, no scroll lock, no scrim, no outside-click close.
 
-  It carries NO copy of the source text: on open it clones the <li id="source-N">
+  It carries NO copy of the source text: on first open it clones the <li id="source-N">
   already rendered by sources.html, so the two can never drift and the page
   carries no duplicated JSON payload. See the SourcePanel IIFE in head.html.
 
@@ -29,8 +31,5 @@
   </div>
   <div class="source-panel-body">
     <ol class="source-panel-list"></ol>
-  </div>
-  <div class="source-panel-foot">
-    <a class="source-panel-all" href="#sources">All sources on this page</a>
   </div>
 </aside>

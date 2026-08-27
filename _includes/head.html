@@ -602,81 +602,107 @@
   // opposite of what this is for. What is reused: the shared announce(), the
   // swipe-close handler above, and its conventions (delegated listeners).
   //
-  // Content is cloned from the <li id="source-N"> already on the page, so there
-  // is no second copy of the source data to drift.
+  // The panel holds a clone of EVERY <li id="source-N"> on the page, built once
+  // on first open, so there is no second copy of the source data to drift.
+  // Clicking a marker scrolls the panel's own scroll container to that source
+  // and marks it current — it does not re-filter the list. A reader checking one
+  // citation can then see what sits either side of it without leaving the panel.
   // ---------------------------------------------------------------------- //
   {% endcomment %}
   var SourcePanel = (function () {
-    var panel, list, title, lastTrigger = null;
+    var panel, list, title, body, lastTrigger = null;
+    var clones = null;  // n → cloned <li>, built lazily on first open
 
     function ready() {
       if (panel === undefined) panel = document.getElementById("source-panel");
       if (!panel) return false;
       list = list || panel.querySelector(".source-panel-list");
       title = title || panel.querySelector(".source-panel-title");
-      return !!(list && title);
+      body = body || panel.querySelector(".source-panel-body");
+      return !!(list && title && body);
     }
 
-    function heading(nums) {
-      if (nums.length === 1) return "Source " + nums[0];
-      if (nums.length === 2) return "Sources " + nums[0] + " and " + nums[1];
-      return "Sources " + nums.slice(0, -1).join(", ") + " and " + nums[nums.length - 1];
-    }
-
-    function populate(nums, current) {
-      list.textContent = "";
-      nums.forEach(function (n) {
-        var src = document.getElementById("source-" + n);
-        if (!src) return;
+    {% comment %}
+    // Built once and reused: the source list is static after render, so there is
+    // nothing to rebuild on later opens.
+    {% endcomment %}
+    function build() {
+      if (clones) return;
+      clones = {};
+      var sources = document.querySelectorAll("#sources .source[id]");
+      Array.prototype.forEach.call(sources, function (src) {
+        var n = parseInt(src.id.replace("source-", ""), 10);
+        if (!n) return;
         var li = src.cloneNode(true);
         {% comment %}
         // Strip every id — duplicates would break fragment nav and the
-        // copy-link anchors — and drop the back-links, which are meaningless
-        // here. `value` keeps the numbering correct for a non-contiguous run
-        // like [4][20], which <ol start> cannot express.
+        // copy-link anchors — and drop the back-links, which point at the
+        // article and are meaningless here.
         {% endcomment %}
         li.removeAttribute("id");
         li.querySelectorAll("[id]").forEach(function (el) { el.removeAttribute("id"); });
         var back = li.querySelector(".source-backlinks");
         if (back) back.parentNode.removeChild(back);
         li.value = n;
-        if (n === current) {
-          {% comment %}
-          // Never colour-only: aria-current plus a visually-hidden prefix, which
-          // also makes Windows forced-colors mode correct for free.
-          {% endcomment %}
-          li.classList.add("is-current");
-          li.setAttribute("aria-current", "true");
-          var flag = document.createElement("span");
-          flag.className = "visually-hidden";
-          flag.textContent = "Selected: ";
-          li.insertBefore(flag, li.firstChild);
-        }
+        clones[n] = li;
         list.appendChild(li);
       });
-      title.textContent = heading(nums);
+    }
+
+    {% comment %}
+    // Never colour-only: aria-current plus a visually-hidden prefix, which also
+    // makes Windows forced-colors mode correct for free.
+    {% endcomment %}
+    function select(n) {
+      var prev = list.querySelector(".is-current");
+      if (prev) {
+        prev.classList.remove("is-current");
+        prev.removeAttribute("aria-current");
+        var oldFlag = prev.querySelector(".source-current-flag");
+        if (oldFlag) oldFlag.parentNode.removeChild(oldFlag);
+      }
+      var li = clones[n];
+      if (!li) return null;
+      li.classList.add("is-current");
+      li.setAttribute("aria-current", "true");
+      var flag = document.createElement("span");
+      flag.className = "visually-hidden source-current-flag";
+      flag.textContent = "Selected: ";
+      li.insertBefore(flag, li.firstChild);
+      return li;
+    }
+
+    {% comment %}
+    // Scrolls the panel's own overflow container, computed from the offset
+    // between the two boxes. Two things are deliberate here:
+    //   · Not scrollIntoView() — it walks every scrollable ancestor and would
+    //     drag the article underneath as a side effect, which is exactly what
+    //     this panel exists to avoid.
+    //   · Not animated — both scrollTo({behavior:"smooth"}) and CSS
+    //     scroll-behavior were observed to no-op outright here, leaving the
+    //     panel showing the wrong entry. Landing on the right source is the
+    //     interaction; it must not depend on an animation that can silently
+    //     fail. See the matching note on .source-panel-body.
+    {% endcomment %}
+    function scrollToSource(li) {
+      var delta = li.getBoundingClientRect().top - body.getBoundingClientRect().top;
+      body.scrollTop = body.scrollTop + delta;
     }
 
     function open(link, keyboard) {
       if (!ready()) return;
-      {% comment %}
-      // Show the whole run, not just the marker clicked: [4][20] means "these
-      // two together support this sentence", so showing one hides half the
-      // evidence. The <sup class="source-ref-group"> wrapper emitted by
-      // _plugins/source_refs.rb is what makes this exact rather than heuristic.
-      {% endcomment %}
-      var group = link.closest(".source-ref-group");
-      var links = group ? group.querySelectorAll("a.source-ref") : [link];
-      var nums = Array.prototype.map.call(links, function (a) {
-        return parseInt(a.getAttribute("data-source"), 10);
-      });
-      var current = parseInt(link.getAttribute("data-source"), 10);
-      if (!nums.length) return;
+      var n = parseInt(link.getAttribute("data-source"), 10);
+      if (!n) return;
 
-      populate(nums, current);
-      lastTrigger = links[0];
+      build();
+      var li = select(n);
+      if (!li) return;
+
+      lastTrigger = link;
       panel.classList.add("is-open");
       document.body.classList.add("source-open");
+
+      scrollToSource(li);
 
       {% comment %}
       // Pointer: leave focus alone — yanking the reading position is the classic
@@ -694,9 +720,6 @@
         var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
         link.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
       }
-
-      announce(heading(nums) + ". " + nums.length +
-        (nums.length === 1 ? " source" : " sources") + " shown in the source panel.");
     }
 
     function close(returnFocus) {
@@ -721,7 +744,7 @@
 
       e.preventDefault();
       {% comment %}
-      // Repopulate in place; never toggle closed. With 200 markers on a page,
+      // Re-target in place; never toggle closed. With 200 markers on a page,
       // toggle semantics makes the panel flicker whenever a reader re-checks a
       // citation they have already opened.
       {% endcomment %}
