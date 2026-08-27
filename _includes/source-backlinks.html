@@ -1,0 +1,22 @@
+{% comment %}
+  Back-links for one source entry — "where was this cited?".
+
+  page.source_citations is computed by _plugins/source_refs.rb (never stored in
+  YAML; a hand-maintained `cited_in:` list would go stale on the first edit).
+  It is keyed by the source number as a string, and already deduped by section,
+  so a source cited five times in one section yields one back-link.
+
+  Sections are named, not numbered ("Why the deficit grew", not "§1"), so the
+  reader is reminded which claim they were checking. The ↩ is aria-hidden — it
+  would otherwise be read as "leftwards arrow with hook".
+{% endcomment %}
+{% assign key = include.n | append: '' %}
+{% assign cites = page.source_citations[key] %}
+{% if cites and cites.size > 0 %}
+  <span class="source-backlinks">
+    {% for c in cites limit: 6 %}
+      <a class="source-backlink" href="{{ c.href }}" aria-label="Back to citation {{ include.n }} in {{ c.label | strip_html | escape }}"><span aria-hidden="true">↩</span> {{ c.label | strip_html | truncate: 42 }}</a>
+    {% endfor %}
+    {% if cites.size > 6 %}<span class="source-backlink-more">and {{ cites.size | minus: 6 }} more</span>{% endif %}
+  </span>
+{% endif %}

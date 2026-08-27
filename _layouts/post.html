@@ -11,4 +11,5 @@ layout: default
 <div class="wave" style="--wave-above: var(--band-alt); --wave-below: var(--bg);"></div>
 <article class="post prose wrapper region flow">
   {{ content }}
+  {% if page.sources %}{% include sources.html %}{% endif %}
 </article>

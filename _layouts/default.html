@@ -10,6 +10,13 @@
     {{ content }}
   </main>
 
+  {% comment %}
+    Sibling of <main>, not a child: at wide viewports the panel shifts <main>
+    with a transform, and a transformed ancestor would become the containing
+    block for the fixed-position panel inside it.
+  {% endcomment %}
+  {% include source-panel.html %}
+
   {% include footer.html %}
 </body>
 </html>

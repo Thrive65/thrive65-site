@@ -46,6 +46,13 @@ Files edited by hand:
 - `_includes/home-signup.md` — Signup section
 - `_includes/footer-content.md` — Footer copy
 - `_config.yml` — Site-wide settings (URL, `signup_form_action`, etc.)
+- `_data/sources/<key>.yml` — Citation source lists (see below). These are **repo-side**, never published from a Doc — so a Doc must not reintroduce a `## Sources` section of its own, or the page renders the list twice.
+
+## Citation sources
+
+A page opts in with `sources: <key>` in front matter (or `_config.yml` defaults); `_layouts/page.html`/`post.html` then append `_includes/sources.html`. `_plugins/source_refs.rb` rewrites bare `[n]` marker runs (and author-written `[text](#source-n)` links, including absolute `https://…/page/#source-n` exports) into real `<a href="#source-N">` anchors before kramdown, and computes back-links into `page.source_citations`. `_includes/source-panel.html` (included once in `default.html`, as a **sibling after `</main>`**) is the JS-only contextual sidebar; it clones the `<li id="source-N">` already in the page rather than carrying its own copy.
+
+The number in `_data/sources/<key>.yml` is **positional** — `items[i]` is source `i+1`. Never add an `n:` key; append new entries at the end. An out-of-range marker fails the build; an uncited source emits a warning.
 
 ## Architecture
 
@@ -96,7 +103,7 @@ Files edited by hand:
 
 The **only** `clamp()` lives on `:root`'s `font-size`, driven by four plain-number knobs (think px): `--root-min: 16`, `--root-max: 24`, `--screen-min: 320`, `--screen-max: 2560`. The slope is *derived* from all four, so changing any knob reshapes the whole ramp (px at width w ≈ root-min + (root-max − root-min) × (w − screen-min)/(screen-max − screen-min); defaults give ~19.3 px @1240, ~21.3 px @1800). Everything else is proportional: `--step-*` tokens are plain rem at a fixed 1.2 minor-third ratio, and `--space-*` tokens are `rlh` line-counts (`:root` line-height is 1.5, so 1rlh = 1.5 × root size = 24 px at the 320 px minimum).
 
-**Measure & gutter.** `.wrapper` is capped for readability by `inline-size: min(100% - 2 · var(--gutter), var(--measure))`. `--measure` is `41rem` (≈ 68ch of body text, the 50–75ch sweet spot). It's deliberately in **rem, not ch**: rem tracks the root font size so the cap is identical in every context, whereas a `ch` cap resolves against each element's own font size and would make the smaller-type footer narrower than the body. rem still rides the fluid root, so the character count stays constant across viewports. Below the cap (~660 px) the `100% - 2·gutter` term wins and `--gutter` (`--space-s`, one line) reads as side padding; above it, `--measure` wins and the leftover space becomes centring auto-margins — so no breakpoint gutter steps are needed. Multi-column layouts that need more room (the hero) opt up to `--measure-wide` (`78rem`) via a `.hero-grid.wrapper` override in the block layer.
+**Measure & gutter.** `.wrapper` is capped for readability by `inline-size: min(100% - 2 · var(--gutter), var(--measure))`. `--measure` is `41rem` (≈ 68ch of body text, the 50–75ch sweet spot). It's deliberately in **rem, not ch**: rem tracks the root font size so the cap is identical in every context, whereas a `ch` cap resolves against each element's own font size and would make the smaller-type footer narrower than the body. rem still rides the fluid root, so the character count stays constant across viewports. Below the cap (~660 px) the `100% - 2·gutter` term wins and `--gutter` (`--space-s`, one line) reads as side padding; above it, `--measure` wins and the leftover space becomes centring auto-margins — so no breakpoint gutter steps are needed. Multi-column layouts that need more room (the hero) opt up to `--measure-wide` (`66rem`) via a `.hero-grid.wrapper` override in the block layer.
 
 Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout spacing — this includes icon/graphic sizing (`width`/`height` on SVGs, decorative marks), not just text. Never hardcode `px` rhythm values or add new per-token clamps. Prefer a fixed `--step-*` token over a bare `1em` when an element should **not** inherit and scale with its parent's font size (e.g. a gutter icon inside a heading): `1em` couples the size to whatever context it lands in and can blow out on large headings or narrow viewports. Size it with an explicit step and let `1em` resolve against that. The exception is a glyph that is typographically *part of* its parent — a unit suffix inside a figure, a currency mark — where coupling is the point: `.stat-unit` is `0.33em` so the unit tracks whatever `--stat-step` the figure was set to, instead of drifting to a fixed page-scale size.
 
@@ -110,6 +117,7 @@ Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout sp
 
 | Token | Value | Role |
 |---|---|---|
+| `--step--3` | 0.579 rem | citation chips, superscript digits |
 | `--step--2` | 0.694 rem | mastfoot, fine print, `.text-eyebrow` |
 | `--step--1` | 0.833 rem | footer, nav, meta, hero eyebrow, `.stat-unit` |
 | `--step-0`  | 1 rem | body, FAQ question |
@@ -129,6 +137,8 @@ Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout sp
 - `.cluster` — flex row, wrapping, centered, `--space-s` gap
 - `.repel` — cluster + `justify-content: space-between`
 
+**Link colors — `--link` is the underline, not the text.** The base `a` rule is `color: var(--ink)` with `text-decoration-color: var(--link)`; on hover the text becomes `--link` and the underline `--brand-strong`. So **`--link` names the link *accent*, not the link text color** — the name is easy to misread. Anything that should look like an ordinary link must simply inherit the base rule; don't restate `color: var(--link)` on it, which produces link-colored body text that reads as a different kind of link. Only elements that deliberately break from prose links (the `.chip`) set their own `color`.
+
 **Shared blocks — reach for these before writing anything new:**
 
 - `.card` — the one raised-surface frame (card wash, 2px edge, `--radius-card`). Two instance knobs, `--card-surface` and `--card-padding`, cover every variant; classless published containers (`#what-we-believe li`, `.page blockquote`) join the same rule by selector rather than by class.
@@ -139,10 +149,16 @@ Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout sp
 - `.choice-group` / `.choice` / `.choice-note` — `aria-pressed` option buttons, as radio cards or (with the `.compact` utility on both) as filter pills. Selected state follows the `.a11y-segment` convention: `background: var(--brand); color: var(--card)` so it inverts correctly under high contrast.
 - `.rule-above` / `.fit` (`utility` layer) — two layout helpers for grid blocks. `.rule-above` draws a hairline separator above a block with the **same** `--rule-gap` (default `--space-m`) as margin *and* padding, so the line sits midway between the two things it divides; prefer it to an `<hr>`, whose `--space-l` block margin is tuned for section breaks. `.fit` swaps a grid block to a wrapping flex row with `flex: 1 1 auto` children, sizing each column to its own content instead of to equal tracks — it has to be flex, because Grid cannot size `repeat(auto-fit, …)` tracks to content (intrinsic sizes are illegal in an auto-repeat track list).
 - `.steps` rows (`.step`, `.step-n`, `.step-label`, `.step-note`, `.step-value`, `.step.total`) — a numbered derivation with a tabular value column.
+- **Close buttons** → `.close-button` + `{% include icons/close.svg %}` (used by the a11y panel and the source panel). Context-specific behaviour, like hiding it at a breakpoint, goes on the surface's own class.
+- **Small pressable tokens** → `.chip` (used by citation markers as `class="chip source-ref"`). Keep the behavioural hook on a *separate* class so the visual and the JS/plugin selector can move independently — same split as `.close-button` / `.a11y-close`.
 
 **Forms.** Controls are styled as *elements* in `@layer base` (`input`, `select`, `textarea`, plus `input[type="range"]` via `accent-color`), so any form gets the brand treatment for free; text inputs pin to `--control-height` for the 44px target. The blocks on top are `.field` (label + control + `.hint` + `.field-msg`), `.field-set` (a reset `<fieldset>` whose `<legend>` carries the label weight), and `.input-group` + `.affix` for a control with a static prefix/suffix — the group draws no border itself, the parts do, the shared seam collapses, and `--field-width` narrows an instance.
 
 **Page width.** `layout: page` caps content at `--measure`. Set `wide: true` in a page's front matter to opt that article up to `--measure-wide` via the `.wide` utility. Reach for it only when a layout genuinely cannot work at `--measure`; the tax calculator started out wide and reads better without it.
+
+**Reuse the established pattern before inventing a component.** Before styling any new control or surface, search the CSS for an existing one that does the same job and extend or apply it — a one-off variant that looks the same but is styled separately will drift the first time the shared one changes, and doubles the a11y surface to maintain. Patterns that are already shared and must not be re-implemented: Beyond the blocks above, these are already shared and must not be re-implemented: **floating surfaces** (dropdowns, popovers, panels) → the `--menu-*` tokens; **nav-row pill controls** → `--control-height`; **compact controls under 44px** → the transparent absolutely-positioned `::before` overlay (all three detailed under “Floating menus & nav controls” above); **announcements** → the shared `announce()`, never a second live region; **icons** → an `_includes/icons/*.svg` partial, never inline-duplicated markup.
+
+If nothing fits, add the new pattern as a **named, reusable block** with a comment saying it is the shared one — not as a component-scoped rule that the next surface will copy.
 
 **Variations/state** → utility classes (not data-attributes, not BEM modifiers). Keep the utility set focused — only add when a need recurs.
 

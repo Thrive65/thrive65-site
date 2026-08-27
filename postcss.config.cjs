@@ -51,6 +51,13 @@ module.exports = {
           "step-value",
           "total",
           "stripe-bloom",
+          // Source panel — set on <body>/the panel by the SourcePanel IIFE;
+          // "is-current" lands on a cloned <li> that never exists statically.
+          "source-open",
+          "is-open",
+          "is-current",
+          "source-ref",
+          "chip",
         ],
         // Attribute/state-driven selectors: a11y modes set data-* on <html> at
         // runtime; ARIA states are toggled by JS; EmailOctopus injects its own

@@ -42,6 +42,7 @@
 
   /* ---- Type scale — proportional rem, minor third (1.2) ----------------- */
   /* Plain rem: each step rides the fluid root, ratio stays constant. */
+  --step--3: 0.579rem;  /* footnote/superscript digits — smallest step */
   --step--2: 0.694rem;
   --step--1: 0.833rem;
   --step-0:  1rem;
@@ -93,6 +94,7 @@
   --border-bold: 2px;
   --radius-card: 12px;
   --radius-sm: 8px;
+  --radius-xs: 4px;      /* small inline elements — citation chips */
   --radius-pill: 999px;
   --radius-callout: 0 12px 12px 0;
 
@@ -480,6 +482,15 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     background-color: var(--accent);
     color: var(--on-accent);
   }
+
+  /* Fragment landing offset. `.site-header` is position:sticky, so without this
+     every in-page jump on the site — heading anchors, #faq-*, #sources, and now
+     every #source-N citation — lands underneath it. :where() keeps specificity
+     at 0 so anything can override it. --space-xl (3rlh) is the smallest token
+     that clears the sticky header's measured height (~83px at the default root)
+     with a little breathing room; --space-l (2rlh, ~57px) left targets tucked
+     under it. Both scale with the root, so this holds at every text size. */
+  :where([id]) { scroll-margin-block-start: var(--space-xl); }
 }
 
 /* ── composition ─────────────────────────────────────────────────────────── */
@@ -784,7 +795,12 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     line-height: var(--lh-heading);
     margin: 0;
   }
-  .a11y-close {
+  /* Shared close affordance. Any dismissible surface — a11y panel, source
+     panel, whatever comes next — uses `.close-button` plus
+     `{% include icons/close.svg %}`; do not restyle a second one. Context-
+     specific rules (e.g. hiding it on mobile) go on the surface's own class. */
+  .close-button {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -795,8 +811,11 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     background: var(--card);
     color: var(--ink);
     cursor: pointer;
+    transition: border-color var(--transition-fast) var(--ease),
+                color var(--transition-fast) var(--ease);
   }
-  .a11y-close:hover { border-color: var(--brand); color: var(--brand); }
+  .close-button:hover { border-color: var(--brand); color: var(--brand); }
+  .close-button svg { width: var(--step-0); height: var(--step-0); }
 
   .a11y-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
   .a11y-row-label { font-weight: 600; white-space: nowrap; }
@@ -916,12 +935,11 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      absolutely positioned, so it never changes the flex box it sits in. */
   .a11y-step,
   .a11y-segment,
-  .a11y-close,
-  .a11y-reset { position: relative; }
+  .a11y-reset { position: relative; }  /* .close-button is already relative */
   .a11y-switch::before,
   .a11y-step::before,
   .a11y-segment::before,
-  .a11y-close::before,
+  .close-button::before,
   .a11y-reset::before {
     content: "";
     position: absolute;
@@ -1909,6 +1927,313 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     .hero-copy {
       padding-block: var(--space-l);
     }
+  }
+
+  /* ─ Sources ─ one citation system for every page that names a source set:
+     the inline markers, the bottom-of-page list (the no-JS baseline), and the
+     contextual panel. See _plugins/source_refs.rb and _includes/sources.html. */
+
+  :root {
+    /* Also read by the --lg-and-up shift below, so it lives on the root. */
+    --source-panel-w: min(24rem, 40vw);
+  }
+
+  /* ── Inline markers ──
+     line-height:0 on the group keeps the superscript from opening up prose
+     leading. The ::before is the same transparent hit-target overlay the
+     compact a11y-panel controls use — it guarantees a ≥24px target (WCAG 2.2
+     SC 2.5.8) without changing the visual size or the line box. */
+  .source-ref-group {
+    font-size: var(--step--3);
+    line-height: 0;
+    white-space: nowrap;
+  }
+
+  /* SHARED PATTERN — `.chip` is the small pressable pill. Apply it anywhere a
+     compact tappable token is needed; keep the behavioural hook on a separate
+     class (`.source-ref` here) the way `.close-button` + `.a11y-close` works.
+     Rendered as a chip rather than a bare underlined digit: at footnote size an
+     underline collides with the descender row and reads as damaged text, and a
+     lone blue digit doesn't announce itself as pressable. The padding is what
+     restores the hit target — the label stays small while the box grows, so the
+     ::before rarely has to do the work alone. Colours are the standard
+     interactive pair (--link → --brand on hover, --card as the on-brand
+     foreground, which inverts correctly in all four theme × contrast
+     combinations). */
+  .chip {
+    position: relative;
+    display: inline-block;
+    padding: 0.2em 0.35em;
+    /* Floor only — wider labels grow past it. Keeps single- and double-digit
+       chips the same width, which both looks tidier in a run and stops a
+       single-digit run falling under the 24px target pitch. */
+    min-inline-size: 1.7em;
+    text-align: center;
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-xs);
+    background: var(--tint);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--link);
+    text-decoration: none;
+    transition: background var(--transition-fast) var(--ease),
+                border-color var(--transition-fast) var(--ease),
+                color var(--transition-fast) var(--ease);
+  }
+  /* Raised while interactive so the 3px focus ring isn't clipped by the next
+     chip in a run — adjacent chips overlap each other's outline otherwise. */
+  .chip:hover,
+  .chip:focus-visible,
+  .chip:active {
+    z-index: 1;
+  }
+  .chip:hover,
+  .chip:focus-visible {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: var(--card);
+  }
+  .chip:active { background: var(--brand-strong); border-color: var(--brand-strong); }
+  .source-ref::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 24px;
+    min-height: 24px;
+    width: 100%;
+    height: 100%;
+  }
+  /* Spaces adjacent chips so their 24px ::before targets sit ~one pitch apart
+     rather than overlapping (WCAG 2.2 SC 2.5.8). Measured at the 320px root
+     minimum, the worst case. */
+  .source-ref + .source-ref { margin-inline-start: 0.7em; }
+
+  /* An author-written link to a source ([the FY27 memo](#source-3)) keeps its
+     own text and reads as prose, so it is not superscripted — and it opts out
+     of the chip treatment entirely, since a chip around a full phrase mid-
+     sentence would fragment the line. It reads as an ordinary link; only the
+     trailing decorative number marks it as a citation.
+     It carries no `.chip`, so it inherits the site's standard link treatment
+     from the base layer verbatim — --ink text with a --link underline, going
+     --link / --brand-strong on hover. Do not restate those colours here; the
+     whole point is that it is an ordinary link. */
+  .source-ref-inline {
+    display: inline;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+  .source-ref-inline::after {
+    content: attr(data-source);
+    vertical-align: super;
+    font-size: var(--step--2);
+    font-weight: 700;
+    margin-inline-start: 0.1em;
+  }
+
+  /* The FAQ's trailing roll-up line (`*Sources: [1][2][39]*`). */
+  .source-rollup {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .source-rollup-label { font-weight: 600; }
+
+  /* ── Bottom-of-page list ──
+     Hanging indent with the number in the gutter. counter(list-item) is used
+     rather than a custom counter because it honours the `value` attribute
+     sources.html emits, which is the authoritative number. */
+  .sources {
+    margin-block-start: var(--space-xl);
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-bold) solid var(--edge);
+  }
+  /* Beats `.prose ol { padding-left: 1.25em }`. */
+  .prose .source-list,
+  .source-list {
+    list-style: none;
+    padding-left: 0;
+    margin-block-start: var(--space-m);
+  }
+  /* The number sits in a --space-s gutter (enough for "10."), inset by
+     --space-2xs from the edge. That inset is what keeps the number *inside*
+     any background fill — :target and .is-current both paint the whole <li>,
+     and a flush-left number reads as falling out of the highlight. */
+  .source {
+    position: relative;
+    padding-inline-start: calc(var(--space-s) + var(--space-2xs));
+    padding-block: var(--space-xs);
+    border-block-start: var(--border-thin) solid var(--line);
+  }
+  .source::before {
+    content: counter(list-item) ".";
+    position: absolute;
+    inset-inline-start: var(--space-2xs);
+    font-weight: 700;
+    color: var(--secondary);
+  }
+  .source-title { font-weight: 600; }
+  .source-meta,
+  .source-note {
+    margin-block: var(--space-2xs) 0;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .source-backlinks {
+    display: block;
+    margin-block-start: var(--space-2xs);
+    font-size: var(--step--1);
+  }
+  .source-backlink { color: var(--secondary); }
+  .source-backlink + .source-backlink { margin-inline-start: var(--space-s); }
+  .source-backlink-more { color: var(--muted); font-size: var(--step--1); }
+
+  /* Arrival highlight. Deliberately a persistent fill rather than a flash: a
+     flash is gone before a reader has finished scrolling, and the global
+     reduced-motion guard would collapse it to nothing. */
+  .source:target {
+    background: var(--tint);
+    box-shadow: 0 0 0 var(--border-bold) var(--edge);
+  }
+  /* Load-bearing, not cosmetic: --tint is not re-declared under high contrast,
+     so the fill above would not reach 7:1. Swap to an outline instead. */
+  [data-contrast="high"] .source:target {
+    background: transparent;
+    outline: var(--border-bold) solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* ── Contextual panel ──
+     Hidden with visibility + transform rather than the `hidden` attribute: it
+     needs to animate in *and* out (the a11y sheet's @starting-style approach
+     only animates entry), and it toggles dozens of times per reading session.
+     visibility:hidden also removes it from the a11y tree and the tab order, so
+     the closed panel is not a stray landmark or a pointer target.
+
+     z-index 5 is below `.site-header` (10). The header creates a stacking
+     context, so everything inside it — mobile nav panel, dropdowns, a11y panel
+     — rides above the source panel, which is what we want: an open menu wins.
+     The panel slides under the sticky header; the padding below clears it. */
+  .source-panel {
+    position: fixed;
+    z-index: 5;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: var(--source-panel-w);
+    display: flex;
+    flex-direction: column;
+    padding-block-start: var(--space-2xl); /* clears the sticky header */
+    background: var(--menu-surface);
+    border-inline-start: var(--menu-border);
+    box-shadow: var(--menu-shadow);
+    font-size: var(--step--1);
+    visibility: hidden;
+    transform: translateX(calc(100% + var(--space-m)));
+    transition: transform var(--transition-slow) var(--ease),
+                visibility 0s linear var(--transition-slow);
+  }
+  .source-panel.is-open {
+    visibility: visible;
+    transform: translateX(0);
+    transition: transform var(--transition-slow) var(--ease),
+                visibility 0s linear 0s;
+  }
+  /* Progressive enhancement: with no JS the panel can never open, so it must
+     not exist. Gated on html.js — never a bare `.source-panel { display:none }`. */
+  html:not(.js) .source-panel { display: none; }
+
+  /* Head and foot dock; only the body scrolls. min-height:0 lets the body
+     shrink below its content height so overflow-y actually engages. */
+  .source-panel-head,
+  .source-panel-foot { flex-shrink: 0; }
+  .source-panel-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .source-panel-head,
+  .source-panel-foot {
+    padding: var(--space-s) var(--space-m);
+    border-block-start: var(--border-thin) solid var(--line);
+  }
+  .source-panel-head { border-block-start: 0; border-block-end: var(--border-thin) solid var(--line); }
+  .source-panel-title { font-size: var(--step-1); }
+  .source-panel-title:focus-visible { outline: 3px solid var(--focus); }
+  .source-panel-list {
+    list-style: none;
+    padding: var(--space-s) var(--space-m);
+    margin: 0;
+  }
+  .source-panel-list .source:first-child { border-block-start: 0; }
+  /* The clicked entry within a multi-source run. Never colour-only — the clone
+     also carries aria-current and a visually-hidden "Selected: " prefix. */
+  .source-panel-list .is-current {
+    background: var(--tint);
+    border-inline-start: var(--border-bold) solid var(--brand);
+    /* Subtract the border so the text column doesn't shift when the rule
+       appears. No negative margin — that pulled the fill out past the number. */
+    padding-inline-start: calc(var(--space-s) + var(--space-2xs) - var(--border-bold));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .source-panel { transition-delay: 0s; }
+  }
+
+  /* Mobile: bottom sheet, mirroring the a11y panel. max-height is what keeps
+     this from being modal in practice — a full-height sheet would bury the
+     article the panel exists to sit beside. */
+  @media (--sm-and-down) {
+    .source-panel {
+      inset: auto 0 0 0;
+      width: 100%;
+      max-height: min(60dvh, 32rem);
+      padding-block-start: var(--space-s);
+      padding-block-end: env(safe-area-inset-bottom);
+      border-inline-start: 0;
+      border-block-start: var(--border-bold) solid var(--edge);
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      transform: translateY(100%);
+    }
+    .source-panel.is-open { transform: translateY(0); }
+    /* Drag grabber — the swipe-to-close handler in head.html drives both sheets. */
+    .source-panel::before {
+      content: "";
+      display: block;
+      width: 2.5rem;
+      height: 0.25rem;
+      margin: 0 auto var(--space-2xs);
+      border-radius: var(--radius-pill);
+      background: var(--line);
+    }
+  }
+
+  /* Wide viewports: shift the article aside instead of covering it. The whole
+     point of the panel is seeing sources and article text at the same time, and
+     `.wrapper` caps prose at --measure, so at 1115px an overlay would sit right
+     on top of the text. A transform is used rather than margin because it does
+     not reflow or re-wrap a single paragraph mid-read, and it animates in
+     lockstep with the panel. The min() clamps the shift so that at 150–200%
+     text size (where --measure grows in px) main's left edge cannot be pushed
+     off-screen.
+
+     ⚠ A transformed element becomes the containing block for any
+     position:fixed descendant. <main> has none today — the toast appends to
+     <body> and every nav/a11y surface lives in <header>, which is a sibling.
+     If one is ever added inside <main> it will anchor to <main>, not the
+     viewport. That is why the panel is a sibling of <main>, not a child. */
+  @media (--lg-and-up) {
+    :root {
+      --source-shift: min(
+        var(--source-panel-w),
+        max(0px, calc(var(--source-panel-w) + var(--space-m) - (100vw - var(--measure)) / 2))
+      );
+    }
+    body.source-open > main {
+      transform: translateX(calc(-1 * var(--source-shift)));
+    }
+    main { transition: transform var(--transition-slow) var(--ease); }
   }
 }
 
