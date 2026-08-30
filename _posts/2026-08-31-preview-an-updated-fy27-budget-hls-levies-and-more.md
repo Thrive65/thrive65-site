@@ -4,6 +4,7 @@ title: "Preview: An Updated FY27 budget, HLS levies and more"
 date: "2026-08-31"
 category: "Board Meeting Previews"
 permalink: "/board-meeting-previews/2026/8-31/"
+description: "An Updated FY27 budget, HLS levies and more"
 ---
 
 [Agenda](https://meetings.boardbook.org/Public/Agenda/1247?meeting=761539)
