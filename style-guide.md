@@ -81,6 +81,6 @@ There isn’t a proper “blockquote” in Google Docs. Add `>` before a line to
 
 ---
 
-## Callouts
+## Callout Blockquote
 
-> Bold paragraph Add two hard returns after the bold paragraph, then enter callout text.
+> Bold paragraph A single cell table is converted to a blockquote on publish. The first bold paragraph will become the title, second paragraph is the callout text.
