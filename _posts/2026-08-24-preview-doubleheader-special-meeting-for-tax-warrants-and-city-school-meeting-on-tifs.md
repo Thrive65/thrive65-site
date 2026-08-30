@@ -4,6 +4,7 @@ title: "Preview: Doubleheader Special Meeting for Tax Warrants and City-School M
 date: "2026-08-24"
 category: "Board Meeting Previews"
 permalink: "/board-meeting-previews/2026/8-24/"
+description: "Doubleheader Special Meeting for Tax Warrants and City-School Meeting on TIFs"
 ---
 
 [Agenda](https://meetings.boardbook.org/Public/Agenda/1247?meeting=763178)\-Special Meeting @ 4:45  
@@ -26,5 +27,3 @@ The board will vote on a [resolution authorizing $22.97 million in warrants](htt
 **Importantly, the [memo from D65’s CFO says](https://meetings.boardbook.org/Documents/WebViewer/1247?file=14324358) “Although the $22.97 million will help the District meet payroll and vendor obligations, it will not fully address the projected cash-flow shortfall. The District expects to issue additional tax anticipation warrants in the near future.”**
 
 A [memo from the district’s external financial advisors, PTMA Financial Solutions](https://meetings.boardbook.org/Documents/WebViewer/1247?file=14320780), provides more detail on this; indicating that the board may need to approve additional warrants at the September 14th board meeting, in order to ensure the “interim liquidity to ensure it can continue meeting payroll, vendor payments, and other operating obligations without disruption.”
-
-Thank you for your interest in helping our district thrive. However you advocate on the issues that matter most to you, whether it's at board meetings or the playground after school, committed communities make a difference\!
