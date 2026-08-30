@@ -3,9 +3,6 @@ layout: "page"
 title: "Style Guide"
 description: "Text style guide displaying all the various Markdown to HTML elements."
 image: "https://pic.fish/#https%3A%2F%2Fthrive65.github.io%2Fthrive65-site%2Fstyle-guide%2F"
-# Internal reference page: stays live for authors, but kept out of search.
-noindex: true      # emits <meta name="robots" content="noindex, follow"> (head.html)
-sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
 ---
 
 ## Headings
@@ -52,17 +49,6 @@ There isn’t a proper “blockquote” in Google Docs. Add `>` before a line to
 \> This is a blockquote.   
 \> It can span multiple lines.
 
-Blockquotes render as tinted, framed **callout cards**. Bold the first line on
-its own to give the callout an uppercase label:
-
-> **Quick Tip**
->
-> Bold the first line by itself and it becomes the callout's label; the rest is
-> the body.
-
-In Google Docs, use a one-cell table for a callout (Docs has no blockquote) —
-the publisher converts it automatically. See `apps-script/SETUP.md`.
-
 ## Lists
 
 ---
@@ -79,13 +65,6 @@ the publisher converts it automatically. See `apps-script/SETUP.md`.
    2. Another nested  
 3. Item 3
 
-A **checklist** uses task-list syntax (`- [ ]`) and renders with brand-outlined
-boxes instead of bullets:
-
-- [ ] First thing to do
-- [ ] Second thing to do
-- [ ] Third thing to do
-
 ## Table
 
 **Insert** \> **Table** in Google Docs  
@@ -101,3 +80,7 @@ boxes instead of bullets:
 **Insert** \> **Horizontal Line** in Google Docs. Adding an extra space before the line in Docs if the web page doesn’t render correctly.
 
 ---
+
+## Callouts
+
+> Bold paragraph Add two hard returns after the bold paragraph, then enter callout text.
