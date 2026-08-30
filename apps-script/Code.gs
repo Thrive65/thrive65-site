@@ -427,10 +427,12 @@ function doPublish_() {
     throw new Error("Not configured yet — open Page Properties and choose a content type first.");
   }
 
-  // Form title wins; falls back to the doc's name.
-  const title = props.getProperty("META_TITLE") || doc.getName();
-  const description = props.getProperty("META_DESCRIPTION") || "";
-  const image = props.getProperty("META_IMAGE") || "";
+  // Form title wins; falls back to the doc's name. Trimmed because Docs
+  // titles routinely carry trailing spaces, which otherwise land in the
+  // front matter and render on the page.
+  const title = (props.getProperty("META_TITLE") || doc.getName() || "").trim();
+  const description = (props.getProperty("META_DESCRIPTION") || "").trim();
+  const image = (props.getProperty("META_IMAGE") || "").trim();
 
   const rawMarkdown = cleanGoogleMarkdown(exportDocAsMarkdown(docId));
 
@@ -498,6 +500,17 @@ function doPublish_() {
   }
 
   commitFileToGithub(targetPath, content, commitMessage);
+
+  // A post's path is derived from its title and date, so editing either one
+  // publishes to a *new* file and leaves the old one behind — two posts, same
+  // permalink. Remove the previous file once the new one has landed. Only
+  // after the commit succeeds, so a failed publish never deletes live content.
+  const previousPath = props.getProperty("LAST_PUBLISHED_PATH");
+  if (previousPath && previousPath !== targetPath) {
+    deleteFileFromGithub_(previousPath, `Remove ${previousPath} (renamed to ${targetPath})`);
+  }
+  props.setProperty("LAST_PUBLISHED_PATH", targetPath);
+
   return targetPath;
 }
 
@@ -764,4 +777,45 @@ function commitFileToGithub(path, content, commitMessage) {
     throw new Error(`GitHub commit failed (${code}): ${putResp.getContentText()}`);
   }
   return JSON.parse(putResp.getContentText());
+}
+
+// Delete a file via the Contents API. Used to clean up the old path when a
+// doc's target path changes (see doPublish_). Best-effort: a file that's
+// already gone, or a delete that fails, must not fail the publish that just
+// succeeded — the new content is live either way.
+function deleteFileFromGithub_(path, commitMessage) {
+  const props = PropertiesService.getScriptProperties();
+  const token = props.getProperty("GITHUB_TOKEN");
+  const owner = props.getProperty("GITHUB_OWNER");
+  const repo = props.getProperty("GITHUB_REPO");
+  const branch = props.getProperty("GITHUB_BRANCH") || "main";
+
+  const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${encodedPath}`;
+  const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
+
+  try {
+    const getResp = UrlFetchApp.fetch(`${apiUrl}?ref=${branch}`, {
+      method: "get",
+      headers: headers,
+      muteHttpExceptions: true,
+    });
+    if (getResp.getResponseCode() !== 200) return false; // already gone
+
+    const delResp = UrlFetchApp.fetch(apiUrl, {
+      method: "delete",
+      headers: headers,
+      contentType: "application/json",
+      payload: JSON.stringify({
+        message: commitMessage,
+        sha: JSON.parse(getResp.getContentText()).sha,
+        branch: branch,
+      }),
+      muteHttpExceptions: true,
+    });
+    return delResp.getResponseCode() === 200;
+  } catch (err) {
+    console.warn("Could not remove old file " + path + ": " + (err.message || err));
+    return false;
+  }
 }

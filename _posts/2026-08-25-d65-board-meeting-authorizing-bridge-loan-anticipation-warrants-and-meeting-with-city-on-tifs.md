@@ -1,6 +1,6 @@
 ---
 layout: "post"
-title: "D65 Board Meeting: Authorizing Bridge Loan Anticipation Warrants and Meeting with City on TIFs                                               "
+title: "D65 Board Meeting: Authorizing Bridge Loan Anticipation Warrants and Meeting with City on TIFs"
 date: "2026-08-25"
 category: "Board Meeting Recaps"
 permalink: "/board-meeting-recaps/2026/8-25/"

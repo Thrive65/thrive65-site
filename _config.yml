@@ -34,6 +34,11 @@ kramdown:
 
 permalink: /:title/
 
+# Publish posts dated in the future. Board meeting previews are dated for the
+# upcoming meeting, so with Jekyll's default (false) they'd be dropped from the
+# build until the meeting day.
+future: true
+
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
