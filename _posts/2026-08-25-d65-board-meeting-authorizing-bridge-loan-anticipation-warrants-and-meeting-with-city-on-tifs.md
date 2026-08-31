@@ -10,7 +10,7 @@ description: "Authorizing Bridge Loan Anticipation Warrants and Meeting with Cit
 [Agenda](https://meetings.boardbook.org/Public/Agenda/1247?meeting=761182)  
 Minutes \- not yet uploaded as of 8.30
 
-Last Monday’s two meetings were relatively straightforward. The first meeting was a brief vote by the board authorizing the issuance of up to $22.97 million in interest free tax anticipation warrants through the Cook County Bridge Loan program. 
+The first meeting was a brief vote by the board authorizing the issuance of up to $22.97 million in interest free tax anticipation warrants through the Cook County Bridge Loan program. 
 
 Additional context on this from our preview written for this meeting: 
 
