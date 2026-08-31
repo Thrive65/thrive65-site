@@ -191,8 +191,9 @@ sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
       <div class="grid2">
         <div class="field">
           <label for="term">Repayment term</label>
-          <div class="inputrow"><input id="term" type="number" min="1" max="40" step="1" value="20" inputmode="numeric"><span class="suffix">years</span></div>
+          <div class="inputrow"><input id="term" type="number" min="1" max="30" step="1" value="20" inputmode="numeric"><span class="suffix">years</span></div>
           <p class="hint" id="termHint"></p>
+          <p class="termmsg hidden" id="termMsg" role="alert"></p>
         </div>
         <div class="field">
           <label for="rate">Interest rate</label>
@@ -260,14 +261,18 @@ sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
   <footer>
     <p><strong>Sources</strong></p>
     <ol class="src">
-      <li>District 65 annual financial report, SY2025, reporting district equalized assessed valuation of
-        $4,203,686,381 and total long-term debt outstanding of $99,111,300.</li>
+      <li>District 65 FY2025 annual financial report (fiscal year ending June 30, 2025), Financial Profile
+        Information page, reporting a Tax Year 2024 equalized assessed valuation of $4,203,686,381 and long-term
+        debt principal outstanding of $99,111,300 as of June 30, 2025.</li>
       <li>District 65, HLS Approval for Submission to ISBE, board memo (August 4, 2026), reporting $128.8&nbsp;million
         in identified health and life safety work.</li>
       <li>District 65 FY2027 preliminary budget memo (June 22, 2026), Health Life Safety Fund property tax revenue
         of $136,600.</li>
       <li>105 ILCS 5/17-2.11, school board authority to levy taxes or issue bonds for fire prevention, safety, and
-        specified repair purposes.</li>
+        specified repair purposes, with such bonds required to mature within 20 years.</li>
+      <li>Illinois House Bill 4582 (103rd General Assembly), effective July 1, 2024, setting a 30-year maximum
+        maturity for voter-approved school bonds issued to purchase, construct, or improve real property, for
+        referendums held on or after November 5, 2024.</li>
     </ol>
     <p style="margin-top:16px">
       Thrive65 is an independent community coalition and is not affiliated with or operated by District 65.
@@ -282,7 +287,6 @@ sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
   var DISTRICT_EAV = 4203686381;
   var CURRENT_LEVY = 136600;
   var LEVY_CAP_PCT = 0.0005;
-  var DEBT_ALLOWED = 290054360, DEBT_OUT = 99111300;
 
   var $=function(i){return document.getElementById(i)};
   var mode="hls", opStyle="dollars";
@@ -305,7 +309,10 @@ sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
       bondHint:'$128.8 million is the full ten-year figure reported to the board in August 2026. Most of that work '+
         'is classified as deferrable for up to a decade, so the full amount is a ceiling rather than a plan.',
       termHint:"Illinois caps these particular bonds at 20 years.",
-      termMax:20, presets:[[25e6,"$25M"],[50e6,"$50M"],[100e6,"$100M"],[128.8e6,"$128.8M · full survey"]],
+      termMax:20,
+      termCapMsg:"Illinois caps health and life safety bonds at 20 years, so this estimate uses 20.",
+      bondMax:200e6,
+      presets:[[25e6,"$25M"],[50e6,"$50M"],[100e6,"$100M"],[128.8e6,"$128.8M · full survey"]],
       voteTitle:"Why a vote may not be required",
       vote:'<p>Illinois school districts may levy for state-approved health and life safety work at up to 0.05% of '+
         'district value per year. When that levy is not enough to finish approved work, the board may issue bonds '+
@@ -322,17 +329,16 @@ sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
         'approved borrowing for building work that is not legally mandated.',
       noteClass:"note",
       bondLabel:"Amount borrowed, approved by voters",
-      bondHint:'For scale, District 65 has identified about $409.6 million of facilities needs in the first ten '+
-        'years. As of SY2025 the district had roughly $190.9 million of unused statutory borrowing capacity.',
-      termHint:"Voter-approved school bonds commonly run 20 to 25 years.",
-      termMax:40, presets:[[50e6,"$50M"],[100e6,"$100M"],[190.9e6,"$190.9M · debt capacity"]],
+      bondHint:'For scale, District 65 has identified about $409.6 million of facilities needs in the first ten years.',
+      termHint:"Illinois caps voter-approved building bonds at 30 years. Terms of 20 to 25 years are common.",
+      termMax:30,
+      termCapMsg:"Illinois caps voter-approved building bonds at 30 years, so this estimate uses 30.",
+      bondMax:410e6,
+      presets:[[50e6,"$50M"],[100e6,"$100M"],[200e6,"$200M"],[409.6e6,"$409.6M · 10-yr needs"]],
       voteTitle:"How a capital referendum differs",
       vote:'<p>A capital referendum asks voters directly for permission to borrow. If it passes, the debt service '+
         'is a recognized exception to the property tax cap, so it is added on top of the capped levy rather than '+
         'squeezed inside it.</p>'+
-        '<p>Districts are also bound by a statutory debt limit. For a K-8 district that ceiling is 6.9% of equalized '+
-        'assessed value. On the SY2025 valuation that ceiling is about $290.1 million. District 65 reported $99.1 million '+
-        'of long-term debt outstanding, using about 34% of the limit and leaving roughly $190.9 million of room.</p>'+
         '<p>Bond money arrives within months of approval, which is why capital questions and operating questions '+
         'move on very different timelines.</p>'
     },
@@ -354,8 +360,9 @@ sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
 
   var ASSUME_COMMON =
     '<p><strong>A fixed district value.</strong> Your share depends on the district\'s total equalized assessed value, '+
-    'which changes every year. This tool uses $4.11 billion, District 65\'s figure for the year ending June 30, 2023. '+
-    'That value has been growing, so real per-household costs are likely somewhat lower than shown.</p>'+
+    'which changes every year. This tool uses $4.20 billion, District 65\'s Tax Year 2024 value from its FY2025 '+
+    'audited financial report. Your 2026 tax bill reflects Evanston\'s 2025 reassessment, a newer year, so the '+
+    'district-wide total will shift once that figure is finalized.</p>'+
     '<p><strong>Your assessment stays put.</strong> If your property is reassessed, your share moves with it.</p>'+
     '<p><strong>District 65 only.</strong> This is one line on your tax bill. It excludes Evanston Township High School '+
     'District 202, the city, the county, and every other taxing body.</p>'+
@@ -387,7 +394,8 @@ sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
       $("bondHint").innerHTML=c.bondHint;
       $("termHint").textContent=c.termHint;
       term.max=c.termMax;
-      if(num(term,20)>c.termMax) term.value=c.termMax;
+      bond.max=c.bondMax;
+      bond.value=Math.min(num(bondNum,0),c.bondMax);
       var ph="";
       c.presets.forEach(function(p){ ph+='<button class="preset" type="button" data-bond="'+p[0]+'">'+p[1]+'</button>'; });
       $("bondPresets").innerHTML=ph;
@@ -416,8 +424,13 @@ sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
       usd(he)+" &divide; "+usd(DISTRICT_EAV)+" of total district value",
       share>0?(share*100).toFixed(4)+"%":"0%"]);
 
+    var termMsg=$("termMsg");
     if(mode!=="operating"){
-      var P=num(bondNum,0), yrs=Math.max(1,Math.min(num(term,20),parseFloat(term.max))), rt=num(rate,4.5);
+      var cap=parseFloat(term.max), entered=parseFloat(term.value);
+      if(isFinite(entered)&&entered>cap){
+        termMsg.textContent=CFG[mode].termCapMsg; termMsg.classList.remove("hidden");
+      } else { termMsg.textContent=""; termMsg.classList.add("hidden"); }
+      var P=num(bondNum,0), yrs=Math.max(1,Math.min(num(term,20),cap)), rt=num(rate,4.5);
       var annual=ds(P,yrs,rt);
       yearly=annual*share; windowYears=yrs;
       if(P>0){
