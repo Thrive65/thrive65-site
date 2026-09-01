@@ -87,7 +87,7 @@ Files edited by hand:
 - **base** — global element styles (`body`, `h1–h3`, `p`, `a`, `:focus-visible`, `.skip-link`). Style HTML elements directly; reach for a class only when an element/contextual selector won't do.
 - **composition** — content-agnostic layout primitives with no color or decoration: `.wrapper`, `.region`, `.flow`, `.cluster`, `.repel`
 - **block** — components with short role names, no BEM `__`/`--` (`.site-header`, `.hero`, `.faq-item`, `.site-footer`, `.post`, `.page`, `.post-list`). Children styled via scoped element selectors or applied composition/utility classes. `.prose` is a shared marker applied to *every* classless-markdown container (the `.post`/`.page` articles and the homepage `index.md` section wrappers) so generic prose-list styling applies uniformly; `.post`/`.page` remain for the styling that should stay post/page-only (heading color, em-lead, blockquote, tables).
-- **utility** — single-purpose, function-named helpers. Names are **semantic, not literal**: colors are `.bg-surface` / `.bg-surface-alt` / `.bg-brand` / `.bg-accent` / `.text-base` / `.text-deemphasized` / `.text-brand` (role, not `.bg-marigold`); type is `.text-meta` / `.text-eyebrow`; plus `.text-center`, `.nowrap`, `.flow-space-*`, `.mt-*`, `.visually-hidden`. Utilities beat blocks because the utility layer comes last (before exception).
+- **utility** — single-purpose, function-named helpers. Names are **semantic, not literal**: colors are `.bg-surface` / `.bg-surface-alt` / `.bg-brand` / `.bg-accent` / `.text-base` / `.text-deemphasized` / `.text-brand` (role, not `.bg-marigold`); type is `.text-meta` / `.text-eyebrow`; plus `.text-center`, `.nowrap`, `.fit`, `.rule-above`, `.flow-space-*`, `.mt-*`, `.visually-hidden`. Utilities beat blocks because the utility layer comes last (before exception).
 - **exception** — third-party override block (EmailOctopus under `.signup`) where `!important` is the only option.
 
 **Global heading scale.** Headings are sized once, globally: `h1` → `--step-3`, `h2` → `--step-2`, `h3` → `--step-1`. Don't re-declare a heading size that already matches the global value; the **hero** is the only context that overrides it (`h1` → `--step-5`, eyebrow `h3` → `--step--1`).
@@ -98,7 +98,7 @@ The **only** `clamp()` lives on `:root`'s `font-size`, driven by four plain-numb
 
 **Measure & gutter.** `.wrapper` is capped for readability by `inline-size: min(100% - 2 · var(--gutter), var(--measure))`. `--measure` is `41rem` (≈ 68ch of body text, the 50–75ch sweet spot). It's deliberately in **rem, not ch**: rem tracks the root font size so the cap is identical in every context, whereas a `ch` cap resolves against each element's own font size and would make the smaller-type footer narrower than the body. rem still rides the fluid root, so the character count stays constant across viewports. Below the cap (~660 px) the `100% - 2·gutter` term wins and `--gutter` (`--space-s`, one line) reads as side padding; above it, `--measure` wins and the leftover space becomes centring auto-margins — so no breakpoint gutter steps are needed. Multi-column layouts that need more room (the hero) opt up to `--measure-wide` (`78rem`) via a `.hero-grid.wrapper` override in the block layer.
 
-Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout spacing — this includes icon/graphic sizing (`width`/`height` on SVGs, decorative marks), not just text. Never hardcode `px` rhythm values or add new per-token clamps. Prefer a fixed `--step-*` token over a bare `1em` when an element should **not** inherit and scale with its parent's font size (e.g. a gutter icon inside a heading): `1em` couples the size to whatever context it lands in and can blow out on large headings or narrow viewports. Size it with an explicit step and let `1em` resolve against that.
+Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout spacing — this includes icon/graphic sizing (`width`/`height` on SVGs, decorative marks), not just text. Never hardcode `px` rhythm values or add new per-token clamps. Prefer a fixed `--step-*` token over a bare `1em` when an element should **not** inherit and scale with its parent's font size (e.g. a gutter icon inside a heading): `1em` couples the size to whatever context it lands in and can blow out on large headings or narrow viewports. Size it with an explicit step and let `1em` resolve against that. The exception is a glyph that is typographically *part of* its parent — a unit suffix inside a figure, a currency mark — where coupling is the point: `.stat-unit` is `0.33em` so the unit tracks whatever `--stat-step` the figure was set to, instead of drifting to a fixed page-scale size.
 
 **Breakpoints & the dev-server caveat.** Breakpoints are declared once as Media Queries L5 `@custom-media` rules in `main.css` (`--sm-and-down` ≤784px, `--md-and-up` ≥785px) and resolved at build time by `postcss-custom-media`. Because dev serves the *authored* CSS untouched and no browser ships `@custom-media` on by default, **every `@media (--…)` rule is inert against `localhost:4000`** — including the mobile nav — so a narrow viewport there shows the desktop layout. **Verify responsive work in Firefox with `layout.css.custom-media.enabled` set to `true` in `about:config`.** Any other browser (or Firefox without the flag) will misreport responsive behavior in dev; production is unaffected. Add new breakpoints as `@custom-media`, never as literal widths.
 
@@ -110,16 +110,17 @@ Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout sp
 
 | Token | Value | Role |
 |---|---|---|
-| `--step--2` | 0.694 rem | mastfoot, fine print |
-| `--step--1` | 0.833 rem | eyebrow, footer, nav, meta |
+| `--step--2` | 0.694 rem | mastfoot, fine print, `.text-eyebrow` |
+| `--step--1` | 0.833 rem | footer, nav, meta, hero eyebrow, `.stat-unit` |
 | `--step-0`  | 1 rem | body, FAQ question |
 | `--step-1`  | 1.2 rem | brand, hero lede, h3 |
 | `--step-2`  | 1.44 rem | h2 |
 | `--step-3`  | 1.728 rem | h1 (page/post title) |
 | `--step-5`  | 2.488 rem | hero h1 |
+| `--step-6`  | 4.2 rem | headline figure (a single hero number, e.g. the tax calculator's result) |
 | `--space-2xs…4xl` | ¼, ½, 1, 1½, 2, 3, 4, 6, 8 rlh | layout rhythm in lines of text; doubles every two steps |
 
-**Line height** is unitless (so leading stays fluid alongside the fluid type) and tied to size via `--lh-*` tokens — it tightens proportionally as text grows: `--lh-body` 1.6 → `--lh-lead` 1.5 → `--lh-heading` 1.15 → `--lh-display` 1.1. A new text-size utility should set its matching line-height.
+**Line height** is unitless (so leading stays fluid alongside the fluid type) and tied to size via `--lh-*` tokens — it tightens proportionally as text grows: `--lh-body` 1.6 → `--lh-lead` 1.5 → `--lh-heading` 1.15 → `--lh-display` 1.1 → `--lh-flat` 1. `--lh-flat` is for single-line display figures only (`.stat-value`): leading on a one-line number is dead space that makes the block taller than the digits and skews any gap measured from it. It pairs with `text-box: trim-both cap alphabetic` under `@supports`, which trims the remaining font ascent/descent so the box is exactly cap-height to baseline — reach for both together whenever a number has to sit flush against something. A new text-size utility should set its matching line-height.
 
 **Composition primitives** — use for layout instead of bespoke flex rules:
 - `.wrapper` — centred container capped at `--measure` (readable line length) with `--gutter` side spacing below the cap; folded into one `inline-size: min(100% - 2·var(--gutter), var(--measure))`
@@ -127,6 +128,21 @@ Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout sp
 - `.flow` — owl-operator spacing between children (`--flow-space` CSS var, overrideable)
 - `.cluster` — flex row, wrapping, centered, `--space-s` gap
 - `.repel` — cluster + `justify-content: space-between`
+
+**Shared blocks — reach for these before writing anything new:**
+
+- `.card` — the one raised-surface frame (card wash, 2px edge, `--radius-card`). Two instance knobs, `--card-surface` and `--card-padding`, cover every variant; classless published containers (`#what-we-believe li`, `.page blockquote`) join the same rule by selector rather than by class.
+- `.accordion` / `.accordion-icon` / `.accordion-body` — the generic `<details>`/`<summary>` disclosure. The FAQ keeps `.faq-item` *alongside* `.accordion` purely as its deep-link and copy-anchor hook (`head.html` matches on it); all styling lives on `.accordion`. The `<summary>` must also carry `.cluster`.
+- `.stat-grid` / `.stat` / `.stat-value` / `.stat-unit` — big display figure over small support text. `--stat-color`, `--stat-step` and `--stat-unit-color` are the knobs.
+- `.callout` — stripe-edged note using the `--radius-callout` token. Recolor the stripe with the `.stripe-bloom` utility, not a second block.
+- **Surface alts** (`utility` layer) — repaint any container by remapping the knobs blocks already read (`--card-surface`, `--muted`, `--line`, `--eyebrow-color`, `--stat-color`, `--stat-unit-color`), never with descendant color rules: utility outranks block, so a `.surface-x .thing` rule in `block` could never win. `.surface-feature` is the spotlight panel (deep-teal `--feature-bg`, marigold `--feature-label`, white figures); `.surface-quiet` is the `.affix` treatment at panel scale (`--tint` wash, `--muted` ink). The `--feature-*` tokens are HSL and are declared in all five theme blocks (`:root`, `[data-theme="dark"]`, the auto-dark media query, and both high-contrast blocks) — add any new surface-alt token to all five or high-contrast will keep the brand hue and break the flatten-to-black/white contract.
+- `.choice-group` / `.choice` / `.choice-note` — `aria-pressed` option buttons, as radio cards or (with the `.compact` utility on both) as filter pills. Selected state follows the `.a11y-segment` convention: `background: var(--brand); color: var(--card)` so it inverts correctly under high contrast.
+- `.rule-above` / `.fit` (`utility` layer) — two layout helpers for grid blocks. `.rule-above` draws a hairline separator above a block with the **same** `--rule-gap` (default `--space-m`) as margin *and* padding, so the line sits midway between the two things it divides; prefer it to an `<hr>`, whose `--space-l` block margin is tuned for section breaks. `.fit` swaps a grid block to a wrapping flex row with `flex: 1 1 auto` children, sizing each column to its own content instead of to equal tracks — it has to be flex, because Grid cannot size `repeat(auto-fit, …)` tracks to content (intrinsic sizes are illegal in an auto-repeat track list).
+- `.steps` rows (`.step`, `.step-n`, `.step-label`, `.step-note`, `.step-value`, `.step.total`) — a numbered derivation with a tabular value column.
+
+**Forms.** Controls are styled as *elements* in `@layer base` (`input`, `select`, `textarea`, plus `input[type="range"]` via `accent-color`), so any form gets the brand treatment for free; text inputs pin to `--control-height` for the 44px target. The blocks on top are `.field` (label + control + `.hint` + `.field-msg`), `.field-set` (a reset `<fieldset>` whose `<legend>` carries the label weight), and `.input-group` + `.affix` for a control with a static prefix/suffix — the group draws no border itself, the parts do, the shared seam collapses, and `--field-width` narrows an instance.
+
+**Page width.** `layout: page` caps content at `--measure`. Set `wide: true` in a page's front matter to opt that article up to `--measure-wide` via the `.wide` utility. Reach for it only when a layout genuinely cannot work at `--measure`; the tax calculator started out wide and reads better without it.
 
 **Variations/state** → utility classes (not data-attributes, not BEM modifiers). Keep the utility set focused — only add when a need recurs.
 

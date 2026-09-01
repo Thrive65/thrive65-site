@@ -50,6 +50,7 @@
   --step-3:  1.728rem;
   --step-4:  2.074rem;
   --step-5:  2.488rem;
+  --step-6:  4.2rem;
 
   /* ---- Spacing — rlh line-counts (1rlh = one root line, 24px at min) ---- */
   /* Doubles every two steps (s→l→2xl→4xl = 1·2·4·8, m→xl→3xl = 1.5·3·6). */
@@ -85,6 +86,7 @@
   --lh-lead: 1.5;
   --lh-heading: 1.15;
   --lh-display: 1.1;
+  --lh-flat: 1;      /* single-line display figures — see .stat-value */
 
   /* ---- Borders & radii (framed 2px-edge look) ---------------------- */
   --border-thin: 1px;
@@ -125,15 +127,28 @@
   --line:  hsla(150, 20%, 83%, 1);  /* 1px hairlines, dividers */
   --ink:   #14231B;                 /* headings & body text */
   --muted: hsla(150, 16%, 30%, 1);  /* secondary text */
-  --edge:  #0B0B0B;                 /* 2px frames; focus outline on light */
+  --edge:  #0B0B0B;                 /* 2px frames */
   --on-accent: #221B05;             /* CTA label text (on Marigold) */
-  --focus: #D42A56;                 /* focus outline — bloom on light */
+  --focus: hsl(310, 80%, 42%);      /* focus outline — magenta on light */
 
   /* ---- Shared: accents (CONSTANT across all hues) ----------------------- */
   --secondary:    #005A82;                 /* Okabe–Ito blue — eyebrows, 2nd headings */
   --accent:       #FFB01A;                 /* Marigold — primary CTA fill (constant) */
   --accent-hover: #FFC44F;                 /* CTA hover */
   --bloom:        #C4560A;                 /* Accent 2 (Okabe–Ito orange) — moment-of-change only */
+
+  /* ---- Feature surface (spotlight panel: .surface-feature) --------------
+     Deep teal wash with a marigold label and white figures. HSL so a theme
+     shift is just a lightness move on the same hue. ---------------------- */
+  --feature-bg:    hsl(189, 65%, 22%);
+  --feature-ink:   hsl(0, 0%, 100%);
+  --feature-muted: hsl(189, 30%, 84%);
+  --feature-label: hsl(39, 100%, 55%);
+  --feature-line:  hsl(189, 40%, 40%);
+
+  /* Quiet surface (.surface-quiet) label ink — near-black warm brown, the
+     same value as --on-accent, on the --tint wash. */
+  --quiet-ink: hsl(45.5172, 74.359%, 7.647%);
 
   /* ---- Shared: footer family (shared across themes) --------------------- */
   --footer-bg:   #070E0A;
@@ -142,10 +157,10 @@
 
   /* ---- Illustration — constants (same across all hues) ------------------ */
   --art-sky:   transparent;         /* hero-bg shows through */ 
-  --art-pop:   hsl(339 70% 50%);    /* rose */
-  --art-clock: hsl(185 40% 97%);    /* near-white */
-  --art-line:  hsl(190 45% 10%);    /* near-black */
-  --art-ink:   hsl(190 38% 18%);    /* near-black */
+  --art-pop:   hsl(339, 70%, 50%);    /* rose */
+  --art-clock: hsl(185, 40%, 97%);    /* near-white */
+  --art-line:  hsl(190, 45%, 10%);    /* near-black */
+  --art-ink:   hsl(190, 38%, 18%);    /* near-black */
 
   /* ---- Breakpoints: defined as @custom-media rules below ---- */
 }
@@ -184,15 +199,23 @@
   --accent-hover: #FFC44F;          /* constant */
   --bloom:        #E69F00;          /* Okabe–Ito orange on dark */
 
+  --feature-bg:    hsl(189, 65%, 14%);
+  --feature-ink:   hsl(0, 0%, 100%);
+  --feature-muted: hsl(189, 25%, 78%);
+  --feature-label: hsl(39, 100%, 68%);
+  --feature-line:  hsl(189, 35%, 32%);
+
+  --quiet-ink: hsl(45.5, 30%, 92%);   /* same hue, inverted for the dark --tint */
+
   --footer-bg:   #070E0A;           /* shared */
   --footer-head: #EDF5EE;           /* shared */
   --footer-ink:  #B7CCBD;           /* shared */
 
-  --art-warm:  hsl(42 100% 70%);
-  --art-pop:   hsl(342 90% 68%);
-  --art-clock: hsl(185 25% 85%);
-  --art-line:  hsl(190 45% 8%);
-  --art-ink:   hsl(190 42% 12%);
+  --art-warm:  hsl(42, 100%, 70%);
+  --art-pop:   hsl(342, 90%, 68%);
+  --art-clock: hsl(185, 25%, 85%);
+  --art-line:  hsl(190, 45%, 8%);
+  --art-ink:   hsl(190, 42%, 12%);
 }
 
 /* ============================================================================
@@ -211,16 +234,16 @@
   --band-alt: hsla(189, 30%, 92%, 1);
   
   --art-sunmoon: hsl(39, 100%, 55%);
-  --art-cloud: hsl(191 40% 96%); 
-  --art-wall: hsl(200 30% 76%);
-  --art-wall-2: hsl(185 26% 91%); 
-  --art-roof: hsl(189 62% 27%); 
-  --art-warm:  hsl(39 100% 80%);
-  --art-warm-2: hsl(189 85% 90%); 
-  --art-warm-3: hsl(9 90% 85%); 
-  --art-foliage: hsl(158 50% 35%); 
-  --art-foliage-2: hsl(158 50% 55%);
-  --art-ground: hsl(150 55% 33%);
+  --art-cloud: hsl(191, 40%, 96%); 
+  --art-wall: hsl(200, 30%, 76%);
+  --art-wall-2: hsl(185, 26%, 91%); 
+  --art-roof: hsl(189, 62%, 27%); 
+  --art-warm:  hsl(39, 100%, 80%);
+  --art-warm-2: hsl(189, 85%, 90%); 
+  --art-warm-3: hsl(9, 90%, 85%); 
+  --art-foliage: hsl(158, 50%, 35%); 
+  --art-foliage-2: hsl(158, 50%, 55%);
+  --art-ground: hsl(150, 55%, 33%);
 }
 
 /* ============================================================================
@@ -236,17 +259,17 @@
   --hero-em: var(--accent);
   --band-alt: hsla(189, 50%, 9%, 1);
    
-  --art-sunmoon: hsl(191 40% 96%);
-  --art-cloud: hsl(193 30% 46%);
-  --art-wall: hsl(190 22% 42%);
-  --art-wall-2: hsl(200 24% 52%);
-  --art-roof: hsl(189 50% 30%);   
-  --art-warm:  hsl(42 100% 70%);
-  --art-warm-2: hsl(189 80% 66%); 
-  --art-warm-3: hsl(12 88% 74%);
-  --art-foliage: hsl(154 55% 46%);
-  --art-foliage-2: hsl(160 52% 62%);
-  --art-ground: hsl(191 26% 20%);
+  --art-sunmoon: hsl(191, 40%, 96%);
+  --art-cloud: hsl(193, 30%, 46%);
+  --art-wall: hsl(190, 22%, 42%);
+  --art-wall-2: hsl(200, 24%, 52%);
+  --art-roof: hsl(189, 50%, 30%);   
+  --art-warm:  hsl(42, 100%, 70%);
+  --art-warm-2: hsl(189, 80%, 66%); 
+  --art-warm-3: hsl(12, 88%, 74%);
+  --art-foliage: hsl(154, 55%, 46%);
+  --art-foliage-2: hsl(160, 52%, 62%);
+  --art-ground: hsl(191, 26%, 20%);
 }
 
 /* ============================================================================
@@ -258,15 +281,18 @@
     --bg: #0B1410; --card: #17251C; --tint: #123122;
     --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD; --focus: #8CE7B7;
     --secondary: #7EC8E3; --bloom: #E69F00;
+    --feature-bg: hsl(189, 65%, 14%); --feature-ink: hsl(0, 0%, 100%);
+    --feature-muted: hsl(189, 25%, 78%); --feature-label: hsl(39, 100%, 68%); --feature-line: hsl(189, 35%, 32%);
+    --quiet-ink: hsl(45.5, 30%, 92%);
     --brand: #56B4E9; --brand-strong: #8CCBF0; --link: #56B4E9;
     --hero-bg: #0072B2; --hero-ink: #EAF4FB; --hero-muted: #C3DEEF; --hero-em: var(--accent);
     --band-alt: hsla(189, 50%, 9%, 1);
-    --art-sunmoon: hsl(191 40% 96%);
-    --art-warm: hsl(42 100% 70%); --art-pop: hsl(342 90% 68%); --art-clock: hsl(185 25% 85%);
-    --art-line: hsl(190 45% 8%); --art-ink: hsl(190 42% 12%);
-    --art-cloud: hsl(193 30% 46%); --art-wall: hsl(190 22% 42%); --art-wall-2: hsl(200 24% 52%);
-    --art-roof: hsl(189 50% 30%); --art-foliage: hsl(154 55% 46%); --art-foliage-2: hsl(160 52% 62%);
-    --art-warm-2: hsl(189 80% 66%); --art-warm-3: hsl(12 88% 74%); --art-ground: hsl(191 26% 20%);
+    --art-sunmoon: hsl(191, 40%, 96%);
+    --art-warm: hsl(42, 100%, 70%); --art-pop: hsl(342, 90%, 68%); --art-clock: hsl(185, 25%, 85%);
+    --art-line: hsl(190, 45%, 8%); --art-ink: hsl(190, 42%, 12%);
+    --art-cloud: hsl(193, 30%, 46%); --art-wall: hsl(190, 22%, 42%); --art-wall-2: hsl(200, 24%, 52%);
+    --art-roof: hsl(189, 50%, 30%); --art-foliage: hsl(154, 55%, 46%); --art-foliage-2: hsl(160, 52%, 62%);
+    --art-warm-2: hsl(189, 80%, 66%); --art-warm-3: hsl(12, 88%, 74%); --art-ground: hsl(191, 26%, 20%);
   }
 }
 
@@ -292,6 +318,8 @@ html[data-contrast="high"]:not([data-theme="dark"]) .hue-default {
   --line: var(--hc-color-dark); --ink: var(--hc-color-dark); --muted: var(--hc-color-dark); --edge: var(--hc-color-dark); --focus: var(--hc-color-dark);
   --brand: #005C31; --brand-strong: #00411F; --link: #005C31; --secondary: #00323C;
   --hero-bg: var(--hc-color-light); --hero-ink: var(--hc-color-dark); --hero-muted: var(--hc-color-dark); --hero-em: #7A4C00;
+  --feature-bg: var(--hc-color-light); --feature-ink: var(--hc-color-dark); --feature-muted: var(--hc-color-dark); --feature-label: #7A4C00; --feature-line: var(--hc-color-dark);
+  --quiet-ink: var(--hc-color-dark);
 }
 html[data-contrast="high"][data-theme="dark"] .hue-default {
   --bg: var(--hc-color-dark); --card: var(--hc-color-dark); --tint: var(--hc-color-dark);
@@ -299,6 +327,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   --brand: #4DFFA6; --brand-strong: #90FFC8; --link: #4DFFA6; --secondary: #9BE8FF;
   --accent: #FFD34D; --accent-hover: #FFE58A; --on-accent: var(--hc-color-dark);
   --hero-bg: var(--hc-color-dark); --hero-ink: var(--hc-color-light); --hero-muted: var(--hc-color-light); --hero-em: #FFD34D;
+  --feature-bg: var(--hc-color-dark); --feature-ink: var(--hc-color-light); --feature-muted: var(--hc-color-light); --feature-label: #FFD34D; --feature-line: var(--hc-color-light);
+  --quiet-ink: var(--hc-color-light);
 }
 /* Underline every link and thicken the header hairline for HC legibility. */
 [data-contrast="high"] a { text-decoration: underline; }
@@ -386,6 +416,51 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   *:focus-visible {
     outline: 3px solid var(--focus);
     outline-offset: 3px;
+  }
+
+  hr {
+    border: 0;
+    border-block-start: var(--border-thin) solid var(--line);
+    margin-block: var(--space-l);
+  }
+
+  /* ─ Form controls ─ styled as elements so any form on the site inherits the
+     brand treatment for free; the .field / .input-group blocks add layout and
+     affixes on top. Every color is a token, so light, dark and both
+     high-contrast themes are covered without a single extra rule.
+     min-height pins text inputs to the same 44px hit target as the nav pills
+     (--control-height is in rem, so it holds whatever the control's own font
+     size is). */
+  input, select, textarea {
+    font-family: inherit;
+  }
+  input:where([type="text"], [type="number"], [type="email"], [type="search"],
+              [type="tel"], [type="url"], [type="date"]),
+  select,
+  textarea {
+    font-size: var(--step-0);
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--card);
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-sm);
+    padding-inline: var(--space-xs);
+    min-height: var(--control-height);
+    inline-size: 100%;
+    min-inline-size: 0;
+    transition: border-color var(--transition-fast) var(--ease);
+  }
+  input:where([type="text"], [type="number"]):hover,
+  select:hover,
+  textarea:hover { border-color: var(--brand); }
+
+  /* Range: accent-color paints thumb + filled track from one token, so it
+     retints with theme and high contrast automatically. */
+  input[type="range"] {
+    inline-size: 100%;
+    accent-color: var(--brand);
+    block-size: var(--space-m);
+    cursor: pointer;
   }
 
   .skip-link {
@@ -1094,12 +1169,39 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   /* Global reduced-motion guard (end of file) collapses this when needed. */
   .toast { transition: opacity var(--transition-base) var(--ease), transform var(--transition-base) var(--ease); }
 
-  /* ─ FAQ accordion (native <details>/<summary> — no JS required) ─ */
-  .faq-item {
-    background: var(--card);
+  /* ─ Card ─ the one raised-surface frame: card wash, bold edge, rounded.
+     Two instance knobs keep every variant on this single rule —
+       --card-surface  swap the wash (e.g. the tinted callout)
+       --card-padding  resize or kill the inset (e.g. the accordion, which
+                       pads its own summary/body instead)
+     Classless published-content containers join by selector rather than by
+     class: Google-Docs markdown arrives without classes, so they can't carry
+     one (see "Published markdown" in CLAUDE.md). */
+  .card,
+  .accordion,
+  #what-we-believe li,
+  .page blockquote,
+  .post blockquote {
+    background: var(--card-surface, var(--card));
     border: var(--border-bold) solid var(--edge);
     border-radius: var(--radius-card);
-    /* overflow visible so the gutter copy-link anchor (right:100%) isn't
+    padding: var(--card-padding, var(--space-m));
+  }
+  /* prose rhythm (.page/.post) pushes headings down; a card's first child must
+     still sit flush against the inset */
+  .card > :first-child,
+  #what-we-believe li > :first-child,
+  .page blockquote > :first-child,
+  .post blockquote > :first-child { margin-block-start: 0; }
+
+  /* ─ Accordion ─ generic disclosure built on native <details>/<summary>, no
+     JS required. Used by the FAQ (_includes/faq.html) and the tax calculator.
+     The FAQ keeps .faq-item alongside .accordion purely as its deep-link and
+     copy-anchor hook — the styling all lives here. The <summary> must also
+     carry .cluster, which supplies the flex row this overrides the gap on. */
+  .accordion {
+    --card-padding: 0;
+    /* overflow stays visible so the gutter copy-link anchor (right:100%) isn't
        clipped; children stay rectangular within the rounded frame anyway. */
     position: relative;   /* gutter anchor positioning */
   }
@@ -1108,8 +1210,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     top: calc(var(--space-xs) + 0.5em);
     transform: translateY(-50%);
   }
-  /* .cluster on the <summary> element supplies display:flex; override gap here */
-  .faq-item summary {
+  .accordion > summary {
     list-style: none;
     cursor: pointer;
     font-weight: 600;
@@ -1120,17 +1221,18 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     flex-wrap: nowrap;      /* keep the + icon on the same line as the question */
     align-items: start;
   }
-  .faq-item summary::-webkit-details-marker { display: none; }
-  .faq-item summary h3 {  /* match the summary size, not the global h3 step */
+  .accordion > summary::-webkit-details-marker { display: none; }
+  .accordion > summary :is(h2, h3, h4) {  /* match summary size, not the global step */
     min-width: 0;  /* allow the question to shrink/wrap beside the icon */
     margin: 0;
+    color: inherit;   /* .page h2 would otherwise brand-color it */
     font-size: inherit;
     font-weight: inherit;
     font-family: inherit;
     line-height: inherit;
   }
 
-  .faq-icon {
+  .accordion-icon {
     flex-shrink: 0;
     margin-inline-start: auto;   /* pin the +/− to the right edge */
     width: 1.4em;
@@ -1139,24 +1241,24 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     background: var(--tint);
     position: relative;
   }
-  .faq-icon::before,
-  .faq-icon::after {
+  .accordion-icon::before,
+  .accordion-icon::after {
     content: "";
     position: absolute;
     background: var(--brand);
     border-radius: 2px;
     transition: transform var(--transition-fast) var(--ease);
   }
-  .faq-icon::before { left: 30%; right: 30%; top: 50%; height: 2px; transform: translateY(-50%); }
-  .faq-icon::after  { top: 30%; bottom: 30%; left: 50%; width: 2px; transform: translateX(-50%); }
-  .faq-item[open] .faq-icon::after { transform: translateX(-50%) rotate(90deg) scaleX(0); }
+  .accordion-icon::before { left: 30%; right: 30%; top: 50%; height: 2px; transform: translateY(-50%); }
+  .accordion-icon::after  { top: 30%; bottom: 30%; left: 50%; width: 2px; transform: translateX(-50%); }
+  .accordion[open] .accordion-icon::after { transform: translateX(-50%) rotate(90deg) scaleX(0); }
 
-  .faq-answer {
+  .accordion-body {
     padding-block: 0 var(--space-s);
     padding-inline: var(--space-xs) var(--space-s);
     color: var(--muted);
   }
-  .faq-answer :last-child { margin-bottom: 0; }
+  .accordion-body :last-child { margin-bottom: 0; }
 
   /* ─ Post / page prose ─ (headings inherit the global scale; only rhythm here) */
   .post h2,
@@ -1260,11 +1362,10 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      the first paragraph (`> **Label**`) becomes an eyebrow label line. */
   .page blockquote,
   .post blockquote {
+    /* frame comes from the shared .card group; only the knobs differ here */
+    --card-surface: var(--tint);
+    --card-padding: var(--space-s);
     margin: 0;
-    background: var(--tint);
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-card);
-    padding: var(--space-s);
   }
   .page blockquote :last-child,
   .post blockquote :last-child { margin-bottom: 0; }
@@ -1365,7 +1466,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      (<ul><li>). Docs can't nest a heading in a list item, so each card is a
      list item whose first paragraph leads with a bold pseudo-heading (the
      pillar name), a hard line break, then the body; a bold-only closing <p>
-     is the takeaway. Card frame matches .faq-item; the takeaway pins to the
+     is the takeaway. Card frame comes from the shared .card group; the takeaway pins to the
      card bottom so rows align across columns. */
   #what-we-believe ul {
     list-style: none;
@@ -1376,13 +1477,10 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     gap: var(--space-s);
   }
   #what-we-believe li {
+    /* frame comes from the shared .card group; only layout differs here */
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
-    background: var(--card);
-    border: var(--border-bold) solid var(--edge);
-    border-radius: var(--radius-card);
-    padding: var(--space-m);
     margin-top: 0;
   }
   #what-we-believe li > * { margin: 0; }
@@ -1404,6 +1502,11 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      (<ul><li>, tight list so items are unwrapped). Each item leads with a bold
      pseudo-heading (the figure/label), a hard line break, then the support
      sentence. No card frame — big brand figure over small support text. */
+  /* ─ Stat grid ─ a row of figures: one big display number per cell over small
+     support text. Shared by the homepage "current situation" list (classless
+     published markdown, joined by selector) and the tax calculator's result
+     panel, which recolors the figures with --stat-color. */
+  .stat-grid,
   #the-current-situation ul {
     list-style: none;
     padding: 0;
@@ -1412,17 +1515,40 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     grid-template-columns: var(--grid-wide-columns);
     gap: var(--space-s);
   }
+  .stat,
   #the-current-situation li { font-size: var(--step--1); }
-  /* leading bold run = the figure/label */
+  /* the figure — an explicit .stat-value, or the leading bold run of a
+     Docs-authored list item */
+  .stat-value,
   #the-current-situation li > strong:first-child {
     display: block;
     font-family: var(--font-display);
     font-weight: var(--display-weight);
-    font-size: var(--step-3);
-    line-height: var(--lh-display);
-    color: var(--brand);
+    font-size: var(--stat-step, var(--step-3));
+    /* A figure is always one line, so leading is dead space that makes the
+       block taller than the digits and throws off every gap measured from it
+       (e.g. a .rule-above below would read as off-centre). --lh-flat removes
+       the half-leading; text-box then trims the remaining font ascent/descent
+       so the box is exactly cap-height to baseline. */
+    line-height: var(--lh-flat);
+    color: var(--stat-color, var(--brand));
     text-wrap: balance;
     margin-block-end: var(--space-2xs);
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    .stat-value,
+    #the-current-situation li > strong:first-child {
+      text-box: trim-both cap alphabetic;
+    }
+  }
+  /* label-above-figure ordering (the result panel) needs no trailing gap */
+  .stat-value:last-child { margin-block-end: 0; }
+  /* trailing unit on a headline figure — rides inline at eyebrow scale */
+  .stat-unit {
+    font-family: var(--font-body);
+    font-size: 0.33em;
+    font-weight: 700;
+    color: var(--stat-unit-color, var(--eyebrow-color, var(--secondary)));
   }
   /* drop the Docs hard break after the figure — the block strong already wraps */
   #the-current-situation li > strong:first-child + br { display: none; }
@@ -1430,6 +1556,208 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   /* Read more CTA — the Markdown link in the paragraph after the stat list.
      Pill styling is shared with .hero a above; only positioning is local. */
   #the-current-situation ul + p { text-align: center; margin-block-start: var(--space-l); }
+
+  /* ─ Field ─ one labelled form control: label, control, hint, message. The
+     site had no form system before this; nothing here is page-specific. */
+  .field > label {
+    display: block;
+    font-weight: 600;
+    margin-block-end: var(--space-2xs);
+  }
+  .hint {
+    font-size: var(--step--1);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    margin-block: var(--space-2xs) 0;
+  }
+  /* validation / clamp notice — bloom is the system's moment-of-change hue */
+  .field-msg {
+    font-size: var(--step--1);
+    line-height: var(--lh-body);
+    font-weight: 600;
+    color: var(--bloom);
+    margin-block: var(--space-2xs) 0;
+  }
+  /* <fieldset>/<legend> carry the semantics; the visual weight is the label's */
+  .field-set {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-inline-size: 0;   /* fieldsets refuse to shrink in grid/flex without this */
+  }
+  .field-set > legend {
+    padding: 0;
+    font-weight: 600;
+    margin-block-end: var(--space-2xs);
+  }
+
+  /* ─ Input group ─ a control with a static prefix/suffix affix ($ … years).
+     The group draws no border of its own: the parts do, the shared seam is
+     collapsed, and only the outer corners round, so the pair reads as one
+     control. --field-width narrows an instance without an inline style. */
+  .input-group {
+    display: flex;
+    align-items: stretch;
+    inline-size: var(--field-width, 100%);
+  }
+  .input-group > * { border-radius: 0; }
+  .input-group > input { flex: 1 1 auto; }
+  .input-group > :first-child {
+    border-start-start-radius: var(--radius-sm);
+    border-end-start-radius: var(--radius-sm);
+  }
+  .input-group > :last-child {
+    border-start-end-radius: var(--radius-sm);
+    border-end-end-radius: var(--radius-sm);
+  }
+  .affix {
+    display: flex;
+    align-items: center;
+    padding-inline: var(--space-xs);
+    font-weight: 600;
+    font-size: var(--step--1);
+    color: var(--muted);
+    background: var(--tint);
+    border: var(--border-thin) solid var(--line);
+    white-space: nowrap;
+  }
+  .affix:first-child { border-inline-end: 0; }
+  .affix:last-child  { border-inline-start: 0; }
+
+  /* ─ Choice ─ a pressed-state option button. In a .choice-group it reads as a
+     radio card (title + supporting line); add the .compact utility to both for
+     a row of filter pills. The selected state follows the .a11y-segment
+     convention — brand fill with card-colored text — so it inverts correctly
+     in both high-contrast themes. */
+  .choice-group {
+    display: grid;
+    /* narrower minimum than --grid-wide-columns so three choices still fit
+       side by side inside a plain --measure column; --choice-min is the knob */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--choice-min, 9rem)), 1fr));
+    gap: var(--space-xs);
+  }
+  @media (--sm-and-down) {
+    .choice-group { grid-template-columns: 1fr; }
+  }
+  .choice {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--step-0);
+    line-height: var(--lh-heading);
+    text-align: start;
+    cursor: pointer;
+    padding: var(--space-xs);
+    min-block-size: var(--control-height);
+    color: var(--ink);
+    background: var(--card);
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-card);
+    transition: background var(--transition-base) var(--ease),
+                color var(--transition-base) var(--ease),
+                border-color var(--transition-base) var(--ease);
+  }
+  .choice-note {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: var(--step--1);
+    line-height: var(--lh-body);
+    color: var(--muted);
+    margin-block-start: var(--space-2xs);
+  }
+  .choice:hover { background: var(--tint); }
+  .choice[aria-pressed="true"] { background: var(--brand); color: var(--card); }
+  .choice[aria-pressed="true"] .choice-note { color: var(--card); }
+  .choice[aria-pressed="true"]:hover { background: var(--brand-strong); color: var(--card); }
+
+  /* Compact variation: same block, same states, pill geometry. Reads smaller
+     than 44px, so it takes the shared transparent hit-target overlay used by
+     the a11y panel's compact controls. */
+  .choice-group.compact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+  .choice.compact {
+    position: relative;
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    padding: var(--space-2xs) var(--space-xs);
+    border-width: var(--border-thin);
+    border-color: var(--line);
+    border-radius: var(--radius-pill);
+    min-block-size: 0;
+  }
+  .choice.compact::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
+    width: 100%;
+    height: 100%;
+  }
+  /* :not() guard so this doesn't out-order .choice[aria-pressed="true"]:hover
+     and paint brand ink on the brand-strong pressed fill */
+  .choice.compact:not([aria-pressed="true"]):hover { border-color: var(--brand); color: var(--brand); }
+  .choice.compact[aria-pressed="true"] { border-color: var(--brand); color: var(--card); }
+
+  /* ─ Callout ─ a stripe-edged note. The stripe hue is a knob, so a variant is
+     a utility (.stripe-bloom) rather than a second block. Uses the
+     --radius-callout token, which was defined for exactly this and unused. */
+  .callout {
+    background: var(--card);
+    border-inline-start: calc(var(--border-bold) * 2) solid
+                         var(--callout-stripe, var(--accent));
+    border-radius: var(--radius-callout);
+    padding: var(--space-xs) var(--space-s);
+  }
+  .callout :last-child { margin-bottom: 0; }
+
+  /* ─ Steps ─ a numbered derivation: index, description (+ sub-line), value.
+     Values are tabular so the column holds still as digits change. */
+  .step {
+    display: grid;
+    grid-template-columns: 1.5em 1fr auto;
+    gap: var(--space-xs);
+    align-items: baseline;
+    padding-block: var(--space-xs);
+    border-block-end: var(--border-thin) dashed var(--line);
+  }
+  .step:last-child { border-block-end: 0; }
+  .step-n {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--step--1);
+    color: var(--brand-strong);
+  }
+  .step-label {
+    font-size: var(--step--1);
+    line-height: var(--lh-body);
+  }
+  .step-note {
+    display: block;
+    color: var(--muted);
+    font-size: var(--step--2);
+    margin-block-start: var(--space-2xs);
+  }
+  .step-value {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: var(--step-0);
+    white-space: nowrap;
+  }
+  .step.total {
+    border-block-start: var(--border-bold) solid var(--edge);
+    border-block-end: 0;
+    padding-block: var(--space-xs) 0;
+  }
+  .step.total .step-value {
+    color: var(--brand-strong);
+    font-size: var(--step-1);
+  }
 
   /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
   @media (--sm-and-down) {
@@ -1608,16 +1936,81 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   }
   .text-eyebrow {  /* kicker/overline — sits tight above a heading */
     font-family: var(--font-body);
-    font-size: var(--step--1);
-    font-weight: 600;
+    font-size: var(--step--2);
+    font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     line-height: var(--lh-heading);
-    color: var(--secondary);
-    margin: 0;
+    /* knob, not a fixed color: the utility layer outranks every block, so a
+       `.some-surface .text-eyebrow` rule could never override it. Surfaces
+       retint by setting --eyebrow-color instead (see .surface-feature). */
+    color: var(--eyebrow-color, var(--secondary));
+    margin-block-end: var(--step--2);
   }
 
   .font-display   { font-family: var(--font-display); }
+
+  /* Auto-fit card/stat tracks from the shared --grid-wide-columns token —
+     the same tracks the homepage pillar and stat grids use. */
+  .grid-wide {
+    display: grid;
+    grid-template-columns: var(--grid-wide-columns);
+    gap: var(--grid-gap, var(--space-s));
+  }
+
+  /* Recolor a .callout's stripe (see the .callout block) */
+  .stripe-bloom { --callout-stripe: var(--bloom); }
+
+  /* Hairline divider above a block, spaced symmetrically: the same --rule-gap
+     sits above and below the line, so it reads as a separator between two
+     things rather than as the top edge of the second one. Preferred over an
+     <hr>, whose --space-l block margin is tuned for section breaks. */
+  .rule-above {
+    border-block-start: var(--border-thin) solid var(--line);
+    margin-block-start: var(--rule-gap, var(--space-s));
+    padding-block-start: var(--rule-gap, var(--space-s));
+  }
+
+  /* Content-sized columns instead of equal tracks: each child takes the width
+     of its own content and grows into the leftover, wrapping when it runs out.
+     Applies to any grid block (.stat-grid, .grid-wide) whose default is
+     equal-width auto-fit tracks — CSS Grid can't size auto-repeat tracks to
+     content, so this swaps in a wrapping flex row. */
+  .fit {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--grid-gap, var(--space-s));
+  }
+  .fit > * { flex: 1 1 auto; }
+
+  /* ─ Surface alts ─ repaint any container (usually a .card) by remapping the
+     knobs the blocks already read, never by descendant color rules: the
+     utility layer outranks block, so a `.surface-x .thing` rule in block could
+     never win. Every token below is theme-mapped, so these follow light, dark
+     and both high-contrast modes for free. */
+
+  /* Spotlight panel — deep teal wash, marigold labels, white figures. */
+  .surface-feature {
+    --card-surface: var(--feature-bg);
+    --muted: var(--feature-muted);
+    --line: var(--feature-line);
+    --eyebrow-color: var(--feature-label);
+    --stat-color: var(--feature-ink);
+    --stat-unit-color: var(--feature-label);
+    color: var(--feature-ink);
+  }
+  .surface-feature :is(h1, h2, h3) { color: var(--feature-ink); }
+
+  /* Quiet panel — the .affix treatment (tint wash, muted ink) at panel scale. */
+  .surface-quiet {
+    --card-surface: var(--tint);
+    --stat-color: var(--quiet-ink);
+    /* Inherited ink for primary text (.step-label picks this up); --muted is
+       left alone so sub-lines like .step-note still recede against it. */
+    color: var(--quiet-ink);
+    border-color: var(--line);
+  }
+  .surface-quiet :is(h1, h2, h3) { color: var(--quiet-ink); }
 
   /* Flow rhythm + margin helpers */
   .flow-space-2xs { --flow-space: var(--space-2xs); }
