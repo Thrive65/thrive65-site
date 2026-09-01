@@ -39,6 +39,18 @@ module.exports = {
           "faq-anchor",
           "hidden",
           "visible",
+          // tax calculator: preset buttons and the derivation rows are built
+          // as JS strings (assets/js/tax-calculator.js), so these classes never
+          // appear as static class="" attributes in the built HTML.
+          "choice",
+          "compact",
+          "step",
+          "step-n",
+          "step-label",
+          "step-note",
+          "step-value",
+          "total",
+          "stripe-bloom",
         ],
         // Attribute/state-driven selectors: a11y modes set data-* on <html> at
         // runtime; ARIA states are toggled by JS; EmailOctopus injects its own
