@@ -62,9 +62,10 @@ tax bill differently. Pick the one you want to understand, then put in your own 
              aria-label="Amount borrowed, slider">
       <div class="input-group mt-xs" style="--field-width: 16rem">
         <span class="affix">$</span>
-        <input id="bondNum" type="number" min="0" step="1000000" value="50000000" inputmode="numeric"
+        <input id="bondNum" type="number" min="0" max="200000000" step="1000000" value="50000000" inputmode="numeric"
                aria-label="Amount borrowed, in dollars">
       </div>
+      <p class="field-msg hidden" id="bondMsg" role="status" aria-live="polite"></p>
       <div class="choice-group compact mt-xs" id="bondPresets" role="group" aria-label="Preset amounts"></div>
       <p class="hint" id="bondHint"></p>
     </fieldset>
@@ -77,7 +78,7 @@ tax bill differently. Pick the one you want to understand, then put in your own 
           <span class="affix">years</span>
         </div>
         <p class="hint" id="termHint"></p>
-        <p class="field-msg hidden" id="termMsg" role="alert"></p>
+        <p class="field-msg hidden" id="termMsg" role="status" aria-live="polite"></p>
       </div>
       <div class="field">
         <label for="rate">Interest rate</label>
@@ -106,8 +107,9 @@ tax bill differently. Pick the one you want to understand, then put in your own 
              aria-label="Additional money raised each year, slider">
       <div class="input-group mt-xs" style="--field-width: 16rem">
         <span class="affix">$</span>
-        <input id="opDollars" type="number" min="0" step="500000" value="10000000" inputmode="numeric">
+        <input id="opDollars" type="number" min="0" max="30000000" step="500000" value="10000000" inputmode="numeric">
       </div>
+      <p class="field-msg hidden" id="opMsg" role="status" aria-live="polite"></p>
       <p class="hint">Referendum questions are often described this way in news coverage and district materials.</p>
     </div>
 
@@ -167,7 +169,11 @@ tax bill differently. Pick the one you want to understand, then put in your own 
 
 <details class="accordion" id="detVote">
   <summary class="cluster">
-    <h2 id="voteSummary">Why a vote may not be required</h2>
+    <!-- id lives on the span, not the h2: an id'd heading would collect an
+         injected .heading-anchor (head.html), which setMode's textContent
+         swap would then destroy — and a copy-link inside a <summary> is
+         wrong anyway. -->
+    <h2><span id="voteSummary">Why a vote may not be required</span></h2>
     <span class="accordion-icon" aria-hidden="true"></span>
   </summary>
   <div class="accordion-body" id="voteBody"></div>

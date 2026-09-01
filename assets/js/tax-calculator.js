@@ -1,6 +1,7 @@
 /* Tax impact estimator (page: /tax-calculator/).
-   Progressive enhancement over server-rendered markup: every control has a
-   sensible default value in the HTML, and this script only wires interaction.
+   This page requires JS: the controls have sensible HTML defaults, but the
+   mode copy, the two disclosure bodies, the derivation and every result are
+   rendered here, so with JS off the page shows empty panels and $0.
    All styling comes from main.css — the classes emitted here (choice, compact,
    step, step-n, step-label, step-note, step-value, total) never appear in the
    built HTML, so they are listed in the PurgeCSS safelist in postcss.config.cjs. */
@@ -28,6 +29,31 @@
     if (P <= 0 || n <= 0) return 0;
     r = r / 100;
     return r === 0 ? P / n : P * (r / (1 - Math.pow(1 + r, -n)));
+  }
+
+  /* render() runs on every keystroke across the whole form, so only touch a
+     message when its text actually changes — otherwise the live region
+     re-announces the same sentence on each key. */
+  function setMsg(el, text) {
+    if (el.textContent === text) return;
+    el.textContent = text;
+    el.classList.toggle("hidden", !text);
+  }
+  /* Clamp-and-explain, the pattern the term field already used: the input
+     keeps whatever was typed, the math uses the capped value, and a polite
+     message says so. Nothing rewrites the field, so this is correct from the
+     first keystroke and never waits on a blur. Returns the value to compute
+     with. */
+  function capped(el, msgEl, text, fallback) {
+    var max = parseFloat(el.max), entered = parseFloat(el.value);
+    var over = isFinite(max) && isFinite(entered) && entered > max;
+    setMsg(msgEl, over ? text : "");
+    return over ? max : num(el, fallback);
+  }
+  /* Built from the control's own max so the sentence can't drift from the cap */
+  function amountCapMsg(el) {
+    return "This tool caps the amount at " + usd(parseFloat(el.max)) +
+           ", so the estimate below uses that.";
   }
 
   var CFG = {
@@ -136,6 +162,11 @@
       $("termHint").textContent = c.termHint;
       term.max = c.termMax;
       bond.max = c.bondMax;
+      /* Only the ceiling moves. The entered amount is left alone: if the new
+         mode caps lower, render() clamps the math and says so, the same as
+         when the number is typed. The slider mirrors the effective (capped)
+         value, so the two controls always agree about what is being priced. */
+      bondNum.max = c.bondMax;
       bond.value = Math.min(num(bondNum, 0), c.bondMax);
       var ph = "";
       c.presets.forEach(function (p) {
@@ -171,17 +202,12 @@
       usd(he) + " &divide; " + usd(DISTRICT_EAV) + " of total district value",
       share > 0 ? (share * 100).toFixed(4) + "%" : "0%"]);
 
-    var termMsg = $("termMsg");
+    var termMsg = $("termMsg"), bondMsg = $("bondMsg"), opMsg = $("opMsg");
     if (mode !== "operating") {
-      var cap = parseFloat(term.max), entered = parseFloat(term.value);
-      if (isFinite(entered) && entered > cap) {
-        termMsg.textContent = CFG[mode].termCapMsg;
-        termMsg.classList.remove("hidden");
-      } else {
-        termMsg.textContent = "";
-        termMsg.classList.add("hidden");
-      }
-      var P = num(bondNum, 0), yrs = Math.max(1, Math.min(num(term, 20), cap)), rt = num(rate, 4.5);
+      setMsg(opMsg, "");   /* the other branch's field is hidden; clear its live region too */
+      var P = capped(bondNum, bondMsg, amountCapMsg(bondNum), 0),
+          yrs = Math.max(1, capped(term, termMsg, CFG[mode].termCapMsg, 20)),
+          rt = num(rate, 4.5);
       var annual = ds(P, yrs, rt);
       yearly = annual * share;
       windowYears = yrs;
@@ -195,12 +221,14 @@
           usd(Math.max(0, annual * yrs - P))]);
       }
     } else {
+      setMsg(termMsg, ""); setMsg(bondMsg, "");
       windowYears = Math.max(1, num(opYears, 10));
       var raised;
       if (opStyle === "dollars") {
-        raised = num(opDollars, 0);
+        raised = capped(opDollars, opMsg, amountCapMsg(opDollars), 0);
         steps.push(["B", "Additional money raised district-wide each year", "as entered above", usd(raised)]);
       } else {
+        setMsg(opMsg, "");   /* the dollars field is hidden in rate mode */
         var rr = num(opRate, 0);
         raised = (rr / 100) * DISTRICT_EAV;
         steps.push(["B", "What that rate raises district-wide",
@@ -243,6 +271,11 @@
     b.addEventListener("click", function () { setOpStyle(b.dataset.op); });
   });
 
+  /* The number field is the value render() reads; the slider only mirrors it.
+     Nothing rewrites the number field — over-cap entries are handled by
+     capped() in render(), which clamps the math and explains it. The slider
+     mirrors the effective (capped) value, so the two controls always agree
+     about the amount being priced, with no blur or commit step involved. */
   bond.addEventListener("input", function () { bondNum.value = bond.value; render(); });
   bondNum.addEventListener("input", function () { bond.value = Math.min(num(bondNum, 0), bond.max); render(); });
   opRange.addEventListener("input", function () { opDollars.value = opRange.value; render(); });

@@ -1178,6 +1178,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      class: Google-Docs markdown arrives without classes, so they can't carry
      one (see "Published markdown" in CLAUDE.md). */
   .card,
+  .accordion,
   #what-we-believe li,
   .page blockquote,
   .post blockquote {
@@ -1698,7 +1699,9 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     width: 100%;
     height: 100%;
   }
-  .choice.compact:hover { border-color: var(--brand); color: var(--brand); }
+  /* :not() guard so this doesn't out-order .choice[aria-pressed="true"]:hover
+     and paint brand ink on the brand-strong pressed fill */
+  .choice.compact:not([aria-pressed="true"]):hover { border-color: var(--brand); color: var(--brand); }
   .choice.compact[aria-pressed="true"] { border-color: var(--brand); color: var(--card); }
 
   /* ─ Callout ─ a stripe-edged note. The stripe hue is a knob, so a variant is
