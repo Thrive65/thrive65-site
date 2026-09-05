@@ -99,10 +99,9 @@
   --radius-callout: 0 12px 12px 0;
 
   /* ---- Menu surface (nav dropdowns, language menu, a11y panel) -------
-     One shared treatment so every floating menu matches. Surface/border
-     use var() so they track the current theme's --card / --edge at use. */
-  --menu-surface: var(--card);
-  --menu-border: var(--border-bold) solid var(--edge);
+     One shared treatment so every floating menu matches. The three
+     theme-derived tokens (--menu-surface/-border/-item-hover) are NOT
+     declared here — see the `body` rule below the :root block for why. */
   --menu-radius: var(--radius-card);
   --menu-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.18);
   --menu-offset: var(--space-2xs); /* gap between a toggle and its menu */
@@ -218,6 +217,19 @@
   --art-clock: hsl(185, 25%, 85%);
   --art-line:  hsl(190, 45%, 8%);
   --art-ink:   hsl(190, 42%, 12%);
+}
+
+/* ---- Menu surface tokens that depend on the theme --------------------------
+   These three resolve --card / --edge / --tint, which high contrast
+   re-declares on the hue class (i.e. on <body>). A var() substitutes where
+   the property is *declared*, not where it's used — so declaring these on
+   :root would freeze them to the non-high-contrast values. Declared on body,
+   below the hue class's own element, they pick up whichever theme +
+   contrast values are actually in effect. Keep them here, not in :root. */
+body {
+  --menu-surface: var(--card);
+  --menu-border: var(--border-bold) solid var(--edge);
+  --menu-item-hover: var(--tint);  /* hover/focus fill on menu items */
 }
 
 /* ============================================================================
@@ -2222,6 +2234,9 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     .source-panel::before {
       content: "";
       display: block;
+      /* It's a flex item in the column-flex panel, which is height-capped —
+         without this the default flex-shrink: 1 crushes it to ~1px. */
+      flex-shrink: 0;
       width: 2.5rem;
       height: 0.25rem;
       margin: 0 auto var(--space-2xs);
