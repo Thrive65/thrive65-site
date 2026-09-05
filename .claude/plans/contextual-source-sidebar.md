@@ -1,5 +1,45 @@
 # Contextual source sidebar — one citation system for the whole site
 
+## Status — Phase 0 complete, Gate 0 passed. Next: Phase 1.
+
+*Last updated 2026-09-05. Branch `feature/cited-sources-overhaul`, rebased onto `main` (which now carries the Common Ground shared blocks from PR #13).*
+
+| Phase | State |
+|---|---|
+| **0 — POC page** | ✅ Built and verified. `36ff3ea`, `1707f6d`, `6085adf`, `15464cf`. |
+| **Gate 0** | ✅ Passed — see "Gate 0 results" below. |
+| **1 — Google Doc round-trip** | ⬜ **Next.** Needs the user to author a scratch Doc; see the expanded Phase 1 section. |
+| 2–4 | ⬜ Not started. No existing content has been touched. |
+
+### What exists on the branch today
+
+`_plugins/source_refs.rb`, `_includes/sources.html`, `_includes/source-panel.html` (a sibling **after** `</main>` in `default.html`), the `SourcePanel` IIFE in `head.html`, the CSS block, `sources-poc.md` + `_data/sources/poc.yml` (10 entries), and the `postcss.config.cjs` safelist additions. `_config.yml` has no `sources:` default yet — nothing but the POC page opts in, so every real page is byte-identical to `main`.
+
+### Divergence from this plan, as built
+
+**The panel lists *all* sources for the page, scrolled to the clicked one — not only the clicked run** (`1707f6d`). §4's "Grouping rule" below describes the originally-planned behaviour; the shipped behaviour keeps `.is-current` marking but does not filter the list. Rationale: a reader checking one claim usually wants to see the neighbouring evidence too, and filtering made the panel feel like it had lost content. **The panel title therefore does not vary with the run** — the "Sources 4 and 20" grammar in §4 is unimplemented. Decide at Gate 1 whether to keep this or restore filtering; if keeping, §4 should be rewritten rather than left as-is.
+
+### Gate 0 results
+
+Verified against a real production build (Jekyll → PurgeCSS → postcss-custom-media → preset-env → cssnano), served on a scratch port, **not** against the dev server — `@media (--…)` is inert in dev, and `_plugins/*.rb` loads once at server start so `--watch` never picks up plugin edits. Both caveats bit during this work; re-verify the same way.
+
+- **Build/purge:** 101308 → 54558 bytes; `@custom-media` resolved to `max-width:784px` / `min-width:785px`; all 20 source/tax classes survive purge.
+- **Panel motion:** slide-in at desktop, bottom sheet ≤784px, `main` correctly does not shift, no horizontal overflow.
+- **A11y:** contrast 6.12:1 default dark, 14.41:1 HC dark, 7.88:1 light+HC; panel text 13.93/15.39/18.72:1. Text-size 150% scales root 16.64→24.96px and chips 9.64→14.45px.
+- **No-JS:** `html:not(.js) .source-panel{display:none}` holds; markers are real `<a href="#source-1" id="cite-1-1" role="doc-noteref">`; 9 back-link blocks, 1 roll-up, 10 sources.
+- **Close/focus:** Esc and the close button both clear state and return focus to the triggering chip. Close button 40×40 visual with a 44×44 `::before`; chip overlay 24×24.
+- **Tokens:** no undefined custom properties; all 7 instance knobs have fallbacks.
+
+Two CSS bugs were found and fixed in `15464cf`: the mobile drag grabber collapsed to ~1px (missing `flex-shrink: 0` on a flex item in the height-capped column panel), and `--menu-surface`/`--menu-border`/`--menu-item-hover` were declared on `:root`, freezing them to non-high-contrast values because high contrast re-declares `--card`/`--edge`/`--tint` on the hue class on `<body>`. The second was **pre-existing on `main`** and also affected `.lang-menu` and `.a11y-panel`.
+
+### Known gaps carried into Phase 1
+
+- **The mobile bottom sheet has never been seen rendered.** Chrome's window would not resize below a 1084px viewport, so the ≤784px block never engaged. The `flex-shrink` fix is proven by measurement-under-injection, not by eye. **Look at the bottom sheet on a real narrow window before Phase 2 touches content.**
+- **No full human visual pass** beyond desktop light/dark and high-contrast dark screenshots.
+- `--measure-wide` is **66rem**; CLAUDE.md documented 78rem. Still worth correcting.
+
+---
+
 ## Context
 
 Thrive65's central claim is *"five things we believe are true, each traceable to a document you can open yourself."* The citation UI is therefore the credibility mechanism, and today it doesn't work:
@@ -207,6 +247,8 @@ Closed state is `visibility: hidden` + off-screen transform. That one property b
 `document.getElementById("source-" + n).cloneNode(true)` → zero duplicated data, zero drift, zero added page weight (a JSON island would cost ~100–200 bytes × N on both the homepage and the deficit page). On each clone: strip all `id`s (duplicates would break fragment nav and the copy-link anchors), remove `.source-backlinks` (meaningless in the panel), and set `li.value = n` so numbering survives non-contiguous runs like `[4][20]` (`<ol start>` can't).
 
 ### Grouping rule: show the whole run, mark the clicked one
+
+> ⚠ **Not as built.** The shipped panel lists every source for the page and scrolls to the clicked one; only `.is-current` marking survives. The varying panel title is unimplemented. See "Divergence from this plan, as built" at the top.
 `[4][20]` means "these two together support this sentence" — showing only one hides half the evidence. The `*Sources: [1][2][39]*` roll-up falls out of the same rule for free.
 
 Because the plugin wraps each run in `<sup class="source-ref-group">`, detection is `a.closest(".source-ref-group")` — **no sibling-walking heuristic and no fragile glue regex.** This is why §2's wrapper matters.
@@ -355,11 +397,21 @@ Build the whole system and render it on **one throwaway page that isn't linked f
 
 A deliberately out-of-range `[99]` is tested once by hand (confirm the build fails with a useful message), then removed.
 
-> **Gate 0 — you review.** Run the site locally, click through the panel on desktop and mobile widths (Firefox with `layout.css.custom-media.enabled=true`), toggle the a11y panel modes, disable JS and check the fallback. This is where UI/interaction changes are cheap. Nothing published, nothing live, `git checkout` undoes all of it.
+> **Gate 0 — ✅ PASSED (2026-09-05).** Results and the two bugs it caught are recorded in the Status section at the top. Original instructions, kept for reference: Run the site locally, click through the panel on desktop and mobile widths (Firefox with `layout.css.custom-media.enabled=true`), toggle the a11y panel modes, disable JS and check the fallback. This is where UI/interaction changes are cheap. Nothing published, nothing live, `git checkout` undoes all of it.
 
 ---
 
 ### Phase 1 — Google Doc round-trip proof (still nothing live)
+
+> **Handoff notes for the implementing agent.** Read this whole file first, then §2 (marker parsing rules) and §8's "Only Apps Script change to keep" before writing anything. Everything you need already exists on `feature/cited-sources-overhaul`; Phase 1 adds exactly one function to `apps-script/Code.gs` plus a throwaway scratch page.
+>
+> **What you can do alone:** write `relativizeSiteAnchors_`, wire it into `cleanGoogleMarkdown`, and build the diff harness. **What you cannot:** step 1 below needs the user to author a Google Doc, and step 2 needs them to press Publish and to redeploy `Code.gs` to the Apps Script project. Do all the codeable work first, then hand them a precise, copy-pasteable description of the Doc to create — exact prose, exact markers, which ones must be typed as literal text and which as real hyperlinks — rather than a vague "make a test doc".
+>
+> **Environment traps that already cost time in this project:**
+> - A dev server is always running on `:4000`. `_plugins/*.rb` loads **once at startup**; `--watch` never reloads it. Any plugin change needs a fresh build. Don't kill the user's server — build to a scratch dir and serve on a spare port.
+> - `@media (--…)` custom-media is **inert** against the dev server. Responsive checks need either the PostCSS-processed production build or Firefox with `layout.css.custom-media.enabled=true`.
+> - `npm run build:css` hardcodes `_site/`. To process a scratch build, copy `postcss.config.cjs` with the path rewritten, and put the copy in the project root (PostCSS resolves plugins relative to the config's directory) — then delete it.
+> - Don't run a plain `git pull` on this branch; it was rebased. Use `git pull --rebase`.
 
 The POC proves the system works against *hand-written* markdown. It does **not** prove the Docs exporter produces the same bytes — and that's the risk that would force a redesign, so it gets tested before real content moves.
 
