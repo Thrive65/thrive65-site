@@ -588,7 +588,34 @@ function exportDocAsMarkdown(docId) {
 // page and tell Claude — this function is easy to extend.
 function cleanGoogleMarkdown(markdown) {
   const unescaped = markdown.replace(/\\([_*\[\]])/g, "$1").trim();
-  return singleCellTablesToBlockquotes(unescaped);
+  return singleCellTablesToBlockquotes(relativizeSiteAnchors_(unescaped));
+}
+
+/* =========================================================================
+ * Relativize on-site source anchors
+ *
+ * Authors cite sources by linking to an in-page anchor, e.g. `[the FY27
+ * memo](#source-3)`. Google Docs cannot author a relative link — it only
+ * stores absolute URLs — so that link exports as
+ * `[the FY27 memo](https://wethrive65.org/d65-deficit-explained/#source-3)`.
+ * Rewrite any link target that points at this site and ends in `#source-N`
+ * back down to the bare `#source-N` fragment, so the Jekyll source-refs
+ * plugin sees the same shape an author would type by hand.
+ *
+ * The host comes from the SITE_URL script property (default `wethrive65.org`);
+ * set it if the site ever moves. The `_plugins/source_refs.rb` plugin also
+ * accepts the absolute shape directly, so this is belt-and-braces — but it
+ * keeps the committed markdown clean and portable across pages.
+ * ========================================================================= */
+
+function relativizeSiteAnchors_(md) {
+  const raw = PropertiesService.getScriptProperties().getProperty("SITE_URL") || "wethrive65.org";
+  const host = raw.replace(/^https?:\/\//, "").replace(/\/+$/, "");
+  const hostEsc = host.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // Match a Markdown link target that points at this host and ends in
+  // `#source-N`: `](https://host/any/path/#source-12)` → `](#source-12)`.
+  const re = new RegExp("\\]\\(\\s*https?:\\/\\/" + hostEsc + "\\/[^)\\s]*?(#source-\\d{1,3})\\s*\\)", "g");
+  return md.replace(re, "]($1)");
 }
 
 /* =========================================================================
