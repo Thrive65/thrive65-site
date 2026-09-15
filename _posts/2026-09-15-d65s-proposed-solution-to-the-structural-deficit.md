@@ -9,8 +9,6 @@ permalink: "/board-meeting-recaps/2026/9-15/"
 [Agenda](https://meetings.boardbook.org/Public/Agenda/1247?meeting=764250)  
 Minutes \- not yet uploaded as of 9.15
 
-Dr. Witherspoon and CFO, Eric Miller, walked through a Financial Stability Presentation. The presentation outlined the current state of the district. 
-
 ## Thrive65’s TL;DR: 
 
 ### $20 million in cuts and additional closures by SY2028:
@@ -50,6 +48,7 @@ Kelly
 
 ## The Details
 
+Dr. Witherspoon and CFO, Eric Miller, walked through a Financial Stability Presentation. The presentation outlined the current state of the district.  
 **![][image1]**
 
 They discussed our enrollment decline, which started in 2018 and has not gone up since. Their unofficial enrollment is 5,893 for this year. Note that likely includes all K-5 and middle schools, King Arts, Early Childhood, Park, and Rice.
