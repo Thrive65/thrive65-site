@@ -9,7 +9,7 @@ permalink: "/board-meeting-recaps/2026/9-15/"
 [Agenda](https://meetings.boardbook.org/Public/Agenda/1247?meeting=764250)  
 Minutes \- not yet uploaded as of 9.15
 
-## Thrive65’s TL;DR: 
+## Thrive65’s TL;DR 
 
 ### $20 million in cuts and additional closures by SY2028:
 
