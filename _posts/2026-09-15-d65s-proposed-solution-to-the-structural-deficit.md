@@ -40,8 +40,7 @@ This is not unlike the situation in 2017, when it was unknown if a referendum wo
 
 9/24 @ Nichols
 
-***Childcare and Spanish interpretation at all three sessions***
-
+***Childcare and Spanish interpretation at all three sessions***  
 Please show up, this is your chance to advocate for our most vulnerable students\!
 
 Below is a deeper dive into last night’s board meeting. We are still processing the news, and this is a difficult moment for the D65 community. While our needs and priorities may all look slightly different, we share a common goal: a thriving school district for all students. Let’s work together to advocate for a stronger future.
