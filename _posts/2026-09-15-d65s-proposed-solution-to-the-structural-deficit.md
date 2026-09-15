@@ -42,9 +42,9 @@ This is not unlike the situation in 2017, when it was unknown if a referendum wo
 
 ***Childcare and Spanish interpretation at all three sessions***
 
-Below is a deeper dive into last night’s board meeting. We are still processing the news, and this is a difficult moment for the D65 community. While our needs and priorities may all look slightly different, we share a common goal: a thriving school district for all students. Let’s work together to advocate for a stronger future.
+Please show up, this is your chance to advocate for our most vulnerable students\!
 
-Kelly
+Below is a deeper dive into last night’s board meeting. We are still processing the news, and this is a difficult moment for the D65 community. While our needs and priorities may all look slightly different, we share a common goal: a thriving school district for all students. Let’s work together to advocate for a stronger future.
 
 ## The Details
 
