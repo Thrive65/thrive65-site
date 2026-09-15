@@ -9,8 +9,9 @@ permalink: "/board-meeting-recaps/2026/9-15/"
 [Agenda](https://meetings.boardbook.org/Public/Agenda/1247?meeting=764250)  
 Minutes \- not yet uploaded as of 9.15
 
-Dr. Witherspoon and CFO, Eric Miller, walked through a Financial Stability Presentation. The presentation outlined the current state of the district.   
-**The takeaway:** $20 million in cuts and additional closures by SY2028:
+Dr. Witherspoon and CFO, Eric Miller, walked through a Financial Stability Presentation. The presentation outlined the current state of the district. 
+
+## **The takeaway:** $20 million in cuts and additional closures by SY2028:
 
 * 2 additional school closures  
 * Examining “non-mandated” programs  
@@ -41,7 +42,9 @@ This is not unlike the situation in 2017, when it was unknown if a referendum wo
 
 Below is a deeper dive into last night’s board meeting. We are still processing the news, and this is a difficult moment for the D65 community. While our needs and priorities may all look slightly different, we share a common goal: a thriving school district for all students. Let’s work together to advocate for a stronger future.
 
-**What the presentation told us:**
+Kelly
+
+## What the presentation told us:
 
 **![][image1]**
 
