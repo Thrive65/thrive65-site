@@ -11,7 +11,9 @@ Minutes \- not yet uploaded as of 9.15
 
 Dr. Witherspoon and CFO, Eric Miller, walked through a Financial Stability Presentation. The presentation outlined the current state of the district. 
 
-## Thrive65’s TL;DR **:** $20 million in cuts and additional closures by SY2028:
+## Thrive65’s TL;DR: 
+
+### $20 million in cuts and additional closures by SY2028:
 
 * 2 additional school closures  
 * Examining “non-mandated” programs  
@@ -23,6 +25,10 @@ Dr. Witherspoon and CFO, Eric Miller, walked through a Financial Stability Prese
 The scope of these cuts means all students will feel more impact. With school closures, students will once again face the potential of changing schools. Boundaries will change even at schools that aren’t closed. There is not clarity about what are “non-mandated programs” and who will be impacted by that. 
 
 This is not unlike the situation in 2017, when it was unknown if a referendum would pass and our finances were dire. The administration proposed just under $9 million of cuts needed (12 million in today’s dollars). [Even with the referendum, the district projected a $24.4 million deficit by FY25.](https://evanstonroundtable.com/2016/12/28/d65-committee-recommends-4-5-million-referendum/) 
+
+> **Thrive65 Note**
+>
+> The 2017 administration, under Dr. Goren, provided detail of how they would evaluate cuts and endeavor to minimize disproportionate impact on marginalized communities. [They named four categories that would not be included in initial budget cuts:](https://evanstonroundtable.com/2017/03/15/district-65-presents-contingency-plan-in-the-event-the-referendum-fails/)
 
 > Thrive65 Note The 2017 administration, under Dr. Goren, provided detail of how they would evaluate cuts and endeavor to minimize disproportionate impact on marginalized communities. [They named four categories that would not be included in initial budget cuts:](https://evanstonroundtable.com/2017/03/15/district-65-presents-contingency-plan-in-the-event-the-referendum-fails/)
 >
