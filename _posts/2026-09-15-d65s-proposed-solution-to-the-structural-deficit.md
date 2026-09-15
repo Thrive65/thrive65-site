@@ -11,7 +11,7 @@ Minutes \- not yet uploaded as of 9.15
 
 Dr. Witherspoon and CFO, Eric Miller, walked through a Financial Stability Presentation. The presentation outlined the current state of the district. 
 
-## **The takeaway:** $20 million in cuts and additional closures by SY2028:
+## Thrive65’s TL;DR **:** $20 million in cuts and additional closures by SY2028:
 
 * 2 additional school closures  
 * Examining “non-mandated” programs  
@@ -44,7 +44,7 @@ Below is a deeper dive into last night’s board meeting. We are still processin
 
 Kelly
 
-## What the presentation told us:
+## The Details
 
 **![][image1]**
 
