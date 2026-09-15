@@ -28,7 +28,7 @@ This is not unlike the situation in 2017, when it was unknown if a referendum wo
 >
 > The 2017 administration, under Dr. Goren, provided detail of how they would evaluate cuts and endeavor to minimize disproportionate impact on marginalized communities. [They named four categories that would not be included in initial budget cuts:](https://evanstonroundtable.com/2017/03/15/district-65-presents-contingency-plan-in-the-event-the-referendum-fails/)
 >
-> Early Childhood \- programming, early grade literacy and opportunity gap interventions Teaching and Learning \- reading specialists, ACC, AP’s at Title 1 schools, maintaining ESL teacher/student ratio School Climate/Student Supports \- mental health, social workers, psychologists, equity training, social emotional learning, maintaining special education caseloads Community Partnerships \- maintaining after school programming and summer learning opportunities, and family and community engagement.
+> * Early Childhood \- programming, early grade literacy and opportunity gap interventions * Teaching and Learning \- reading specialists, ACC, AP’s at Title 1 schools, maintaining ESL teacher/student ratio * School Climate/Student Supports \- mental health, social workers, psychologists, equity training, social emotional learning, maintaining special education caseloads * Community Partnerships \- maintaining after school programming and summer learning opportunities, and family and community engagement.
 
 **We’re hosting an in-person meetup this Sunday, September 20th from 3-4pm at Robert Crown Community Center in the library community room**.  Join us to discuss how we got here, how we can maintain equitable excellence while making cuts, and empower our community to advocate.
 
