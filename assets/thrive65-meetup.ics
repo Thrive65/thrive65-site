@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Thrive65//Meetup//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:thrive65-meetup-2026-09-20@wethrive65.org
+DTSTAMP:20260916T000000Z
+DTSTART:20260920T200000Z
+DTEND:20260920T210000Z
+SUMMARY:Thrive65 Meetup
+DESCRIPTION:Join us for the Thrive65 community meetup. We will explain the District 65 deficit in simple terms\, discuss how we can maintain equitable and excellent education\, and cover next steps and how you can get involved. More at https://www.wethrive65.org
+LOCATION:Robert Crown Library Community Room\, 1801 Main St\, Evanston\, IL
+URL:https://www.wethrive65.org
+END:VEVENT
+END:VCALENDAR

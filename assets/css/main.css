@@ -1039,7 +1039,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-block: var(--space-2xl) var(--space-xl);
+    padding-block: var(--space-2xl);
   }
   .hero-art {
     position: relative;
@@ -1068,7 +1068,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .hero-hue *:first-child:has(+ h1, + h2) { 
     color: var(--hero-muted); 
   }
-  .hero h3 {  /* eyebrow */
+  .hero-copy h3 {  /* eyebrow */
     font-family: var(--font-body);
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -1077,17 +1077,19 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     line-height: var(--lh-heading);
     margin: 0 0 0.75em;
   }
-  .hero h1 {
+  .hero-copy h1 {
     font-size: var(--step-5);
     line-height: var(--lh-display);
     color: var(--hero-ink);
     max-width: 16ch;
   }
-  .hero h1 em {
+  .hero-copy h1 em {
     color: var(--hero-em);
     font-style: italic;
   }
-  .hero p {
+  /* Direct children only, so copy nested in a <blockquote> (the agenda) inherits
+     the blockquote's smaller size instead of being re-sized here. */
+  .hero-copy > p {
     font-size: var(--step-1);
     line-height: var(--lh-lead);
     color: var(--hero-muted);
@@ -1096,7 +1098,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   }
   /* Pill CTA — shared by the hero links and the "Read more" link under the
      stat list. Add future pill selectors (or a class) to this group. */
-  .hero a,
+  .hero-copy a:not(li ul a),
   #the-current-situation ul + p a {
     display: inline-block;
     font-weight: 700;
@@ -1108,7 +1110,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     background: var(--accent);
     color: var(--on-accent) !important;
   }
-  .hero a:hover,
+  .hero-copy a:not(li ul a):hover,
   #the-current-situation ul + p a:hover { background: var(--accent-hover); }
 
   /* ─ Heading copy-link anchors (GitHub-style) ─
@@ -1181,7 +1183,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .accordion,
   #what-we-believe li,
   .page blockquote,
-  .post blockquote {
+  .post blockquote,
+  .hero-copy blockquote {
     background: var(--card-surface, var(--card));
     border: var(--border-bold) solid var(--edge);
     border-radius: var(--radius-card);
@@ -1192,7 +1195,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .card > :first-child,
   #what-we-believe li > :first-child,
   .page blockquote > :first-child,
-  .post blockquote > :first-child { margin-block-start: 0; }
+  .post blockquote > :first-child,
+  .hero-copy blockquote > :first-child { margin-block-start: 0; }
 
   /* ─ Accordion ─ generic disclosure built on native <details>/<summary>, no
      JS required. Used by the FAQ (_includes/faq.html) and the tax calculator.
@@ -1276,6 +1280,93 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   /* Google Docs sometimes wraps a list item's content in a <p>; drop its
      inherited paragraph margin so it doesn't inflate item spacing. */
   .prose li > p { margin-block: 0; }
+
+  /* Hero "Add to calendar" dropdown — reuses the nav disclosure pattern. The JS
+     enhancer in head.html turns the nested markdown list (`- Add to calendar`
+     with a sub-list of links) into a .nav-dropdown-toggle button + a Disclosure
+     menu, exactly as the nav dropdowns. The trigger reads as a normal pill button
+     with a chevron; the menu + items reuse the shared --menu-* surface tokens.
+     Placed after .prose so it wins the bullet-indent tie against `.prose ul`. */
+
+  /* The list wrapping the dropdown loses its bullet/indent. The "We will" list
+     has no nested sub-list, so :has() leaves its bullets untouched. */
+  .hero-copy.prose ul:has(> li > ul) { list-style: none; padding: 0; }
+  .hero-copy li:has(> ul) { position: relative; }
+
+  /* "We will" agenda sits in a <blockquote> — smaller copy on the shared .card
+     frame (surface/border/radius joined above; only the knob + local bits here).
+     On desktop it floats to the right of the hero copy (see --md-and-up below). */
+  .hero-copy blockquote {
+    margin: 0;
+    font-size: var(--step--1);
+    --card-padding: var(--space-s);
+  }
+  @media (--md-and-up) {
+    .hero-copy blockquote {
+      position: absolute;
+      right: var(--space-s);
+      max-width: calc(50% - var(--space-s));
+    }
+  }
+
+  /* Trigger — pill button (matching the shared .hero-copy a look) + chevron. */
+  .hero-copy .nav-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0.8em 1.7em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    color: var(--on-accent);
+    transition: background var(--transition-base) var(--ease);
+  }
+  .hero-copy .nav-dropdown-toggle:hover { background: var(--accent-hover); }
+  .hero-copy .nav-dropdown-toggle svg { transition: transform var(--transition-fast) var(--ease); }
+  .hero-copy .nav-dropdown-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+  /* Menu — same treatment as the nav dropdowns. Un-enhanced (no JS) it degrades
+     to a plain indented sub-list; the floating panel is gated on html.js. */
+  .hero-copy li ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    padding-inline-start: var(--space-s);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .hero-copy li ul li { margin: 0; }
+  html.js .hero-copy li ul {
+    position: absolute;
+    top: calc(100% + var(--menu-offset));
+    inset-inline-start: 0;
+    min-width: max-content;
+    padding: var(--space-2xs);
+    background: var(--menu-surface);
+    border: var(--menu-border);
+    border-radius: var(--menu-radius);
+    box-shadow: var(--menu-shadow);
+    z-index: 20;
+  }
+  /* Menu items — nav-menu link look (see `.site-header nav a`); the pill rule
+     below is scoped away from these so they read as plain menu rows. */
+  .hero-copy li ul a {
+    display: block;
+    font-weight: 600;
+    font-size: var(--step--1);
+    white-space: nowrap;
+    text-decoration: none;
+    color: var(--ink);
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--menu-radius);
+    transition: background-color var(--transition-base) var(--ease);
+  }
+  .hero-copy li ul a:hover,
+  .hero-copy li ul a:focus-visible { background-color: var(--menu-item-hover); }
 
   /* ─ Page-header band ─ intro strip under the site header. Background comes
      from the .bg-surface-alt utility; only the layout + h1 override live here. */
@@ -1368,7 +1459,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     margin: 0;
   }
   .page blockquote :last-child,
-  .post blockquote :last-child { margin-bottom: 0; }
+  .post blockquote :last-child,
+  .hero-copy blockquote :last-child { margin-bottom: 0; }
   .page blockquote p:first-child:has(> strong:only-child),
   .post blockquote p:first-child:has(> strong:only-child) {
     display: block;
@@ -1554,7 +1646,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   #the-current-situation li > strong:first-child + br { display: none; }
 
   /* Read more CTA — the Markdown link in the paragraph after the stat list.
-     Pill styling is shared with .hero a above; only positioning is local. */
+     Pill styling is shared with .hero-copy a above; only positioning is local. */
   #the-current-situation ul + p { text-align: center; margin-block-start: var(--space-l); }
 
   /* ─ Field ─ one labelled form control: label, control, hint, message. The
