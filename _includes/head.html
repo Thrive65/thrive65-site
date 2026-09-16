@@ -384,7 +384,7 @@
   {% capture chevron_svg %}{% include icons/chevron.svg %}{% endcapture %}
   var CHEVRON_SVG = {{ chevron_svg | strip | jsonify }};
   document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".site-header nav li > ul").forEach(function (menu, i) {
+    document.querySelectorAll(".site-header nav li > ul, .hero-copy li > ul").forEach(function (menu, i) {
       var li = menu.parentNode, label = "", node = li.firstChild;
       while (node && node !== menu) {
         var next = node.nextSibling;
