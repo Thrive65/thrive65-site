@@ -53,7 +53,7 @@ It is not clear if the current administration has deemed anything off limits, bu
 
 **We’re hosting an in-person meetup this Sunday, September 20th from 3-4pm at Robert Crown Community Center in the library community room**.  Join us to discuss how we got here, how we can maintain equitable excellence while making cuts, and empower our community to advocate.
 
-**There are three community listening sessions scheduled for next week, all at 6pm:**
+**District 65 is hosting three community listening sessions scheduled for next week, all at 6pm:**
 
 9/22 @ Chute
 
