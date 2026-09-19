@@ -846,3 +846,72 @@ function deleteFileFromGithub_(path, commitMessage) {
     return false;
   }
 }
+
+/* =========================================================================
+ * ONE-TIME MIGRATION — renumber deficit-page citation markers
+ *
+ * Phase 2 of the contextual-source-sidebar work split the deficit page's
+ * former 29-entry hand-written "## Sources" list into a 45-entry repo-side
+ * source set (_data/sources/deficit.yml) — a mechanical 48-way split, then
+ * two editorial merges (the FY27 Preliminary Budget memo, cited from three
+ * spots, collapses to [11]; the Apr 20 2026 SDRP Phase 3 item collapses to
+ * [35]). Bundled citations that pointed at a single old number must now
+ * point at the RUN of their split children — e.g. old [6] (Capacity
+ * worksheet + SDRP Hub tables) becomes [6][7]; and a merged source can
+ * appear across several runs (old [9]/[11]/[16] all include [11]).
+ *
+ * HOW TO RUN (once, on the deficit-explainer Google Doc):
+ *   1. Open that Doc.
+ *   2. Extensions → Apps Script (or the add-on's script project) → select
+ *      `renumberMarkersDeficit_` in the function dropdown → Run.
+ *   3. Approve the one-time authorization prompt if shown.
+ *   4. Read the execution log for the replacement summary.
+ *   5. Manually delete the Doc's own "## Sources" heading + list (the list
+ *      now lives in the repo; leaving it in the Doc would render it twice).
+ *   6. Publish as normal.
+ *
+ * Two-pass so freshly-written digits are never re-matched: pass 1 turns each
+ * old [n] into a collision-proof sentinel [§n§]; pass 2 turns each sentinel
+ * into its final run. Safe to leave in the file after use; it does nothing
+ * unless explicitly run. Delete once Gate 2 passes.
+ *
+ * The map is the committed source of truth in migration-remap-deficit.txt.
+ * ========================================================================= */
+
+var DEFICIT_MARKER_REMAP_ = {
+  1: "[1]", 2: "[2]", 3: "[3]", 4: "[4]", 5: "[5]",
+  6: "[6][7]", 7: "[8][9]", 8: "[10]", 9: "[11]", 10: "[12]",
+  11: "[11][13][14][15]", 12: "[16][17]", 13: "[18]",
+  14: "[19][20][21][22]", 15: "[23]", 16: "[11][24]",
+  17: "[25][26][27][28]", 18: "[29]", 19: "[30][31][32]",
+  20: "[33]", 21: "[34]", 22: "[35]", 23: "[35][36][37]",
+  24: "[38][39][40]", 25: "[41]", 26: "[42]", 27: "[43]",
+  28: "[44]", 29: "[45]",
+};
+
+function renumberMarkersDeficit_() {
+  var doc = DocumentApp.getActiveDocument();
+  if (!doc) {
+    throw new Error("Open the deficit-explainer Doc, then run this from its Apps Script editor.");
+  }
+  var body = doc.getBody();
+
+  // Pass 1: [n] -> [§n§]  (exact-match each; the closing bracket stops [1]
+  // from matching inside [15], and sentinels are never re-matched in pass 2).
+  Object.keys(DEFICIT_MARKER_REMAP_).forEach(function (n) {
+    body.replaceText("\\[" + n + "\\]", "[\u00A7" + n + "\u00A7]");
+  });
+
+  // Pass 2: [§n§] -> final run.
+  var summary = [];
+  Object.keys(DEFICIT_MARKER_REMAP_).forEach(function (n) {
+    var to = DEFICIT_MARKER_REMAP_[n];
+    // Escape regex metacharacters in the replacement's brackets is not needed
+    // for replaceText's replacement arg (it is a literal string).
+    body.replaceText("\\[\u00A7" + n + "\u00A7\\]", to);
+    summary.push("[" + n + "] -> " + to);
+  });
+
+  Logger.log("renumberMarkersDeficit_ complete:\n" + summary.join("\n"));
+  Logger.log("Now delete the Doc's own '## Sources' section, then Publish.");
+}

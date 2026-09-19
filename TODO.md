@@ -56,3 +56,35 @@
 ### Design
 - Better form subsection labels (see Post type)
 - Logo/Icon
+
+## Citation sources — Phase 2 editorial review (d65-deficit-explained)
+
+`_data/sources/deficit.yml` was split from the page's former 29-entry list into
+48 one-doc entries, then reduced to **45** by two editorial merges (resolved):
+
+- **FY27 Preliminary Budget memo (merged → entry 11)** — the same document cited
+  from three prose sites (old sources 9, 11, 16) is now one entry; old markers
+  9/11/16 all include [11] in their runs.
+- **Meeting 740748 (merged → entry 35)** — the Apr 20 2026 SDRP Phase 3 item is
+  now one entry linking the board **presentation**
+  (`meetings.boardbook.org/Documents/WebViewer/1247?file=6407288`), not the
+  agenda/minutes views. NOTE: that file id is short vs. other BoardBook links —
+  verify it resolves before publishing.
+- **Entry 23 (WestEd special-ed audit)** — ⚠️ OPEN: the linked URL is Evanston
+  RoundTable coverage; RoundTable's link to the actual audit document is
+  currently **broken**. Find the real audit URL and swap it in later.
+- **Entry 28 (IASB governance principles)** — resolved: belongs with the
+  ELEVATE/SIPI/merger group (grouped there now).
+- Spot-check derived titles/publishers/dates against the prose for all 45.
+
+Marker remap (old → new run) lives in the `DEFICIT_MARKER_REMAP_` map inside
+`apps-script/Code.gs`; `renumberMarkersDeficit_` applies it to the Doc. Gate 2
+passed via a manual export of a *copy* Doc, so the local `d65-deficit-explained.md`
+is correct now. The **real** deficit Doc still has the old 1–29 markers — run
+`renumberMarkersDeficit_` on it (and delete its in-Doc `## Sources`) before the
+final republish, or the add-on will overwrite the migrated markers with old ones.
+Delete the function + map only after that real-Doc republish. (Throwaway
+`migration-remap-deficit.txt` already removed.)
+
+### Design issue with Sources appended at bottom
+- spacing of numbered sources - counter list item is added at .source::before - when numbers become wider (e.g. 45), there is not enough space between the number and the source text. need a way to make this flexible based on number width. 

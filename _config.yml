@@ -61,6 +61,12 @@ defaults:
         width: 1200
         height: 630
         alt: Thrive65 — community advocacy for District 65 schools
+  # Citation source list opt-in. Placed AFTER the catch-all above so it wins
+  # (later matching defaults take precedence in Jekyll). See _data/sources/deficit.yml.
+  - scope:
+      path: "d65-deficit-explained.md"
+    values:
+      sources: "deficit"
 
 exclude:
   - Gemfile
