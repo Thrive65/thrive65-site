@@ -588,6 +588,80 @@
 
   {% comment %}
   // ---------------------------------------------------------------------- //
+  // Collapsible regions — shared show-more/less. Activates any element with
+  // [data-collapsible] whose content overflows its collapsed height
+  // (--collapsible-max, CSS default 18rem). Short content is left untouched
+  // and, with no JS, everything stays fully visible. Styles live in the CSS
+  // block layer (.collapsible / .collapsible-toggle). The toggle is inserted
+  // as a SIBLING after the region so the clip never hides it; height is driven
+  // inline during a toggle so open/close animates (can't transition to auto).
+  // ---------------------------------------------------------------------- //
+  {% endcomment %}
+  {% comment %}
+  // Run after `load`, not DOMContentLoaded: the collapsed cap comes from the
+  // external stylesheet, which may not be applied yet at DCL — measuring then
+  // would read the full height and wrongly skip collapsing. The list is below
+  // the fold, so activating on load causes no visible jump.
+  {% endcomment %}
+  function initCollapsible() {
+    var regions = document.querySelectorAll("[data-collapsible]");
+    if (!regions.length) return;
+    var uid = 0;
+    regions.forEach(function (region) {
+      {% comment %}
+      // Measure the natural height, then the clipped height, to decide whether
+      // collapsing is worth it. Skip if the overflow is trivial (< ~1 line).
+      {% endcomment %}
+      var full = region.scrollHeight;
+      region.classList.add("is-collapsible");
+      region.setAttribute("data-collapsed", "");
+      var collapsed = region.clientHeight;
+      if (full - collapsed < 24) {
+        region.classList.remove("is-collapsible");
+        region.removeAttribute("data-collapsed");
+        return;
+      }
+      if (!region.id) region.id = "collapsible-" + (++uid);
+      var label = region.getAttribute("data-collapsible-label") || "content";
+
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "collapsible-toggle";
+      btn.setAttribute("aria-controls", region.id);
+      region.after(btn);
+
+      function sync() {
+        var isCollapsed = region.hasAttribute("data-collapsed");
+        btn.textContent = (isCollapsed ? "Show all " : "Show fewer ") + label;
+        btn.setAttribute("aria-expanded", String(!isCollapsed));
+      }
+      sync();
+
+      {% comment %}
+      // Instant toggle of the clip attribute — see the CSS note on why the
+      // height isn't transitioned. On collapse, scroll the region's top back
+      // into view so the reader isn't stranded far down the (now short) list.
+      {% endcomment %}
+      btn.addEventListener("click", function () {
+        if (region.hasAttribute("data-collapsed")) {
+          region.removeAttribute("data-collapsed");
+        } else {
+          region.setAttribute("data-collapsed", "");
+          var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+          region.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+        }
+        sync();
+        announce(region.hasAttribute("data-collapsed")
+          ? label.charAt(0).toUpperCase() + label.slice(1) + " collapsed"
+          : "All " + label + " shown");
+      });
+    });
+  }
+  if (document.readyState === "complete") initCollapsible();
+  else window.addEventListener("load", initCollapsible);
+
+  {% comment %}
+  // ---------------------------------------------------------------------- //
   // Source panel — the contextual sidebar behind every [n] citation marker.
   //
   // NON-MODAL. See the rationale block in _includes/source-panel.html: no focus

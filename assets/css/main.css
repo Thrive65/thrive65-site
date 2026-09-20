@@ -2174,20 +2174,26 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     padding-left: 0;
     margin-block-start: var(--space-m);
   }
-  /* The number sits in a --space-s gutter (enough for "10."), inset by
-     --space-2xs from the edge. That inset is what keeps the number *inside*
-     any background fill — :target and .is-current both paint the whole <li>,
-     and a flush-left number reads as falling out of the highlight. */
+  /* The number sits right-aligned in a fixed gutter, so the gap between it and
+     the source text stays constant (--space-xs) no matter how wide the number
+     gets — a wide "45." grows leftward into the gutter instead of crowding the
+     text. Gutter width is in ch (tracks the digit width) so it scales with the
+     fluid type; --source-num-width fits up to three glyphs (e.g. "999."). The
+     number stays inside any background fill because :target and .is-current
+     paint the whole <li> including this gutter. */
+  .source-list { --source-num-width: 2.75ch; }
   .source {
     position: relative;
-    padding-inline-start: calc(var(--space-s) + var(--space-2xs));
+    padding-inline-start: calc(var(--source-num-width) + var(--space-xs));
     padding-block: var(--space-xs);
     border-block-start: var(--border-thin) solid var(--line);
   }
   .source::before {
     content: counter(list-item) ".";
     position: absolute;
-    inset-inline-start: var(--space-2xs);
+    inset-inline-start: 0;
+    inline-size: var(--source-num-width);
+    text-align: end;
     font-weight: 700;
     color: var(--secondary);
   }
@@ -2220,6 +2226,45 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     background: transparent;
     outline: var(--border-bold) solid var(--focus);
     outline-offset: 2px;
+  }
+
+  /* ── Collapsible region (shared) ─────────────────────────────────────
+     Show-more / show-less for any long block. The activation IIFE in
+     head.html adds .is-collapsible + [data-collapsed] and injects a
+     .collapsible-toggle sibling ONLY when the content overflows
+     --collapsible-max, so short content and the no-JS case stay fully
+     visible. Collapsed = clipped to --collapsible-max with a fade mask on
+     the cut edge (reads as "there's more below"); expanded just drops the
+     attribute. The toggle itself is a definite, smooth state change; the
+     height is intentionally NOT transitioned — animating max-block-size on
+     a very tall list (the sources list is ~11000px) forces a full relayout
+     every frame and janks/freezes the page. Reuse on any long section —
+     apply data-collapsible and tune --collapsible-max. */
+  .collapsible.is-collapsible[data-collapsed] {
+    overflow: clip;
+    max-block-size: var(--collapsible-max, 18rem);
+    -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
+            mask-image: linear-gradient(to bottom, #000 65%, transparent);
+  }
+  .collapsible-toggle {
+    display: block;
+    margin-inline: auto;
+    margin-block-start: var(--space-s);
+    padding: var(--space-2xs) var(--space-s);
+    background: none;
+    border: var(--border-thin) solid var(--line);
+    border-radius: var(--radius-xs);
+    color: var(--link);
+    font: inherit;
+    font-size: var(--step--1);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition-fast) var(--ease),
+                border-color var(--transition-fast) var(--ease);
+  }
+  .collapsible-toggle:hover {
+    background: var(--menu-item-hover);
+    border-color: var(--secondary);
   }
 
   /* ── Contextual panel ──

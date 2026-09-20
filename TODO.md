@@ -86,5 +86,41 @@ final republish, or the add-on will overwrite the migrated markers with old ones
 Delete the function + map only after that real-Doc republish. (Throwaway
 `migration-remap-deficit.txt` already removed.)
 
+## Citation sources — Phase 3 editorial review (homepage FAQ)
+
+`_data/sources/faq.yml` was migrated from the former fake `- question: "Source
+List"` accordion item (removed from `_data/faq.yml`), split so each entry cites
+one document, then the two exact-duplicate entries were **merged** (old 20→52,
+old 68→57) and the whole list renumbered to a sequential **1-67**. The citing
+markers in `_data/faq.yml` were remapped to match (the redundant
+`[20][52][68][57]` rollup now reads `[51][56]`).
+Result: **67 entries, 230 markers**, clean build (no uncited/out-of-range).
+
+Open editorial items:
+- Spot-check derived `title`/`publisher`/`date`/`note` for all 67 against the
+  prose (metadata was semi-auto-derived from the old citation strings).
+
+**Doc-side steps before the coordinated republish** (FAQ Google Doc): run
+`renumberMarkersFaq_` (takes the Doc's original 1-64 markers straight to the
+final 1-67 space, expanding the four bundles), delete the Doc's own
+"Source List" section, then Publish. Until then the real FAQ Doc still has the
+old un-split markers + the Source List section — republishing before those two
+steps would overwrite the migrated `_data/faq.yml`. Delete `FAQ_MARKER_REMAP_` +
+`renumberMarkersFaq_` from `apps-script/Code.gs` only after that republish.
+
 ### Design issue with Sources appended at bottom
-- spacing of numbered sources - counter list item is added at .source::before - when numbers become wider (e.g. 45), there is not enough space between the number and the source text. need a way to make this flexible based on number width. 
+- [x] spacing of numbered sources — `.source::before` now right-aligns the
+  number in a `--source-num-width` (2.75ch) gutter with a constant `--space-xs`
+  gap, so wide numbers grow leftward instead of crowding the text.
+- [x] backlink offset — verified already handled by the shared
+  `:where([id]) { scroll-margin-block-start: var(--space-2xl) }` rule: a real
+  backlink click lands the cite ~33px below the sticky header (deficit page,
+  native `#cite-N-M` nav) and opens + offsets the FAQ item on the homepage. No
+  change needed.
+- backlink numbers have escaped periods, e.g. "↩ 1\. There are meaningfully fewer childr..." - ok to ignore for now. test again once content is generated from actual google doc. 
+- [x] long sources list — wrapped in the new **shared `.collapsible` pattern**
+  (CSS block layer + activation IIFE in `head.html`): clips to `--collapsible-max`
+  (18rem) with a fade mask and a JS-injected `Show all / Show fewer` toggle when
+  the content overflows; degrades to fully visible with no JS. Reusable on any
+  long section via `data-collapsible` + `data-collapsible-label`. Toggle is
+  instant (animating the ~11000px list's height janks/freezes the page).

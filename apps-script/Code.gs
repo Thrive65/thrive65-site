@@ -915,3 +915,98 @@ function renumberMarkersDeficit_() {
   Logger.log("renumberMarkersDeficit_ complete:\n" + summary.join("\n"));
   Logger.log("Now delete the Doc's own '## Sources' section, then Publish.");
 }
+
+/* =========================================================================
+ * FAQ MARKER REMAP (Phase 3 migration) — one-time renumber for the FAQ Doc.
+ *
+ * The live FAQ Doc still carries the ORIGINAL 1-64 markers against a single
+ * "Source List" that bundled 2-3 documents under some numbers. The migration
+ * (a) split every bundle so each entry cites exactly one document, then
+ * (b) merged the two exact-duplicate entries, leaving a sequential 1-67 list
+ * in _data/sources/faq.yml. This map takes the Doc's original numbers straight
+ * to that final 1-67 space, so markers 1-19 stay put and 20-64 shift/expand:
+ *   [20] -> [51][56]     (Capacity worksheet = final 51; SDRP Hub baseline = 56)
+ *   [40] -> [39][64]     (Ad Hoc Budget Committee report + Patch 2018 budget)
+ *   [41] -> [40][65][66] (2015 referendum + 2010 budget + 2013 budget)
+ *   [46] -> [45][67]     (admin-growth + org-chart-creep)
+ *   all other 21-64 shift down by one (a single dropped duplicate before them).
+ * 1-19 are unchanged, so they are omitted (left literal). Every number 20-64
+ * IS listed so pass 1 sentinelizes it before pass 2 writes any final digits.
+ *
+ * HOW TO RUN (once, on the FAQ Google Doc): identical to the deficit steps
+ * above — select `renumberMarkersFaq_` in the function dropdown → Run, then
+ * delete the Doc's own "Source List" section (it now lives in
+ * _data/sources/faq.yml; leaving it in the Doc renders it twice) and Publish.
+ * Two-pass sentinel so freshly-written digits are never re-matched.
+ * ========================================================================= */
+
+var FAQ_MARKER_REMAP_ = {
+  20: "[51][56]",
+  21: "[20]",
+  22: "[21]",
+  23: "[22]",
+  24: "[23]",
+  25: "[24]",
+  26: "[25]",
+  27: "[26]",
+  28: "[27]",
+  29: "[28]",
+  30: "[29]",
+  31: "[30]",
+  32: "[31]",
+  33: "[32]",
+  34: "[33]",
+  35: "[34]",
+  36: "[35]",
+  37: "[36]",
+  38: "[37]",
+  39: "[38]",
+  40: "[39][64]",
+  41: "[40][65][66]",
+  42: "[41]",
+  43: "[42]",
+  44: "[43]",
+  45: "[44]",
+  46: "[45][67]",
+  47: "[46]",
+  48: "[47]",
+  49: "[48]",
+  50: "[49]",
+  51: "[50]",
+  52: "[51]",
+  53: "[52]",
+  54: "[53]",
+  55: "[54]",
+  56: "[55]",
+  57: "[56]",
+  58: "[57]",
+  59: "[58]",
+  60: "[59]",
+  61: "[60]",
+  62: "[61]",
+  63: "[62]",
+  64: "[63]",
+};
+
+function renumberMarkersFaq_() {
+  var doc = DocumentApp.getActiveDocument();
+  if (!doc) {
+    throw new Error("Open the FAQ Doc, then run this from its Apps Script editor.");
+  }
+  var body = doc.getBody();
+
+  // Pass 1: [n] -> [§n§] for every mapped original number.
+  Object.keys(FAQ_MARKER_REMAP_).forEach(function (n) {
+    body.replaceText("\\[" + n + "\\]", "[\u00A7" + n + "\u00A7]");
+  });
+
+  // Pass 2: [§n§] -> final run.
+  var summary = [];
+  Object.keys(FAQ_MARKER_REMAP_).forEach(function (n) {
+    body.replaceText("\\[\u00A7" + n + "\u00A7\\]", FAQ_MARKER_REMAP_[n]);
+    summary.push("[" + n + "] -> " + FAQ_MARKER_REMAP_[n]);
+  });
+
+  Logger.log("renumberMarkersFaq_ complete:\n" + summary.join("\n"));
+  Logger.log("Now delete the Doc's own 'Source List' section, then Publish.");
+}

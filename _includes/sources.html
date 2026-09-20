@@ -15,6 +15,15 @@
 {% if set and set.items %}
 <section class="sources" id="sources" aria-labelledby="sources-heading">
   <h2 id="sources-heading">{{ include.heading | default: set.title | default: "Sources" }}</h2>
+  {% comment %}
+    The list is wrapped in the shared .collapsible region (styles in the CSS
+    block layer, activation IIFE in head.html). When the list is long enough to
+    overflow --collapsible-max it clips with a fade and JS injects a
+    Show all / Show fewer toggle; short lists are left fully visible, and with
+    no JS the whole list always shows. data-collapsible-label names the thing
+    being toggled ("sources") for the button text and the announcement.
+  {% endcomment %}
+  <div class="collapsible" data-collapsible data-collapsible-label="sources">
   <ol class="source-list">
     {% for src in set.items %}
       <li class="source" id="source-{{ forloop.index }}" value="{{ forloop.index }}">
@@ -38,5 +47,6 @@
       </li>
     {% endfor %}
   </ol>
+  </div>
 </section>
 {% endif %}

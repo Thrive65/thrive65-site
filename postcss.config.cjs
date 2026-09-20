@@ -58,6 +58,11 @@ module.exports = {
           "is-current",
           "source-ref",
           "chip",
+          // Collapsible region — .collapsible is static in markup, but
+          // .is-collapsible is JS-added and .collapsible-toggle is JS-injected.
+          "collapsible",
+          "is-collapsible",
+          "collapsible-toggle",
         ],
         // Attribute/state-driven selectors: a11y modes set data-* on <html> at
         // runtime; ARIA states are toggled by JS; EmailOctopus injects its own
@@ -67,6 +72,7 @@ module.exports = {
           /data-contrast/,
           /data-dyslexic/,
           /data-textsize/,
+          /data-collapsed/, // JS-toggled on a .collapsible region
           /aria-expanded/,
           /aria-checked/,
           /aria-current/,

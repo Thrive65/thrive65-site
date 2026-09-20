@@ -14,10 +14,17 @@
         <span class="accordion-icon" aria-hidden="true"></span>
       </summary>
       <div class="accordion-body">
-        {{ item.answer | markdownify }}
+        {{ item.answer | source_refs: item.question, "faq" | markdownify }}
       </div>
     </details>
   {% else %}
     <p class="faq-empty">FAQ content hasn't been published yet — once the FAQ Google Doc is published, questions will appear here automatically.</p>
   {% endfor %}
 </div>
+{% comment %}
+  Source list rendered as a sibling AFTER the accordion (not inside a <details>),
+  so no-JS #source-N jumps land on a visible list. The homepage uses
+  layout: default, which does not auto-append sources.html, so it's included
+  explicitly here with the FAQ set.
+{% endcomment %}
+{% include sources.html key="faq" %}
