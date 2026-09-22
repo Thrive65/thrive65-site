@@ -626,16 +626,67 @@
 
       var btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "collapsible-toggle";
+      btn.className = "btn btn-secondary mx-auto collapsible-toggle";
       btn.setAttribute("aria-controls", region.id);
       region.after(btn);
 
+      {% comment %}
+      // Selective inert: while collapsed, only the items that fall FULLY below
+      // the clip line are made `inert` (removed from the tab order AND the
+      // accessibility tree). Every item that's even partially visible under the
+      // fade stays fully interactive by mouse and keyboard — so keyboard focus
+      // reaches the visible preview links, then skips the hidden remainder
+      // straight to this toggle instead of tabbing blindly through offscreen
+      // links, and a screen reader hears the toggle rather than half a list.
+      //
+      // "Items" are the region's list rows; a region with no list rows (generic
+      // prose) falls back to inerting the whole thing while collapsed. Membership
+      // is by position relative to the live clip height, so it self-corrects when
+      // reflow or a text-size change moves the fold (see the ResizeObserver).
+      {% endcomment %}
+      var items = region.querySelectorAll(
+        ":scope > ol > li, :scope > ul > li, :scope > li"
+      );
+      function applyInert() {
+        var isCollapsed = region.hasAttribute("data-collapsed");
+        if (!items.length) { region.inert = isCollapsed; return; }
+        if (!isCollapsed) {
+          items.forEach(function (it) { it.inert = false; });
+          return;
+        }
+        var cap = region.clientHeight; // the collapsed clip height, live
+        var regionTop = region.getBoundingClientRect().top;
+        items.forEach(function (it) {
+          var top = it.getBoundingClientRect().top - regionTop;
+          it.inert = top >= cap - 1; // top edge at/below the fold = fully hidden
+        });
+      }
+
+      {% comment %}
+      // sync() is the single source of truth for the collapsed/expanded state,
+      // called on init and after every toggle: the button label + aria-expanded
+      // (the announced disclosure state) and the selective-inert pass.
+      {% endcomment %}
       function sync() {
         var isCollapsed = region.hasAttribute("data-collapsed");
         btn.textContent = (isCollapsed ? "Show all " : "Show fewer ") + label;
         btn.setAttribute("aria-expanded", String(!isCollapsed));
+        applyInert();
       }
       sync();
+
+      {% comment %}
+      // Recompute which rows are below the fold when the content reflows — a
+      // narrower viewport wraps rows to more lines, and the a11y text-size
+      // control changes the root font size (and thus both row heights and the
+      // rem-based clip cap). Observing the inner content box catches both.
+      {% endcomment %}
+      if (typeof ResizeObserver !== "undefined") {
+        var ro = new ResizeObserver(function () {
+          if (region.hasAttribute("data-collapsed")) applyInert();
+        });
+        ro.observe(region.firstElementChild || region);
+      }
 
       {% comment %}
       // Instant toggle of the clip attribute — see the CSS note on why the

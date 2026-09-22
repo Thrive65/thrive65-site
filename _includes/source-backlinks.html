@@ -15,7 +15,7 @@
 {% if cites and cites.size > 0 %}
   <span class="source-backlinks">
     {% for c in cites limit: 6 %}
-      <a class="source-backlink" href="{{ c.href }}" aria-label="Back to citation {{ include.n }} in {{ c.label | strip_html | escape }}"><span aria-hidden="true">↩</span> {{ c.label | strip_html | truncate: 42 }}</a>
+      <a class="source-backlink" href="{{ c.href }}" aria-label="Back to citation {{ include.n }} in {{ c.label | strip_html | escape }}"><span aria-hidden="true">↩</span>&nbsp;{{ c.label | strip_html | truncate: 42 }}</a>
     {% endfor %}
     {% if cites.size > 6 %}<span class="source-backlink-more">and {{ cites.size | minus: 6 }} more</span>{% endif %}
   </span>

@@ -2180,9 +2180,12 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      text. Gutter width is in ch (tracks the digit width) so it scales with the
      fluid type; --source-num-width fits up to three glyphs (e.g. "999."). The
      number stays inside any background fill because :target and .is-current
-     paint the whole <li> including this gutter. */
-  .source-list { --source-num-width: 2.75ch; }
+     paint the whole <li> including this gutter. The var lives on .source (not
+     .source-list) so a <li class="source"> cloned into the source panel —
+     which has no .source-list ancestor — still resolves the gutter width
+     instead of collapsing the calc() and overlapping the text. */
   .source {
+    --source-num-width: 2.75ch;
     position: relative;
     padding-inline-start: calc(var(--source-num-width) + var(--space-xs));
     padding-block: var(--space-xs);
@@ -2246,23 +2249,49 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
             mask-image: linear-gradient(to bottom, #000 65%, transparent);
   }
+  /* Layout-only hook for the injected toggle; its look comes from
+     .btn .btn-secondary and its centering from .mx-auto (both shared). */
   .collapsible-toggle {
-    display: block;
-    margin-inline: auto;
     margin-block-start: var(--space-s);
-    padding: var(--space-2xs) var(--space-s);
-    background: none;
-    border: var(--border-thin) solid var(--line);
-    border-radius: var(--radius-xs);
-    color: var(--link);
-    font: inherit;
-    font-size: var(--step--1);
-    font-weight: 600;
-    cursor: pointer;
-    transition: background var(--transition-fast) var(--ease),
-                border-color var(--transition-fast) var(--ease);
   }
-  .collapsible-toggle:hover {
+
+  /* ── Button (shared) ─────────────────────────────────────────────────
+     The one pill-button pattern: bold-framed, control-height hit target.
+     .btn is the shape; a variant sets the color. .btn-primary is the
+     marigold CTA (same treatment as .nav-cta); .btn-secondary is the
+     quieter blue-on-surface pill. Reuse these for any new button instead
+     of restyling — apply .btn plus one variant. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--control-height);
+    padding: 0.55em 1.2em;
+    border: var(--border-bold) solid var(--edge);
+    border-radius: var(--radius-pill);
+    font: inherit;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background var(--transition-base) var(--ease),
+                color var(--transition-base) var(--ease),
+                border-color var(--transition-base) var(--ease);
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    color: var(--on-accent);
+  }
+  .btn-secondary {
+    background: transparent;
+    border-color: var(--link);
+    color: var(--link);
+  }
+  .btn-secondary:hover {
     background: var(--menu-item-hover);
     border-color: var(--secondary);
   }
@@ -2531,6 +2560,16 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .mt-m  { margin-block-start: var(--space-m); }
   .mt-l  { margin-block-start: var(--space-l); }
   .mt-xl { margin-block-start: var(--space-xl); }
+
+  /* Horizontally center a shrink-wrapping element via auto inline margins.
+     display + fit-content promote an inline element (e.g. an inline-flex
+     .btn) to a shrink-wrapped block-level box so the auto margins resolve;
+     flex is kept so a .btn's own align/justify still center its contents. */
+  .mx-auto {
+    display: flex;
+    inline-size: fit-content;
+    margin-inline: auto;
+  }
 
   /* wide cap wrapper */
   .wide.wrapper {

@@ -63,6 +63,13 @@ module.exports = {
           "collapsible",
           "is-collapsible",
           "collapsible-toggle",
+          // Shared button — .btn/.btn-secondary land on the JS-injected
+          // collapsible toggle (btn-primary is used statically by markup, but
+          // safelisted alongside so the pair can't be half-purged).
+          "btn",
+          "btn-primary",
+          "btn-secondary",
+          "mx-auto",
         ],
         // Attribute/state-driven selectors: a11y modes set data-* on <html> at
         // runtime; ARIA states are toggled by JS; EmailOctopus injects its own
