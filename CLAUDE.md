@@ -37,6 +37,7 @@ Google Doc → "🚀 Publish" sidebar button (Apps Script add-on)
 Files overwritten by the publishing add-on (do not edit by hand):
 - `_includes/home-overview.md` — Overview section copy (content type: "Homepage section")
 - `_data/faq.yml` — FAQ accordion data (content type: "FAQ item")
+- `_data/news.yml` — "Thrive65 in the News" data (content type: "News item"): a `title:` plus an `items:` list of `{outlet, headline, date, url, blurb}`. Rendered by `_includes/news.html` (a `.post-list` of external press links, sorted newest-first), included in the `#news` homepage section.
 
 Files published from Google Docs via the add-on (content type "Post"):
 - `_posts/YYYY-MM-DD-slug.md` — Board meeting recaps and other posts. In Page Properties, set **Category** (e.g. `Board Meeting Recaps`, `Opinion`), **Post date** (YYYY-MM-DD), and the **Based on Date** permalink switch (on = `/{category}/{year}/{M-D}/`, off = `/{category}/{slug}/`). The eyebrow label on the post page is the category value.
@@ -55,7 +56,7 @@ Files edited by hand:
 
 **FAQ data format (`_data/faq.yml`):** Top-level `title:` (section heading) plus an `items:` list of `{question:, answer:}` pairs. The `answer` field is a block-scalar YAML string containing Markdown, rendered through `| markdownify` in the template.
 
-**Apps Script add-on (`apps-script/Code.gs`):** Runs as a Google Workspace Add-on (sidebar UI, not Extensions menu). Settings are split between Script Properties (GitHub token/owner/repo/branch, Drive folder ID — shared across docs) and Document Properties (content type, target path, metadata — per-doc). The `doPublish_()` function exports the Doc as Markdown via the Drive REST API, then commits to GitHub. FAQ docs are parsed by `parseFaqMarkdown()` into `faqArrayToYaml()`. See `apps-script/SETUP.md` for the full one-time setup.
+**Apps Script add-on (`apps-script/Code.gs`):** Runs as a Google Workspace Add-on (sidebar UI, not Extensions menu). Settings are split between Script Properties (GitHub token/owner/repo/branch, Drive folder ID — shared across docs) and Document Properties (content type, target path, metadata — per-doc). The `doPublish_()` function exports the Doc as Markdown via the Drive REST API, then commits to GitHub. FAQ docs are parsed by `parseFaqMarkdown()` into `faqArrayToYaml()`; news docs by `parseNewsMarkdown()` (Heading 2 = headline, labeled `Publication:`/`Date:`/`URL:` lines + a blurb sentence) into `newsArrayToYaml()`. See `apps-script/SETUP.md` for the full one-time setup.
 
 **Heading copy-link anchors (`_includes/head.html` IIFE):** Content headings get a GitHub-style hover-revealed chain icon that copies an absolute deep link and shows a `.toast` ("Link copied"). It's a progressive-enhancement IIFE (styles in the CSS `block` layer):
 - **Prose headings** — on `DOMContentLoaded` the JS injects an `<a class="heading-anchor">` into every `main :is(h2, h3, h4)[id]` (kramdown emits the `id`s), skipping `.page-header` titles. So any new content heading is covered automatically — but only if it's an `h2`/`h3`/`h4` *with an id*. Don't use a heading element for decorative eyebrow/kicker text (use a `<p>`); an `id`'d heading there would wrongly get an anchor, and it breaks the document outline besides.

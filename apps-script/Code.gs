@@ -88,7 +88,7 @@ function buildHomepageCard() {
 }
 
 function labelForType_(t) {
-  return { section: "Homepage section", faq: "FAQ item", page: "Page", post: "Post" }[t] || t;
+  return { section: "Homepage section", faq: "FAQ item", news: "News item", page: "Page", post: "Post" }[t] || t;
 }
 
 /* =========================================================================
@@ -251,6 +251,7 @@ function buildPagePropertiesCard(type, values) {
     .addItem("", "", type === "")
     .addItem("Homepage section", "section", type === "section")
     .addItem("FAQ item", "faq", type === "faq")
+    .addItem("News item", "news", type === "news")
     .addItem("Page", "page", type === "page")
     .addItem("Post", "post", type === "post");
 
@@ -365,6 +366,26 @@ function buildPagePropertiesCard(type, values) {
     );
   }
 
+  if (type === "news") {
+    sec.addWidget(
+      CardService.newTextInput()
+        .setFieldName("META_TITLE")
+        .setTitle("Title")
+        .setValue(values.META_TITLE || "")
+        .setHint("Heading shown above the coverage list. Defaults to the doc name.")
+    );
+    sec.addWidget(
+      CardService.newTextParagraph().setText(
+        "News docs write to <b>_data/news.yml</b>. The Title above becomes the section " +
+          "heading. Each Heading 2 is an article headline — <b>hyperlink the headline text</b> " +
+          "(select it, ⌘K) to the article. Under it add lines <b>Publication:</b> and " +
+          "<b>Date:</b> (YYYY-MM-DD), then a blurb sentence. (If you'd rather not link the " +
+          "headline, add a <b>URL:</b> line instead.) Items are shown newest first " +
+          "automatically, whatever their order in the doc."
+      )
+    );
+  }
+
   sec.addWidget(
     CardService.newTextButton()
       .setText("Save")
@@ -443,6 +464,13 @@ function doPublish_() {
       targetPath = "_data/faq.yml";
       content = faqArrayToYaml(title, parseFaqMarkdown(rawMarkdown));
       commitMessage = `Publish FAQ update from "${title}"`;
+      break;
+    }
+
+    case "news": {
+      targetPath = "_data/news.yml";
+      content = newsArrayToYaml(title, parseNewsMarkdown(rawMarkdown));
+      commitMessage = `Publish news update from "${title}"`;
       break;
     }
 
@@ -695,6 +723,93 @@ function faqArrayToYaml(title, faqs) {
     f.answer.split("\n").forEach((line) => {
       yaml += `      ${line}\n`;
     });
+  });
+  return yaml;
+}
+
+/* =========================================================================
+ * News parsing (docs → _data/news.yml)
+ * ========================================================================= */
+
+function parseNewsMarkdown(markdown) {
+  // Each Heading 2 is an article headline. The preferred way to supply the
+  // article link is to hyperlink the headline itself in the Doc, so the H2
+  // exports as "## [headline](url)" — the link text becomes the headline and
+  // the href becomes the url. Under it, labeled lines ("Publication:", "Date:",
+  // and an optional "URL:" fallback) set fields; any remaining prose is the
+  // blurb. Tables are avoided on purpose — cleanGoogleMarkdown() rewrites
+  // single-cell tables into blockquotes, so labeled lines are the safe convention.
+  const lines = markdown.split("\n");
+  const items = [];
+  let current = null;
+
+  const flush = () => {
+    if (!current) return;
+    current.blurb = current.blurbLines.join(" ").replace(/\s+/g, " ").trim();
+    delete current.blurbLines;
+    items.push(current);
+  };
+
+  lines.forEach((line) => {
+    const headingMatch = line.match(/^##\s+(.*)/);
+    if (headingMatch) {
+      flush();
+      let heading = headingMatch[1].trim();
+      let url = "";
+      // Preferred: the headline is hyperlinked, so it exports as "[text](url)".
+      // Use the link text as the headline and the href as the article url.
+      const linkMatch = heading.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)\s*$/);
+      if (linkMatch) {
+        heading = linkMatch[1].trim();
+        url = linkMatch[2];
+      }
+      current = { outlet: "", headline: heading, date: "", url: url, blurbLines: [] };
+      return;
+    }
+    if (!current) return;
+
+    // Strip bold markers so "**Publication:**" matches too.
+    const labelMatch = line
+      .replace(/\*/g, "")
+      .match(/^\s*(publication|outlet|source|date|url|link)\s*:\s*(.*)$/i);
+    if (labelMatch) {
+      const key = labelMatch[1].toLowerCase();
+      const val = labelMatch[2].trim();
+      if (key === "date") current.date = val;
+      else if (key === "url" || key === "link") current.url = extractUrl_(val);
+      else current.outlet = val; // publication / outlet / source
+      return;
+    }
+
+    if (line.trim()) current.blurbLines.push(line.trim());
+  });
+  flush();
+
+  return items.filter((it) => it.headline);
+}
+
+function extractUrl_(val) {
+  // A pasted URL may export as [text](url), <url>, or a bare URL — pull the href.
+  let m = val.match(/\]\((https?:\/\/[^\s)]+)\)/);
+  if (m) return m[1];
+  m = val.match(/<(https?:\/\/[^\s>]+)>/);
+  if (m) return m[1];
+  m = val.match(/(https?:\/\/\S+)/);
+  return m ? m[1] : val.trim();
+}
+
+function newsArrayToYaml(title, items) {
+  let yaml = `title: ${yamlScalar(title)}\n`;
+  if (items.length === 0) {
+    return yaml + "items: []\n";
+  }
+  yaml += "items:\n";
+  items.forEach((it) => {
+    yaml += `  - outlet: ${yamlScalar(it.outlet)}\n`;
+    yaml += `    headline: ${yamlScalar(it.headline)}\n`;
+    yaml += `    date: ${yamlScalar(it.date)}\n`;
+    yaml += `    url: ${yamlScalar(it.url)}\n`;
+    if (it.blurb) yaml += `    blurb: ${yamlScalar(it.blurb)}\n`;
   });
   return yaml;
 }

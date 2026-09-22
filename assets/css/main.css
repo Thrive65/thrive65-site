@@ -1505,6 +1505,12 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     padding: var(--space-xs) 0;
     border-bottom: var(--border-thin) solid var(--line);
   }
+  /* External-link glyph trailing a news headline (see _includes/news.html) */
+  .news-link svg {
+    inline-size: var(--step-0);
+    block-size: var(--step-0);
+    vertical-align: -0.15em;
+  }
 
   /* ─ Site footer ─ */
   .site-footer {
@@ -2116,6 +2122,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .mt-m  { margin-block-start: var(--space-m); }
   .mt-l  { margin-block-start: var(--space-l); }
   .mt-xl { margin-block-start: var(--space-xl); }
+
+  .mb-2xs  { margin-block-end: var(--space-2xs); }
 
   /* wide cap wrapper */
   .wide.wrapper {

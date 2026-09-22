@@ -58,7 +58,15 @@ removed until final art completed
   </div>
 </section>
 
-<div class="wave" style="--wave-above: var(--band-alt); --wave-below: var(--hero-bg);" aria-hidden="true"></div>
+<div class="wave" style="--wave-above: var(--band-alt); --wave-below: var(--bg);" aria-hidden="true"></div>
+
+<section id="news" class="region">
+  <div class="wrapper">
+    {% include news.html %}
+  </div>
+</section>
+
+<div class="wave" style="--wave-above: var(--bg); --wave-below: var(--hero-bg);" aria-hidden="true"></div>
 
 <section id="signup" class="signup region hero-hue text-center">
   <div class="wrapper prose">

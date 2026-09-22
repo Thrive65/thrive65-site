@@ -1,0 +1,16 @@
+{% if site.data.news.title %}
+  <p>Press</p>
+  <h2>{{ site.data.news.title }}</h2>
+{% endif %}
+{% assign news_items = site.data.news.items | sort: "date" | reverse %}
+<ul class="post-list">
+  {% for item in news_items %}
+    <li class="flow flow-space-2xs">
+      <p class="text-meta text-deemphasized mb-2xs"><strong>{{ item.outlet }}</strong> | {{ item.date | date: "%b %-d, %Y" }}</p>
+      <a class="news-link" href="{{ item.url }}" target="_blank" rel="noopener">{% assign headline_words = item.headline | split: " " %}{% for word in headline_words %}{% if forloop.last %}<span class="nowrap">{{ word }}&nbsp;{% include icons/arrow-up-right.svg %}</span>{% else %}{{ word }} {% endif %}{% endfor %}</a>
+      {% if item.blurb %}<p class="text-meta">{{ item.blurb }}</p>{% endif %}
+    </li>
+  {% else %}
+    <p class="faq-empty">News coverage will appear here once the news Google Doc is published.</p>
+  {% endfor %}
+</ul>

@@ -155,6 +155,7 @@ Pick a **Content type**; the form then shows only the fields that type needs
 |---|---|---|
 | **Homepage section** | a homepage section include | Target path → `_includes/section-content.md` |
 | **FAQ item** | the accordion data file (`_data/faq.yml`) | Title (the section heading) |
+| **News item** | the news data file (`_data/news.yml`) | Title (the section heading) |
 | **Page** | a full page, e.g. `volunteer.md` | Target path + Title / Description / Social image |
 | **Post** | a dated file in `_posts/` | URL slug (optional) + Title / Description / Social image |
 
@@ -184,6 +185,28 @@ accordion automatically:
 - Each question is a **Heading 2** in the Doc.
 - Everything below it, up to the next Heading 2, becomes that question's
   answer (you can use bold, links, lists, etc. — they'll carry over).
+
+## A note on the news doc's formatting
+
+The news doc ("Thrive65 in the News") writes to `_data/news.yml` using labeled
+lines so the script can build the list automatically:
+
+- The **Title** (in Page Properties) becomes the section heading.
+- Each article is a **Heading 2** in the Doc — that's the article **headline**.
+  **Hyperlink the headline text to the article**: select the Heading 2 text,
+  press **⌘K** (Ctrl+K on Windows), and paste the article URL. The link becomes
+  the headline's destination on the site.
+- Below it, add these labeled lines (order doesn't matter):
+  - `Publication: Evanston RoundTable`
+  - `Date: 2026-09-20` (use `YYYY-MM-DD`)
+  - Any remaining sentence becomes the **blurb** shown under the headline.
+- If you'd rather not hyperlink the headline, add a `URL: https://…` line
+  instead — either works (a `URL:` line wins if both are present).
+- Items are sorted newest-first on the site automatically, so you don't have
+  to keep them in order in the Doc.
+
+Don't use a one-cell table here — that's rewritten into a callout blockquote
+(see below). Labeled lines are the safe convention.
 
 ## Callouts (Quick Tip, Power Move, sample scripts)
 
