@@ -7,7 +7,7 @@ Community Meeting 9/20/2026
 
 Thank you so much for attending Thrive65's first community event on Sunday. It was rainy, chilly, and the Cubs, Sox, and Bears were on, but at least 35 community members still came out, including two D65 Board members (thank you Maria Opdycke and Chris Van Nostrand) and journalists from the Evanston RoundTable, Evanston Now, and the Daily Northwestern. You can see their coverage of the event [here](https://evanstonroundtable.com/2026/09/20/thrive65-new-district-65-parent-advocacy-group/) and [here](https://evanstonnow.com/the-cuts-have-to-happen-somewhere/).   
     
-We presented a history of D65's structural deficit (at least back to 2009), laid out examples of the inequitable cuts to our marginalized families throughout Evanston's past, and discussed where we go from here and how to increase your advocacy. We also grappled with our current situation in community, with curiosity and respect for one another. Attendees asked questions and shared various perspectives.   
+We [presented](https://drive.google.com/file/d/1nTz0e6fNV2vHeoG9F_-Z5edXbZ-3-E4o/view?usp=sharing) a history of D65's structural deficit (at least back to 2009), laid out examples of the inequitable cuts to our marginalized families throughout Evanston's past, and discussed where we go from here and how to increase your advocacy. We also grappled with our current situation in community, with curiosity and respect for one another. Attendees asked questions and shared various perspectives.   
     
 One topic of discussion, "non-mandated programs",  was based on a slide we saw at last week’s board meeting:   
 ![][image1]
