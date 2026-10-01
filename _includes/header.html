@@ -19,7 +19,8 @@
       <a class="nav-cta" href="{{ '/' | relative_url }}#signup">Join us</a>
     </nav>
     <nav id="utility-nav" class="cluster" aria-label="Utilities">
-      <div class="lang-select">
+      {% comment %} 
+        <div class="lang-select">
         <button type="button" class="lang-toggle" aria-label="Select language"
                 aria-controls="lang-menu" aria-expanded="false"
                 data-disclosure="nav" data-dismiss="outside esc focusout">
@@ -39,7 +40,7 @@
             </a>
           </li>
         </ul>
-      </div>
+      {% endcomment %}
 
       <div class="a11y-select">
         <button type="button" class="a11y-toggle" aria-label="Display and accessibility settings"
@@ -106,7 +107,9 @@
     </nav>
     </div>
   </div>
-
+  
+  {% comment %}
+  Temporarily commenting out elfsight until full i18n is built
   <!-- Elfsight Website Translator drives the actual page translation. The custom
        .lang-select control above is the visible UI; selecting a language reloads
        with ?lang=<code>, which this widget reads and persists (see head.html).
@@ -118,4 +121,5 @@
     <script src="https://elfsightcdn.com/platform.js" async></script>
     <div class="elfsight-app-91448ae8-7a99-4960-b854-caa497c1ea85"></div>
   </div>
+  {% endcomment %}
 </header>
