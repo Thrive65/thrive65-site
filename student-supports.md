@@ -190,8 +190,8 @@ That history is a reason to look closely at where this round of cuts lands, and 
 
 | Staff type | D65 students per staff member | Peer average | What it suggests |
 | ----- | ----- | ----- | ----- |
-| Certified staff1 | 8.5 | 10.6 | About 20% more licensed staff per student than peers |
-| Non-certified staff2 | 10.6 | 23.5 | More than twice as many per student; the highest of the peer group |
+| Certified staff [1] | 8.5 | 10.6 | About 20% more licensed staff per student than peers |
+| Non-certified staff [2] | 10.6 | 23.5 | More than twice as many per student; the highest of the peer group |
 | Administrators | 140 (projected 2026\) | 136 statewide | In line with the state after recent reductions |
 
 1. Teachers, specialists, and others who hold a state license  
