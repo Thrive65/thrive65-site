@@ -5,4 +5,5 @@
   * [Board Advocacy Guide](https://thrive65.github.io/thrive65-site/board-advocacy-guide/)  
   * [Board Meeting Previews](https://wethrive65.org/board-meeting-previews/)  
   * [Board Meeting Recaps](https://wethrive65.org/board-meeting-recaps/)  
-  * [Community Meeting Recap](https://wethrive65.org/community-meeting-recap/)
+  * [Community Meeting Recap](https://wethrive65.org/community-meeting-recap/)  
+  * [Why Early Childhood Ed Matters](https://www.wethrive65.org/early-childhood-ed.md)
