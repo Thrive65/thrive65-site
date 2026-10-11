@@ -1,7 +1,6 @@
 ---
 layout: "page"
 title: "Why Student Supports Matter"
-description: "What's at stake"
 ---
 
 # **What's at Stake When Student Supports Are Cut**
