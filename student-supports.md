@@ -190,9 +190,12 @@ That history is a reason to look closely at where this round of cuts lands, and 
 
 | Staff type | D65 students per staff member | Peer average | What it suggests |
 | ----- | ----- | ----- | ----- |
-| Certified staff (teachers, specialists, and others who hold a state license) | 8.5 | 10.6 | About 20% more licensed staff per student than peers |
-| Non-certified staff (roles that do not require a license, which can include paraprofessionals, clerical, and other support staff) | 10.6 | 23.5 | More than twice as many per student; the highest of the peer group |
+| Certified staff1 | 8.5 | 10.6 | About 20% more licensed staff per student than peers |
+| Non-certified staff2 | 10.6 | 23.5 | More than twice as many per student; the highest of the peer group |
 | Administrators | 140 (projected 2026\) | 136 statewide | In line with the state after recent reductions |
+
+1. Teachers, specialists, and others who hold a state license  
+2. Roles that do not require a license, which can include Paraprofessionals, clerical, and other support staff)
 
 Some staffing reductions are reasonable, and the non-certified comparison stands out. It also covers many of the people who work most directly with students who need extra help. Before cuts are made there, the community should know which roles are counted, how many support IEPs, and which serve students in early grades.
 
