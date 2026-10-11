@@ -1431,17 +1431,21 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   }
   .page tbody tr:last-child :is(th, td),
   .post tbody tr:last-child :is(th, td) { border-bottom: 0; }
+  /* Label column is capped rather than nowrap'd: under table-layout: auto a
+     cell `width` caps the column's max-content contribution, so long labels
+     wrap past ~200px (10rem at desktop root sizes) instead of pushing the
+     table wider than the page. (`max-width` is ignored on table cells.) */
   .page :is(th, td):first-child,
   .post :is(th, td):first-child {
     background: var(--tint);
     font-weight: 700;
-    white-space: nowrap;
+    width: 10rem;
   }
   /* Mobile Table Styles */
   @media (--sm-and-down) {
     .page :is(th, td):first-child,
     .post :is(th, td):first-child { 
-      white-space: normal; 
+      width: auto;
       font-size: var(--step--1);
     }
     .page :is(th, td), .post :is(th, td) { 
