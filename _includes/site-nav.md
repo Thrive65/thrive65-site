@@ -6,4 +6,6 @@
   * [Board Meeting Previews](https://wethrive65.org/board-meeting-previews/)  
   * [Board Meeting Recaps](https://wethrive65.org/board-meeting-recaps/)  
   * [Community Meeting Recap](https://wethrive65.org/community-meeting-recap/)  
-  * [Why Early Childhood Ed Matters](https://www.wethrive65.org/early-childhood-ed.md)
+  * [What’s at Stake When Student Supports are Cut](https://www.wethrive65.org/student-supports.md.md)  
+  * [Why Early Childhood Ed Matters](https://www.wethrive65.org/early-childhood-ed.md)  
+  *
