@@ -10,24 +10,18 @@ Tuesday's Board meeting was a heavy one, and this email is a long one, summarizi
 lot of the detail I've culled from district materials to try to help understand the numbers better, particular [**how long will the \$20 million dollar plan hold.**](https://wethrive65.org/analysis/financial-future/)  
 If you don't like scrolling, I've provided a set of links to each section below to make it easier to navigate.
 
-## Topics
-
-[School Closure Impacts to Middle School Boundaries](#school-closure-impacts-to-middle-school-boundaries)  
-[The Administration’s \$20 Million Sustainability Plan](#the-20-million-sustainability-plan)
-
-* [Staffing and Compensation](#staffing-and-compensation-113m)  
-* [Closing Schools](#closing-lincolnwood-and-dewey-29m)  
-  * [Our Analysis of Utilization, Class Size, and Enrollment](https://wethrive65.org/analysis/d65-enrollment-and-capacity/)  
-* [Transportation](#transportation-24m)  
-* [Early Childhood Ed & SACC](#non-mandated-programs-19m)  
-  * [Our Analysis of Other Districts’ Options](https://docs.google.com/spreadsheets/d/1t4jb-T_Ocon-r_vTZ-RJYdul9i0CnZYd/edit?usp=sharing&ouid=111608156046775684893&rtpof=true&sd=true)  
-* [Purchased Services and Technology](#purchased-services-and-technology-24m)  
-* [New Revenue](#new-revenue-06m)
-
-[How Long Do We Have Until We’re Back Here?](#how-long-do-we-have-until-were-back-here)  
-[The Forensic Report](#the-forensic-report)  
-[What’s Next](#whats-next)  
-[How to Weigh In](#how-to-weigh-in-on-the-plan)
+* [School Closure Impacts to Middle School Boundaries](#school-closure-impacts-to-middle-school-boundaries)  
+* [The Administration’s \$20 Million Sustainability Plan](#the-20-million-sustainability-plan)  
+  * [Staffing and Compensation](#staffing-and-compensation-113m)  
+  * [Closing Schools](#closing-lincolnwood-and-dewey-29m) ([Our Analysis of Utilization, Class Size, and Enrollment](https://wethrive65.org/analysis/d65-enrollment-and-capacity/))  
+  * [Transportation](#transportation-24m)  
+  * [Early Childhood Ed & SACC](#non-mandated-programs-19m) ([Our Analysis of Other Districts’ Options](https://docs.google.com/spreadsheets/d/1t4jb-T_Ocon-r_vTZ-RJYdul9i0CnZYd/edit?usp=sharing&ouid=111608156046775684893&rtpof=true&sd=true))  
+  * [Purchased Services and Technology](#purchased-services-and-technology-24m)  
+  * [New Revenue](#new-revenue-06m)  
+* [How Long Do We Have Until We’re Back Here?](#how-long-do-we-have-until-were-back-here)  
+* [The Forensic Report](#the-forensic-report)  
+* [What’s Next](#whats-next)  
+* [How to Weigh In](#how-to-weigh-in-on-the-plan)
 
 Given that next week is quickly approaching, we want to first highlight the various ways to participate in the Superintendent search process. Please lend your voice to these discussions because the person leading our district will shape what it looks like for generations to come.
 
