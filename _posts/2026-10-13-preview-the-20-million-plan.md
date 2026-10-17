@@ -26,7 +26,7 @@ The [agenda is out](https://meetings.boardbook.org/Public/Agenda/1247?meeting=76
 
 Administrators have said programs that no state or federal law requires D65 to run are under review. "Non-mandated" is a legal label. It tells you whether the law requires a program, but it says nothing about how much a program matters to students or how much cutting it would actually save. We've put together two resources to help families and neighbors evaluate whatever is proposed Tuesday.
 
-### [**Why Early is Childhood Education Matters in D65 (click for expanded analysis)**](https://docs.google.com/document/d/15xnj8sT8-04vK1IpzYSVvjY2QMz7QUj5ycCT1bEGukU/edit?tab=t.0)
+### [**Why Early is Childhood Education Matters in D65 (click for expanded analysis)**](https://wethrive65.org/analysis/early-childhood-ed/)
 
 Many families have been worried about early childhood programs at JEH, and preschool came up in 10 of 30 public comments at the September 28 board meeting ([Evanston Now](https://evanstonnow.com/the-littlest-lobbyists-save-d65-preschool/)). No specific early childhood cut has been announced. A few things worth knowing before one is:
 
@@ -36,11 +36,11 @@ Many families have been worried about early childhood programs at JEH, and presc
 
 **The single most useful question to ask:** *What is the net cost to D65 of each early childhood program after grants, including any added costs to serve preschoolers with disabilities elsewhere?*
 
-[Read more](https://docs.google.com/document/d/15xnj8sT8-04vK1IpzYSVvjY2QMz7QUj5ycCT1bEGukU/edit?tab=t.0)
+[Read more](https://wethrive65.org/analysis/early-childhood-ed/)
 
 .
 
-### [**What's at Stake When Student Supports Are Cut (click for expanded analysis)**](https://docs.google.com/document/d/1qV-7pWtRVxu5qNanbXF-ZAK51sSt1ADuQG3lgSu2ZHI/edit?tab=t.0#heading=h.azjov6eyrllf) 
+### [**What's at Stake When Student Supports Are Cut (click for expanded analysis)**](https://wethrive65.org/analysis/student-supports/) 
 
 This one looks at the broader list of supports that could be on the table: counselors and social workers, busing, early reading help, family liaisons, and optional pieces of language and choice programs.
 
@@ -51,7 +51,7 @@ This one looks at the broader list of supports that could be on the table: couns
 
 It also includes the other side. D65 has more than twice as many non-certified staff per student as its peer districts (10.6 students per staff member vs. a peer average of 23.5), so some reductions there are reasonable ([Sept. 14 presentation](https://meetings.boardbook.org/Documents/FileViewerOrPublic/1247?file=14421838), slides 11-13). The question is which roles, and how many of them serve students with IEPs or students in the early grades.
 
-[Read more](https://docs.google.com/document/d/1qV-7pWtRVxu5qNanbXF-ZAK51sSt1ADuQG3lgSu2ZHI/edit?tab=t.0#heading=h.azjov6eyrllf)
+[Read more](https://wethrive65.org/analysis/student-supports/)
 
 Both resources include questions to ask the board and short talking points sized for a two-minute public comment. Pick the ones that fit you and add your own experience; personal stories carry more weight than statistics.
 
