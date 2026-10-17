@@ -235,10 +235,14 @@ framed callout on the page.
   Docs) and isn't submitted for Google verification, you'll click through an
   "unverified app" screen at first authorization. That's expected for a
   test-deployment add-on used by its developer/test users.
-- **Inline images** pasted into a Doc aren't extracted yet — they'd bloat
-  the Markdown file as embedded data. Add images directly to `assets/images/`
-  in the repo and reference them with a Markdown image tag in the Doc:
-  `![Alt text](/assets/images/photo.jpg)`.
+- **Images** in Page, Post, and Homepage-section docs are published at their
+  original resolution: each is committed to
+  `assets/images/content/<file-slug>/` in the same commit as the page, and
+  replaced or removed images are cleaned up on the next publish. Insert
+  images **In line** (not *Wrap text* / *Break text*) and set alt text via
+  right-click → *Alt text*. Drawings aren't supported — download them as
+  PNG and insert that instead. Keep each image under 10 MB. FAQ and News
+  docs can't contain images.
 - **Board Meeting Minutes** aren't part of this pipeline — they're official
   PDFs added directly to `assets/board-minutes/` and listed in
   `_data/board-minutes.yml` by hand.

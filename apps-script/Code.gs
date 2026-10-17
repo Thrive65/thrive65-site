@@ -14,9 +14,11 @@
  *   - GitHub connection + Drive folder ID  → Script Properties (shared)
  *   - Per-page content routing + metadata  → Document Properties (per doc)
  *
- * What this does NOT handle yet (by design, to keep v1 simple):
- *   - Inline images pasted into the doc. Upload photos/logos directly to
- *     assets/images/ in the repo and reference them by path instead.
+ * Images: inline images are committed at full resolution to
+ *   assets/images/content/<target-file-slug>/<content-hash>.<ext>, in the
+ *   same commit as the page (see extractDocImages_). Only "In line" images
+ *   are supported — wrap-text images and Drawings block the publish — and
+ *   FAQ/News docs can't contain images at all.
  *
  * Post content type:
  *   Category (required) — human-readable label, e.g. "Board Meeting Recaps" or "Opinion".
@@ -527,17 +529,36 @@ function doPublish_() {
       throw new Error('Unknown content type "' + contentType + '". Re-open Page Properties and pick one.');
   }
 
-  commitFileToGithub(targetPath, content, commitMessage);
+  // Swap the export's low-res embedded images for full-resolution files
+  // committed alongside the content. FAQ/News become YAML, which has nowhere
+  // to put an image, so those types refuse them instead.
+  const images = extractDocImages_(doc, rawMarkdown);
+  if (images.length && (contentType === "faq" || contentType === "news")) {
+    throw new Error("FAQ and News docs can't contain images. Remove them and publish again.");
+  }
+  const imageDir = "assets/images/content/" + targetPath.split("/").pop().replace(/\.[^.]+$/, "");
+  const imageFiles = images.map((img) => ({ path: `${imageDir}/${img.hash}.${img.ext}`, bytes: img.bytes }));
+  if (images.length) {
+    content = replaceImageRefs_(content, imageFiles.map((f) => f.path));
+  }
+  const imagePaths = imageFiles.map((f) => f.path);
 
   // A post's path is derived from its title and date, so editing either one
   // publishes to a *new* file and leaves the old one behind — two posts, same
-  // permalink. Remove the previous file once the new one has landed. Only
-  // after the commit succeeds, so a failed publish never deletes live content.
+  // permalink. Likewise images that were replaced, removed, or moved with a
+  // renamed post. Remove them in the same commit as the new content, so the
+  // site never deploys with the post and its images out of step.
+  const deletes = [];
   const previousPath = props.getProperty("LAST_PUBLISHED_PATH");
-  if (previousPath && previousPath !== targetPath) {
-    deleteFileFromGithub_(previousPath, `Remove ${previousPath} (renamed to ${targetPath})`);
-  }
+  if (previousPath && previousPath !== targetPath) deletes.push(previousPath);
+  JSON.parse(props.getProperty("LAST_IMAGE_PATHS") || "[]").forEach((p) => {
+    if (imagePaths.indexOf(p) === -1) deletes.push(p);
+  });
+
+  commitFilesToGithub_([{ path: targetPath, content: content }].concat(imageFiles), deletes, commitMessage);
+
   props.setProperty("LAST_PUBLISHED_PATH", targetPath);
+  props.setProperty("LAST_IMAGE_PATHS", JSON.stringify(imagePaths));
 
   return targetPath;
 }
@@ -615,8 +636,71 @@ function exportDocAsMarkdown(docId) {
 // If you notice other formatting artifacts after publishing, check the live
 // page and tell Claude — this function is easy to extend.
 function cleanGoogleMarkdown(markdown) {
-  const unescaped = markdown.replace(/\\([_*\[\]])/g, "$1").trim();
+  const unescaped = markdown
+    .replace(/\\([_*\[\]])/g, "$1")
+    // An image in a bolded paragraph exports as "**![][image1]**", which
+    // kramdown renders as literal asterisks around the image.
+    .replace(/\*\*(!\[[^\]]*\]\[image\d+\])\*\*/g, "$1")
+    .trim();
   return singleCellTablesToBlockquotes(unescaped);
+}
+
+/* =========================================================================
+ * Inline images → full-resolution files
+ *
+ * The Markdown export embeds each image as a base64 PNG downscaled to its
+ * on-page display size (≤ 624px — 6.5" at 96 dpi), so charts come out
+ * blurry. DocumentApp's InlineImage blob is the original upload, so pull the
+ * images from there and commit them as real files instead.
+ *
+ * The export numbers images [image1]…[imageN] in document order — the same
+ * order body.getImages() returns them — so image N in the list is imageN.
+ * ========================================================================= */
+
+const IMAGE_MAX_BYTES = 10 * 1024 * 1024;
+const IMAGE_EXTENSIONS = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif" };
+
+// Returns [{bytes, ext, hash}] in document order, one per [imageN] in the
+// export. Throws if the two disagree, rather than risk pairing an image with
+// the wrong reference.
+function extractDocImages_(doc, markdown) {
+  const refCount = (markdown.match(/^\[image\d+\]:\s*<data:/gm) || []).length;
+  const images = doc.getBody().getImages();
+  if (images.length !== refCount) {
+    throw new Error(
+      `Found ${images.length} inline image(s) but the export has ${refCount}. ` +
+      'Set every image to "In line" (not Wrap text / Break text) and convert any Drawings to images.'
+    );
+  }
+
+  return images.map((image, i) => {
+    let blob = image.getBlob();
+    let ext = IMAGE_EXTENSIONS[blob.getContentType()];
+    if (!ext) {
+      blob = image.getAs("image/png");
+      ext = "png";
+    }
+    const bytes = blob.getBytes();
+    if (bytes.length > IMAGE_MAX_BYTES) {
+      throw new Error(`Image ${i + 1} is ${Math.round(bytes.length / 1048576)} MB — over the 10 MB limit. Save it as a smaller JPEG and re-insert it.`);
+    }
+    // Content-hashed names: an unchanged image keeps its path across
+    // republishes, a changed one gets a new path so no cache serves it stale.
+    const hash = toHex_(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, bytes)).slice(0, 10);
+    return { bytes: bytes, ext: ext, hash: hash };
+  });
+}
+
+// Point each "[imageN]: <data:…>" reference definition at its committed file.
+// The "![alt][imageN]" uses are left alone, so the Doc's alt text carries over.
+function replaceImageRefs_(markdown, paths) {
+  return markdown.replace(/^\[image(\d+)\]:\s*<data:[^>]*>/gm, (match, n) =>
+    `[image${n}]: {{ '/${paths[Number(n) - 1]}' | relative_url }}`
+  );
+}
+
+function toHex_(bytes) {
+  return bytes.map((b) => ((b + 256) % 256).toString(16).padStart(2, "0")).join("");
 }
 
 /* =========================================================================
@@ -843,94 +927,81 @@ function slugify(text) {
 }
 
 /* =========================================================================
- * GitHub: create-or-update a single file via the Contents API
+ * GitHub: one commit per publish via the Git Data API
+ *
+ * The Contents API makes one commit (and so one Pages deploy) per file. A
+ * publish now writes a post *and* its images, so build a single tree
+ * instead: blobs → tree → commit → move the branch ref. The site therefore
+ * never deploys a post whose images haven't landed yet.
  * ========================================================================= */
 
-function commitFileToGithub(path, content, commitMessage) {
+// files:   [{path, content}] for text or [{path, bytes}] for binary.
+// deletes: paths to remove; ones that don't exist are skipped.
+function commitFilesToGithub_(files, deletes, commitMessage) {
+  const branch = PropertiesService.getScriptProperties().getProperty("GITHUB_BRANCH") || "main";
+
+  const headSha = githubApi_("get", `/git/ref/heads/${branch}`).object.sha;
+  const baseTree = githubApi_("get", `/git/commits/${headSha}`).tree.sha;
+
+  const tree = files.map((f) => {
+    if (f.bytes) return { path: f.path, mode: "100644", type: "blob", sha: ensureGithubBlob_(f.bytes) };
+    return { path: f.path, mode: "100644", type: "blob", content: f.content };
+  });
+  // A tree entry deleting a path that isn't there fails the whole request,
+  // so only delete what actually exists on the branch.
+  deletes.forEach((path) => {
+    if (githubPathExists_(path, branch)) tree.push({ path: path, mode: "100644", type: "blob", sha: null });
+  });
+
+  const newTree = githubApi_("post", "/git/trees", { base_tree: baseTree, tree: tree }).sha;
+  if (newTree === baseTree) return; // nothing changed — skip an empty commit/deploy
+
+  const commit = githubApi_("post", "/git/commits", { message: commitMessage, tree: newTree, parents: [headSha] }).sha;
+  githubApi_("patch", `/git/refs/heads/${branch}`, { sha: commit });
+}
+
+// Upload a binary blob unless the repo already has it. Git names a blob by
+// the SHA-1 of "blob <size>\0<bytes>", so compute that locally and check
+// first — republishing a doc then re-uploads only the images that changed.
+function ensureGithubBlob_(bytes) {
+  const header = Utilities.newBlob("blob " + bytes.length + "\0").getBytes();
+  const sha = toHex_(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_1, header.concat(bytes)));
+  if (githubApi_("get", `/git/blobs/${sha}`, null, [404]) !== null) return sha;
+  return githubApi_("post", "/git/blobs", { content: Utilities.base64Encode(bytes), encoding: "base64" }).sha;
+}
+
+function githubPathExists_(path, branch) {
+  const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+  return githubApi_("get", `/contents/${encodedPath}?ref=${branch}`, null, [404]) !== null;
+}
+
+// Call the repo-scoped GitHub REST API. Returns the parsed JSON, or null when
+// the response code is one of `allowCodes` (e.g. 404 for an existence check).
+function githubApi_(method, path, body, allowCodes) {
   const props = PropertiesService.getScriptProperties();
   const token = props.getProperty("GITHUB_TOKEN");
   const owner = props.getProperty("GITHUB_OWNER");
   const repo = props.getProperty("GITHUB_REPO");
-  const branch = props.getProperty("GITHUB_BRANCH") || "main";
 
   if (!token || !owner || !repo) {
     throw new Error('GitHub isn\'t connected yet. Open "GitHub connection" in the sidebar first.');
   }
 
-  const encodedPath = path.split("/").map(encodeURIComponent).join("/");
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${encodedPath}`;
-
-  // Look up the file's current SHA (required by GitHub to update an
-  // existing file; omitted entirely when creating a new one).
-  let sha = null;
-  const getResp = UrlFetchApp.fetch(`${apiUrl}?ref=${branch}`, {
-    method: "get",
+  const options = {
+    method: method,
     headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" },
     muteHttpExceptions: true,
-  });
-  if (getResp.getResponseCode() === 200) {
-    sha = JSON.parse(getResp.getContentText()).sha;
-  }
-
-  const payload = {
-    message: commitMessage,
-    content: Utilities.base64Encode(content, Utilities.Charset.UTF_8),
-    branch: branch,
   };
-  if (sha) payload.sha = sha;
-
-  const putResp = UrlFetchApp.fetch(apiUrl, {
-    method: "put",
-    headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" },
-    contentType: "application/json",
-    payload: JSON.stringify(payload),
-    muteHttpExceptions: true,
-  });
-
-  const code = putResp.getResponseCode();
-  if (code !== 200 && code !== 201) {
-    throw new Error(`GitHub commit failed (${code}): ${putResp.getContentText()}`);
+  if (body) {
+    options.contentType = "application/json";
+    options.payload = JSON.stringify(body);
   }
-  return JSON.parse(putResp.getContentText());
-}
 
-// Delete a file via the Contents API. Used to clean up the old path when a
-// doc's target path changes (see doPublish_). Best-effort: a file that's
-// already gone, or a delete that fails, must not fail the publish that just
-// succeeded — the new content is live either way.
-function deleteFileFromGithub_(path, commitMessage) {
-  const props = PropertiesService.getScriptProperties();
-  const token = props.getProperty("GITHUB_TOKEN");
-  const owner = props.getProperty("GITHUB_OWNER");
-  const repo = props.getProperty("GITHUB_REPO");
-  const branch = props.getProperty("GITHUB_BRANCH") || "main";
-
-  const encodedPath = path.split("/").map(encodeURIComponent).join("/");
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${encodedPath}`;
-  const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
-
-  try {
-    const getResp = UrlFetchApp.fetch(`${apiUrl}?ref=${branch}`, {
-      method: "get",
-      headers: headers,
-      muteHttpExceptions: true,
-    });
-    if (getResp.getResponseCode() !== 200) return false; // already gone
-
-    const delResp = UrlFetchApp.fetch(apiUrl, {
-      method: "delete",
-      headers: headers,
-      contentType: "application/json",
-      payload: JSON.stringify({
-        message: commitMessage,
-        sha: JSON.parse(getResp.getContentText()).sha,
-        branch: branch,
-      }),
-      muteHttpExceptions: true,
-    });
-    return delResp.getResponseCode() === 200;
-  } catch (err) {
-    console.warn("Could not remove old file " + path + ": " + (err.message || err));
-    return false;
+  const resp = UrlFetchApp.fetch(`https://api.github.com/repos/${owner}/${repo}${path}`, options);
+  const code = resp.getResponseCode();
+  if (allowCodes && allowCodes.indexOf(code) !== -1) return null;
+  if (code < 200 || code >= 300) {
+    throw new Error(`GitHub ${method.toUpperCase()} ${path} failed (${code}): ${resp.getContentText()}`);
   }
+  return JSON.parse(resp.getContentText());
 }

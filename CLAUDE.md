@@ -38,6 +38,7 @@ Files overwritten by the publishing add-on (do not edit by hand):
 - `_includes/home-overview.md` — Overview section copy (content type: "Homepage section")
 - `_data/faq.yml` — FAQ accordion data (content type: "FAQ item")
 - `_data/news.yml` — "Thrive65 in the News" data (content type: "News item"): a `title:` plus an `items:` list of `{outlet, headline, date, url, blurb}`. Rendered by `_includes/news.html` (a `.post-list` of external press links, sorted newest-first), included in the `#news` homepage section.
+- `assets/images/content/<file-slug>/<hash>.<ext>` — full-resolution copies of a Doc's inline images, committed with the page/post that uses them (the Markdown export's own embedded images are downscaled, so the add-on swaps its `[imageN]: <data:…>` references for these paths). Stale ones are deleted on the next publish.
 
 Files published from Google Docs via the add-on (content type "Post"):
 - `_posts/YYYY-MM-DD-slug.md` — Board meeting recaps and other posts. In Page Properties, set **Category** (e.g. `Board Meeting Recaps`, `Opinion`), **Post date** (YYYY-MM-DD), and the **Based on Date** permalink switch (on = `/{category}/{year}/{M-D}/`, off = `/{category}/{slug}/`). The eyebrow label on the post page is the category value.
