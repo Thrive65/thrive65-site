@@ -8,9 +8,10 @@ permalink: "/board-meeting-recaps/the-20-million-sustainability-plan/"
 
 Tuesday's Board meeting was a heavy one, and this email is a long one, summarizing     
 lot of the detail I've culled from district materials to try to help understand the numbers better, particular [**how long will the \$20 million dollar plan hold.**](https://wethrive65.org/analysis/financial-future/)  
-If you don't like scrolling, I've provided a set of links to each section below to make it easier to navigate.  
-    
-Navigation  
+If you don't like scrolling, I've provided a set of links to each section below to make it easier to navigate.
+
+## Topics
+
 [School Closure Impacts to Middle School Boundaries](#school-closure-impacts-to-middle-school-boundaries)  
 [The Administration’s \$20 Million Sustainability Plan](#the-20-million-sustainability-plan)
 
@@ -23,8 +24,7 @@ Navigation
 * [Purchased Services and Technology](#purchased-services-and-technology-24m)  
 * [New Revenue](#new-revenue-06m)
 
-[How Long Do We Have Until We’re Back Here?](#how-long-do-we-have-until-were-back-here)
-
+[How Long Do We Have Until We’re Back Here?](#how-long-do-we-have-until-were-back-here)  
 [The Forensic Report](#the-forensic-report)  
 [What’s Next](#whats-next)  
 [How to Weigh In](#how-to-weigh-in-on-the-plan)
@@ -75,7 +75,7 @@ Includes a reduction of more than 200 positions, a health-plan redesign and less
 ![][image4]  
 The staffing numbers in the detail don’t exactly line up with the FTEs summarized in the first image. We think the rest would be reflected in the Special education line in the detail here, but it would be worth asking the district for confirmation.
 
-### **Closing Lincolnwood and Dewey \- \$2.9M** {#closing-lincolnwood-and-dewey-29m}
+### **Closing Lincolnwood and Dewey: \$2.9M** {#closing-lincolnwood-and-dewey-29m}
 
 About 713 students would change schools. Both sites would be kept for possible rebuilds on Lincolnwood site and Washington site, tied to a facilities referendum being explored for November 2028\. As noted earlier, the boundary changes for kids across the district are significant. Between school years ending in 2026-2028, not a single school boundary has been untouched. All schools lost students and all schools not designated for closure gained other students. We have seen and will see more changes to the number of staff in our schools and where staff are assigned. This is a profoundly disruptive period for families and staff, and we hope the admin means what they say that this will be the last time anything close to this magnitude happens to our district. [More on the future financials.](https://wethrive65.org/analysis/financial-future/) 
 
@@ -98,12 +98,12 @@ The district also shared their updated savings for the closures of Bessie Rhodes
 
 ### ![][image8]
 
-### **Transportation \- \$2.4M** {#transportation-24m}
+### **Transportation: \$2.4M** {#transportation-24m}
 
 Includes limiting Preschool for All busing to children with special-education plans (IEPs) or free/reduced-lunch eligibility. The closures will lengthen walks for many families.   
 ![][image9]
 
-### **Non-Mandated Programs \- \$1.9M** {#non-mandated-programs-19m}
+### **Non-Mandated Programs: \$1.9M** {#non-mandated-programs-19m}
 
 Ends district-run before/after-school care (SACC) after this school year and handing off Head Start and Early Head Start in July 2028\. It is unknown what organization will take over the Head Start services. 
 
@@ -115,11 +115,11 @@ We’ve created a summary of [what other districts do for before/after care](htt
 
 ![][image10]
 
-### Purchased services and technology \- \$2.4M {#purchased-services-and-technology-24m}
+### Purchased services and technology: \$2.4M {#purchased-services-and-technology-24m}
 
 ![][image11]
 
-### **New revenue \- \$0.6M** {#new-revenue-06m}
+### **New revenue: \$0.6M** {#new-revenue-06m}
 
 Includes a \$100 student fee increase (\$75 off for early registration) for families who don't qualify for free/reduced lunch.![][image12]
 
