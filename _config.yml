@@ -39,6 +39,10 @@ permalink: /:title/
 # build until the meeting day.
 future: true
 
+# Post categories whose pages never show a date (evergreen explainers). The
+# post still needs a date for its filename and sort order; it's just hidden.
+undated_categories: ["Analysis"]
+
 plugins:
   - jekyll-feed
   - jekyll-seo-tag

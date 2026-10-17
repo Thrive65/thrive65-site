@@ -1378,6 +1378,13 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     color: var(--ink);
     margin-block: 0.1em 0;
   }
+  /* Category eyebrow links up to its landing page: keeps the eyebrow color,
+     underline fades in on hover. */
+  .page-header .text-eyebrow a {
+    color: inherit;
+    text-decoration-color: transparent;
+  }
+  .page-header .text-eyebrow a:hover { text-decoration-color: currentColor; }
 
   /* ─ Brand-colored section headings ─ h2 marks a new major section and
      retints per hue automatically. h3 stays neutral ink (no rule needed). */

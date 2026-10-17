@@ -1,6 +1,9 @@
 ---
-layout: "page"
+layout: "post"
 title: "Why Student Supports Matter"
+date: "2026-10-11"
+category: "Analysis"
+permalink: "/analysis/student-supports/"
 ---
 
 # **What's at Stake When Student Supports Are Cut**

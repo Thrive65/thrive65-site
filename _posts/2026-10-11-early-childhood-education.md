@@ -1,6 +1,9 @@
 ---
-layout: "page"
+layout: "post"
 title: "Early Childhood Education"
+date: "2026-10-11"
+category: "Analysis"
+permalink: "/analysis/early-childhood-ed/"
 description: "Why it matters"
 ---
 
