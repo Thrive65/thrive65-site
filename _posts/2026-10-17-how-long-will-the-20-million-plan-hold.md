@@ -1,7 +1,7 @@
 ---
 layout: "post"
 title: "How Long Will the $20 Million Plan Hold"
-date: "2016-10-17"
+date: "2026-10-17"
 category: "Analysis"
 permalink: "/analysis/financial-future/"
 description: "financial-future"
