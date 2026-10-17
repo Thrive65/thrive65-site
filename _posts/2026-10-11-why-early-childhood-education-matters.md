@@ -7,8 +7,6 @@ permalink: "/analysis/early-childhood-ed/"
 description: "Why it matters"
 ---
 
-# **Why Early Childhood Education Matters in D65**
-
 ## **At a glance**
 
 District 65 will present roughly \$20 million in reductions on October 13, and administrators have said programs the law does not require are under review ([Evanston RoundTable, Sept. 29](https://evanstonroundtable.com/2026/09/29/district-65-budget-deficit-approved/)). Early childhood education at the Joseph E. Hill Early Childhood Center (JEH) is one of the programs many families are worried about.
