@@ -533,7 +533,7 @@
         if (h.closest(".page-header") || h.querySelector(".heading-anchor")) return;
         var a = document.createElement("a");
         a.className = "heading-anchor";
-        a.href = "#" + h.id;
+        a.href = "#" + encodeURIComponent(h.id);
         a.setAttribute("aria-label", "Copy link to section: " + h.textContent.trim());
         a.innerHTML = ANCHOR_SVG;
         h.insertBefore(a, h.firstChild);
@@ -550,7 +550,7 @@
       if (!a) return;
       e.preventDefault();
       e.stopPropagation(); // keep FAQ <summary> from toggling the accordion
-      var id = a.getAttribute("href").slice(1);
+      var id = fragmentId(a.getAttribute("href"));
       copy(location.origin + location.pathname + a.getAttribute("href"));
       history.replaceState(null, "", "#" + id);
       var item = document.getElementById(id);
@@ -558,10 +558,17 @@
     });
 
     {% comment %}
+    // A "#…" fragment back to the raw id it was percent-encoded from.
+    {% endcomment %}
+    function fragmentId(hash) {
+      try { return decodeURIComponent(hash.slice(1)); } catch (e) { return hash.slice(1); }
+    }
+
+    {% comment %}
     // Expand and reveal a FAQ item when its id is the URL fragment.
     {% endcomment %}
     function openHash() {
-      var id = location.hash.slice(1);
+      var id = fragmentId(location.hash);
       if (!id) return;
       var el = document.getElementById(id);
       if (el && el.classList.contains("faq-item")) {

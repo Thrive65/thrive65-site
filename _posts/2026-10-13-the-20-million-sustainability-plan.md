@@ -12,21 +12,21 @@ If you don't like scrolling, I've provided a set of links to each section below 
     
 Navigation  
 [School Closure Impacts to Middle School Boundaries](#school-closure-impacts-to-middle-school-boundaries)  
-[The Administration’s \$20 Million Sustainability Plan](#the-$20-million-sustainability-plan)
+[The Administration’s \$20 Million Sustainability Plan](#the-20-million-sustainability-plan)
 
-* [Staffing and Compensation](#staffing-and-compensation:-11.3m)  
-* [Closing Schools](#closing-lincolnwood-and-dewey---$2.9m)  
+* [Staffing and Compensation](#staffing-and-compensation-113m)  
+* [Closing Schools](#closing-lincolnwood-and-dewey-29m)  
   * [Our Analysis of Utilization, Class Size, and Enrollment](https://wethrive65.org/analysis/d65-enrollment-and-capacity/)  
-* [Transportation](#transportation---$2.4m)  
-* [Early Childhood Ed & SACC](#non-mandated-programs---$1.9m)  
+* [Transportation](#transportation-24m)  
+* [Early Childhood Ed & SACC](#non-mandated-programs-19m)  
   * [Our Analysis of Other Districts’ Options](https://docs.google.com/spreadsheets/d/1t4jb-T_Ocon-r_vTZ-RJYdul9i0CnZYd/edit?usp=sharing&ouid=111608156046775684893&rtpof=true&sd=true)  
-* [Purchased Services and Technology](#purchased-services-and-technology---$2.4m)  
-* [New Revenue](#new-revenue---$0.6m)
+* [Purchased Services and Technology](#purchased-services-and-technology-24m)  
+* [New Revenue](#new-revenue-06m)
 
-[How Long Do We Have Until We’re Back Here?](#how-long-do-we-have-until-we’re-back-here?)
+[How Long Do We Have Until We’re Back Here?](#how-long-do-we-have-until-were-back-here)
 
 [The Forensic Report](#the-forensic-report)  
-[What’s Next](#what’s-next)  
+[What’s Next](#whats-next)  
 [How to Weigh In](#how-to-weigh-in-on-the-plan)
 
 Given that next week is quickly approaching, we want to first highlight the various ways to participate in the Superintendent search process. Please lend your voice to these discussions because the person leading our district will shape what it looks like for generations to come.
@@ -59,7 +59,7 @@ We've done some back of the napkin [analysis of the walkability impacts](https:/
 * How many preschoolers lose busing under the new Preschool for All rule, and how will attendance be protected for families just above the income line?  
 * Which bus aide assignments are “non-mandated,” and on which routes?
 
-## The \$20 Million Sustainability Plan {#the-$20-million-sustainability-plan}
+## The \$20 Million Sustainability Plan {#the-20-million-sustainability-plan}
 
 The administration proposed about \$20.9 million a year in reductions, starting July 1, 2027\. After new revenue, a one-time transition cost and \$5.5 million reinvested in buildings and curriculum, the net improvement is about \$14.9 million, \$14.25 million of that being recurring savings in future years. 
 
@@ -68,14 +68,14 @@ That recurring savings is significant. A conservative estimate of 3% annual infl
 
 A deeper dive in the categories of cuts:
 
-### **Staffing and compensation: 11.3M**  {#staffing-and-compensation:-11.3m}
+### **Staffing and compensation: 11.3M** {#staffing-and-compensation-113m}
 
 Includes a reduction of more than 200 positions, a health-plan redesign and less overtime. The district says no school-based role or in-school program is fully eliminated.  
 ![][image3]  
 ![][image4]  
 The staffing numbers in the detail don’t exactly line up with the FTEs summarized in the first image. We think the rest would be reflected in the Special education line in the detail here, but it would be worth asking the district for confirmation.
 
-### **Closing Lincolnwood and Dewey \- \$2.9M**  {#closing-lincolnwood-and-dewey---$2.9m}
+### **Closing Lincolnwood and Dewey \- \$2.9M** {#closing-lincolnwood-and-dewey-29m}
 
 About 713 students would change schools. Both sites would be kept for possible rebuilds on Lincolnwood site and Washington site, tied to a facilities referendum being explored for November 2028\. As noted earlier, the boundary changes for kids across the district are significant. Between school years ending in 2026-2028, not a single school boundary has been untouched. All schools lost students and all schools not designated for closure gained other students. We have seen and will see more changes to the number of staff in our schools and where staff are assigned. This is a profoundly disruptive period for families and staff, and we hope the admin means what they say that this will be the last time anything close to this magnitude happens to our district. [More on the future financials.](https://wethrive65.org/analysis/financial-future/) 
 
@@ -98,12 +98,12 @@ The district also shared their updated savings for the closures of Bessie Rhodes
 
 ### ![][image8]
 
-### **Transportation \- \$2.4M**  {#transportation---$2.4m}
+### **Transportation \- \$2.4M** {#transportation-24m}
 
 Includes limiting Preschool for All busing to children with special-education plans (IEPs) or free/reduced-lunch eligibility. The closures will lengthen walks for many families.   
 ![][image9]
 
-### **Non-Mandated Programs \- \$1.9M** {#non-mandated-programs---$1.9m}
+### **Non-Mandated Programs \- \$1.9M** {#non-mandated-programs-19m}
 
 Ends district-run before/after-school care (SACC) after this school year and handing off Head Start and Early Head Start in July 2028\. It is unknown what organization will take over the Head Start services. 
 
@@ -115,15 +115,15 @@ We’ve created a summary of [what other districts do for before/after care](htt
 
 ![][image10]
 
-### Purchased services and technology \- \$2.4M  {#purchased-services-and-technology---$2.4m}
+### Purchased services and technology \- \$2.4M {#purchased-services-and-technology-24m}
 
 ![][image11]
 
-### **New revenue \- \$0.6M**  {#new-revenue---$0.6m}
+### **New revenue \- \$0.6M** {#new-revenue-06m}
 
 Includes a \$100 student fee increase (\$75 off for early registration) for families who don't qualify for free/reduced lunch.![][image12]
 
-## How long do we have until we’re back here? {#how-long-do-we-have-until-we’re-back-here?}
+## How long do we have until we’re back here? {#how-long-do-we-have-until-were-back-here}
 
 The district provided this slide, which indicates **with all \$20 million cuts, school year 2031 is the last year we are better off than we are today**. We’re currently in school year 2027, which I note to emphasize that we are likely to continue to see more cuts in the not so distant future to preserve fund balance, and even faster if unanticipated expenses outside of our control emerge.
 
@@ -144,7 +144,7 @@ Former Superintendent Dr. Devon Horton has pleaded guilty to federal charges tie
 
 Crowe noted that the district began adding contracting and purchasing safeguards in FY2024 and found the new credit-card procedures working as designed. The rest of the new controls were not tested, and the report covers only one year under them. It would be worth periodically asking the board and admin for updates on the improvements to its financial controls. [FOIA Gras](https://foiagras.com/p/d65-forensic-audit-results) did a deeper dive into the forensic report as well. 
 
-## What’s Next {#what’s-next}
+## What’s Next {#whats-next}
 
 **Tues, October 20** \- **D65 community gathering with Alma Advisory Group** to hear your thoughts on the superintendent search. Chute Middle School, 6-8 PM (childcare and Spanish interpretation available on site)
 

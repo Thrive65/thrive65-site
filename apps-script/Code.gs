@@ -642,7 +642,33 @@ function cleanGoogleMarkdown(markdown) {
     // kramdown renders as literal asterisks around the image.
     .replace(/\*\*(!\[[^\]]*\]\[image\d+\])\*\*/g, "$1")
     .trim();
-  return singleCellTablesToBlockquotes(unescaped);
+  return singleCellTablesToBlockquotes(normalizeHeadingIds(unescaped));
+}
+
+// Google exports each heading as "## Title {#id}" with the id built from the
+// raw heading text, so it can carry "$", "?", curly quotes, etc. kramdown only
+// accepts XML-name characters in a {#id}; anything else leaves the whole
+// "{#…}" as literal heading text and the in-doc links ("](#id)") dead. Re-slug
+// every heading id, and every fragment link with it, through the same function
+// so the two still match.
+function normalizeHeadingIds(markdown) {
+  const safeId = (id) => {
+    // Fold accents first ("café" → "cafe") so slugify doesn't drop the letter.
+    const folded = id.replace(/\\/g, "").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const slug = slugify(folded).replace(/^-+|-+$/g, "");
+    // kramdown ids must start with a letter.
+    return /^[a-z]/.test(slug) ? slug : slug && `section-${slug}`;
+  };
+  return markdown
+    .replace(/^(#{1,6}[ \t].*?)[ \t]*\{#([^}\n]*)\}[ \t]*$/gm, (m, heading, id) => {
+      const slug = safeId(id);
+      return slug ? `${heading} {#${slug}}` : heading;
+    })
+    .replace(/\]\(#([^)\s]+)\)/g, (m, id) => {
+      let decoded = id;
+      try { decoded = decodeURIComponent(id); } catch (e) {}
+      return `](#${safeId(decoded) || id})`;
+    });
 }
 
 /* =========================================================================
