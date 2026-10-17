@@ -14,8 +14,7 @@ Note: the District held three listening sessions at the middle schools last week
 
 We tried to capture all of the written feedback from the three sessions, and will send out a summary of that prior to the October 13th session where the board will review the administration’s implementation plan for the cuts they have announced. **It’s important that others who couldn’t attend can see the range of feedback, questions, and ideas from the community to inform their own perspectives and plans for advocacy**, and we’re not sure the district will provide a comprehensive list. 
 
-**A quick overview of what’s in the 9/28 agenda:**
-
+**A quick overview of what’s in the 9/28 agenda:**  
 
 * The official budget form for submission to the state board of education, and a report and memo providing context for what’s in the budget for the general budget and for Park School. The budget isn’t much different than what was presented previously. More breakout on the budget items below. 
 
@@ -41,12 +40,9 @@ We tried to capture all of the written feedback from the three sessions, and wil
       
 * The state's Limitation of Administrative Costs worksheet shows these line items rising 4.0% over FY26 actuals. That's within the state's 5% cap, but "reduce central office administration" was a top community priority the district itself reported in September. It's reasonable to ask how central office will share in FY28 reductions.
 
-* Under Illinois's Evidence-Based Funding (EBF) formula, D65 is a **Tier 4 district at 134% of "adequacy."** That means the state considers local property taxes more than sufficient to fund us. D65 receives only \$6,508 more than the \$8.3 million received last year. One example of how our revenue doesn’t keep up with inflation. Whatever the solution is- cuts, closures, referendums, TIF funds, etc., it will likely be local.
-
-              	   
+* Under Illinois's Evidence-Based Funding (EBF) formula, D65 is a **Tier 4 district at 134% of "adequacy."** That means the state considers local property taxes more than sufficient to fund us. D65 receives only \$6,508 more than the \$8.3 million received last year. One example of how our revenue doesn’t keep up with inflation. Whatever the solution is- cuts, closures, referendums, TIF funds, etc., it will likely be local.           	   
 
   **SY26 Achievement and Accountability Report**   
-
 
   This report provides an overview of the [5Essentials survey](https://eot.wethrive65.org/f/a/pKP1b7Jw2ky_9B-2xt4ztA~~/AAAHURA~/7Zt794GA4F3hwZ9NjiFysk0_3tJh8k3LiZRBTz41cRk1EekeFlFuD1A6UGkdgenMYuxlGmnRNZtEq5jqXp3Tnrq08L6MXk4lwn_lFpsOqKdyozSYtBVDRf2u7O-72aoGyihjQG2lkV54fF5fBnFHTshTbVsIGhNeCGdF4tBztI44VFyrXHOKUQtFZtZAz4Se3kGaoHL84HKdKG43pqcILA~~), [state testing results](https://eot.wethrive65.org/f/a/8AU2mwMSoyAkJDqAna2T3w~~/AAAHURA~/-Wh8VBLBA1rVT8P3P-nsLrxUVU7Xri2FSmPoSVx6UEVdzazhmd4a1qeSQ9taH2d_71dlwv_7FZbmbjOzfQJtffFC4fE8emnca1NKzd4fDNsqL7tD1HYj2EXEmCfPS2m6WLY3Oce3KtEH81gQ8hZfIa0eR61y0Whtd0VzkxNnAYarUkXjpP5iS2Z_Xxrvn5W5aqF8PHw2RrPhAReYPh4cpgooMjoB5wJGRslxR_hZUY12WcLnQ74i5IHLzvcyhynD), and information about the learning environment for our students. 
 
@@ -75,8 +71,6 @@ We tried to capture all of the written feedback from the three sessions, and wil
 
     **Some questions worth raising Monday** [(public comment or email to the Board)](https://eot.wethrive65.org/f/a/pFLdSOolJ4hO1Ui4h4gusw~~/AAAHURA~/rRwNrQas2B_4ntvoYsStVhne7wc08dkRYOY4aHFkfPrPzwXxvK75q06jDY1VreS5xWz5iph0_74TU4bInpZU8Vs2PbgtZwg9BzhoLqDaCsqG6Cto0tJmnOyKFsNL8gh1oy1znanjs7ESLDjObIfI4W-60_9B8OUsOfmIZ97Xkk-8t4qcUGHH2eieHFXyxhrS)
 
-       
-
 * How will central office administration share in the \~\$20M FY28 package, given it's growing 4% this year?
 
 *  Assuming the anticipated \$20 million in cuts in FY28, how long do you anticipate the district having at least 90 days cash on hand? 
@@ -97,9 +91,8 @@ We tried to capture all of the written feedback from the three sessions, and wil
 * What is the potential revenue impact of higher cash reserves?    
   * At what level of cash would our financing terms be more favorable, thus costing less to borrow?  
   * How much interest or investment returns could we anticipate for every \$10 million more in in our operating fund?  
-        
-    **What comes next**    
-* ***Tuesday***  **October 13, 5pm:** Committee Meeting on the FY28 financial plan package   
+      **What comes next**    
+* **Tuesday  October 13, 5pm:** Committee Meeting on the FY28 financial plan package   
 * **Monday   October 26, 6pm:** Regular Board Meeting  
 * **Monday   November 9, 5pm:** Committee Meeting  
 * **Monday   November 16, 6pm:** Regular Board Meeting
