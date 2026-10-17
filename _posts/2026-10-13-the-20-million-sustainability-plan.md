@@ -6,10 +6,9 @@ category: "Board Meeting Recaps"
 permalink: "/board-meeting-recaps/the-20-million-sustainability-plan/"
 ---
 
-Hi neighbors,  
 Tuesday's Board meeting was a heavy one, and this email is a long one, summarizing     
 lot of the detail I've culled from district materials to try to help understand the numbers better, particular [**how long will the \$20 million dollar plan hold.**](https://wethrive65.org/analysis/financial-future/)  
-If you don't like scrolling, I've provided a set of links to each section below to make it easier to navigate, which will take you to this recap on our site, because navigation links in emails are tricky based on your email provider.  
+If you don't like scrolling, I've provided a set of links to each section below to make it easier to navigate.  
     
 Navigation  
 [School Closure Impacts to Middle School Boundaries](#school-closure-impacts-to-middle-school-boundaries)  
