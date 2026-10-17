@@ -12,9 +12,9 @@ If you don't like scrolling, I've provided a set of links to each section below 
     
 Navigation  
 [School Closure Impacts to Middle School Boundaries](#school-closure-impacts-to-middle-school-boundaries)  
-[The Administration’s \$20 Million Sustainability Plan](#the-20-million-sustainability-plan)
+[The Administration’s \$20 Million Sustainability Plan](#the-$20-million-sustainability-plan)
 
-* [Staffing and Compensation](#staffing-and-compensation---$11.3m)  
+* [Staffing and Compensation](#staffing-and-compensation:-11.3m)  
 * [Closing Schools](#closing-lincolnwood-and-dewey---$2.9m)  
   * [Our Analysis of Utilization, Class Size, and Enrollment](https://wethrive65.org/analysis/d65-enrollment-and-capacity/)  
 * [Transportation](#transportation---$2.4m)  
@@ -59,7 +59,7 @@ We've done some back of the napkin [analysis of the walkability impacts](https:/
 * How many preschoolers lose busing under the new Preschool for All rule, and how will attendance be protected for families just above the income line?  
 * Which bus aide assignments are “non-mandated,” and on which routes?
 
-## The 20 Million Sustainability Plan {#the-20-million-sustainability-plan}
+## The \$20 Million Sustainability Plan {#the-$20-million-sustainability-plan}
 
 The administration proposed about \$20.9 million a year in reductions, starting July 1, 2027\. After new revenue, a one-time transition cost and \$5.5 million reinvested in buildings and curriculum, the net improvement is about \$14.9 million, \$14.25 million of that being recurring savings in future years. 
 
@@ -68,7 +68,7 @@ That recurring savings is significant. A conservative estimate of 3% annual infl
 
 A deeper dive in the categories of cuts:
 
-### **Staffing and compensation \- \$11.3M**  {#staffing-and-compensation---$11.3m}
+### **Staffing and compensation: 11.3M**  {#staffing-and-compensation:-11.3m}
 
 Includes a reduction of more than 200 positions, a health-plan redesign and less overtime. The district says no school-based role or in-school program is fully eliminated.  
 ![][image3]  
