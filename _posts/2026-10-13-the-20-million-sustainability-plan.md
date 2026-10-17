@@ -12,7 +12,7 @@ If you don't like scrolling, I've provided a set of links to each section below 
     
 Navigation  
 [School Closure Impacts to Middle School Boundaries](#school-closure-impacts-to-middle-school-boundaries)  
-[The Administration’s \$20 Million Sustainability Plan](#the-$20-million-sustainability-plan)
+[The Administration’s \$20 Million Sustainability Plan](#the-20-million-sustainability-plan)
 
 * [Staffing and Compensation](#staffing-and-compensation---$11.3m)  
 * [Closing Schools](#closing-lincolnwood-and-dewey---$2.9m)  
@@ -59,7 +59,7 @@ We've done some back of the napkin [analysis of the walkability impacts](https:/
 * How many preschoolers lose busing under the new Preschool for All rule, and how will attendance be protected for families just above the income line?  
 * Which bus aide assignments are “non-mandated,” and on which routes?
 
-## The \$20 Million Sustainability Plan {#the-$20-million-sustainability-plan}
+## The 20 Million Sustainability Plan {#the-20-million-sustainability-plan}
 
 The administration proposed about \$20.9 million a year in reductions, starting July 1, 2027\. After new revenue, a one-time transition cost and \$5.5 million reinvested in buildings and curriculum, the net improvement is about \$14.9 million, \$14.25 million of that being recurring savings in future years. 
 
