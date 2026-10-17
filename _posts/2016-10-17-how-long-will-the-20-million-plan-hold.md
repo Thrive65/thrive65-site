@@ -1,9 +1,10 @@
 ---
 layout: "post"
-title: "Untitled document"
+title: "How Long Will the $20 Million Plan Hold"
 date: "2016-10-17"
 category: "Analysis"
 permalink: "/analysis/2016/10-17/"
+description: "financial-future"
 ---
 
 \# How Long Will the \$20 Million Plan Hold?
