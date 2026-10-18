@@ -43,7 +43,7 @@ Each middle school’s boundary has been changed in the past three years, partic
 Middle School Boundaries Over Three School Years:   
 ![][image1]
 
-We've done some back of the napkin [analysis of the walkability impacts](https://wethrive65.org/analysis/busing-and-walkability-under-the-fy28-plan/#). By our estimate, many  children who would lose the \<0.75 walk to school. Given the limits of our method, **we believe it is critical that the district publish its own estimates based on address-specific data.**    
+We've done some back of the napkin [analysis of the walkability impacts](https://wethrive65.org/analysis/busing-and-walkability-under-the-fy28-plan/#). By our rough estimate, many children who would lose their \<0.75 walk to school. Given the limits of our method, **we believe it is important that the district publish its own estimates based on address-specific data.**    
     
 **Some questions to ask**
 
@@ -71,7 +71,7 @@ The staffing numbers in the detail don’t exactly line up with the FTEs summari
 
 ### **Closing Lincolnwood and Dewey: \$2.9M** {#closing-lincolnwood-and-dewey-29m}
 
-About 713 students would change schools. Both sites would be kept for possible rebuilds on Lincolnwood site and Washington site, tied to a facilities referendum being explored for November 2028\. As noted earlier, the boundary changes for kids across the district are significant. Between school years ending in 2026-2028, not a single school boundary has been untouched. All schools lost students and all schools not designated for closure gained other students. We have seen and will see more changes to the number of staff in our schools and where staff are assigned. This is a profoundly disruptive period for families and staff, and we hope the admin means what they say that this will be the last time anything close to this magnitude happens to our district. [More on the future financials.](https://wethrive65.org/analysis/financial-future/) 
+About 713 students would change schools. Both sites would be kept for possible rebuilds on Lincolnwood site and Washington site, tied to a facilities referendum being explored for November 2028\. As noted earlier, the boundary changes for kids across the district are significant. Between school years ending in 2026-2028, not a single school boundary has been untouched. Most schools lost students and all schools not designated for closure gained other students. We have seen and will see more changes to the number of staff in our schools and where staff are assigned. This is a profoundly disruptive period for families and staff, and we hope the admin means what they say that this will be the last time anything close to this magnitude happens to our district. [More on the future financials.](https://wethrive65.org/analysis/financial-future/) 
 
 Our [initial analysis on enrollment and capacity.](https://wethrive65.org/analysis/d65-enrollment-and-capacity/)
 
@@ -99,7 +99,7 @@ Includes limiting Preschool for All busing to children with special-education pl
 
 ### **Non-Mandated Programs: \$1.9M** {#non-mandated-programs-19m}
 
-Ends district-run before/after-school care (SACC) after this school year and handing off Head Start and Early Head Start in July 2028\. It is unknown what organization will take over the Head Start services. 
+Ends district-run before/after-school care (SACC) after this school year and hands off Head Start and Early Head Start in July 2028\. It is unknown what organization will take over the Head Start services. 
 
 The district estimates a savings of \$400,000 for SACC. While they note directly operating aftercare is not typical for public school districts, the alternatives in Evanston are less affordable and often not directly at the school. One of the district defined peers, Orland Park, does provide district-run care that costs about 19% more per month than us.
 
