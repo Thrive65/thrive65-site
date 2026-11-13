@@ -1,0 +1,3 @@
+# Every change needs the maintainer's review before it can merge to main
+# (enforced by "Require review from Code Owners" in the "Protect main" ruleset).
+* @chetfarley
