@@ -51,6 +51,15 @@ module.exports = {
           "step-value",
           "total",
           "stripe-bloom",
+          // tax calculator chart: SVG marks, legend, tooltip and the table
+          // views are all injected as JS strings too.
+          "levy-axis",
+          "levy-spot",
+          "levy-hit",
+          "levy-key",
+          "levy-swatch",
+          "levy-tip-row",
+          "levy-tip-total",
         ],
         // Attribute/state-driven selectors: a11y modes set data-* on <html> at
         // runtime; ARIA states are toggled by JS; EmailOctopus injects its own

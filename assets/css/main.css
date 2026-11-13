@@ -137,6 +137,17 @@
   --accent-hover: #FFC44F;                 /* CTA hover */
   --bloom:        #C4560A;                 /* Accent 2 (Okabe–Ito orange) — moment-of-change only */
 
+  /* ---- Chart series (tax calculator's .levy-chart) -----------------------
+     Okabe–Ito steps validated for CVD separation on each surface. Identity
+     also rides on the legend, tooltip and table, so color is never the only
+     cue. Declared in all five theme blocks; high contrast swaps in sets that
+     clear 5.7:1 on its flattened surfaces. ------------------------------ */
+  --series-1: #0072B2;   /* yearly levy increase */
+  --series-2: #CC79A7;   /* health & life safety */
+  --series-3: #E69F00;   /* capital referendum */
+  --series-4: #009E73;   /* operating referendum */
+  --series-5: #5A4FA0;   /* City of Evanston levy */
+
   /* ---- Feature surface (spotlight panel: .surface-feature) --------------
      Deep teal wash with a marigold label and white figures. HSL so a theme
      shift is just a lightness move on the same hue. ---------------------- */
@@ -198,6 +209,8 @@
   --accent:       #FFB01A;          /* constant */
   --accent-hover: #FFC44F;          /* constant */
   --bloom:        #E69F00;          /* Okabe–Ito orange on dark */
+
+  --series-1: #3A8FD6; --series-2: #BC6A9C; --series-3: #C08000; --series-4: #00A078; --series-5: #5A6BB0;
 
   --feature-bg:    hsl(189, 65%, 14%);
   --feature-ink:   hsl(0, 0%, 100%);
@@ -281,6 +294,7 @@
     --bg: #0B1410; --card: #17251C; --tint: #123122;
     --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD; --focus: #8CE7B7;
     --secondary: #7EC8E3; --bloom: #E69F00;
+    --series-1: #3A8FD6; --series-2: #BC6A9C; --series-3: #C08000; --series-4: #00A078; --series-5: #5A6BB0;
     --feature-bg: hsl(189, 65%, 14%); --feature-ink: hsl(0, 0%, 100%);
     --feature-muted: hsl(189, 25%, 78%); --feature-label: hsl(39, 100%, 68%); --feature-line: hsl(189, 35%, 32%);
     --quiet-ink: hsl(45.5, 30%, 92%);
@@ -317,6 +331,7 @@ html[data-contrast="high"]:not([data-theme="dark"]) .hue-default {
   --bg: var(--hc-color-light); --card: var(--hc-color-light); --tint: var(--hc-color-light);
   --line: var(--hc-color-dark); --ink: var(--hc-color-dark); --muted: var(--hc-color-dark); --edge: var(--hc-color-dark); --focus: var(--hc-color-dark);
   --brand: #005C31; --brand-strong: #00411F; --link: #005C31; --secondary: #00323C;
+  --series-1: #005A8C; --series-2: #9E3C78; --series-3: #8A5A00; --series-4: #006B4F; --series-5: #3D3380;
   --hero-bg: var(--hc-color-light); --hero-ink: var(--hc-color-dark); --hero-muted: var(--hc-color-dark); --hero-em: #7A4C00;
   --feature-bg: var(--hc-color-light); --feature-ink: var(--hc-color-dark); --feature-muted: var(--hc-color-dark); --feature-label: #7A4C00; --feature-line: var(--hc-color-dark);
   --quiet-ink: var(--hc-color-dark);
@@ -325,6 +340,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   --bg: var(--hc-color-dark); --card: var(--hc-color-dark); --tint: var(--hc-color-dark);
   --line: var(--hc-color-light); --ink: var(--hc-color-light); --muted: var(--hc-color-light); --edge: var(--hc-color-light); --focus: #FFFF00;
   --brand: #4DFFA6; --brand-strong: #90FFC8; --link: #4DFFA6; --secondary: #9BE8FF;
+  --series-1: #56B4E9; --series-2: #E59ACB; --series-3: #F0B429; --series-4: #2FD3A0; --series-5: #A99BF0;
   --accent: #FFD34D; --accent-hover: #FFE58A; --on-accent: var(--hc-color-dark);
   --hero-bg: var(--hc-color-dark); --hero-ink: var(--hc-color-light); --hero-muted: var(--hc-color-light); --hero-em: #FFD34D;
   --feature-bg: var(--hc-color-dark); --feature-ink: var(--hc-color-light); --feature-muted: var(--hc-color-light); --feature-label: #FFD34D; --feature-line: var(--hc-color-light);
@@ -1867,6 +1883,60 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     color: var(--brand-strong);
     font-size: var(--step-1);
   }
+
+  /* ─ Levy chart ─ the tax calculator's stacked year-by-year bars. Fills are
+     set inline from JS as var(--series-N) (theme tokens on :root). Legend and
+     tooltip rows ride on .cluster; the tooltip takes the shared --menu-*
+     popover treatment. */
+  .levy-chart-wrap { position: relative; }
+  .levy-chart-wrap svg { display: block; inline-size: 100%; block-size: auto; }
+  .levy-axis {
+    fill: var(--muted);
+    font-size: 11px;            /* SVG user units: scales with the viewBox */
+    font-variant-numeric: tabular-nums;
+  }
+  .levy-spot { fill: var(--ink); font-weight: 700; }
+  .levy-hit { cursor: crosshair; }
+  .levy-hit:hover { fill: var(--ink); fill-opacity: 0.05; }
+  .levy-legend { column-gap: var(--space-s); font-size: var(--step--1); }
+  .levy-legend:empty { display: none; }
+  .levy-key { gap: var(--space-2xs); }
+  .levy-swatch {
+    display: inline-block;
+    inline-size: var(--step-0);
+    block-size: var(--step-0);
+    border-radius: var(--border-bold);
+    flex: none;
+  }
+  .levy-tip {
+    position: absolute;
+    inset-block-start: 0;
+    z-index: 2;
+    display: grid;
+    gap: var(--space-2xs);
+    min-inline-size: 14rem;
+    padding: var(--space-xs) var(--space-s);
+    background: var(--menu-surface);
+    border: var(--menu-border);
+    border-radius: var(--menu-radius);
+    box-shadow: var(--menu-shadow);
+    font-size: var(--step--1);
+    pointer-events: none;
+  }
+  .levy-tip-row { gap: var(--space-2xs); flex-wrap: nowrap; }
+  .levy-tip-row b { margin-inline-start: auto; padding-inline-start: var(--space-s); font-variant-numeric: tabular-nums; }
+  .levy-tip-total { border-block-start: var(--border-thin) solid var(--line); padding-block-start: var(--space-2xs); }
+
+  /* Data tables (chart table view, district financing). They keep the framed
+     .page table edge but drop its definition-table label column: the header
+     row carries the weight, the first column sizes to its content, and the
+     figure columns right-align so place values line up. */
+  .levy-table-wrap { overflow-x: auto; }
+  .levy-table-wrap :is(th, td) { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .levy-table-wrap th { font-weight: 700; }
+  .levy-table-wrap :is(th, td):first-child { background: none; width: auto; font-size: inherit; }
+  .levy-table-wrap td:first-child { font-weight: normal; }
+  .levy-table-wrap :is(th, td):not(:first-child) { text-align: end; }
 
   /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
   @media (--sm-and-down) {

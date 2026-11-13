@@ -19,6 +19,8 @@
 - [ ] `@custom-media` breakpoints are inert in dev (authored CSS is served unprocessed; no browser ships it on by default). Dev workaround: Firefox `about:config` → `layout.css.custom-media.enabled = true`. Acceptable while solo — revisit (dev-time PostCSS pass, or literal queries) if another dev joins or Firefox stops being the dev browser.
 
 ### Features
+- Tax Calculator
+    - create a break out wide style for large data tables
 - source citations: hover shows tooltip w/ inline links, or clicking opens flyout menu with all sources
 - scrollspy bar, showing length of page
 - a11y menu
