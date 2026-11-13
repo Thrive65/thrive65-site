@@ -21,9 +21,22 @@ bundle exec jekyll serve --baseurl ""
 
 Visit `http://localhost:4000`. The `--baseurl ""` override is needed locally because `_config.yml` sets `baseurl: "/thrive65-site"` for the GitHub Pages project-page URL.
 
-**A dev server is always running on `http://localhost:4000/` — assume it's live.** Just reload the page to verify a change (Jekyll `--watch` rebuilds automatically); don't start, kill, or rebuild the server to check your work. If a change genuinely needs a full rebuild, run it but leave the server serving on `:4000` afterward.
+**On the maintainer's machine, a dev server is always running on `http://localhost:4000/` — assume it's live.** (In a cloud session there is no server; see "Contributing from Claude Code on the web" below.) Just reload the page to verify a change (Jekyll `--watch` rebuilds automatically); don't start, kill, or rebuild the server to check your work. If a change genuinely needs a full rebuild, run it but leave the server serving on `:4000` afterward.
 
 **CSS build step (production only).** CI post-processes the *built* `_site/assets/css/main.css` with PostCSS — PurgeCSS (treeshake against `_site/**/*.html`, safelist in `postcss.config.cjs`), then `postcss-preset-env` (fallbacks/autoprefix per `.browserslistrc`), then cssnano — via `npm ci && npm run build:css` after the Jekyll build in `.github/workflows/deploy.yml`. Dev serves the authored CSS untouched. Local one-off check (needs Node ≥20, see `.nvmrc`): `bundle exec jekyll build && npm run build:css`. **If you add a class that only ever appears via JS injection or third-party embed markup, add it to the PurgeCSS safelist** or production will strip it. Files kept out of `_site` (README/CLAUDE.md, the Node toolchain files, apps-script, etc.) are listed under `exclude:` in `_config.yml` — add any new repo-meta file there.
+
+## Contributing from Claude Code on the web
+
+Some contributors work through Claude Code on the web (claude.ai/code) in a cloud sandbox, not on the maintainer's machine. In that setting:
+
+- **Always work on a branch and finish by opening a pull request.** `main` is protected and deploys to the live site; only the maintainer merges. Never push to `main`.
+- **There is no dev server.** Verify with `bundle install && bundle exec jekyll build --baseurl ""` and confirm the build succeeds with no errors. Don't try to start or reach `localhost:4000` for the user.
+- **Never edit the add-on-published files** listed under "How content flows" (`_data/faq.yml`, `_data/news.yml`, `_includes/home-overview.md`, `assets/images/content/`). The Google Docs add-on overwrites them. Posts in `_posts/` normally come from the add-on too; add new standalone pages instead unless the maintainer asks otherwise.
+- **Reuse before inventing.** Build pages from the shared blocks and tokens in "CSS & HTML methodology" (`.card`, `.stat-grid`, `.callout`, `.steps`, `--step-*`, `--space-*`). Don't add one-off components or hardcoded px/colors.
+- **Charts and JS-injected markup:** any class that only appears via JavaScript or a chart library must be added to the PurgeCSS safelist in `postcss.config.cjs`, or production strips it. Load third-party scripts only from a pinned CDN version.
+- **Cite data sources** on the page for any chart or figure.
+- **Fill in the PR template** (`.github/pull_request_template.md`): a plain-English summary, the URL path(s) to check, and the checklist. The contributor may not be technical, so explain changes to them in plain language and describe in the PR anything you couldn't verify.
+- **When asked to address review comments**, read them from the PR and push fixes to the same branch; don't open a new PR.
 
 ## How content flows
 
