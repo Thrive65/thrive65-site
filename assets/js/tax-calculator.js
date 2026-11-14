@@ -650,12 +650,8 @@
       /* milestone totals: the spotlight year, 2035 and 2040 */
       [years[peak], 2035, 2040].filter(function (y, i, a) {
         return a.indexOf(y) === i && y - FIRST_BILL >= 0 && y - FIRST_BILL < W;
-      }).sort(function (a, b) { return a - b; }).forEach(function (y, i, a) {
+      }).sort(function (a, b) { return a - b; }).forEach(function (y) {
         steps.push(["=", "Everything together in " + y, "added to what you pay today", usd(totals[y - FIRST_BILL])]);
-        if (i === 0 && a.length > 1) {
-          steps.push(["note", "Costs keep climbing after that, even without any new referendums, because the yearly " +
-            "levy increase compounds each year and the operating increase grows with it."]);
-        }
       });
       renderStackSummary();
     }
@@ -696,12 +692,6 @@
 
     var html = "";
     steps.forEach(function (s) {
-      if (s[0] === "note") {
-        /* an unnumbered, valueless step row: the text sits in the label column */
-        html += '<div class="step"><div class="step-n"></div><div class="step-label"><small class="step-note">' +
-          s[1] + '</small></div><div class="step-value"></div></div>';
-        return;
-      }
       var tot = (s[0] === "=");
       html += '<div class="step' + (tot ? " total" : "") + '">' +
         '<div class="step-n">' + s[0] + '</div>' +
