@@ -560,7 +560,7 @@
     var share = renter ? renterD65() / D65_EXT_2025
       : curTaxTouched ? num(curTax, 0) / D65_EXT_2025 : (DISTRICT_EAV > 0 ? he / DISTRICT_EAV : 0);
     var W = Math.max(1, Math.min(Math.round(num(opYears, 20)), 40));
-    var headline = 0, total = 0, monthBase = 0, label = "Estimated cost to your household", steps = [];
+    var headline = 0, monthBase = 0, label = "Estimated cost to your household", steps = [];
     var years, series, spot = -1;
 
     steps.push(["A", renter ? "Your rent's share of what District 65 collects" : "Your property's share of the district",
@@ -581,7 +581,7 @@
       var b = bondEff(mode), annual = ds(b.P, b.term, b.rate);
       years = yearsFrom(b.start, b.term);
       series = seriesFor([mode], years, share);
-      headline = series[0].values[0] || 0; total = headline * b.term;
+      headline = series[0].values[0] || 0;
       if (b.P > 0) {
         steps.push(["B", "What the district would pay each year on " + usd(b.P),
           b.term + " years at " + b.rate + "%, level payments", usd(annual)]);
@@ -597,7 +597,7 @@
       var s0 = clampYear(num(opStart, 2029), 2029), cf = ptellInputs().cf;
       years = yearsFrom(s0, W);
       series = seriesFor(["operating"], years, share);
-      headline = series[0].values[0]; total = sum(series[0].values);
+      headline = series[0].values[0];
       label = "Estimated cost in the first year (" + s0 + ")";
       steps.push(["B", opStyle === "dollars" ? "Additional money raised district-wide in the first year"
         : "What that rate raises district-wide",
@@ -612,7 +612,7 @@
       var p = ptellInputs();
       years = yearsFrom(FIRST_BILL, W);
       series = seriesFor(["ptell"], years, share);
-      headline = series[0].values[0]; total = sum(series[0].values);
+      headline = series[0].values[0];
       label = "Added to bills paid in 2027 by the 2026 levy";
       steps.push(["B", renter ? "District 65 tax built into your rent" : "Your current District 65 tax",
         renter ? usd(num(rent, 0)) + " &times; 12 &times; " + num(taxShare, 17) + "% &times; 41.25%"
@@ -636,7 +636,7 @@
       var totals = years.map(function (_, i) { return sum(series.map(function (se) { return se.values[i]; })); });
       var peak = Math.max(0, Math.min(clampYear(num(stackYear, 2030), 2030) - FIRST_BILL, W - 1));
       spot = peak;
-      headline = totals[peak] || 0; total = sum(totals);
+      headline = totals[peak] || 0;
       label = keys.length ? "Added cost in " + years[peak] + ", all selected pieces together" : "Nothing selected";
       var letters = "BCDEF";
       series.forEach(function (se, j) {
@@ -697,7 +697,9 @@
     var html = "";
     steps.forEach(function (s) {
       if (s[0] === "note") {
-        html += '<p class="hint" style="margin:0;padding-block:var(--space-xs)">' + s[1] + '</p>';
+        /* an unnumbered, valueless step row: the text sits in the label column */
+        html += '<div class="step"><div class="step-n"></div><div class="step-label"><small class="step-note">' +
+          s[1] + '</small></div><div class="step-value"></div></div>';
         return;
       }
       var tot = (s[0] === "=");
