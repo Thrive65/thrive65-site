@@ -2,7 +2,7 @@
 layout: "page"
 title: "What would this cost my household?"
 eyebrow: "Tax impact estimator"
-description: "Estimate what District 65's yearly levy increase, health and life safety bonds, a capital or operating referendum, and the City of Evanston levy would add to your tax bill or rent, one at a time or stacked by year."
+description: "Estimate what District 65's yearly levy increase, health and life safety bonds, and a capital or operating referendum would add to your tax bill or rent, one at a time or stacked by year."
 # Test page, should be hidden from search/sitemap
 noindex: true      # emits <meta name="robots" content="noindex, follow"> (head.html)
 sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
@@ -34,10 +34,6 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
     <button class="choice" type="button" data-mode="operating" aria-pressed="false">
       Operating referendum
       <span class="choice-note">Ongoing money for running the schools.</span>
-    </button>
-    <button class="choice" type="button" data-mode="city" aria-pressed="false">
-      City of Evanston levy
-      <span class="choice-note">Not District 65. The city's own increase, for the full picture.</span>
     </button>
   </div>
 </fieldset>
@@ -108,10 +104,12 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
     <label for="mktVal">Or estimate from market value</label>
     <div class="input-group">
       <span class="affix">$</span>
-      <input id="mktVal" type="number" min="0" step="10000" placeholder="e.g. 465000" inputmode="numeric">
+      <input id="mktVal" type="number" min="0" step="10000" placeholder="e.g. 500000" inputmode="numeric">
     </div>
-    <p class="hint">Cook County assesses homes at 10% of market value, then the state applies an equalization
-      factor near 3.0, putting EAV around 30% of market value before exemptions.</p>
+    <p class="hint">Cook County assesses homes at 10% of market value, then the state applies its equalization
+      factor (3.0300 for 2025), and the $10,000 standard homeowner exemption comes off. A $500,000 home works out to
+      about $141,500. Senior and other exemptions would lower it further. "Market value" here means the assessor's
+      value, which can differ from a sale price.</p>
   </div>
 
   <div class="field">
@@ -134,7 +132,6 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
         <button class="choice compact" type="button" data-piece="hls" aria-pressed="true">Health &amp; life safety</button>
         <button class="choice compact" type="button" data-piece="capital" aria-pressed="true">Capital referendum</button>
         <button class="choice compact" type="button" data-piece="operating" aria-pressed="true">Operating referendum</button>
-        <button class="choice compact" type="button" data-piece="city" aria-pressed="true">City of Evanston levy</button>
       </div>
       <p class="hint">Each piece uses the settings on its own tab. Open a tab to change its amount, term, or start year.</p>
     </fieldset>
@@ -142,12 +139,11 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
       <legend>Start the referendum pieces from a scenario</legend>
       <div class="choice-group compact" id="scenarioPresets" role="group" aria-label="Referendum scenarios">
         <button class="choice compact" type="button" data-scenario="v4" aria-pressed="false">Community v4 package</button>
-        <button class="choice compact" type="button" data-scenario="page" aria-pressed="false">Page defaults</button>
       </div>
       <p class="hint">The community group For a Brighter Evanston's model (v4, November 2026) assumes two referendums on the
         November 2028 ballot: a $17&nbsp;million operating increase that grows with the tax base, and $63.7&nbsp;million in
         bonds to replace the district's yearly building budget, repaid over 20 years at 4.5%. This button loads those
-        amounts into the operating and capital tabs. The yearly levy increase, health and life safety bonds and city levy
+        amounts into the operating and capital tabs. The yearly levy increase and health and life safety bonds
         are not part of that package, so they keep their own settings. Neither referendum has formally been proposed by
         the district.</p>
     </fieldset>
@@ -192,41 +188,6 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
       <p class="hint">Districts usually levy the maximum every year, and each increase builds on the one before.
         "Just the 2026 levy" isolates this year's decision.</p>
     </fieldset>
-  </div>
-
-  <!-- CITY OF EVANSTON LEVY (not D65) -->
-  <div id="cityBlock" class="flow hidden">
-    <div class="field" id="cityTaxField">
-      <label for="cityTax">Your current City of Evanston tax, per year</label>
-      <div class="input-group">
-        <span class="affix">$</span>
-        <input id="cityTax" type="number" min="0" step="10" inputmode="numeric">
-      </div>
-      <p class="hint" id="cityTaxHint">Add the "City of Evanston" and "General Assistance" lines on your bill for the most
-        accurate figure. Until you enter one, this is estimated from your EAV.</p>
-    </div>
-    <div class="grid-wide">
-      <div class="field">
-        <label for="cityPct">Increase in the city's levy for 2027</label>
-        <div class="input-group">
-          <input id="cityPct" type="number" min="0" max="30" step="0.1" value="4.1" inputmode="decimal">
-          <span class="affix">%</span>
-        </div>
-        <div class="choice-group compact mt-xs" id="cityPresets" role="group" aria-label="Preset increases">
-          <button class="choice compact" type="button" data-citypct="4.1" aria-pressed="false">4.1% · as introduced</button>
-          <button class="choice compact" type="button" data-citypct="10.1" aria-pressed="false">10.1% · first proposal</button>
-        </div>
-      </div>
-      <div class="field">
-        <label for="cityLater">Increase in later years</label>
-        <div class="input-group">
-          <input id="cityLater" type="number" min="0" max="30" step="0.1" value="0" inputmode="decimal">
-          <span class="affix">% / yr</span>
-        </div>
-        <p class="hint">The city is home rule and is not bound by the tax cap. It held its levy flat from 2021 to 2025, then
-          raised it for 2026. Zero shows only the 2027 decision.</p>
-      </div>
-    </div>
   </div>
 
   <!-- BORROWING (hls + capital) -->
@@ -345,14 +306,6 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
       <p class="text-eyebrow">Per month</p>
       <p class="stat-value" id="outMonth">$0</p>
     </div>
-    <div class="stat">
-      <p class="text-eyebrow" id="totalKey">Over the full term</p>
-      <p class="stat-value" id="outTotal">$0</p>
-    </div>
-    <div class="stat">
-      <p class="text-eyebrow">Your share of the district</p>
-      <p class="stat-value" id="outShare">0%</p>
-    </div>
   </div>
   <p class="text-eyebrow rule-above" id="by32Label">Through 2032, the end of the district's current projections</p>
   <div class="stat-grid fit" style="--stat-step: var(--step-2)">
@@ -383,19 +336,12 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
       <p class="text-eyebrow">Per month</p>
       <p class="stat-value" id="r17Month">$0</p>
     </div>
-    <div class="stat">
-      <p class="text-eyebrow" id="r17ComboLabel">2017 plus new referendums, 2030</p>
-      <p class="stat-value" id="r17Combo">$0</p>
-    </div>
   </div>
   <p class="hint">Voters approved an operating referendum in April 2017 (about 80% yes) to raise about $14.5&nbsp;million a
     year, starting with bills paid in 2018. It had no end date, so it is now part of the district's permanent tax base
     and has grown with the tax cap every year since: an estimated $18.4&nbsp;million on 2026 bills, about 12% of what
-    District 65 collects. This is already in your current bill, so it is not counted in the increases above. The last
-    figure adds it to the operating and capital referendum amounts on this page for the spotlight year, to show the total
-    you would be paying for referendums. It is a different total from the headline above: it adds the 2017 referendum,
-    which is already on your bill, and leaves out the yearly levy increase, health and life safety bonds and the city
-    levy, which are increases but not referendums. Thrive65 estimate.</p>
+    District 65 collects. This is already in your current bill, so it is not counted in the increases above. Thrive65
+    estimate.</p>
 </section>
 
 <section class="card flow" id="finCard">
@@ -486,11 +432,12 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
       $4.58&nbsp;million from Tax Year 2024; District 65 at 41.25% of Evanston bills and the city, including the library,
       at 18.87% ($62.68&nbsp;million); and, after the 2025 reassessment, median residential taxable value up 17.67%
       against 8.58% to 11.14% for other property types, moving homes from 69% to 70.4% of Evanston's taxable value. The
-      Tax Year 2024 D65 figure ($145.85&nbsp;million) divided by source 1's EAV gives the rate this page uses to estimate
-      your District 65 tax when you have not entered one.</li>
-    <li>The Daily Northwestern, "EPL board continues executive director search, holds Truth in Taxation hearing"
-      (October 22, 2026), reporting the library's operating levy of $9.48&nbsp;million and debt service levy of
-      $547,823, used here to separate the library from the city's 18.87% share of the bill.</li>
+      District 65 Tax Year 2025 extension (source 5) divided by the Tax Year 2025 EAV (Cook County Clerk, below) gives
+      the rate, about 2.985%, this page uses to estimate your District 65 tax when you have not entered one.</li>
+    <li>Cook County Clerk, "Tax Year 2025 Agency EAV by Class Report" (October 6, 2026): School District C C 65
+      (agency 04-0270-000) total valuation less exemptions of $4,975,974,449, of which $4,011,594,534 residential. Used as
+      the district's total taxable value. Illinois Department of Revenue 2025 Cook County final equalization factor of
+      3.0300 and the $10,000 general homeowner exemption are used to estimate EAV from market value.</li>
     <li>District 65, Financial Projection Assumptions (October 2026), assuming inflation of 2.7% for levy year 2026 and
       3.0% in later levy years.</li>
     <li>District 65, "A Sustainable Path Forward," board committee presentation (September 14, 2026), with long-range
@@ -499,14 +446,6 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
     <li>District 65, FY2028 proposed financial sustainability package (October 2026), describing a potential bond
       referendum in November 2028 for two new or significantly renovated schools and investment in remaining buildings,
       and a $20&nbsp;million FY2028 reduction target.</li>
-    <li>Evanston Now, "Council votes 5-4 to introduce Evanston's 2027 budget" (November 2026), reporting the introduced
-      budget's 4.1% increase to the city's portion of the property tax levy, down from the 10.1% first proposed, with
-      adoption scheduled for later in November.</li>
-    <li>The Daily Northwestern, "Proposed city budget includes 8.9% property tax levy hike, mostly for parks" (October 7,
-      2026), reporting the city's estimate that the original proposal, including the library, would add about $180 a year
-      for the median Evanston home.</li>
-    <li>City of Evanston, "Property Tax Bill Explanation," listing tax rates of 1.269 for the City of Evanston and 0.029 for
-      General Assistance per $100 of EAV (Tax Year 2023), which this page uses to estimate your current city tax.</li>
     <li>Minnesota Department of Revenue, "Percentage of Rent Constituting Property Taxes," presuming property taxes on
       residential rental property average 17% of annual rent; and Center on Budget and Policy Priorities, noting that
       Maine's Property Tax Fairness Credit assumes 25% of gross rent. Used for the share of rent that covers property tax.</li>
@@ -540,5 +479,4 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
     These are estimates, not tax or legal advice. If you find an error, tell us and we will correct it.
   </p>
 </div>
-
 <script src="{{ '/assets/js/tax-calculator.js' | relative_url }}" defer></script>

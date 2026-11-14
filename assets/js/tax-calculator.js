@@ -8,7 +8,6 @@
      hls       health and life safety bonds (no referendum)
      capital   a voter-approved building bond
      operating a voter-approved operating (limiting-rate) increase
-     city      the City of Evanston's own levy increase (not D65), for context
    An own/rent toggle switches the starting point: renters start from rent and a
    pass-through rate instead of an EAV or tax bill.
      stack     all of the above, added together by the year the bill is paid
@@ -24,16 +23,14 @@
 (function () {
   "use strict";
 
-  /* Tax Year 2024 EAV from the audited FY2025 AFR (source 1). */
-  var DISTRICT_EAV = 4203686381;
-  /* Tax Year 2024 District 65 levy: $150.43M TY2025 less the $4.58M increase,
-     per the Cook County Treasurer via the RoundTable (source 6). Used only to
-     estimate a household's current D65 tax until they type in their own. */
-  var D65_RATE = 145.85e6 / DISTRICT_EAV;
-  /* City of Evanston + General Assistance rates, Tax Year 2023, per the city's
-     "Property Tax Bill Explanation" page. Estimate only, until the user enters
-     their own city line. Rates fell after the 2025 reassessment, so this may run high. */
-  var CITY_RATE = (1.269 + 0.029) / 100;
+  /* Tax Year 2025 EAV less exemptions for School District C C 65 (agency 04-0270-000),
+     Cook County Clerk, 2025 Agency EAV by Class report (October 6, 2026). This is the
+     post-reassessment base behind 2026 bills. */
+  var DISTRICT_EAV = 4975974449;
+  /* Tax Year 2025 D65 extension ($148,509,149, levy memo, source 5) over that EAV:
+     about 2.985% of EAV. Used only to estimate a household's current D65 tax until
+     they type in their own. */
+  var D65_RATE = 148509149 / DISTRICT_EAV;
   /* D65 Tax Year 2026 tentative levy memo (Oct 26, 2026): 2025 extension $148,509,149,
      of which $141,083,900 is capped funds and $7,425,249 bond & interest. Bond &
      interest is estimated to fall 2.88% for 2026 ($7,211,625). Only the capped part
@@ -44,11 +41,6 @@
      enter their own D65 tax, so share and bill come from the same, post-
      reassessment tax year. */
   var D65_EXT_2025 = 148509149;
-  /* City-only share of an Evanston bill relative to D65's: the city + library
-     take 18.87% ($62.68M); the library levied about $10.03M ($9.48M operating +
-     $0.55M debt), leaving the city about 15.85% vs D65's 41.25%. Used to estimate
-     the city line from an entered D65 line. */
-  var CITY_PER_D65 = (18.87 * (62.68 - 10.03) / 62.68) / 41.25;
   var FIRST_BILL = 2027;             /* 2026 levy, paid in 2027 */
   /* 2017 operating referendum: about $14.5M a year (Daily Northwestern, Apr. 3, 2017), first
      extended on the 2017 levy (bills paid 2018). No sunset, so it joined the capped base and grew
@@ -62,22 +54,20 @@
   /* Last year of the district's long-range projections (FY2032, Sept 14, 2026
      presentation), so the results panel always reports a fixed 2027–2032 view. */
   var HORIZON = 2032;
-  var PIECES = ["ptell", "hls", "capital", "operating", "city"];
+  var PIECES = ["ptell", "hls", "capital", "operating"];
   var NAMES = { ptell: "Yearly levy increase", hls: "Health & life safety bonds",
-                capital: "Capital referendum", operating: "Operating referendum",
-                city: "City of Evanston levy" };
-  var SERIES = { ptell: 1, hls: 2, capital: 3, operating: 4, city: 5 };   /* color follows the piece */
+                capital: "Capital referendum", operating: "Operating referendum" };
+  var SERIES = { ptell: 1, hls: 2, capital: 3, operating: 4 };   /* color follows the piece */
 
   var $ = function (i) { return document.getElementById(i); };
   var homeEav = $("homeEav");
   if (!homeEav) return;   // not on the calculator page
 
-  var mode = "stack", opStyle = "dollars", ptellScope = "every", curTaxTouched = false, cityTaxTouched = false;
+  var mode = "stack", opStyle = "dollars", ptellScope = "every", curTaxTouched = false;
   var mktVal = $("mktVal"), bond = $("bond"), bondNum = $("bondNum"), term = $("term"), rate = $("rate"),
       bondStart = $("bondStart"), opDollars = $("opDollars"), opRange = $("opRange"), opRate = $("opRate"),
       opStart = $("opStart"), opYears = $("opYears"), curTax = $("curTax"), cpiNow = $("cpiNow"),
       cpiFut = $("cpiFut"), stackYear = $("stackYear"),
-      cityTax = $("cityTax"), cityPct = $("cityPct"), cityLater = $("cityLater"),
       rent = $("rent"), taxShare = $("taxShare"), passPct = $("passPct");
   var renter = false;
   var D65_BILL_SHARE = 0.4125;   /* D65's share of an Evanston bill, TY2025 (Treasurer via RoundTable) */
@@ -90,16 +80,14 @@
     hls:     { P: 22e6,  term: 20, rate: 4.5, start: 2028 },
     capital: { P: 100e6, term: 25, rate: 4.5, start: 2030 }
   };
-  var include = { ptell: true, hls: true, capital: true, operating: true, city: true };
+  var include = { ptell: true, hls: true, capital: true, operating: true };
 
   /* Referendum scenarios for the stack tab. v4 = For a Brighter Evanston, "D65 Ten-Year
      Financial Model, v4" (New_Money tab): $17M operating from FY30 (first bills paid 2029
      after a November 2028 vote), and $63,737,800 of bonds replacing the $7.97M/yr capital
-     transfers, level debt service at 4.5% over 20 years ($4.90M/yr), first repaid 2030.
-     page = this page's own defaults. */
+     transfers, level debt service at 4.5% over 20 years ($4.90M/yr), first repaid 2030. */
   var SCEN = {
-    v4:   { op: 17e6, opStart: 2029, cap: { P: 63737800, term: 20, rate: 4.5, start: 2030 } },
-    page: { op: 10e6, opStart: 2029, cap: { P: 100e6, term: 25, rate: 4.5, start: 2030 } }
+    v4:   { op: 17e6, opStart: 2029, cap: { P: 63737800, term: 20, rate: 4.5, start: 2030 } }
   };
   function applyScenario(k) {
     var s = SCEN[k];
@@ -254,33 +242,19 @@
     }
   };
 
-  CFG.city = {
-    note: '<strong>This is the city, not District 65.</strong> It is a separate line on the same bill, set by the City ' +
-      'Council. The budget introduced November 9 raises the city\'s levy 4.1%, down from the 10.1% first proposed, with ' +
-      'a final vote scheduled for later in November. The library sets its own levy separately and is not included here.',
-    alert: false,
-    voteTitle: "Why no vote is needed for this one",
-    vote: '<p>Evanston is a home rule city, so the property tax cap that limits District 65 does not apply to it. The ' +
-      'City Council sets the levy each year as part of the budget, after a Truth in Taxation hearing. No community ' +
-      'vote is required.</p>' +
-      '<p>That cuts both ways. The city can raise its levy by more than inflation in a hard year, as it proposed for ' +
-      '2027, and it can also hold it flat, as it did from 2021 through 2025.</p>'
-  };
-
   var ASSUME_COMMON =
     '<p><strong>Your share, two ways.</strong> If you enter your District 65 tax, your share is that amount divided by ' +
     'the $148.5 million District 65 extended for Tax Year 2025, the same year as your 2026 bill, so it already reflects ' +
-    'the 2025 reassessment. If you enter only an EAV, the tool divides by $4.20 billion, District 65\'s Tax Year 2024 ' +
-    'value, which predates the reassessment. An EAV taken from your 2026 bill will then read somewhat high, because ' +
-    'homes rose about 18% in that reassessment.</p>' +
+    'the 2025 reassessment. If you enter an EAV or a market value, the tool divides by $4.98 billion, the total taxable ' +
+    'value of District 65 for Tax Year 2025 from the Cook County Clerk, which also reflects the reassessment. Use the ' +
+    'EAV from your 2026 bill or 2025 assessment notice so the two match.</p>' +
     '<p><strong>Your share stays put after that.</strong> At each reassessment, about every three years, your share ' +
     'moves if your property rises faster or slower than the rest of the district. In 2025, homes rose faster than ' +
     'commercial property and their share of Evanston\'s taxable value went from 69% to 70.4%. This tool does not ' +
     'project the next shift.</p>' +
 
-    '<p><strong>Two lines of your bill at most.</strong> Everything here is District 65, except the City of Evanston ' +
-    'levy, which is the city\'s own line. Evanston Township High School District 202, the library, the county, and ' +
-    'every other taxing body are left out.</p>' +
+    '<p><strong>District 65 only.</strong> Everything here is the District 65 line of your bill. Evanston Township High ' +
+    'School District 202, the city, the library, the county, and every other taxing body are left out.</p>' +
     '<p><strong>Not a prediction.</strong> Only the yearly levy and the health and life safety bonds are under way. The ' +
     'referendum pieces are what-ifs, and actual terms would differ from whatever you entered.</p>';
   var ASSUME_RENT =
@@ -306,11 +280,14 @@
       '<p><strong>New property is left out.</strong> Taxes collected from newly built property are paid by its owners, ' +
       'not by you, which is why the 4.99% request does not translate to a 4.99% increase on your bill.</p>',
     bond: '<p><strong>Level debt service.</strong> Real bond schedules are rarely perfectly level, so early and late ' +
-      'years may differ from the average shown.</p>',
-    city: '<p><strong>Applied to your city line.</strong> The percentage is applied to your current City of Evanston ' +
-      'tax. If your assessment moves relative to everyone else\'s, your own change will differ.</p>' +
-      '<p><strong>Estimated starting point.</strong> Until you enter your own city tax, it is estimated from your EAV ' +
-      'at the city\'s Tax Year 2023 rates. Rates fell after the 2025 reassessment, so the estimate may run high.</p>',
+      'years may differ from the average shown.</p>' +
+      '<p><strong>All at once, or in pieces.</strong> This treats the whole amount as borrowed in one issue, as the ' +
+      'community model does. If the ' +
+      'district instead borrows a piece each year as it spends, the cost starts small and builds to the full payment ' +
+      'over several years. For the community v4 package, borrowing about $7.97 million a year would start near ' +
+      '$0.6 million a year district-wide and reach the full $4.9 million after about eight issues. The $63.7 million ' +
+      'covers about eight years of building work; continuing to borrow for repairs after that would add more payments ' +
+      'on top.</p>',
     operating: '<p><strong>It grows with the cap.</strong> The first year uses the amount you entered. After that it ' +
       'grows each year at the later-year inflation rate on the Yearly levy increase tab, because an approved increase ' +
       'becomes part of the capped base.</p>'
@@ -327,13 +304,6 @@
 
   function estimateCurTax() {
     if (!curTaxTouched) curTax.value = Math.round(num(homeEav, 0) * D65_RATE / 10) * 10;
-  }
-  function estimateCityTax() {
-    if (!cityTaxTouched) cityTax.value = Math.round((curTaxTouched ? num(curTax, 0) * CITY_PER_D65
-      : num(homeEav, 0) * CITY_RATE) / 10) * 10;
-  }
-  function cityInputs() {
-    return { C0: renter ? renterD65() * CITY_PER_D65 : num(cityTax, 0), p1: num(cityPct, 4.1) / 100, pl: num(cityLater, 0) / 100 };
   }
   function ptellInputs() {
     return { T0: renter ? renterD65() : num(curTax, 0), c1: Math.min(num(cpiNow, 2.7), 5) / 100,
@@ -369,11 +339,6 @@
       if (ptellScope === "once") return p.T0 * (CAPPED_SHARE * p.c1 + bondPart);
       return p.T0 * (CAPPED_SHARE * ((1 + p.c1) * Math.pow(1 + p.cf, k) - 1) + bondPart);
     }
-    if (key === "city") {
-      var c = cityInputs(), kc = y - FIRST_BILL;
-      if (kc < 0) return 0;
-      return c.C0 * ((1 + c.p1) * Math.pow(1 + c.pl, kc) - 1);
-    }
     if (key === "operating") {
       var s0 = clampYear(num(opStart, 2029), 2029);
       if (y < s0) return 0;
@@ -400,7 +365,7 @@
     $("voteBody").innerHTML = c.vote;
     $("assumeBody").innerHTML =
       (m === "hls" || m === "capital" ? ASSUME.bond : ASSUME[m]) +
-      (m === "stack" ? ASSUME.bond + ASSUME.operating + ASSUME.city : "") + ASSUME_COMMON;
+      (m === "stack" ? ASSUME.bond + ASSUME.operating : "") + ASSUME_COMMON;
     if (renter) $("assumeBody").innerHTML = ASSUME_RENT + $("assumeBody").innerHTML;
 
     var borrowing = (m === "hls" || m === "capital");
@@ -408,14 +373,12 @@
     $("operBlock").classList.toggle("hidden", m !== "operating");
     $("ptellBlock").classList.toggle("hidden", m !== "ptell");
     $("stackBlock").classList.toggle("hidden", m !== "stack");
-    $("cityBlock").classList.toggle("hidden", m !== "city");
     $("windowField").classList.toggle("hidden", borrowing);
     $("windowHint").textContent = m === "operating"
       ? "Counted from the first bill that includes it. Operating increases do not expire on their own, so this is " +
         "just a window for comparison."
       : "Counted from bills paid in 2027. Levy and operating increases do not expire on their own, so this is just " +
         "a window for comparison.";
-    $("totalKey").textContent = borrowing ? "Over the full term" : "Over the window below";
 
     if (borrowing) {
       loadBond(m);
@@ -461,11 +424,6 @@
       return ptellScope === "once"
         ? "Just the 2026 levy, " + (p.c1 * 100).toFixed(1) + "% of " + usd(p.T0) + " a year"
         : (p.c1 * 100).toFixed(1) + "% in 2027, then " + (p.cf * 100).toFixed(1) + "% a year, on " + usd(p.T0);
-    }
-    if (key === "city") {
-      var c = cityInputs();
-      return (c.p1 * 100).toFixed(1) + "% for 2027" + (c.pl > 0 ? ", then " + (c.pl * 100).toFixed(1) + "% a year" : "") +
-        ", on " + usd(c.C0) + " of city tax (not District 65)";
     }
     if (key === "operating") {
       return usdShort(opRaised()) + " a year district-wide, starting with bills paid in " +
@@ -598,7 +556,6 @@
 
   function render() {
     estimateCurTax();
-    estimateCityTax();
     var he = num(homeEav, 0);
     var share = renter ? renterD65() / D65_EXT_2025
       : curTaxTouched ? num(curTax, 0) / D65_EXT_2025 : (DISTRICT_EAV > 0 ? he / DISTRICT_EAV : 0);
@@ -660,7 +617,7 @@
       steps.push(["B", renter ? "District 65 tax built into your rent" : "Your current District 65 tax",
         renter ? usd(num(rent, 0)) + " &times; 12 &times; " + num(taxShare, 17) + "% &times; 41.25%"
         : curTaxTouched ? "as entered above"
-        : usd(he) + " &times; the district's Tax Year 2024 rate of " + (D65_RATE * 100).toFixed(3) + "%", usd(p.T0)]);
+        : usd(he) + " &times; the district's Tax Year 2025 rate of " + (D65_RATE * 100).toFixed(3) + "%", usd(p.T0)]);
       steps.push(["C", "Capped funds (" + Math.round(CAPPED_SHARE * 100) + "% of the tax) at the " +
         (p.c1 * 100).toFixed(1) + "% cap", usd(p.T0 * CAPPED_SHARE) + " &times; " + (p.c1 * 100).toFixed(1) + "%",
         usd(p.T0 * CAPPED_SHARE * p.c1)]);
@@ -672,23 +629,6 @@
           (p.cf * 100).toFixed(1) + "% a year after 2027, compounding", usd(series[0].values[W - 1] / PT())]);
       }
       steps.push(["=", "Added in 2027", "on top of what you pay today", usd(headline)]);
-    } else if (mode === "city") {
-      var c = cityInputs();
-      years = yearsFrom(FIRST_BILL, W);
-      series = seriesFor(["city"], years, share);
-      headline = series[0].values[0]; total = sum(series[0].values);
-      label = "Added to your city line on bills paid in 2027";
-      steps.splice(0, 1);   /* district share doesn't apply to the city line */
-      steps.push(["A", renter ? "City tax built into your rent" : "Your current City of Evanston tax",
-        renter ? usd(renterD65()) + " D65 part &times; " + CITY_PER_D65.toFixed(3) + " (city vs. D65 share of the bill)"
-        : cityTaxTouched ? "as entered above"
-        : usd(he) + " &times; the city's Tax Year 2023 rate of " + (CITY_RATE * 100).toFixed(3) + "%", usd(c.C0)]);
-      steps.push(["B", "The 2027 levy increase", usd(c.C0) + " &times; " + (c.p1 * 100).toFixed(1) + "%", usd(c.C0 * c.p1)]);
-      if (c.pl > 0 && W > 1) {
-        steps.push(["C", "After " + W + " years, by " + years[W - 1],
-          (c.pl * 100).toFixed(1) + "% a year after 2027, compounding", usd(series[0].values[W - 1] / PT())]);
-      }
-      steps.push(["=", "Added in 2027", "on top of what you pay the city today", usd(headline)]);
     } else {   /* stack */
       var keys = PIECES.filter(function (k) { return include[k]; });
       years = yearsFrom(FIRST_BILL, W);
@@ -707,16 +647,29 @@
           : "nothing in this window";
         steps.push([letters[j], NAMES[se.key] + " in " + years[peak], note, usd(se.values[peak])]);
       });
-      steps.push(["=", "Everything together in " + years[peak], "added to what you pay today" +
-        (peak < W - 1 ? "; by " + years[W - 1] + ", the last year shown, " + usd(totals[W - 1]) : ""), usd(headline)]);
+      /* milestone totals: the spotlight year, 2035 and 2040 */
+      [years[peak], 2035, 2040].filter(function (y, i, a) {
+        return a.indexOf(y) === i && y - FIRST_BILL >= 0 && y - FIRST_BILL < W;
+      }).sort(function (a, b) { return a - b; }).forEach(function (y, i, a) {
+        steps.push(["=", "Everything together in " + y, "added to what you pay today", usd(totals[y - FIRST_BILL])]);
+        if (i === 0 && a.length > 1) {
+          steps.push(["note", "Costs keep climbing after that, even without any new referendums, because the yearly " +
+            "levy increase compounds each year and the operating increase grows with it."]);
+        }
+      });
       renderStackSummary();
     }
 
     if (renter) {
-      steps.splice(steps.length - 1, 0, ["P", "Share your landlord passes on through rent",
+      var firstTot = steps.findIndex(function (s) { return s[0] === "="; });
+      if (firstTot < 0) firstTot = steps.length;
+      steps.splice(firstTot, 0, ["P", "Share your landlord passes on through rent",
         mode === "stack" ? "already applied to the amounts above" : "applied to the amount above",
         Math.round(PT() * 100) + "%"]);
-      steps[steps.length - 1][1] = "Estimated added rent";
+      steps.forEach(function (s) {
+        if (s[0] === "=") s[1] = mode === "stack" ? s[1].replace("Everything together in", "Estimated added rent in")
+          : "Estimated added rent";
+      });
     }
     $("chartSub").textContent = renter
       ? "Estimated added rent per year, by the year the tax bill is paid, at " + Math.round(PT() * 100) + "% pass-through."
@@ -737,16 +690,16 @@
     $("resLabel").textContent = label;
     $("outYear").textContent = usd(headline);
     $("outMonth").textContent = usd(headline / 12);
-    $("outTotal").textContent = usd(total);
-    $("outShare").textContent = mode === "city" ? "n/a" : share > 0
-      ? (share * 100).toFixed(4).replace(/0+$/, "").replace(/\.$/, "") + "%"
-      : "0%";
 
     $("chartTitle").textContent = mode === "stack" ? "Year by year, stacked" : "Year by year";
     renderChart(years, series, spot);
 
     var html = "";
     steps.forEach(function (s) {
+      if (s[0] === "note") {
+        html += '<p class="hint" style="margin:0;padding-block:var(--space-xs)">' + s[1] + '</p>';
+        return;
+      }
       var tot = (s[0] === "=");
       html += '<div class="step' + (tot ? " total" : "") + '">' +
         '<div class="step-n">' + s[0] + '</div>' +
@@ -760,9 +713,6 @@
     });
     document.querySelectorAll("#passPresets [data-pass]").forEach(function (b) {
       b.setAttribute("aria-pressed", String(parseFloat(b.dataset.pass) === num(passPct, 0)));
-    });
-    document.querySelectorAll("#cityPresets [data-citypct]").forEach(function (b) {
-      b.setAttribute("aria-pressed", String(parseFloat(b.dataset.citypct) === num(cityPct, 0)));
     });
     document.querySelectorAll("#opPresets [data-opamt]").forEach(function (b) {
       b.setAttribute("aria-pressed", String(parseFloat(b.dataset.opamt) === num(opDollars, 0)));
@@ -793,15 +743,8 @@
     /* 2017 referendum: already in today's bill (renters: already in rent) */
     var base17 = renter ? renterD65() : num(curTax, 0);
     var r17Now = base17 * REF17_SHARE;
-    var pi17 = ptellInputs();
-    var yC = clampYear(num(stackYear, 2030), 2030);
-    var r17At = r17Now * (yC >= FIRST_BILL ? (1 + pi17.c1) * Math.pow(1 + pi17.cf, yC - FIRST_BILL) : 1);
-    var newRef = (mode !== "stack" || include.operating ? pieceAt("operating", yC, share) : 0) +
-                 (mode !== "stack" || include.capital ? pieceAt("capital", yC, share) : 0);
     $("r17Year").textContent = usd(r17Now);
     $("r17Month").textContent = usd(r17Now / 12);
-    $("r17ComboLabel").textContent = "Referendums only: 2017 + new operating and capital, bills paid " + yC;
-    $("r17Combo").textContent = usd(r17At + newRef);
 
     announceResult(label + ": " + usd(headline) + " per year, " + usd(headline / 12) + " per month.");
   }
@@ -839,9 +782,6 @@
     b.addEventListener("click", function () { applyScenario(b.dataset.scenario); });
   });
 
-  document.querySelectorAll("#cityPresets [data-citypct]").forEach(function (b) {
-    b.addEventListener("click", function () { cityPct.value = b.dataset.citypct; render(); });
-  });
   document.querySelectorAll("#tenure [data-tenure]").forEach(function (b) {
     b.addEventListener("click", function () {
       renter = b.dataset.tenure === "rent";
@@ -850,20 +790,11 @@
       });
       $("renterFields").classList.toggle("hidden", !renter);
       $("ownerFields").classList.toggle("hidden", renter);
-      $("cityTaxField").classList.toggle("hidden", renter);
       setMode(mode);   /* rebuilds the assumptions copy, then renders */
     });
   });
   document.querySelectorAll("#passPresets [data-pass]").forEach(function (b) {
     b.addEventListener("click", function () { passPct.value = b.dataset.pass; render(); });
-  });
-  cityTax.addEventListener("input", function () {
-    cityTaxTouched = cityTax.value !== "";
-    $("cityTaxHint").textContent = cityTaxTouched
-      ? "Using the amount you entered. Clear the field to go back to the estimate from your EAV."
-      : "Add the \"City of Evanston\" and \"General Assistance\" lines on your bill for the most accurate figure. " +
-        "Until you enter one, this is estimated from your EAV.";
-    render();
   });
   bond.addEventListener("input", function () { bondNum.value = bond.value; render(); });
   bondNum.addEventListener("input", function () { bond.value = Math.min(num(bondNum, 0), bond.max); render(); });
@@ -871,7 +802,7 @@
   opDollars.addEventListener("input", function () { opRange.value = Math.min(num(opDollars, 0), opRange.max); render(); });
   mktVal.addEventListener("input", function () {
     var mv = parseFloat(mktVal.value);
-    if (isFinite(mv) && mv > 0) { homeEav.value = Math.round(mv * 0.30 / 1000) * 1000; render(); }
+    if (isFinite(mv) && mv > 0) { homeEav.value = Math.max(0, Math.round((mv * 0.10 * 3.03 - 10000) / 500) * 500); render(); }
   });
   homeEav.addEventListener("input", function () { mktVal.value = ""; render(); });
   curTax.addEventListener("input", function () {
@@ -883,10 +814,11 @@
         "this page uses it, which also picks up the 2025 reassessment. Until then, this is estimated from your EAV.";
     render();
   });
-  [term, rate, bondStart, opRate, opStart, opYears, cpiNow, cpiFut, stackYear, cityPct, cityLater, rent, taxShare, passPct].forEach(function (el) {
+  [term, rate, bondStart, opRate, opStart, opYears, cpiNow, cpiFut, stackYear, rent, taxShare, passPct].forEach(function (el) {
     el.addEventListener("input", render);
     el.addEventListener("change", render);
   });
 
   setMode("stack");
+  applyScenario("v4");   /* open with the community v4 referendum package, for owners and renters alike */
 })();
