@@ -9,36 +9,8 @@ sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
 ---
 
 <p>District 65 has several ways to raise money for buildings or for operations, and each one lands on your tax
-bill differently. Look at them one at a time, or pick <strong>All together</strong> to see how they stack up year
-by year. Every piece keeps its own settings, so what you enter on one tab carries into the combined view.</p>
-
-<fieldset class="field-set mt-l">
-  <legend class="visually-hidden">Choose what to estimate</legend>
-  <div class="choice-group">
-    <button class="choice" type="button" data-mode="stack" aria-pressed="true">
-      All together
-      <span class="choice-note">Every piece below, stacked by tax year.</span>
-    </button>
-    <button class="choice" type="button" data-mode="ptell" aria-pressed="false">
-      Yearly levy increase
-      <span class="choice-note">The annual increase allowed under the tax cap.</span>
-    </button>
-    <button class="choice" type="button" data-mode="hls" aria-pressed="false">
-      Health &amp; life safety
-      <span class="choice-note">Mandated repairs. No referendum required.</span>
-    </button>
-    <button class="choice" type="button" data-mode="capital" aria-pressed="false">
-      Capital referendum
-      <span class="choice-note">Borrowing for buildings, approved by voters.</span>
-    </button>
-    <button class="choice" type="button" data-mode="operating" aria-pressed="false">
-      Operating referendum
-      <span class="choice-note">Ongoing money for running the schools.</span>
-    </button>
-  </div>
-</fieldset>
-
-<div class="callout" id="modeNote"></div>
+bill differently. This adds them together: each is an increase over what you pay District 65 today, placed in the
+year the bill is paid. Bonds stop when they are repaid. Levy and operating increases keep building.</p>
 
 <section class="card flow">
   <h2>Your numbers</h2>
@@ -61,27 +33,25 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
         <input id="rent" type="number" min="0" step="25" value="1800" inputmode="numeric">
       </div>
     </div>
-    <div class="grid-wide">
-      <div class="field">
-        <label for="taxShare">Share of rent that covers property tax</label>
-        <div class="input-group">
-          <input id="taxShare" type="number" min="0" max="40" step="1" value="17" inputmode="decimal">
-          <span class="affix">%</span>
-        </div>
-        <p class="hint">Minnesota's renter credit assumes 17%, based on state studies. Maine's assumes 25%. District 65 is
-          about 41% of whatever that comes to.</p>
+    <div class="field">
+      <label for="taxShare">Share of rent that covers property tax</label>
+      <div class="input-group">
+        <input id="taxShare" type="number" min="0" max="40" step="1" value="17" inputmode="decimal">
+        <span class="affix">%</span>
       </div>
-      <div class="field">
-        <label for="passPct">Share of an increase your landlord passes on</label>
-        <div class="input-group">
-          <input id="passPct" type="number" min="0" max="100" step="5" value="50" inputmode="decimal">
-          <span class="affix">%</span>
-        </div>
-        <div class="choice-group compact mt-xs" id="passPresets" role="group" aria-label="Pass-through presets">
-          <button class="choice compact" type="button" data-pass="15" aria-pressed="false">Low · 15%</button>
-          <button class="choice compact" type="button" data-pass="50" aria-pressed="false">Middle · 50%</button>
-          <button class="choice compact" type="button" data-pass="85" aria-pressed="false">High · 85%</button>
-        </div>
+      <p class="hint">Minnesota's renter credit assumes 17%, based on state studies. Maine's assumes 25%. District 65 is
+        about 41% of whatever that comes to.</p>
+    </div>
+    <div class="field">
+      <label for="passPct">Share of an increase your landlord passes on</label>
+      <div class="input-group">
+        <input id="passPct" type="number" min="0" max="100" step="5" value="50" inputmode="decimal">
+        <span class="affix">%</span>
+      </div>
+      <div class="choice-group compact mt-xs" id="passPresets" role="group" aria-label="Pass-through presets">
+        <button class="choice compact" type="button" data-pass="15" aria-pressed="false">Low · 15%</button>
+        <button class="choice compact" type="button" data-pass="50" aria-pressed="false">Middle · 50%</button>
+        <button class="choice compact" type="button" data-pass="85" aria-pressed="false">High · 85%</button>
       </div>
     </div>
     <p class="hint">Research disagrees on how much of a tax increase reaches tenants. Studies range from about 15% to more
@@ -122,167 +92,309 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
       estimate on this page uses it, which also picks up the 2025 reassessment. Until then, this is estimated from your EAV.</p>
   </div>
   </div>
+</section>
 
-  <!-- ALL TOGETHER -->
-  <div id="stackBlock" class="flow levy-chart">
-    <fieldset class="field-set field">
-      <legend>Include in the total</legend>
-      <div class="choice-group compact" id="stackPieces" role="group" aria-label="Pieces to include">
-        <button class="choice compact" type="button" data-piece="ptell" aria-pressed="true">Yearly levy increase</button>
-        <button class="choice compact" type="button" data-piece="hls" aria-pressed="true">Health &amp; life safety</button>
-        <button class="choice compact" type="button" data-piece="capital" aria-pressed="true">Capital referendum</button>
-        <button class="choice compact" type="button" data-piece="operating" aria-pressed="true">Operating referendum</button>
-      </div>
-      <p class="hint">Each piece uses the settings on its own tab. Open a tab to change its amount, term, or start year.</p>
-    </fieldset>
-    <!-- scenario options and their notes are generated from SCEN in tax-calculator.js -->
-    <div class="field">
-      <label for="scenario">Referendum amounts (capital and operating)</label>
-      <div class="select">
-        <select id="scenario" aria-describedby="scenarioNote">
-          <option value="custom">Custom</option>
-        </select>
-        {% include icons/chevron.svg %}
-      </div>
-      <p class="hint" id="scenarioNote"></p>
+<!-- Each piece is a checkbox (count it), an exclusive <details> whose summary is the row, and the
+     row's .include-panel of fields, a sibling so the checkbox can centre on the summary alone (CSS shows
+     the panel while its <details> is open). The rows are
+     static: tax-calculator.js only rewrites each row's note (#<key>Note) and amount (#<key>Amount), so
+     the inputs inside the panels survive every render. Field ids are prefixed with the piece key. -->
+<section class="card flow" id="pieces">
+  <h2>What to include</h2>
+  <p class="text-deemphasized">Untick a piece to leave it out of your total. Open one to change its amount, term or
+    start year.</p>
+
+  <!-- scenario options and their notes are generated from SCEN in tax-calculator.js -->
+  <div class="field">
+    <label for="scenario">Scenario</label>
+    <div class="select">
+      <select id="scenario" aria-describedby="scenarioNote">
+        <option value="custom">Custom</option>
+      </select>
+      {% include icons/chevron.svg %}
     </div>
-    <div class="steps" id="stackSummary"></div>
-    <div class="field">
-      <label for="stackYear">Show the total for bills paid in</label>
-      <div class="input-group">
-        <input id="stackYear" type="number" min="2027" max="2066" step="1" value="2030" inputmode="numeric">
+    <p class="hint" id="scenarioNote"></p>
+  </div>
+
+  <div class="steps" id="stackSummary">
+
+    <!-- YEARLY LEVY INCREASE (PTELL) -->
+    <div class="step include-row">
+      <label class="checkbox">
+        <input type="checkbox" id="ptellInclude" checked>
+        {% include icons/checkbox.svg %}
+        <span class="visually-hidden">Include the yearly levy increase</span>
+      </label>
+      <details name="piece">
+        <summary>
+          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-1)"></span><span class="include-name">Yearly levy increase</span><small class="step-note" id="ptellNote"></small></span>
+          <span class="step-value" id="ptellAmount"></span>
+          {% include icons/chevron.svg %}
+        </summary>
+      </details>
+      <div class="include-panel">
+        <div class="callout">
+          <p><strong>The district requested a 4.99% increase, but existing homeowners should expect closer to
+            2.4%.</strong> State law caps growth on existing property at inflation, 2.7% for taxes paid in 2027, and
+            that cap covers about 95% of the District 65 tax. The other 5%, existing bond payments, is estimated to
+            fall 2.88%. The district's own memo estimates capped extensions will actually rise about 3%, with the
+            extra coming from newly built property, billed to its owners rather than to you. The levy is set to be
+            adopted December 14.</p>
+        </div>
+        <div class="field">
+          <label for="cpiNow">Cap for the 2026 levy (bills paid in 2027)</label>
+          <div class="input-group">
+            <input id="cpiNow" type="number" min="0" max="5" step="0.1" value="2.7" inputmode="decimal">
+            <span class="affix">%</span>
+          </div>
+          <p class="hint">The inflation rate the state set for taxes payable in 2027.</p>
+        </div>
+        <div class="field">
+          <label for="cpiFut">Cap in later years</label>
+          <div class="input-group">
+            <input id="cpiFut" type="number" min="0" max="5" step="0.1" value="3.0" inputmode="decimal">
+            <span class="affix">% / yr</span>
+          </div>
+          <p class="hint">3.0% is the district's own planning assumption. State law caps it at 5%. The operating
+            referendum grows at this rate too.</p>
+        </div>
+        <fieldset class="field-set field">
+          <legend>Which increases to count</legend>
+          <div class="choice-group compact" id="ptellScope" role="group" aria-label="Which levy increases to count">
+            <button class="choice compact" type="button" data-scope="every" aria-pressed="true">Every year at the cap</button>
+            <button class="choice compact" type="button" data-scope="once" aria-pressed="false">Just the 2026 levy</button>
+          </div>
+          <p class="hint">Districts usually levy the maximum every year, and each increase builds on the one before.
+            "Just the 2026 levy" isolates this year's decision.</p>
+        </fieldset>
       </div>
-      <p class="hint">The headline figure below is the total for this year. 2030 is the first year all four pieces would
-        appear on a bill under the default start years.</p>
+    </div>
+
+    <!-- HEALTH & LIFE SAFETY BONDS -->
+    <div class="step include-row">
+      <label class="checkbox">
+        <input type="checkbox" id="hlsInclude" checked>
+        {% include icons/checkbox.svg %}
+        <span class="visually-hidden">Include health and life safety bonds</span>
+      </label>
+      <details name="piece">
+        <summary>
+          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-2)"></span><span class="include-name">Health &amp; life safety bonds</span><small class="step-note" id="hlsNote"></small></span>
+          <span class="step-value" id="hlsAmount"></span>
+          {% include icons/chevron.svg %}
+        </summary>
+      </details>
+      <div class="include-panel">
+        <div class="callout">
+          <p><strong>The district has started to borrow for this work.</strong> Its FY2027 budget anticipates about
+            $22.1 million in health and life safety bond proceeds, and the proposed summer 2027 repairs use
+            $5 million of these bonds alongside $3.85 million of district funds. The full $128.8 million survey is a
+            ten-year ceiling, not a plan.</p>
+        </div>
+        <fieldset class="field-set field">
+          <legend>Amount borrowed for safety work</legend>
+          <input id="hlsBond" type="range" min="0" max="200000000" step="1000000" value="22000000"
+                 aria-label="Amount borrowed, slider">
+          <div class="input-group mt-xs">
+            <span class="affix">$</span>
+            <input id="hlsBondNum" type="number" min="0" max="200000000" step="1000000" value="22000000"
+                   inputmode="numeric" aria-label="Amount borrowed, in dollars">
+          </div>
+          <p class="field-msg hidden" id="hlsBondMsg" role="status" aria-live="polite"></p>
+          <div class="choice-group compact mt-xs" id="hlsPresets" role="group" aria-label="Preset amounts">
+            <button class="choice compact" type="button" data-bond="5000000" aria-pressed="false">$5M · summer 2027</button>
+            <button class="choice compact" type="button" data-bond="22000000" aria-pressed="false">$22M · FY27 budget</button>
+            <button class="choice compact" type="button" data-bond="50000000" aria-pressed="false">$50M</button>
+            <button class="choice compact" type="button" data-bond="128800000" aria-pressed="false">$128.8M · full survey</button>
+          </div>
+          <p class="hint">$22 million is the bond amount in the FY2027 budget. $128.8 million is the full ten-year
+            survey reported to the board in August 2026, much of which can be deferred for up to a decade.</p>
+        </fieldset>
+        <div class="field">
+          <label for="hlsTerm">Repayment term</label>
+          <div class="input-group">
+            <input id="hlsTerm" type="number" min="1" max="20" step="1" value="20" inputmode="numeric">
+            <span class="affix">years</span>
+          </div>
+          <p class="hint">Illinois caps these particular bonds at 20 years.</p>
+          <p class="field-msg hidden" id="hlsTermMsg" role="status" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label for="hlsRate">Interest rate</label>
+          <div class="input-group">
+            <input id="hlsRate" type="number" min="0" max="15" step="0.05" value="4.5" inputmode="decimal">
+            <span class="affix">% / yr</span>
+          </div>
+          <p class="hint">4% to 5% is a common range for school borrowing.</p>
+        </div>
+        <div class="field">
+          <label for="hlsStart">First tax bill that includes it</label>
+          <div class="input-group">
+            <input id="hlsStart" type="number" min="2027" max="2040" step="1" value="2028" inputmode="numeric">
+            <span class="affix">year paid</span>
+          </div>
+          <p class="hint">Bonds sold during 2027 would most likely first appear on bills paid in 2028.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAPITAL REFERENDUM -->
+    <div class="step include-row">
+      <label class="checkbox">
+        <input type="checkbox" id="capitalInclude" checked>
+        {% include icons/checkbox.svg %}
+        <span class="visually-hidden">Include a capital referendum</span>
+      </label>
+      <details name="piece">
+        <summary>
+          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-3)"></span><span class="include-name">Capital referendum</span><small class="step-note" id="capitalNote"></small></span>
+          <span class="step-value" id="capitalAmount"></span>
+          {% include icons/chevron.svg %}
+        </summary>
+      </details>
+      <div class="include-panel">
+        <div class="callout">
+          <p><strong>No capital referendum has been proposed.</strong> The district has said it is exploring a bond
+            referendum in November 2028 to build two new or significantly renovated schools and invest in the
+            buildings that remain. It has not named an amount.</p>
+        </div>
+        <fieldset class="field-set field">
+          <legend>Amount borrowed, approved by voters</legend>
+          <input id="capitalBond" type="range" min="0" max="410000000" step="1000000" value="63737800"
+                 aria-label="Amount borrowed, slider">
+          <div class="input-group mt-xs">
+            <span class="affix">$</span>
+            <input id="capitalBondNum" type="number" min="0" max="410000000" step="1000000" value="63737800"
+                   inputmode="numeric" aria-label="Amount borrowed, in dollars">
+          </div>
+          <p class="field-msg hidden" id="capitalBondMsg" role="status" aria-live="polite"></p>
+          <div class="choice-group compact mt-xs" id="capitalPresets" role="group" aria-label="Preset amounts">
+            <button class="choice compact" type="button" data-bond="50000000" aria-pressed="false">$50M</button>
+            <button class="choice compact" type="button" data-bond="63737800" aria-pressed="false">$63.7M · community v4 model</button>
+            <button class="choice compact" type="button" data-bond="100000000" aria-pressed="false">$100M</button>
+            <button class="choice compact" type="button" data-bond="200000000" aria-pressed="false">$200M</button>
+            <button class="choice compact" type="button" data-bond="409600000" aria-pressed="false">$409.6M · 10-yr needs</button>
+          </div>
+          <p class="hint">For scale, District 65 has identified about $409.6 million of facilities needs in the first
+            ten years.</p>
+        </fieldset>
+        <div class="field">
+          <label for="capitalTerm">Repayment term</label>
+          <div class="input-group">
+            <input id="capitalTerm" type="number" min="1" max="30" step="1" value="20" inputmode="numeric">
+            <span class="affix">years</span>
+          </div>
+          <p class="hint">Illinois caps voter-approved building bonds at 30 years. Terms of 20 to 25 years are
+            common.</p>
+          <p class="field-msg hidden" id="capitalTermMsg" role="status" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label for="capitalRate">Interest rate</label>
+          <div class="input-group">
+            <input id="capitalRate" type="number" min="0" max="15" step="0.05" value="4.5" inputmode="decimal">
+            <span class="affix">% / yr</span>
+          </div>
+          <p class="hint">4% to 5% is a common range for school borrowing.</p>
+        </div>
+        <div class="field">
+          <label for="capitalStart">First tax bill that includes it</label>
+          <div class="input-group">
+            <input id="capitalStart" type="number" min="2027" max="2040" step="1" value="2030" inputmode="numeric">
+            <span class="affix">year paid</span>
+          </div>
+          <p class="hint">This assumes a November 2028 vote, with bonds sold in 2029 and first repaid on bills paid
+            in 2030.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPERATING REFERENDUM -->
+    <div class="step include-row">
+      <label class="checkbox">
+        <input type="checkbox" id="operatingInclude" checked>
+        {% include icons/checkbox.svg %}
+        <span class="visually-hidden">Include an operating referendum</span>
+      </label>
+      <details name="piece">
+        <summary>
+          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-4)"></span><span class="include-name">Operating referendum</span><small class="step-note" id="operatingNote"></small></span>
+          <span class="step-value" id="operatingAmount"></span>
+          {% include icons/chevron.svg %}
+        </summary>
+      </details>
+      <div class="include-panel">
+        <div class="callout stripe-bloom">
+          <p><strong>No operating referendum has been proposed, and an operating increase does not expire on its
+            own.</strong> Unlike bonds, which end when they are repaid, an approved operating increase becomes part
+            of the district's permanent tax base unless the ballot question sets an end date. District 65's 2017
+            referendum was presented as a time-limited bridge.</p>
+        </div>
+        <fieldset class="field-set field">
+          <legend>How is the increase described?</legend>
+          <div class="choice-group compact" id="opModePresets">
+            <button class="choice compact" type="button" data-op="dollars" aria-pressed="true">As dollars raised</button>
+            <button class="choice compact" type="button" data-op="rate" aria-pressed="false">As a tax rate</button>
+          </div>
+        </fieldset>
+
+        <div class="field" id="opDollarField">
+          <label for="opDollars">Additional money raised in the first year, district-wide</label>
+          <input id="opRange" type="range" min="0" max="30000000" step="500000" value="17000000"
+                 aria-label="Additional money raised each year, slider">
+          <div class="input-group mt-xs">
+            <span class="affix">$</span>
+            <input id="opDollars" type="number" min="0" max="30000000" step="500000" value="17000000" inputmode="numeric">
+          </div>
+          <p class="field-msg hidden" id="opMsg" role="status" aria-live="polite"></p>
+          <div class="choice-group compact mt-xs" id="opPresets" role="group" aria-label="Preset amounts">
+            <button class="choice compact" type="button" data-opamt="5000000" aria-pressed="false">$5M</button>
+            <button class="choice compact" type="button" data-opamt="10000000" aria-pressed="false">$10M</button>
+            <button class="choice compact" type="button" data-opamt="20000000" aria-pressed="false">$20M · size of FY28 cuts</button>
+            <button class="choice compact" type="button" data-opamt="17000000" aria-pressed="false">$17M · community v4 model</button>
+          </div>
+          <p class="hint">Referendum questions are often described this way in news coverage and district materials.
+            $20 million is the reduction target in the district's FY2028 plan, shown for scale.</p>
+        </div>
+
+        <div class="field hidden" id="opRateField">
+          <label for="opRate">Rate increase</label>
+          <div class="input-group">
+            <input id="opRate" type="number" min="0" step="0.01" value="0.25" inputmode="decimal">
+            <span class="affix">per $100 of EAV</span>
+          </div>
+          <p class="hint">Ballot questions are usually written as a rate. This is the form that appears on the ballot
+            itself.</p>
+        </div>
+
+        <div class="field">
+          <label for="opStart">First tax bill that includes it</label>
+          <div class="input-group">
+            <input id="opStart" type="number" min="2027" max="2040" step="1" value="2029" inputmode="numeric">
+            <span class="affix">year paid</span>
+          </div>
+          <p class="hint">Operating money arrives through the next tax cycle. A question on the November 2028 ballot
+            would first show up on bills paid in 2029.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step total">
+      <div class="step-n"></div>
+      <div class="step-label"><strong id="stackTotalLabel">Added on your 2030 bill</strong></div>
+      <div class="step-value" id="stackTotal"></div>
     </div>
   </div>
 
-  <!-- YEARLY LEVY INCREASE (PTELL) -->
-  <div id="ptellBlock" class="flow hidden">
-    <div class="grid-wide">
-      <div class="field">
-        <label for="cpiNow">Cap for the 2026 levy (bills paid in 2027)</label>
-        <div class="input-group">
-          <input id="cpiNow" type="number" min="0" max="5" step="0.1" value="2.7" inputmode="decimal">
-          <span class="affix">%</span>
-        </div>
-        <p class="hint">The inflation rate the state set for taxes payable in 2027.</p>
-      </div>
-      <div class="field">
-        <label for="cpiFut">Cap in later years</label>
-        <div class="input-group">
-          <input id="cpiFut" type="number" min="0" max="5" step="0.1" value="3.0" inputmode="decimal">
-          <span class="affix">% / yr</span>
-        </div>
-        <p class="hint">3.0% is the district's own planning assumption. State law caps it at 5%.</p>
-      </div>
+  <div class="field">
+    <label for="stackYear">Show the total for bills paid in</label>
+    <div class="input-group">
+      <input id="stackYear" type="number" min="2027" max="2066" step="1" value="2030" inputmode="numeric">
+      <span class="affix">bill paid</span>
     </div>
-    <fieldset class="field-set field">
-      <legend>Which increases to count</legend>
-      <div class="choice-group compact" id="ptellScope" role="group" aria-label="Which levy increases to count">
-        <button class="choice compact" type="button" data-scope="every" aria-pressed="true">Every year at the cap</button>
-        <button class="choice compact" type="button" data-scope="once" aria-pressed="false">Just the 2026 levy</button>
-      </div>
-      <p class="hint">Districts usually levy the maximum every year, and each increase builds on the one before.
-        "Just the 2026 levy" isolates this year's decision.</p>
-    </fieldset>
+    <p class="hint">The headline figure below is the total for this year. 2030 is the first year all four pieces would
+      appear on a bill under the default start years.</p>
   </div>
 
-  <!-- BORROWING (hls + capital) -->
-  <div id="borrowBlock" class="flow hidden">
-    <fieldset class="field-set field">
-      <legend id="bondLabel">Amount borrowed</legend>
-      <input id="bond" type="range" min="0" max="200000000" step="1000000" value="22000000"
-             aria-label="Amount borrowed, slider">
-      <div class="input-group mt-xs" style="--field-width: 16rem">
-        <span class="affix">$</span>
-        <input id="bondNum" type="number" min="0" max="200000000" step="1000000" value="22000000" inputmode="numeric"
-               aria-label="Amount borrowed, in dollars">
-      </div>
-      <p class="field-msg hidden" id="bondMsg" role="status" aria-live="polite"></p>
-      <div class="choice-group compact mt-xs" id="bondPresets" role="group" aria-label="Preset amounts"></div>
-      <p class="hint" id="bondHint"></p>
-    </fieldset>
-
-    <div class="grid-wide">
-      <div class="field">
-        <label for="term">Repayment term</label>
-        <div class="input-group">
-          <input id="term" type="number" min="1" max="30" step="1" value="20" inputmode="numeric">
-          <span class="affix">years</span>
-        </div>
-        <p class="hint" id="termHint"></p>
-        <p class="field-msg hidden" id="termMsg" role="status" aria-live="polite"></p>
-      </div>
-      <div class="field">
-        <label for="rate">Interest rate</label>
-        <div class="input-group">
-          <input id="rate" type="number" min="0" max="15" step="0.05" value="4.5" inputmode="decimal">
-          <span class="affix">% / yr</span>
-        </div>
-        <p class="hint">4% to 5% is a common range for school borrowing.</p>
-      </div>
-      <div class="field">
-        <label for="bondStart">First tax bill that includes it</label>
-        <div class="input-group">
-          <input id="bondStart" type="number" min="2027" max="2040" step="1" value="2028" inputmode="numeric">
-          <span class="affix">year paid</span>
-        </div>
-        <p class="hint" id="startHint"></p>
-      </div>
-    </div>
-  </div>
-
-  <!-- OPERATING -->
-  <div id="operBlock" class="flow hidden">
-    <fieldset class="field-set field">
-      <legend>How is the increase described?</legend>
-      <div class="choice-group compact" id="opModePresets">
-        <button class="choice compact" type="button" data-op="dollars" aria-pressed="true">As dollars raised</button>
-        <button class="choice compact" type="button" data-op="rate" aria-pressed="false">As a tax rate</button>
-      </div>
-    </fieldset>
-
-    <div class="field" id="opDollarField">
-      <label for="opDollars">Additional money raised in the first year, district-wide</label>
-      <input id="opRange" type="range" min="0" max="30000000" step="500000" value="10000000"
-             aria-label="Additional money raised each year, slider">
-      <div class="input-group mt-xs" style="--field-width: 16rem">
-        <span class="affix">$</span>
-        <input id="opDollars" type="number" min="0" max="30000000" step="500000" value="10000000" inputmode="numeric">
-      </div>
-      <p class="field-msg hidden" id="opMsg" role="status" aria-live="polite"></p>
-      <div class="choice-group compact mt-xs" id="opPresets" role="group" aria-label="Preset amounts">
-        <button class="choice compact" type="button" data-opamt="5000000" aria-pressed="false">$5M</button>
-        <button class="choice compact" type="button" data-opamt="10000000" aria-pressed="false">$10M</button>
-        <button class="choice compact" type="button" data-opamt="20000000" aria-pressed="false">$20M · size of FY28 cuts</button>
-        <button class="choice compact" type="button" data-opamt="17000000" aria-pressed="false">$17M · community v4 model</button>
-      </div>
-      <p class="hint">Referendum questions are often described this way in news coverage and district materials. $20 million
-        is the reduction target in the district's FY2028 plan, shown for scale.</p>
-    </div>
-
-    <div class="field hidden" id="opRateField">
-      <label for="opRate">Rate increase</label>
-      <div class="input-group">
-        <input id="opRate" type="number" min="0" step="0.01" value="0.25" inputmode="decimal">
-        <span class="affix">per $100 of EAV</span>
-      </div>
-      <p class="hint">Ballot questions are usually written as a rate. This is the form that appears on the ballot itself.</p>
-    </div>
-
-    <div class="field">
-      <label for="opStart">First tax bill that includes it</label>
-      <div class="input-group">
-        <input id="opStart" type="number" min="2027" max="2040" step="1" value="2029" inputmode="numeric">
-        <span class="affix">year paid</span>
-      </div>
-      <p class="hint">Operating money arrives through the next tax cycle. A question on the November 2028 ballot would first
-        show up on bills paid in 2029.</p>
-    </div>
-  </div>
-
-  <!-- shared window (stack, ptell, operating) -->
   <div class="field" id="windowField">
     <label for="opYears">Show the running total over</label>
     <div class="input-group">
@@ -346,8 +458,8 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
 <section class="card flow" id="finCard">
   <p class="text-eyebrow">District-wide</p>
   <h2>What the borrowing would cost the district</h2>
-  <p class="text-deemphasized">Every taxpayer together, using the amounts, terms and rates set on the Health &amp; life
-    safety and Capital referendum tabs.</p>
+  <p class="text-deemphasized">Every taxpayer together, using the amounts, terms and rates set for Health &amp; life
+    safety bonds and the Capital referendum above.</p>
   <!-- tabindex lets keyboard users scroll the table sideways when it overflows -->
   <div class="levy-table-wrap" id="finTable" role="region" tabindex="0" aria-label="District-wide borrowing costs"></div>
   <p class="hint"><strong>How to read this.</strong> Annual payment is level debt service: principal plus interest, the
@@ -393,9 +505,9 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
 <details class="accordion" id="detVote">
   <summary class="cluster">
     <!-- id lives on the span, not the h2: an id'd heading would collect an
-         injected .heading-anchor (head.html), which setMode's textContent
+         injected .heading-anchor (head.html), which the JS textContent
          swap would then destroy — and a copy-link inside a <summary> is
-         wrong anyway. -->
+         wrong anyway. Hidden by JS while no piece is ticked. -->
     <h2><span id="voteSummary">Why a vote may not be required</span></h2>
     <span class="accordion-icon" aria-hidden="true"></span>
   </summary>

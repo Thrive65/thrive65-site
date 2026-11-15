@@ -1,25 +1,23 @@
 /* Tax impact estimator (page: /tax-calculator/).
    This page requires JS: the controls have sensible HTML defaults, but the
-   mode copy, the two disclosure bodies, the derivation, the chart and every
-   result are rendered here, so with JS off the page shows empty panels and $0.
+   row notes and amounts, the two disclosure bodies, the derivation, the chart
+   and every result are rendered here, so with JS off the page shows $0.
 
-   Five views share one form:
+   Four pieces, added together by the year the bill is paid:
      ptell     the yearly increase allowed under the property tax cap
      hls       health and life safety bonds (no referendum)
      capital   a voter-approved building bond
      operating a voter-approved operating (limiting-rate) increase
+   Each is a static row in the page: a checkbox (#<key>Include) that counts it,
+   beside a disclosure holding its own fields. Bond fields carry the piece key as
+   an id prefix (#hlsBondNum, #capitalTerm, ...). render() never rebuilds a row,
+   it only rewrites its note and amount text, so focus and typing survive.
    An own/rent toggle switches the starting point: renters start from rent and a
    pass-through rate instead of an EAV or tax bill.
-     stack     all of the above, added together by the year the bill is paid
 
-   hls and capital share one set of bond controls on screen, so each keeps its
-   own saved settings in BONDS; switching tabs swaps them in and out. That is
-   what lets the stacked view price both at once.
-
-   All styling comes from main.css. Classes emitted only from here (choice,
-   compact, step*, total, stripe-bloom, levy-*) are listed in the PurgeCSS
-   safelist in postcss.config.cjs. The chart's --series-N colors are theme
-   tokens on :root. */
+   All styling comes from main.css. Classes emitted only from here (step*,
+   total, levy-*) are listed in the PurgeCSS safelist in postcss.config.cjs.
+   The chart's --series-N colors are theme tokens on :root. */
 (function () {
   "use strict";
 
@@ -65,9 +63,8 @@
   var homeEav = $("homeEav");
   if (!homeEav) return;   // not on the calculator page
 
-  var mode = "stack", opStyle = "dollars", ptellScope = "every", curTaxTouched = false;
-  var mktVal = $("mktVal"), bond = $("bond"), bondNum = $("bondNum"), term = $("term"), rate = $("rate"),
-      bondStart = $("bondStart"), opDollars = $("opDollars"), opRange = $("opRange"), opRate = $("opRate"),
+  var opStyle = "dollars", ptellScope = "every", curTaxTouched = false;
+  var mktVal = $("mktVal"), opDollars = $("opDollars"), opRange = $("opRange"), opRate = $("opRate"),
       opStart = $("opStart"), opYears = $("opYears"), curTax = $("curTax"), cpiNow = $("cpiNow"),
       cpiFut = $("cpiFut"), stackYear = $("stackYear"),
       rent = $("rent"), taxShare = $("taxShare"), passPct = $("passPct");
@@ -78,7 +75,7 @@
   /* Pass-through factor: 1 for owners, the landlord pass-through for renters */
   function PT() { return renter ? Math.min(num(passPct, 50), 100) / 100 : 1; }
 
-  /* Referendum scenarios: real proposals the operating and capital tabs can be loaded from.
+  /* Referendum scenarios: real proposals the operating and capital pieces can be loaded from.
      Each sets the operating referendum (op = first-year dollars district-wide, opStart = first
      bill year) and the capital bond (cap), plus the option text in the #scenario select (label)
      and the note shown under it while that scenario is selected (note, HTML). DEFAULT_SCEN is
@@ -107,38 +104,43 @@
     }
   };
   var DEFAULT_SCEN = "v4";
-  var CUSTOM_NOTE = "You've changed the referendum amounts. Choose a scenario to start over from it.";
+  var CUSTOM_NOTE = "You've changed the amounts or left out a piece. Choose a scenario to start over.";
   /* true once someone picks "Custom" by hand, so the select doesn't snap back to a scenario
      whose numbers still happen to match; picking a scenario clears it */
   var customPicked = false;
 
-  /* Per-tab bond settings. Capital starts from the default scenario; applyScenario() replaces it. */
-  var BONDS = {
-    hls:     { P: 22e6,  term: 20, rate: 4.5, start: 2028 },
-    capital: Object.assign({}, SCEN[DEFAULT_SCEN].cap)
+  /* The bond pieces' own fields, by id prefix. Their max attributes are the tool's caps. */
+  function bondEls(k) {
+    return { range: $(k + "Bond"), num: $(k + "BondNum"), msg: $(k + "BondMsg"), term: $(k + "Term"),
+             termMsg: $(k + "TermMsg"), rate: $(k + "Rate"), start: $(k + "Start"), presets: $(k + "Presets") };
+  }
+  var BOND = { hls: bondEls("hls"), capital: bondEls("capital") };
+  var BOND_START = { hls: 2028, capital: 2030 };   /* fallback when the start field is blank or out of range */
+  var TERM_CAP_MSG = {
+    hls: "Illinois caps health and life safety bonds at 20 years, so this estimate uses 20.",
+    capital: "Illinois caps voter-approved building bonds at 30 years, so this estimate uses 30."
   };
-  var include = { ptell: true, hls: true, capital: true, operating: true };
+  function included(k) { return $(k + "Include").checked; }
+  function includedKeys() { return PIECES.filter(included); }
+
   function applyScenario(k) {
-    var s = SCEN[k];
+    var s = SCEN[k], e = BOND.capital;
     if (!s) return;
     customPicked = false;
     opDollars.value = s.op; opRange.value = s.op; opStart.value = s.opStart;
-    BONDS.capital = { P: s.cap.P, term: s.cap.term, rate: s.cap.rate, start: s.cap.start };
-    if (mode === "capital") loadBond("capital");
-    include.operating = true; include.capital = true;
-    document.querySelectorAll("#stackPieces [data-piece]").forEach(function (b) {
-      b.setAttribute("aria-pressed", String(include[b.dataset.piece]));
-    });
+    e.num.value = s.cap.P; e.range.value = Math.min(s.cap.P, e.range.max);
+    e.term.value = s.cap.term; e.rate.value = s.cap.rate; e.start.value = s.cap.start;
+    PIECES.forEach(function (p) { $(p + "Include").checked = true; });   /* a scenario counts every piece */
     setOpStyle("dollars");   /* also renders */
   }
   function scenarioMatch(k) {
-    var s = SCEN[k], b = BONDS.capital;
-    return opStyle === "dollars" && num(opDollars, 0) === s.op &&
+    var s = SCEN[k], b = bondRaw("capital");
+    return PIECES.every(included) && opStyle === "dollars" && num(opDollars, 0) === s.op &&
       clampYear(num(opStart, 2029), 2029) === s.opStart && b.P === s.cap.P && b.term === s.cap.term &&
       b.rate === s.cap.rate && b.start === s.cap.start;
   }
-  /* Select the scenario the current numbers match, or "Custom" once they've drifted (or it was
-     picked by hand), and show only that choice's note. */
+  /* Select the scenario the current numbers match, or "Custom" once they've drifted, a piece is
+     left out, or it was picked by hand, and show only that choice's note. */
   var shownScen = null;
   function syncScenario() {
     var k = "custom";
@@ -190,29 +192,23 @@
            ", so the estimate below uses that.";
   }
 
-  var CFG = {
-    stack: {
-      note: '<strong>This adds every piece together.</strong> Each one is an increase over what you pay District 65 ' +
-        'today, placed in the year the bill is paid. Bonds stop when they are repaid. Levy and operating increases ' +
-        'keep building. Turn pieces on or off below, and open any tab to change its settings.',
-      alert: false,
-      voteTitle: "Which of these need a vote",
-      vote: '<p><strong>No vote:</strong> the yearly levy increase (set by the board within the state cap) and health ' +
-        'and life safety bonds (issued by the board after state approval of the work).</p>' +
-        '<p><strong>Vote required:</strong> a capital referendum (permission to borrow for buildings) and an operating ' +
-        'referendum (permission to raise the capped levy itself).</p>' +
-        '<p>That split matters for planning. Roughly half of what you see stacked here can happen through board votes ' +
-        'alone, depending on the amounts you enter.</p>'
-    },
+  /* "Which of these need a vote": each ticked piece's own copy, cumulatively, in PIECES order.
+     With two or more ticked, VOTE_ALL.intro leads and each piece's copy gets its name as a heading. */
+  var VOTE_ALL = {
+    title: "Which of these need a vote",
+    intro: '<p><strong>No vote:</strong> the yearly levy increase (set by the board within the state cap) and health ' +
+      'and life safety bonds (issued by the board after state approval of the work).</p>' +
+      '<p><strong>Vote required:</strong> a capital referendum (permission to borrow for buildings) and an operating ' +
+      'referendum (permission to raise the capped levy itself).</p>',
+    /* only when the ticked pieces mix the two kinds */
+    mixed: '<p>That split matters for planning. Roughly half of what you see stacked here can happen through board ' +
+      'votes alone, depending on the amounts you enter.</p>'
+  };
+  var BOARD_ONLY = { ptell: true, hls: true };
+  var VOTE = {
     ptell: {
-      note: '<strong>The district requested a 4.99% increase, but existing homeowners should expect closer to ' +
-        '2.4%.</strong> State law caps growth on existing property at inflation, 2.7% for taxes paid in 2027, and that cap ' +
-        'covers about 95% of the District 65 tax. The other 5%, existing bond payments, is estimated to fall 2.88%. The ' +
-        'district\'s own memo estimates capped extensions will actually rise about 3%, with the extra coming from newly ' +
-        'built property, billed to its owners rather than to you. The levy is set to be adopted December 14.',
-      alert: false,
-      voteTitle: "Why no vote is needed for this one",
-      vote: '<p>Under the Property Tax Extension Limitation Law, the board can raise the capped levy each year by the ' +
+      title: "Why no vote is needed for this one",
+      body: '<p>Under the Property Tax Extension Limitation Law, the board can raise the capped levy each year by the ' +
         'lesser of 5% or the prior year\'s inflation, plus taxes from new property. It holds a public hearing when the ' +
         'request is more than 5% above the prior year\'s extension, but no community vote is required.</p>' +
         '<p>Going above the cap is what an operating referendum does. Bond repayment for voter-approved and health and ' +
@@ -221,23 +217,8 @@
         'they look small. Over a decade they add up.</p>'
     },
     hls: {
-      note: '<strong>The district has started to borrow for this work.</strong> Its FY2027 budget anticipates about ' +
-        '$22.1 million in health and life safety bond proceeds, and the proposed summer 2027 repairs use $5 million of ' +
-        'these bonds alongside $3.85 million of district funds. The full $128.8 million survey is a ten-year ceiling, ' +
-        'not a plan.',
-      alert: false,
-      bondLabel: "Amount borrowed for safety work",
-      bondHint: '$22 million is the bond amount in the FY2027 budget. $128.8 million is the full ten-year survey reported to ' +
-        'the board in August 2026, much of which can be deferred for up to a decade.',
-      termHint: "Illinois caps these particular bonds at 20 years.",
-      startHint: "Bonds sold during 2027 would most likely first appear on bills paid in 2028.",
-      termMax: 20,
-      termCapMsg: "Illinois caps health and life safety bonds at 20 years, so this estimate uses 20.",
-      bondMax: 200e6,
-      presets: [[5e6, "$5M · summer 2027"], [22e6, "$22M · FY27 budget"], [50e6, "$50M"],
-                [128.8e6, "$128.8M · full survey"]],
-      voteTitle: "Why a vote may not be required",
-      vote: '<p>Illinois school districts may levy for state-approved health and life safety work at up to 0.05% of ' +
+      title: "Why a vote may not be required",
+      body: '<p>Illinois school districts may levy for state-approved health and life safety work at up to 0.05% of ' +
         'district value per year. When that levy is not enough to finish approved work, the board may issue bonds ' +
         'without a referendum, repaid over as long as twenty years.</p>' +
         '<p>The work must be approved by the State Superintendent and, in Cook County, by the Executive Director of ' +
@@ -248,34 +229,16 @@
         'mean a decision of this size can be made by a board vote rather than a community vote.</p>'
     },
     capital: {
-      note: '<strong>No capital referendum has been proposed.</strong> The district has said it is exploring a bond ' +
-        'referendum in November 2028 to build two new or significantly renovated schools and invest in the buildings ' +
-        'that remain. It has not named an amount.',
-      alert: false,
-      bondLabel: "Amount borrowed, approved by voters",
-      bondHint: 'For scale, District 65 has identified about $409.6 million of facilities needs in the first ten years.',
-      termHint: "Illinois caps voter-approved building bonds at 30 years. Terms of 20 to 25 years are common.",
-      startHint: "This assumes a November 2028 vote, with bonds sold in 2029 and first repaid on bills paid in 2030.",
-      termMax: 30,
-      termCapMsg: "Illinois caps voter-approved building bonds at 30 years, so this estimate uses 30.",
-      bondMax: 410e6,
-      presets: [[50e6, "$50M"], [63737800, "$63.7M · community v4 model"], [100e6, "$100M"], [200e6, "$200M"],
-                [409.6e6, "$409.6M · 10-yr needs"]],
-      voteTitle: "How a capital referendum differs",
-      vote: '<p>A capital referendum asks voters directly for permission to borrow. If it passes, the debt service ' +
+      title: "How a capital referendum differs",
+      body: '<p>A capital referendum asks voters directly for permission to borrow. If it passes, the debt service ' +
         'is a recognized exception to the property tax cap, so it is added on top of the capped levy rather than ' +
         'squeezed inside it.</p>' +
         '<p>Bond money arrives within months of approval, which is why capital questions and operating questions ' +
         'move on very different timelines.</p>'
     },
     operating: {
-      note: '<strong>No operating referendum has been proposed, and an operating increase does not expire on its ' +
-        'own.</strong> Unlike bonds, which end when they are repaid, an approved operating increase becomes part of the ' +
-        'district\'s permanent tax base unless the ballot question sets an end date. District 65\'s 2017 referendum was ' +
-        'presented as a time-limited bridge.',
-      alert: true,
-      voteTitle: "How an operating referendum differs",
-      vote: '<p>Operating money pays salaries, programs, and the daily cost of running schools. There is no borrowing ' +
+      title: "How an operating referendum differs",
+      body: '<p>Operating money pays salaries, programs, and the daily cost of running schools. There is no borrowing ' +
         'and no interest, so the arithmetic is simpler: the district raises a set amount and your share is your ' +
         'property\'s share of the district.</p>' +
         '<p>Two differences matter more than the math. First, timing. Bond proceeds arrive within months of approval, ' +
@@ -310,12 +273,13 @@
     'more units fell 0.93% while homes rose 5.04%, so renters in large buildings may feel less of a reassessment than ' +
     'homeowners. Income-restricted and subsidized units have rents set by formula, so little of an increase would reach ' +
     'tenants.</p>';
+  /* Shown for the ticked pieces only (see renderCopy). */
   var ASSUME = {
-    stack: '<p><strong>Increases over today, added together.</strong> Every figure is what each piece adds to your ' +
+    together: '<p><strong>Increases over today, added together.</strong> Every figure is what each piece adds to your ' +
       'current District 65 tax in a given bill year. Bond repayment sits outside the tax cap, so it stacks on top. ' +
-      'An operating increase joins the capped base and grows with it from then on.</p>' +
-      '<p><strong>Start years are estimates.</strong> Each piece starts in the bill year set on its own tab. Change them ' +
-      'if the timing shifts.</p>',
+      'An operating increase joins the capped base and grows with it from then on.</p>',
+    start: '<p><strong>Start years are estimates.</strong> Each bond or referendum starts in the bill year set in its ' +
+      'own settings. Change them if the timing shifts.</p>',
     ptell: '<p><strong>Only the capped part grows at the cap.</strong> This applies the inflation cap to the 95% of your ' +
       'District 65 tax that is capped, and the district\'s estimated 2.88% drop to the 5% that repays existing bonds. ' +
       'After 2027 the existing bond part is held at that level, since later bond years are not in the levy memo. Your own bill can still rise faster or slower than that if your assessment changes relative to ' +
@@ -333,7 +297,7 @@
       'covers about eight years of building work; continuing to borrow for repairs after that would add more payments ' +
       'on top.</p>',
     operating: '<p><strong>It grows with the cap.</strong> The first year uses the amount you entered. After that it ' +
-      'grows each year at the later-year inflation rate on the Yearly levy increase tab, because an approved increase ' +
+      'grows each year at the later-year cap set under Yearly levy increase, because an approved increase ' +
       'becomes part of the capped base.</p>'
   };
 
@@ -353,18 +317,16 @@
     return { T0: renter ? renterD65() : num(curTax, 0), c1: Math.min(num(cpiNow, 2.7), 5) / 100,
              cf: Math.min(num(cpiFut, 3), 5) / 100 };
   }
-  /* Read the on-screen bond controls into BONDS[m] (only while a bond tab is showing). */
-  function saveBond(m) {
-    BONDS[m] = { P: num(bondNum, 0), term: Math.max(1, Math.round(num(term, 20))), rate: num(rate, 4.5),
-                 start: clampYear(num(bondStart, BONDS[m].start), BONDS[m].start) };
+  /* A bond piece's fields as entered, and as computed (capped at the fields' max attributes). */
+  function bondRaw(k) {
+    var e = BOND[k];
+    return { P: num(e.num, 0), term: Math.max(1, Math.round(num(e.term, 20))), rate: num(e.rate, 4.5),
+             start: clampYear(num(e.start, BOND_START[k]), BOND_START[k]) };
   }
-  function loadBond(m) {
-    var b = BONDS[m];
-    bondNum.value = b.P; term.value = b.term; rate.value = b.rate; bondStart.value = b.start;
-  }
-  function bondEff(m) {
-    var b = BONDS[m], c = CFG[m];
-    return { P: Math.min(b.P, c.bondMax), term: Math.min(b.term, c.termMax), rate: b.rate, start: b.start };
+  function bondEff(k) {
+    var b = bondRaw(k), e = BOND[k];
+    return { P: Math.min(b.P, parseFloat(e.num.max)), term: Math.min(b.term, parseFloat(e.term.max)),
+             rate: b.rate, start: b.start };
   }
   function opRaised() {
     if (opStyle === "rate") return (num(opRate, 0) / 100) * DISTRICT_EAV;
@@ -393,75 +355,19 @@
     return ds(b.P, b.term, b.rate) * share;
   }
 
-  /* ---------- mode switching ---------- */
-
-  function setMode(m) {
-    if (mode === "hls" || mode === "capital") saveBond(mode);
-    mode = m;
-    document.querySelectorAll(".choice[data-mode]").forEach(function (b) {
-      b.setAttribute("aria-pressed", String(b.dataset.mode === m));
-    });
-    var c = CFG[m];
-    $("modeNote").innerHTML = c.note;
-    /* toggle only the stripe utility — never replace className */
-    $("modeNote").classList.toggle("stripe-bloom", !!c.alert);
-    $("voteSummary").textContent = c.voteTitle;
-    $("voteBody").innerHTML = c.vote;
-    $("assumeBody").innerHTML =
-      (m === "hls" ? ASSUME.bond : m === "capital" ? ASSUME.bond + ASSUME.capital : ASSUME[m]) +
-      (m === "stack" ? ASSUME.bond + ASSUME.capital + ASSUME.operating : "") + ASSUME_COMMON;
-    if (renter) $("assumeBody").innerHTML = ASSUME_RENT + $("assumeBody").innerHTML;
-
-    var borrowing = (m === "hls" || m === "capital");
-    $("borrowBlock").classList.toggle("hidden", !borrowing);
-    $("operBlock").classList.toggle("hidden", m !== "operating");
-    $("ptellBlock").classList.toggle("hidden", m !== "ptell");
-    $("stackBlock").classList.toggle("hidden", m !== "stack");
-    $("windowField").classList.toggle("hidden", borrowing);
-    $("windowHint").textContent = m === "operating"
-      ? "Counted from the first bill that includes it. Operating increases do not expire on their own, so this is " +
-        "just a window for comparison."
-      : "Counted from bills paid in 2027. Levy and operating increases do not expire on their own, so this is just " +
-        "a window for comparison.";
-
-    if (borrowing) {
-      loadBond(m);
-      $("bondLabel").textContent = c.bondLabel;
-      $("bondHint").innerHTML = c.bondHint;
-      $("termHint").textContent = c.termHint;
-      $("startHint").textContent = c.startHint;
-      term.max = c.termMax;
-      bond.max = c.bondMax;
-      bondNum.max = c.bondMax;
-      bond.value = Math.min(num(bondNum, 0), c.bondMax);
-      var ph = "";
-      c.presets.forEach(function (p) {
-        ph += '<button class="choice compact" type="button" data-bond="' + p[0] + '">' + p[1] + '</button>';
-      });
-      $("bondPresets").innerHTML = ph;
-      $("bondPresets").querySelectorAll("[data-bond]").forEach(function (b) {
-        b.addEventListener("click", function () {
-          bondNum.value = b.dataset.bond;
-          bond.value = Math.min(b.dataset.bond, bond.max);
-          render();
-        });
-      });
-    }
-    render();
-  }
-
-  function setOpStyle(s) {
-    opStyle = s;
+  function setOpStyle(st) {
+    opStyle = st;
     document.querySelectorAll("#opModePresets [data-op]").forEach(function (b) {
-      b.setAttribute("aria-pressed", String(b.dataset.op === s));
+      b.setAttribute("aria-pressed", String(b.dataset.op === st));
     });
-    $("opDollarField").classList.toggle("hidden", s !== "dollars");
-    $("opRateField").classList.toggle("hidden", s !== "rate");
+    $("opDollarField").classList.toggle("hidden", st !== "dollars");
+    $("opRateField").classList.toggle("hidden", st !== "rate");
     render();
   }
 
-  /* ---------- summary of each piece (stack tab) ---------- */
+  /* ---------- piece rows ---------- */
 
+  /* The one-line note under each row's name. */
   function pieceSummary(key) {
     if (key === "ptell") {
       var p = ptellInputs();
@@ -477,30 +383,49 @@
     return usdShort(b.P) + " over " + b.term + " years at " + b.rate + "%, bills paid " + b.start + "–" +
       (b.start + b.term - 1);
   }
-  function renderStackSummary() {
-    var html = "";
-    /* TODO cleanup: the index parameter i is never read; drop it. */
-    PIECES.forEach(function (k, i) {
-      html += '<div class="step"><div class="step-n"><span class="levy-swatch" style="background:var(--series-' +
-        SERIES[k] + ')"></span></div><div class="step-label">' + NAMES[k] +
-        (include[k] ? "" : " (left out)") + '<small class="step-note">' + pieceSummary(k) + '</small></div>' +
-        '<div class="step-value"><button class="choice compact" type="button" data-edit="' + k +
-        '">Edit<span class="visually-hidden"> ' + NAMES[k] + '</span></button></div></div>';
-    });
-    $("stackSummary").innerHTML = html;
-    $("stackSummary").querySelectorAll("[data-edit]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        setMode(b.dataset.edit);
-        /* the clicked button is gone with the stack view, so land on the first field of the
-           form that replaced it rather than dropping focus to <body> */
-        $(firstField(b.dataset.edit)).focus();
-      });
-    });
+  /* The derivation note for a piece's line in "How that number is built" (HTML). */
+  function pieceTrace(key) {
+    if (key === "ptell") {
+      var p = ptellInputs();
+      return (p.c1 * 100).toFixed(1) + "% cap on the capped " + Math.round(CAPPED_SHARE * 100) + "% of " +
+        (renter ? "the " + usd(p.T0) + " of District 65 tax in your rent" : "your " + usd(p.T0) + " District 65 tax") +
+        (ptellScope === "once" ? ", the 2026 levy only" : ", then " + (p.cf * 100).toFixed(1) + "% a year, compounding") +
+        "; existing bond payments " + (BOND_CHG_2026 < 0 ? "fall " : "rise ") +
+        Math.abs(BOND_CHG_2026 * 100).toFixed(2) + "%";
+    }
+    if (key === "operating") {
+      return (opStyle === "rate" ? "$" + num(opRate, 0).toFixed(2) + " per $100 of value raises " : "") +
+        usd(opRaised()) + " district-wide &times; your share from " + clampYear(num(opStart, 2029), 2029) +
+        ", growing " + (ptellInputs().cf * 100).toFixed(1) + "% a year with the cap";
+    }
+    var b = bondEff(key), annual = ds(b.P, b.term, b.rate);
+    return usd(b.P) + " over " + b.term + " years at " + b.rate + "%: " + usd(annual) +
+      " a year district-wide &times; your share, bills paid " + b.start + "–" + (b.start + b.term - 1);
   }
-  function firstField(m) {
-    if (m === "ptell") return "cpiNow";
-    if (m === "operating") return opStyle === "rate" ? "opRate" : "opDollars";
-    return "bondNum";   /* hls, capital */
+  /* textContent only when it changes, so a keystroke doesn't churn every row's text node */
+  function setText(el, text) { if (el.textContent !== text) el.textContent = text; }
+
+  /* Assumptions and "needs a vote" copy for the ticked pieces. Rebuilt only when the ticked set
+     (or own/rent) changes, not on every keystroke. */
+  var shownCopy = null;
+  function renderCopy(keys) {
+    var sig = keys.join() + (renter ? "|rent" : "");
+    if (sig === shownCopy) return;
+    shownCopy = sig;
+    var has = function (k) { return keys.indexOf(k) >= 0; };
+    var a = (keys.length > 1 ? ASSUME.together : "") + (has("ptell") ? ASSUME.ptell : "") +
+      (has("hls") || has("capital") ? ASSUME.bond : "") + (has("capital") ? ASSUME.capital : "") +
+      (has("operating") ? ASSUME.operating : "") +
+      (has("hls") || has("capital") || has("operating") ? ASSUME.start : "");
+    $("assumeBody").innerHTML = (renter ? ASSUME_RENT : "") + a + ASSUME_COMMON;
+
+    $("detVote").classList.toggle("hidden", !keys.length);
+    if (!keys.length) return;
+    var multi = keys.length > 1;
+    var mixed = keys.some(function (k) { return BOARD_ONLY[k]; }) && keys.some(function (k) { return !BOARD_ONLY[k]; });
+    $("voteSummary").textContent = multi ? VOTE_ALL.title : VOTE[keys[0]].title;
+    $("voteBody").innerHTML = (multi ? VOTE_ALL.intro + (mixed ? VOTE_ALL.mixed : "") : "") +
+      keys.map(function (k) { return (multi ? "<h3>" + NAMES[k] + "</h3>" : "") + VOTE[k].body; }).join("");
   }
 
   /* ---------- chart + table ---------- */
@@ -564,14 +489,14 @@
 
     /* legend only when there's more than one series; the title names a single one */
     $("chartLegend").innerHTML = series.length > 1 ? series.map(function (se) {
-      return '<span class="levy-key cluster"><span class="levy-swatch" style="background:var(--series-' + se.idx +
+      return '<span class="levy-key cluster"><span class="levy-swatch" style="--swatch:var(--series-' + se.idx +
         ')"></span>' + se.name + '</span>';
     }).join("") : "";
 
     /* table view: short column heads with the chart's swatch keep six columns inside the
        card; the full piece name stays in the header for screen readers */
     var th = '<tr><th scope="col">Bill paid in</th>' + series.map(function (se) {
-      return '<th scope="col"><span class="levy-key cluster"><span class="levy-swatch" style="background:var(--series-' +
+      return '<th scope="col"><span class="levy-key cluster"><span class="levy-swatch" style="--swatch:var(--series-' +
         se.idx + ')"></span><span aria-hidden="true">' + SHORT[se.key] + '</span><span class="visually-hidden">' +
         se.name + '</span></span></th>';
     }).join("") + (series.length > 1 ? '<th scope="col">Total</th>' : "") + "</tr>";
@@ -588,7 +513,7 @@
     var tip = $("chartTip"), d = chartData, tot = 0, html = "<strong>Bills paid in " + d.years[i] + "</strong>";
     d.series.slice().reverse().forEach(function (se) {
       tot += se.values[i];
-      html += '<span class="levy-tip-row cluster"><span class="levy-swatch" style="background:var(--series-' + se.idx +
+      html += '<span class="levy-tip-row cluster"><span class="levy-swatch" style="--swatch:var(--series-' + se.idx +
         ')"></span>' + se.name + '<b>' + usd(se.values[i]) + '</b></span>';
     });
     if (d.series.length > 1) html += '<span class="levy-tip-row cluster levy-tip-total">Total<b>' + usd(tot) + '</b></span>';
@@ -614,15 +539,54 @@
   }
   function sum(a) { return a.reduce(function (s, v) { return s + v; }, 0); }
 
+  /* Keep the control just used in the piece list where it is on screen. A change there can flip
+     the scenario to "Custom", whose note above the list is much shorter than a scenario's, which
+     would pull the row (and the pointer's target) up the page. Browser scroll anchoring doesn't
+     catch it, and Safari has none, so render() measures the control before and after and scrolls
+     back by the difference. keepEl is set by a capturing listener on #stackSummary (wiring). */
+  var keepEl = null;
   function render() {
+    var keep = keepEl, keepTop = keep && keep.getBoundingClientRect().top;
+    keepEl = null;
+    paint();
+    if (keep) window.scrollBy(0, keep.getBoundingClientRect().top - keepTop);
+  }
+  function paint() {
     estimateCurTax();
     var he = num(homeEav, 0);
     var share = renter ? renterD65() / D65_EXT_2025
       : curTaxTouched ? num(curTax, 0) / D65_EXT_2025 : (DISTRICT_EAV > 0 ? he / DISTRICT_EAV : 0);
     var W = Math.max(1, Math.min(Math.round(num(opYears, 20)), 40));
-    /* TODO cleanup: monthBase is never read; remove it. */
-    var headline = 0, monthBase = 0, label = "Estimated cost to your household", steps = [];
-    var years, series, spot = -1;
+    var keys = includedKeys(), steps = [];
+
+    /* clamp-and-explain messages for every piece's own fields, ticked or not */
+    ["hls", "capital"].forEach(function (k) {
+      var e = BOND[k];
+      capped(e.num, e.msg, amountCapMsg(e.num), 0);
+      capped(e.term, e.termMsg, TERM_CAP_MSG[k], 20);
+    });
+    if (opStyle === "dollars") capped(opDollars, $("opMsg"), amountCapMsg(opDollars), 0);
+    else setMsg($("opMsg"), "");
+
+    var years = yearsFrom(FIRST_BILL, W);
+    var series = seriesFor(keys, years, share);
+    var totals = years.map(function (_, i) { return sum(series.map(function (se) { return se.values[i]; })); });
+    var peak = Math.max(0, Math.min(clampYear(num(stackYear, 2030), 2030) - FIRST_BILL, W - 1));
+    var spotYear = years[peak], headline = totals[peak] || 0;
+    var label = !keys.length ? "Nothing included"
+      : keys.length === 1 ? NAMES[keys[0]] + ", added cost in " + spotYear
+      : "Added cost in " + spotYear + ", " + (keys.length === PIECES.length ? "all four" : keys.length) +
+        " pieces together";
+
+    /* each row: what it is, and what it adds in the spotlight year (a dash when left out) */
+    PIECES.forEach(function (k) {
+      var on = included(k), note = pieceSummary(k);
+      setText($(k + "Note"), on ? note : "Not included · " + note);
+      setText($(k + "Amount"), on ? usd(pieceAt(k, spotYear, share)) : "—");
+    });
+    setText($("stackTotalLabel"), renter ? "Estimated added rent, " + spotYear + " bills" : "Added on your " + spotYear + " bill");
+    setText($("stackTotal"), usd(headline));
+    renderCopy(keys);
 
     steps.push(["A", renter ? "Your rent's share of what District 65 collects" : "Your property's share of the district",
       renter ? usd(renterD65()) + " of District 65 tax in your rent (" + usd(num(rent, 0)) + " &times; 12 &times; " +
@@ -630,118 +594,32 @@
       : curTaxTouched ? usd(num(curTax, 0)) + " District 65 tax &divide; " + usd(D65_EXT_2025) + " District 65 collects in all"
         : usd(he) + " &divide; " + usd(DISTRICT_EAV) + " of total district value",
       share > 0 ? (share * 100).toFixed(4) + "%" : "0%"]);
-
-    var termMsg = $("termMsg"), bondMsg = $("bondMsg"), opMsg = $("opMsg");
-    if (mode !== "hls" && mode !== "capital") { setMsg(termMsg, ""); setMsg(bondMsg, ""); }
-    if (mode !== "operating") setMsg(opMsg, "");
-
-    if (mode === "hls" || mode === "capital") {
-      capped(bondNum, bondMsg, amountCapMsg(bondNum), 0);
-      capped(term, termMsg, CFG[mode].termCapMsg, 20);
-      saveBond(mode);
-      var b = bondEff(mode), annual = ds(b.P, b.term, b.rate);
-      years = yearsFrom(b.start, b.term);
-      series = seriesFor([mode], years, share);
-      headline = series[0].values[0] || 0;
-      if (b.P > 0) {
-        steps.push(["B", "What the district would pay each year on " + usd(b.P),
-          b.term + " years at " + b.rate + "%, level payments", usd(annual)]);
-        steps.push(["C", "Your share of that annual payment", usd(annual) + " &times; your share", usd(annual * share)]);
-        steps.push(["D", "Interest included in the total",
-          "total repaid " + usd(annual * b.term) + " &minus; borrowed " + usd(b.P),
-          usd(Math.max(0, annual * b.term - b.P))]);
-      }
-      steps.push(["=", "Your estimated cost", "per year, on bills paid " + b.start + "–" + (b.start + b.term - 1),
-        usd(headline)]);
-    } else if (mode === "operating") {
-      var raised = opStyle === "dollars" ? capped(opDollars, opMsg, amountCapMsg(opDollars), 0) : opRaised();
-      var s0 = clampYear(num(opStart, 2029), 2029), cf = ptellInputs().cf;
-      years = yearsFrom(s0, W);
-      series = seriesFor(["operating"], years, share);
-      headline = series[0].values[0];
-      label = "Estimated cost in the first year (" + s0 + ")";
-      steps.push(["B", opStyle === "dollars" ? "Additional money raised district-wide in the first year"
-        : "What that rate raises district-wide",
-        opStyle === "dollars" ? "as entered above"
-        : "$" + num(opRate, 0).toFixed(2) + " per $100 &times; " + usd(DISTRICT_EAV) + " of district value",
-        usd(raised)]);
-      steps.push(["C", "Your share in " + s0, usd(raised) + " &times; your share", usd(raised * share)]);
-      steps.push(["D", "Growing with the cap, by " + years[W - 1],
-        (cf * 100).toFixed(1) + "% a year after it starts", usd(series[0].values[W - 1] / PT())]);
-      steps.push(["=", "Your estimated cost", "in the first year, added to what you pay today", usd(headline)]);
-    } else if (mode === "ptell") {
-      var p = ptellInputs();
-      years = yearsFrom(FIRST_BILL, W);
-      series = seriesFor(["ptell"], years, share);
-      headline = series[0].values[0];
-      label = "Added to bills paid in 2027 by the 2026 levy";
-      steps.push(["B", renter ? "District 65 tax built into your rent" : "Your current District 65 tax",
-        renter ? usd(num(rent, 0)) + " &times; 12 &times; " + num(taxShare, 17) + "% &times; 41.25%"
-        : curTaxTouched ? "as entered above"
-        : usd(he) + " &times; the district's Tax Year 2025 rate of " + (D65_RATE * 100).toFixed(3) + "%", usd(p.T0)]);
-      steps.push(["C", "Capped funds (" + Math.round(CAPPED_SHARE * 100) + "% of the tax) at the " +
-        (p.c1 * 100).toFixed(1) + "% cap", usd(p.T0 * CAPPED_SHARE) + " &times; " + (p.c1 * 100).toFixed(1) + "%",
-        usd(p.T0 * CAPPED_SHARE * p.c1)]);
-      steps.push(["C2", "Existing bond payments (" + Math.round((1 - CAPPED_SHARE) * 100) + "% of the tax)",
-        "estimated to " + (BOND_CHG_2026 < 0 ? "fall " : "rise ") + Math.abs(BOND_CHG_2026 * 100).toFixed(2) + "% on the 2026 levy",
-        (BOND_CHG_2026 < 0 ? "&minus;" : "") + usd(Math.abs(p.T0 * (1 - CAPPED_SHARE) * BOND_CHG_2026))]);
-      if (ptellScope === "every" && W > 1) {
-        steps.push(["D", "After " + W + " years at the cap, by " + years[W - 1],
-          (p.cf * 100).toFixed(1) + "% a year after 2027, compounding", usd(series[0].values[W - 1] / PT())]);
-      }
-      steps.push(["=", "Added in 2027", "on top of what you pay today", usd(headline)]);
-    } else {   /* stack */
-      var keys = PIECES.filter(function (k) { return include[k]; });
-      years = yearsFrom(FIRST_BILL, W);
-      series = seriesFor(keys, years, share);
-      var totals = years.map(function (_, i) { return sum(series.map(function (se) { return se.values[i]; })); });
-      var peak = Math.max(0, Math.min(clampYear(num(stackYear, 2030), 2030) - FIRST_BILL, W - 1));
-      spot = peak;
-      headline = totals[peak] || 0;
-      label = keys.length ? "Added cost in " + years[peak] + ", all selected pieces together" : "Nothing selected";
-      var letters = "BCDEF";
-      series.forEach(function (se, j) {
-        var nz = se.values.map(function (v, i) { return v > 0 ? i : -1; }).filter(function (i) { return i >= 0; });
-        var note = nz.length
-          ? "bills paid " + years[nz[0]] + "–" + years[nz[nz.length - 1]] + "; " + usd(se.values[nz[0]]) +
-            " in the first year"
-          : "nothing in this window";
-        steps.push([letters[j], NAMES[se.key] + " in " + years[peak], note, usd(se.values[peak])]);
-      });
-      /* milestone totals: the spotlight year, 2035 and 2040 */
-      [years[peak], 2035, 2040].filter(function (y, i, a) {
-        return a.indexOf(y) === i && y - FIRST_BILL >= 0 && y - FIRST_BILL < W;
-      }).sort(function (a, b) { return a - b; }).forEach(function (y) {
-        steps.push(["=", "Everything together in " + y, "added to what you pay today", usd(totals[y - FIRST_BILL])]);
-      });
-      renderStackSummary();
-    }
-
+    var letters = "BCDE";
+    series.forEach(function (se, j) {
+      steps.push([letters[j], NAMES[se.key] + " in " + spotYear, pieceTrace(se.key), usd(se.values[peak])]);
+    });
     if (renter) {
-      var firstTot = steps.findIndex(function (s) { return s[0] === "="; });
-      if (firstTot < 0) firstTot = steps.length;
-      steps.splice(firstTot, 0, ["P", "Share your landlord passes on through rent",
-        mode === "stack" ? "already applied to the amounts above" : "applied to the amount above",
+      steps.push(["P", "Share your landlord passes on through rent", "already applied to the amounts above",
         Math.round(PT() * 100) + "%"]);
-      steps.forEach(function (s) {
-        if (s[0] !== "=") return;
-        s[1] = mode === "stack" ? s[1].replace("Everything together in", "Estimated added rent in")
-          : "Estimated added rent";
-        /* owner wording "added to what you pay today" reads as monthly rent; say per year */
-        s[2] = s[2].replace(/^(in the first year, )?(added to|on top of) what you pay today$/, function (_, fy) {
-          return "per year" + (fy ? " in the first year" : "") + ", on top of your current rent";
-        });
-      });
     }
+    /* milestone totals: the spotlight year, 2035 and 2040 */
+    [spotYear, 2035, 2040].filter(function (y, i, a) {
+      return a.indexOf(y) === i && y - FIRST_BILL >= 0 && y - FIRST_BILL < W;
+    }).sort(function (a, b) { return a - b; }).forEach(function (y) {
+      steps.push(["=", (renter ? "Estimated added rent in " : keys.length === 1 ? "Your estimated cost in "
+        : "Everything together in ") + y,
+        renter ? "per year, on top of your current rent" : "added to what you pay today",
+        usd(totals[y - FIRST_BILL])]);
+    });
+
     $("chartSub").textContent = renter
       ? "Estimated added rent per year, by the year the tax bill is paid, at " + Math.round(PT() * 100) + "% pass-through."
       : "Added to what you pay on your 2026 bill, by the year the bill is paid.";
 
     /* fixed 2027–2032 view, independent of the window and start-year settings */
-    var keys32 = mode === "stack" ? PIECES.filter(function (k) { return include[k]; }) : [mode];
     var yrs32 = yearsFrom(FIRST_BILL, HORIZON - FIRST_BILL + 1);
     var tot32 = yrs32.map(function (y) {
-      return sum(keys32.map(function (k) { return pieceAt(k, y, share); }));
+      return sum(keys.map(function (k) { return pieceAt(k, y, share); }));
     });
     $("out32Year").textContent = usd(tot32[tot32.length - 1]);
     $("out32Month").textContent = usd(tot32[tot32.length - 1] / 12);
@@ -751,8 +629,8 @@
     $("outYear").textContent = usd(headline);
     $("outMonth").textContent = usd(headline / 12);
 
-    $("chartTitle").textContent = mode === "stack" ? "Year by year, stacked" : "Year by year";
-    renderChart(years, series, spot);
+    $("chartTitle").textContent = keys.length > 1 ? "Year by year, stacked" : "Year by year";
+    renderChart(years, series, peak);
 
     var html = "";
     steps.forEach(function (s) {
@@ -764,8 +642,10 @@
     });
     $("traceBody").innerHTML = html;
 
-    document.querySelectorAll("#bondPresets [data-bond]").forEach(function (b) {
-      b.setAttribute("aria-pressed", String(parseFloat(b.dataset.bond) === num(bondNum, 0)));
+    ["hls", "capital"].forEach(function (k) {
+      BOND[k].presets.querySelectorAll("[data-bond]").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(parseFloat(b.dataset.bond) === num(BOND[k].num, 0)));
+      });
     });
     document.querySelectorAll("#passPresets [data-pass]").forEach(function (b) {
       b.setAttribute("aria-pressed", String(parseFloat(b.dataset.pass) === num(passPct, 0)));
@@ -781,7 +661,7 @@
       var fb = bondEff(k), pay = ds(fb.P, fb.term, fb.rate), itot = Math.max(0, pay * fb.term - fb.P);
       var i1 = fb.P * fb.rate / 100, iavg = fb.term ? itot / fb.term : 0;
       finTot.pay += pay; finTot.i1 += i1; finTot.iavg += iavg; finTot.itot += itot; finTot.P += fb.P;
-      finRows += '<tr><th scope="row">' + NAMES[k] + (mode === "stack" && !include[k] ? " (left out above)" : "") +
+      finRows += '<tr><th scope="row">' + NAMES[k] + (included(k) ? "" : " (not included above)") +
         "<small class=\"step-note\">" + usdShort(fb.P) + ", " + fb.term + " years at " + fb.rate + "%, bills paid " +
         fb.start + "–" + (fb.start + fb.term - 1) + "</small></th><td>" + usd(pay) + "</td><td>" + usd(i1) +
         "</td><td>" + usd(iavg) + "</td><td>" + usd(itot) + "</td></tr>";
@@ -809,18 +689,19 @@
 
   /* ---------- wiring ---------- */
 
-  document.querySelectorAll(".choice[data-mode]").forEach(function (b) {
-    b.addEventListener("click", function () { setMode(b.dataset.mode); });
+  /* capture phase, so keepEl is set before the control's own handler calls render(); cleared once
+     the event is done, so a click that doesn't render (opening a row) can't leave it stale */
+  ["input", "change", "click"].forEach(function (t) {
+    $("stackSummary").addEventListener(t, function (e) {
+      if (!e.target.matches("input, select, button")) return;
+      keepEl = e.target;
+      setTimeout(function () { keepEl = null; });
+    }, true);
   });
+
+  PIECES.forEach(function (k) { $(k + "Include").addEventListener("change", render); });
   document.querySelectorAll("#opModePresets [data-op]").forEach(function (b) {
     b.addEventListener("click", function () { setOpStyle(b.dataset.op); });
-  });
-  document.querySelectorAll("#stackPieces [data-piece]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      include[b.dataset.piece] = !include[b.dataset.piece];
-      b.setAttribute("aria-pressed", String(include[b.dataset.piece]));
-      render();
-    });
   });
   document.querySelectorAll("#ptellScope [data-scope]").forEach(function (b) {
     b.addEventListener("click", function () {
@@ -854,14 +735,29 @@
       });
       $("renterFields").classList.toggle("hidden", !renter);
       $("ownerFields").classList.toggle("hidden", renter);
-      setMode(mode);   /* rebuilds the assumptions copy, then renders */
+      render();   /* renderCopy picks up the renter assumptions */
     });
   });
   document.querySelectorAll("#passPresets [data-pass]").forEach(function (b) {
     b.addEventListener("click", function () { passPct.value = b.dataset.pass; render(); });
   });
-  bond.addEventListener("input", function () { bondNum.value = bond.value; render(); });
-  bondNum.addEventListener("input", function () { bond.value = Math.min(num(bondNum, 0), bond.max); render(); });
+  /* each bond piece: slider and number field mirror each other; presets fill both */
+  ["hls", "capital"].forEach(function (k) {
+    var e = BOND[k];
+    e.range.addEventListener("input", function () { e.num.value = e.range.value; render(); });
+    e.num.addEventListener("input", function () { e.range.value = Math.min(num(e.num, 0), e.range.max); render(); });
+    e.presets.querySelectorAll("[data-bond]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        e.num.value = b.dataset.bond;
+        e.range.value = Math.min(b.dataset.bond, e.range.max);
+        render();
+      });
+    });
+    [e.term, e.rate, e.start].forEach(function (el) {
+      el.addEventListener("input", render);
+      el.addEventListener("change", render);
+    });
+  });
   opRange.addEventListener("input", function () { opDollars.value = opRange.value; render(); });
   opDollars.addEventListener("input", function () { opRange.value = Math.min(num(opDollars, 0), opRange.max); render(); });
   mktVal.addEventListener("input", function () {
@@ -878,13 +774,12 @@
         "this page uses it, which also picks up the 2025 reassessment. Until then, this is estimated from your EAV.";
     render();
   });
-  [term, rate, bondStart, opRate, opStart, opYears, cpiNow, cpiFut, stackYear, rent, taxShare, passPct].forEach(function (el) {
+  [opRate, opStart, opYears, cpiNow, cpiFut, stackYear, rent, taxShare, passPct].forEach(function (el) {
     el.addEventListener("input", render);
     el.addEventListener("change", render);
   });
 
-  setMode("stack");
-  /* Open with the default scenario. This also sets the operating inputs, overriding the
-     placeholder values in the page's HTML. */
+  /* Open with the default scenario. This also sets the operating and capital inputs, overriding
+     the placeholder values in the page's HTML, and renders. */
   applyScenario(DEFAULT_SCEN);
 })();

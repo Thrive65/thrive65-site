@@ -142,7 +142,10 @@
      also rides on the legend, tooltip and table, so color is never the only
      cue. Declared in all five theme blocks; high contrast swaps in sets that
      clear 5.7:1 on its flattened surfaces. ------------------------------ */
-  --series-1: #0072B2;   /* yearly levy increase */
+  /* navy, not Okabe–Ito blue: that equals --brand here, so the levy swatch
+     matched the ticked .checkbox beside it. 2.2:1 from --brand, 11:1 on
+     --card, ≥3.3:1 from the other three series. */
+  --series-1: #1B3A6B;   /* yearly levy increase */
   --series-2: #CC79A7;   /* health & life safety */
   --series-3: #E69F00;   /* capital referendum */
   --series-4: #009E73;   /* operating referendum */
@@ -1278,6 +1281,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     color: var(--muted);
   }
   .accordion-body :last-child { margin-bottom: 0; }
+  /* sub-headings inside a panel never outsize the summary that titles it */
+  .accordion-body :is(h3, h4) { font-size: var(--step-0); }
 
   /* ─ Post / page prose ─ (headings inherit the global scale; only rhythm here) */
   .post h2,
@@ -1750,6 +1755,56 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     transition: transform var(--transition-fast) var(--ease);
   }
   .select:has(select:open) > svg { transform: rotate(180deg); }
+
+  /* ─ Checkbox ─ swaps a native checkbox's box for the site's checkbox glyph
+     (icons/checkbox.svg), the same way .select swaps the arrow. The wrapper is
+     the <label>, so its visually-hidden text names the control (and gets
+     translated, unlike aria-label) and its 44px overlay is a real click target:
+       <label class="checkbox"><input type="checkbox">{% include icons/checkbox.svg %}
+         <span class="visually-hidden">Name</span></label>
+     The input stays in place but transparent, so focus, keyboard and form
+     semantics are native; the glyph sits over it, click-through. Checked is a
+     brand fill with a card-colored tick (the .choice pressed convention), so it
+     inverts correctly in both high-contrast themes. */
+  .checkbox {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    cursor: pointer;
+  }
+  .checkbox::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
+    width: 100%;
+    height: 100%;
+  }
+  .checkbox > :is(input, svg) {
+    grid-area: 1 / 1;
+    inline-size: var(--step-1);
+    block-size: var(--step-1);
+  }
+  .checkbox > input {
+    appearance: none;
+    margin: 0;
+    border-radius: 20%;   /* the glyph's rx=3 of 16, so the focus ring follows it */
+    cursor: pointer;
+  }
+  .checkbox > svg {
+    color: var(--brand);
+    pointer-events: none;
+    transition: color var(--transition-fast) var(--ease);
+  }
+  .checkbox rect { fill: var(--card); transition: fill var(--transition-fast) var(--ease); }
+  .checkbox polyline { stroke: var(--card); opacity: 0; transition: opacity var(--transition-fast) var(--ease); }
+  .checkbox > input:checked + svg rect { fill: currentColor; }
+  .checkbox > input:checked + svg polyline { opacity: 1; }
+  .checkbox:hover > svg { color: var(--brand-strong); }
   .input-group > * { border-radius: 0; }
   .input-group > input { flex: 1 1 auto; }
   .input-group > :first-child {
@@ -1909,6 +1964,64 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     font-size: var(--step-1);
   }
 
+  /* ─ Include row ─ one row of a .steps list: a .checkbox, then a <details>
+     whose <summary> reads [swatch + name + .step-note] [.step-value] [chevron],
+     then the row's .include-panel, which opens in place underneath, indented
+     past the checkbox. The panel is the <details>' sibling, not its content, so
+     the row grid can put checkbox and summary alone on row 1 and centre them on
+     each other; it shows while the <details> is open (:has), so the summary
+     still owns the expanded state and <details name> still keeps one open.
+     Rides on .step for the dashed separator and rhythm; only the columns and
+     the disclosure are new. The checkbox stays outside the <summary> (an
+     interactive control inside one has an unreliable role and click target).
+     An unticked row is marked three ways, not by dimming alone: JS writes
+     "Not included" into its note and a dash for its amount, and here the
+     swatch drops to an outline, the name (.include-name) is struck through
+     and the name and amount turn --muted. Sibling rows share a <details name> so one opens at a time. */
+  .include-row {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;   /* checkbox and summary, row 1 */
+  }
+  .include-row > details > summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    column-gap: var(--space-xs);
+    align-items: center;
+    list-style: none;
+    cursor: pointer;
+  }
+  .include-row > details > summary::-webkit-details-marker { display: none; }
+  .include-label { font-weight: 600; }
+  .include-label .levy-swatch {
+    inline-size: var(--step--1);
+    block-size: var(--step--1);
+    margin-inline-end: var(--space-2xs);
+  }
+  .include-label .step-note { font-weight: 400; }
+  /* closed ▸, open ▾ */
+  .include-row > details > summary > svg {
+    color: var(--muted);
+    transform: rotate(-90deg);
+    transition: transform var(--transition-fast) var(--ease);
+  }
+  .include-row > details[open] > summary > svg { transform: none; }
+  /* one single-column grid, so callouts, field sets and fields all sit
+     --grid-gap apart and every field runs full width (see "Forms" in
+     CLAUDE.md). No frame: the fields read as part of the row that opened them. */
+  .include-panel {
+    display: none;
+    grid-column: 2;
+    gap: var(--grid-gap, var(--space-s));
+    margin-block-start: var(--grid-gap, var(--space-s));
+  }
+  .include-row:has(> details[open]) > .include-panel { display: grid; }
+  .include-row:has(> .checkbox > input:not(:checked)) .levy-swatch { background: transparent; }
+  .include-row:has(> .checkbox > input:not(:checked)) :is(.include-label, .step-value) { color: var(--muted); }
+  .include-row:has(> .checkbox > input:not(:checked)) .include-name {
+    text-decoration: line-through;
+    text-decoration-thickness: var(--border-thin);
+  }
+
   /* ─ Levy chart ─ the tax calculator's stacked year-by-year bars. Fills are
      set inline from JS as var(--series-N) (theme tokens on :root). Legend and
      tooltip rows ride on .cluster; the tooltip takes the shared --menu-*
@@ -1926,12 +2039,17 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .levy-legend { column-gap: var(--space-s); font-size: var(--step--1); }
   .levy-legend:empty { display: none; }
   .levy-key { gap: var(--space-2xs); }
+  /* --swatch is set inline (var(--series-N)); the border in the same color lets
+     a swatch drop to an outline (an unticked .include-row) at the same size */
   .levy-swatch {
     display: inline-block;
     inline-size: var(--step-0);
     block-size: var(--step-0);
     border-radius: var(--border-bold);
     flex: none;
+    background: var(--swatch);
+    border: var(--border-bold) solid var(--swatch);
+    transition: background var(--transition-fast) var(--ease);
   }
   .levy-tip {
     position: absolute;
@@ -2163,6 +2281,10 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     color: var(--eyebrow-color, var(--secondary));
     margin-block-end: var(--step--2);
   }
+  /* …and the heading it labels doesn't push away from it: drop the heading's
+     own section margin (.page h2's --space-m, a .flow gap) to the page
+     header's 0.1em, so every eyebrow + heading pair reads as one unit. */
+  .text-eyebrow + :is(h1, h2, h3) { margin-block-start: 0.1em; }
 
   .font-display   { font-family: var(--font-display); }
 
