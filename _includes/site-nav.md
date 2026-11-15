@@ -7,6 +7,7 @@
   * [What's at Stake When Student Supports Are Cut](https://wethrive65.org/analysis/student-supports/)  
   * [Why Early Childhood Education Matters](https://wethrive65.org/analysis/early-childhood-ed/)  
 * Resources  
+  * [Tax Calculator](https://wethrive65.org/tax-calculator/)  
   * [D65 Deficit Explainer](https://thrive65.github.io/thrive65-site/d65-deficit-explained/)  
   * [Board Advocacy Guide](https://thrive65.github.io/thrive65-site/board-advocacy-guide/)  
   * [Board Meeting Previews](https://wethrive65.org/board-meeting-previews/)  
