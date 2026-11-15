@@ -294,8 +294,9 @@
       '<p><strong>New property is left out.</strong> Taxes collected from newly built property are paid by its owners, ' +
       'not by you, which is why the 4.99% request does not translate to a 4.99% increase on your bill.</p>',
     bond: '<p><strong>Level debt service.</strong> Real bond schedules are rarely perfectly level, so early and late ' +
-      'years may differ from the average shown.</p>' +
-      '<p><strong>All at once, or in pieces.</strong> This treats the whole amount as borrowed in one issue, as the ' +
+      'years may differ from the average shown.</p>',
+    /* capital referendum only: the in-pieces example is about the community v4 package */
+    capital: '<p><strong>All at once, or in pieces.</strong> This treats the whole amount as borrowed in one issue, as the ' +
       'community model does. If the ' +
       'district instead borrows a piece each year as it spends, the cost starts small and builds to the full payment ' +
       'over several years. For the community v4 package, borrowing about $7.97 million a year would start near ' +
@@ -378,8 +379,8 @@
     $("voteSummary").textContent = c.voteTitle;
     $("voteBody").innerHTML = c.vote;
     $("assumeBody").innerHTML =
-      (m === "hls" || m === "capital" ? ASSUME.bond : ASSUME[m]) +
-      (m === "stack" ? ASSUME.bond + ASSUME.operating : "") + ASSUME_COMMON;
+      (m === "hls" ? ASSUME.bond : m === "capital" ? ASSUME.bond + ASSUME.capital : ASSUME[m]) +
+      (m === "stack" ? ASSUME.bond + ASSUME.capital + ASSUME.operating : "") + ASSUME_COMMON;
     if (renter) $("assumeBody").innerHTML = ASSUME_RENT + $("assumeBody").innerHTML;
 
     var borrowing = (m === "hls" || m === "capital");
@@ -449,6 +450,7 @@
   }
   function renderStackSummary() {
     var html = "";
+    /* TODO cleanup: the index parameter i is never read; drop it. */
     PIECES.forEach(function (k, i) {
       html += '<div class="step"><div class="step-n"><span class="levy-swatch" style="background:var(--series-' +
         SERIES[k] + ')"></span></div><div class="step-label">' + NAMES[k] +
@@ -574,6 +576,7 @@
     var share = renter ? renterD65() / D65_EXT_2025
       : curTaxTouched ? num(curTax, 0) / D65_EXT_2025 : (DISTRICT_EAV > 0 ? he / DISTRICT_EAV : 0);
     var W = Math.max(1, Math.min(Math.round(num(opYears, 20)), 40));
+    /* TODO cleanup: monthBase is never read; remove it. */
     var headline = 0, monthBase = 0, label = "Estimated cost to your household", steps = [];
     var years, series, spot = -1;
 
