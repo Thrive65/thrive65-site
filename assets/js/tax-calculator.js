@@ -628,6 +628,11 @@
     $("resLabel").textContent = label;
     $("outYear").textContent = usd(headline);
     $("outMonth").textContent = usd(headline / 12);
+    /* the docked headline (#resultDock): same figures, no announcement of its own */
+    setText($("dockLabel"), spotYear + " bill");
+    setText($("dockYear"), usd(headline));
+    setText($("dockMonth"), usd(headline / 12) + " a month");
+    setText($("dockYearInline"), " · " + spotYear);
 
     $("chartTitle").textContent = keys.length > 1 ? "Year by year, stacked" : "Year by year";
     renderChart(years, series, peak);
@@ -778,6 +783,21 @@
     el.addEventListener("input", render);
     el.addEventListener("change", render);
   });
+
+  /* Phone bar: show the docked result only while the form sections are on screen and the full
+     result card (#result) isn't. CSS ignores .is-visible on desktop, where the dock is sticky. While
+     it shows, --dock-bar-size feeds scroll-padding so a focused field never lands under it. */
+  var dock = $("resultDock"), seen = { layout: false, card: false };
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { seen[e.target === dock.parentNode ? "layout" : "card"] = e.isIntersecting; });
+      var show = seen.layout && !seen.card;
+      dock.classList.toggle("is-visible", show);
+      if (show) document.documentElement.style.setProperty("--dock-bar-size", dock.offsetHeight + "px");
+    });
+    io.observe(dock.parentNode);
+    io.observe($("result"));
+  }
 
   /* Open with the default scenario. This also sets the operating and capital inputs, overriding
      the placeholder values in the page's HTML, and renders. */

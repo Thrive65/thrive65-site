@@ -119,6 +119,9 @@
   /* Shared nav-control height (theme/lang pills + CTA). Font-INDEPENDENT so
      controls with different font sizes still line up at the 44px hit target. */
   --control-height: 2.75rem;
+  /* the sticky .site-header's block size (its control row plus padding and
+     rule), so things that stick below it can clear it */
+  --header-size: calc(var(--control-height) + 2 * var(--space-xs) + var(--border-bold));
 
   /* ---- Shared: surfaces & structure · LIGHT ----------------------------- */
   --bg:    #F7F5EC;                 /* warm page surface */
@@ -191,6 +194,8 @@
 @custom-media --sm-and-down (max-width: 784px);
 @custom-media --md-and-up   (min-width: 785px);
 @custom-media --lg-and-up   (min-width: 1115px);
+/* too short to give up a strip of screen to a sticky/docked panel */
+@custom-media --short-viewport (max-height: 500px);
 
 /* ============================================================================
    SHARED DARK surfaces + default hue (Lake Teal) DARK.
@@ -1963,6 +1968,82 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     color: var(--brand-strong);
     font-size: var(--step-1);
   }
+
+  /* ─ Dock layout ─ a form beside a docked result (the tax calculator; audit
+     issue 5). On desktop it breaks out of the --measure column to
+     --measure-wide, centred, as two columns (form 1.6fr : dock 1fr), and the
+     dock sticks below the site header while the form scrolls past; it stops
+     at the end of the layout, so only the form sections get it. On phones
+     the dock is a slim bar fixed to the bottom, shown by JS (.is-visible)
+     only while the layout is on screen and the full result card isn't.
+     Docking is off for short viewports and the 150% text size, where it
+     would take the room people need to type. */
+  @media (--md-and-up) {
+    .dock-layout {
+      --dock-layout-size: min(100vw - 2 * var(--gutter), var(--measure-wide));
+      inline-size: var(--dock-layout-size);
+      margin-inline: calc((100% - var(--dock-layout-size)) / 2);
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: var(--grid-gap, var(--space-s));
+      align-items: start;
+    }
+    .result-dock {
+      position: sticky;
+      inset-block-start: calc(var(--header-size) + var(--space-s));
+      --stat-step: var(--step-3);
+    }
+    .result-dock :is(.dock-year-inline, .dock-details) { display: none; }
+  }
+  .result-dock > * { margin-block: 0; }
+  .result-dock > .stat-value { margin-block: var(--space-2xs); }
+  @media (--sm-and-down) {
+    .result-dock {
+      position: fixed;
+      inset-inline: 0;
+      inset-block-end: 0;
+      z-index: 5;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2xs) var(--space-s);
+      padding: var(--space-xs) var(--gutter);
+      border-block-end: 0;
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      --stat-step: var(--step-1);
+      translate: 0 100%;
+      visibility: hidden;
+      transition: translate var(--transition-base) var(--ease),
+                  visibility var(--transition-base) var(--ease);
+    }
+    .result-dock.is-visible { translate: none; visibility: visible; }
+    .result-dock > .stat-value { margin-block: 0; }
+    .result-dock :is(.text-eyebrow, .dock-month) { display: none; }
+    .dock-year-inline {
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: var(--step--1);
+      color: var(--feature-ink);
+    }
+    /* WCAG 2.2 focus not obscured: scrolling a field into view clears the bar
+       (JS keeps --dock-bar-size at the bar's measured height) */
+    html:has(.result-dock.is-visible) { scroll-padding-block-end: var(--dock-bar-size, 0px); }
+  }
+  .dock-details {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--feature-ink);
+  }
+  /* docking off: the desktop dock stops sticking (it just tops the right
+     column); the phone bar goes, and the full result card stays in place */
+  @media (--short-viewport) { .result-dock { position: static; } }
+  [data-textsize="150"] .result-dock { position: static; }
+  @media (--sm-and-down) and (--short-viewport) { .result-dock { display: none; } }
+  @media (--sm-and-down) { [data-textsize="150"] .result-dock { display: none; } }
 
   /* ─ Include row ─ one row of a .steps list: a .checkbox, then a <details>
      whose <summary> reads [swatch + name + .step-note] [.step-value] [chevron],
