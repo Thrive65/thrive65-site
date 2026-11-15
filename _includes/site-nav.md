@@ -1,6 +1,7 @@
 * [About](https://thrive65.github.io/thrive65-site/#overview)  
 * [FAQ](https://thrive65.github.io/thrive65-site/#faq)  
 * Analysis  
+  * [Are Evanston families leaving District 65 for private school?](http://wethrive65.org/district-65-private-school-enrollment)  
   * [Busing and Walkability Under the FY28 Plan](https://wethrive65.org/analysis/busing-and-walkability-under-the-fy28-plan/)  
   * [D65 Enrollment and Capacity 2026-27 vs. 2027-28](https://wethrive65.org/analysis/d65-enrollment-and-capacity/)  
   * [What's at Stake When Student Supports Are Cut](https://wethrive65.org/analysis/student-supports/)  
