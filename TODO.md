@@ -20,7 +20,14 @@
 
 ### Features
 - Tax Calculator
+    - build Playwright tests checking every scenario for fail modes. Check math. 
+    - update UX so the tabs are more clearly connected to the forms. "Edit" button sections should expand. Understand how the top 5 buttons affect the form below. 
+    - "Include in the total" section -- rework this to be part of the Edit button sections (.stackSummary)
+    - "Start the referendum pieces from a scenario" need to consider how to best explain this, what is being shown and why. leave room for future plans to be added.
+    - Move results section into a docked area on right or bottom, allowing users to see changes live as they edit fields.
     - create a break out wide style for large data tables
+    - allow loading specific scenarios and fields prefilled/calculated via setting URL params, allowing users to share. 
+    - social media screenshot? Here's my tax bill!
 - source citations: hover shows tooltip w/ inline links, or clicking opens flyout menu with all sources
 - scrollspy bar, showing length of page
 - a11y menu

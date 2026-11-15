@@ -1724,6 +1724,32 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     align-items: stretch;
     inline-size: var(--field-width, 100%);
   }
+
+  /* ─ Select ─ swaps a native <select>'s arrow for the site's chevron (the same
+     icons/chevron.svg include the nav dropdowns use). A <select> can't hold
+     children, so the wrapper stacks the two in one grid cell:
+       <div class="select"><select>…</select>{% include icons/chevron.svg %}</div>
+     The chevron is click-through, follows the control's ink via currentColor,
+     and flips while the picker is open where `:open` is supported. */
+  .select {
+    display: grid;
+    align-items: center;
+    inline-size: var(--field-width, 100%);
+  }
+  .select > * { grid-area: 1 / 1; }
+  .select > select {
+    appearance: none;
+    padding-inline-end: var(--space-l);   /* room for the chevron */
+    cursor: pointer;
+  }
+  .select > svg {
+    justify-self: end;
+    margin-inline-end: var(--space-xs);
+    color: var(--ink);
+    pointer-events: none;
+    transition: transform var(--transition-fast) var(--ease);
+  }
+  .select:has(select:open) > svg { transform: rotate(180deg); }
   .input-group > * { border-radius: 0; }
   .input-group > input { flex: 1 1 auto; }
   .input-group > :first-child {

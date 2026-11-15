@@ -135,18 +135,17 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
       </div>
       <p class="hint">Each piece uses the settings on its own tab. Open a tab to change its amount, term, or start year.</p>
     </fieldset>
-    <fieldset class="field-set field">
-      <legend>Start the referendum pieces from a scenario</legend>
-      <div class="choice-group compact" id="scenarioPresets" role="group" aria-label="Referendum scenarios">
-        <button class="choice compact" type="button" data-scenario="v4" aria-pressed="false">Community v4 package</button>
+    <!-- scenario options and their notes are generated from SCEN in tax-calculator.js -->
+    <div class="field">
+      <label for="scenario">Referendum amounts (capital and operating)</label>
+      <div class="select">
+        <select id="scenario" aria-describedby="scenarioNote">
+          <option value="custom">Custom</option>
+        </select>
+        {% include icons/chevron.svg %}
       </div>
-      <p class="hint">The community group For a Brighter Evanston's model (v4, November 2026) assumes two referendums on the
-        November 2028 ballot: a $17&nbsp;million operating increase that grows with the tax base, and $63.7&nbsp;million in
-        bonds to replace the district's yearly building budget, repaid over 20 years at 4.5%. This button loads those
-        amounts into the operating and capital tabs. The yearly levy increase and health and life safety bonds
-        are not part of that package, so they keep their own settings. Neither referendum has formally been proposed by
-        the district.</p>
-    </fieldset>
+      <p class="hint" id="scenarioNote"></p>
+    </div>
     <div class="steps" id="stackSummary"></div>
     <div class="field">
       <label for="stackYear">Show the total for bills paid in</label>
@@ -353,14 +352,10 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
   <div class="levy-table-wrap" id="finTable" role="region" tabindex="0" aria-label="District-wide borrowing costs"></div>
   <p class="hint"><strong>How to read this.</strong> Annual payment is level debt service: principal plus interest, the
     same each year. Interest is highest in the first year and falls as the loan is paid down, so the first-year figure is
-    the peak, and the average spreads total interest evenly over the term.</p>
+    the peak, and the average spreads total interest evenly over the term. Thrive65 estimate.</p>
   <p class="hint"><strong>For scale.</strong> District 65 extended $7.43&nbsp;million for bond and interest on Tax Year
     2025 bills and had $99.1&nbsp;million of long-term debt principal outstanding on June 30, 2025. The levy memo doesn't
     publish the interest share of that payment.</p>
-  <!-- phase 2 (scenario select) moves this sentence into the v4 scenario's note -->
-  <p class="hint">The community v4 model's $63.7&nbsp;million capital bond replaces the district's yearly building budget
-    of about $7.97&nbsp;million with borrowed money, so the interest is the added cost of paying for routine capital work
-    over time. Thrive65 estimate.</p>
 </section>
 
 <section class="card flow levy-chart" id="chartCard">
@@ -460,7 +455,7 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
       $1); Federal Reserve Bank of Philadelphia Working Paper 26-51 (about 73% in professionally managed large
       apartments, no significant market-wide effect); and Löffler and Siegloch (about 83% over several years, Germany).
       These set the low, middle, and high presets.</li>
-    <li>For a Brighter Evanston, "D65 Ten-Year Financial Model, v4" (New_Money tab: $17,000,000 operating referendum
+    <li id="source-v4">For a Brighter Evanston, "D65 Ten-Year Financial Model, v4" (New_Money tab: $17,000,000 operating referendum
       from FY2030 growing with local revenue; $63,737,800 in bonds replacing $7,967,225 a year of capital transfers;
       memo debt service of $4,899,916 a year) and "Model Executive Summary" (November 2026), used for the community v4
       package preset.</li>

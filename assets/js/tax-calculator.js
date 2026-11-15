@@ -80,24 +80,37 @@
 
   /* Referendum scenarios: real proposals the operating and capital tabs can be loaded from.
      Each sets the operating referendum (op = first-year dollars district-wide, opStart = first
-     bill year) and the capital bond (cap). DEFAULT_SCEN is loaded on page open; point it at
-     another key to change what the page opens with.
+     bill year) and the capital bond (cap), plus the option text in the #scenario select (label)
+     and the note shown under it while that scenario is selected (note, HTML). DEFAULT_SCEN is
+     loaded on page open; point it at another key to change what the page opens with.
 
      v4 = For a Brighter Evanston, "D65 Ten-Year Financial Model, v4" (New_Money tab): $17M
      operating from FY30 (first bills paid 2029 after a November 2028 vote), and $63,737,800 of
      bonds replacing the $7.97M/yr capital transfers, level debt service at 4.5% over 20 years
      ($4.90M/yr), first repaid 2030.
 
-     To add a scenario: add an entry here, cite it in the page's sources, and add a matching
-     button to #scenarioPresets in tax-calculator.md (data-scenario = the key). For example:
-       district: { op: 12e6, opStart: 2029, cap: { P: 150e6, term: 25, rate: 4.5, start: 2030 } }
-     with
-       <button class="choice compact" type="button" data-scenario="district" aria-pressed="false">District proposal</button>
-     The button wiring, selected state, and loading all key off SCEN, so nothing else changes. */
+     To add a scenario: add an entry here and cite it in the page's sources (give the <li> an id
+     for the note to link to). For example:
+       district: { label: "District proposal (Mar 2027)", note: "…",
+                   op: 12e6, opStart: 2029, cap: { P: 150e6, term: 25, rate: 4.5, start: 2030 } }
+     The select's options, the selected state, the note and the loading all key off SCEN, so
+     nothing else changes. Options appear in this order, before "Custom". */
   var SCEN = {
-    v4:   { op: 17e6, opStart: 2029, cap: { P: 63737800, term: 20, rate: 4.5, start: 2030 } }
+    v4: {
+      label: "Community v4 package (Nov 2026)",
+      note: "From For a Brighter Evanston's model (v4, Nov 2026): a $17M operating increase and $63.7M in " +
+        "building bonds over 20 years at 4.5%, both on the November 2028 ballot. The bonds would replace the " +
+        "district's yearly building budget of about $7.97M, so their interest is the added cost of paying for " +
+        "routine building work over time. The district hasn't proposed either one. " +
+        '<a href="#source-v4">Full assumptions</a>',
+      op: 17e6, opStart: 2029, cap: { P: 63737800, term: 20, rate: 4.5, start: 2030 }
+    }
   };
   var DEFAULT_SCEN = "v4";
+  var CUSTOM_NOTE = "You've changed the referendum amounts. Choose a scenario to start over from it.";
+  /* true once someone picks "Custom" by hand, so the select doesn't snap back to a scenario
+     whose numbers still happen to match; picking a scenario clears it */
+  var customPicked = false;
 
   /* Per-tab bond settings. Capital starts from the default scenario; applyScenario() replaces it. */
   var BONDS = {
@@ -108,6 +121,7 @@
   function applyScenario(k) {
     var s = SCEN[k];
     if (!s) return;
+    customPicked = false;
     opDollars.value = s.op; opRange.value = s.op; opStart.value = s.opStart;
     BONDS.capital = { P: s.cap.P, term: s.cap.term, rate: s.cap.rate, start: s.cap.start };
     if (mode === "capital") loadBond("capital");
@@ -122,6 +136,19 @@
     return opStyle === "dollars" && num(opDollars, 0) === s.op &&
       clampYear(num(opStart, 2029), 2029) === s.opStart && b.P === s.cap.P && b.term === s.cap.term &&
       b.rate === s.cap.rate && b.start === s.cap.start;
+  }
+  /* Select the scenario the current numbers match, or "Custom" once they've drifted (or it was
+     picked by hand), and show only that choice's note. */
+  var shownScen = null;
+  function syncScenario() {
+    var k = "custom";
+    if (!customPicked) {
+      Object.keys(SCEN).some(function (s) { return scenarioMatch(s) && (k = s); });
+    }
+    if ($("scenario").value !== k) $("scenario").value = k;
+    if (shownScen === k) return;
+    shownScen = k;
+    $("scenarioNote").innerHTML = k === "custom" ? CUSTOM_NOTE : SCEN[k].note;
   }
 
   function usd(n, dp) {
@@ -746,9 +773,7 @@
     document.querySelectorAll("#opPresets [data-opamt]").forEach(function (b) {
       b.setAttribute("aria-pressed", String(parseFloat(b.dataset.opamt) === num(opDollars, 0)));
     });
-    document.querySelectorAll("#scenarioPresets [data-scenario]").forEach(function (b) {
-      b.setAttribute("aria-pressed", String(scenarioMatch(b.dataset.scenario)));
-    });
+    syncScenario();
 
     /* District-wide financing costs for the two bond pieces */
     var finRows = "", finTot = { pay: 0, i1: 0, iavg: 0, itot: 0, P: 0 };
@@ -811,8 +836,14 @@
       opDollars.value = b.dataset.opamt; opRange.value = b.dataset.opamt; render();
     });
   });
-  document.querySelectorAll("#scenarioPresets [data-scenario]").forEach(function (b) {
-    b.addEventListener("click", function () { applyScenario(b.dataset.scenario); });
+  /* one option per scenario, in SCEN order, ahead of the static "Custom" option */
+  var scenSel = $("scenario");
+  Object.keys(SCEN).forEach(function (k) {
+    scenSel.insertBefore(new Option(SCEN[k].label, k), scenSel.lastElementChild);
+  });
+  scenSel.addEventListener("change", function () {
+    if (scenSel.value === "custom") { customPicked = true; render(); }   /* keeps the current numbers */
+    else applyScenario(scenSel.value);
   });
 
   document.querySelectorAll("#tenure [data-tenure]").forEach(function (b) {
