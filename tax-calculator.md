@@ -2,15 +2,8 @@
 layout: "page"
 title: "What would this cost my household?"
 eyebrow: "Tax impact estimator"
-description: "Estimate what District 65's yearly levy increase, health and life safety bonds, and a capital or operating referendum would add to your tax bill or rent, one at a time or stacked by year."
-# Test page, should be hidden from search/sitemap
-noindex: true      # emits <meta name="robots" content="noindex, follow"> (head.html)
-sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
+description: "District 65 could raise property taxes in several ways over the next few years. Enter your home's value or your rent, choose which increases to include, and see what they would add to your tax bill or rent, year by year."
 ---
-
-<p>District 65 has several ways to raise money for buildings or for operations, and each one lands on your tax
-bill differently. This adds them together: each is an increase over what you pay District 65 today, placed in the
-year the bill is paid. Bonds stop when they are repaid. Levy and operating increases keep building.</p>
 
 <!-- Two columns at --measure-wide on desktop: everything down to the sources, and the docked result beside it. -->
 <div class="dock-layout">
