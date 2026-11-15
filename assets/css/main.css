@@ -146,7 +146,6 @@
   --series-2: #CC79A7;   /* health & life safety */
   --series-3: #E69F00;   /* capital referendum */
   --series-4: #009E73;   /* operating referendum */
-  --series-5: #5A4FA0;   /* City of Evanston levy */
 
   /* ---- Feature surface (spotlight panel: .surface-feature) --------------
      Deep teal wash with a marigold label and white figures. HSL so a theme
@@ -210,7 +209,7 @@
   --accent-hover: #FFC44F;          /* constant */
   --bloom:        #E69F00;          /* Okabe–Ito orange on dark */
 
-  --series-1: #3A8FD6; --series-2: #BC6A9C; --series-3: #C08000; --series-4: #00A078; --series-5: #5A6BB0;
+  --series-1: #3A8FD6; --series-2: #BC6A9C; --series-3: #C08000; --series-4: #00A078;
 
   --feature-bg:    hsl(189, 65%, 14%);
   --feature-ink:   hsl(0, 0%, 100%);
@@ -294,7 +293,7 @@
     --bg: #0B1410; --card: #17251C; --tint: #123122;
     --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD; --focus: #8CE7B7;
     --secondary: #7EC8E3; --bloom: #E69F00;
-    --series-1: #3A8FD6; --series-2: #BC6A9C; --series-3: #C08000; --series-4: #00A078; --series-5: #5A6BB0;
+    --series-1: #3A8FD6; --series-2: #BC6A9C; --series-3: #C08000; --series-4: #00A078;
     --feature-bg: hsl(189, 65%, 14%); --feature-ink: hsl(0, 0%, 100%);
     --feature-muted: hsl(189, 25%, 78%); --feature-label: hsl(39, 100%, 68%); --feature-line: hsl(189, 35%, 32%);
     --quiet-ink: hsl(45.5, 30%, 92%);
@@ -331,7 +330,7 @@ html[data-contrast="high"]:not([data-theme="dark"]) .hue-default {
   --bg: var(--hc-color-light); --card: var(--hc-color-light); --tint: var(--hc-color-light);
   --line: var(--hc-color-dark); --ink: var(--hc-color-dark); --muted: var(--hc-color-dark); --edge: var(--hc-color-dark); --focus: var(--hc-color-dark);
   --brand: #005C31; --brand-strong: #00411F; --link: #005C31; --secondary: #00323C;
-  --series-1: #005A8C; --series-2: #9E3C78; --series-3: #8A5A00; --series-4: #006B4F; --series-5: #3D3380;
+  --series-1: #005A8C; --series-2: #9E3C78; --series-3: #8A5A00; --series-4: #006B4F;
   --hero-bg: var(--hc-color-light); --hero-ink: var(--hc-color-dark); --hero-muted: var(--hc-color-dark); --hero-em: #7A4C00;
   --feature-bg: var(--hc-color-light); --feature-ink: var(--hc-color-dark); --feature-muted: var(--hc-color-dark); --feature-label: #7A4C00; --feature-line: var(--hc-color-dark);
   --quiet-ink: var(--hc-color-dark);
@@ -340,7 +339,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   --bg: var(--hc-color-dark); --card: var(--hc-color-dark); --tint: var(--hc-color-dark);
   --line: var(--hc-color-light); --ink: var(--hc-color-light); --muted: var(--hc-color-light); --edge: var(--hc-color-light); --focus: #FFFF00;
   --brand: #4DFFA6; --brand-strong: #90FFC8; --link: #4DFFA6; --secondary: #9BE8FF;
-  --series-1: #56B4E9; --series-2: #E59ACB; --series-3: #F0B429; --series-4: #2FD3A0; --series-5: #A99BF0;
+  --series-1: #56B4E9; --series-2: #E59ACB; --series-3: #F0B429; --series-4: #2FD3A0;
   --accent: #FFD34D; --accent-hover: #FFE58A; --on-accent: var(--hc-color-dark);
   --hero-bg: var(--hc-color-dark); --hero-ink: var(--hc-color-light); --hero-muted: var(--hc-color-light); --hero-em: #FFD34D;
   --feature-bg: var(--hc-color-dark); --feature-ink: var(--hc-color-light); --feature-muted: var(--hc-color-light); --feature-label: #FFD34D; --feature-line: var(--hc-color-light);
