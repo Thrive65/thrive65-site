@@ -1294,6 +1294,20 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .accordion-body :last-child { margin-bottom: 0; }
   /* sub-headings inside a panel never outsize the summary that titles it */
   .accordion-body :is(h3, h4) { font-size: var(--step-0); }
+  /* open/close slides the panel: ::details-content is the part <details> shows
+     and hides, interpolate-size lets block-size animate to and from auto, and
+     allow-discrete holds content-visibility until the close finishes. Gated on
+     interpolate-size, so a browser without it snaps exactly as before. */
+  @supports (interpolate-size: allow-keywords) {
+    .accordion { interpolate-size: allow-keywords; }
+    .accordion::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition: block-size var(--transition-slow) var(--ease),
+                  content-visibility var(--transition-slow) var(--ease) allow-discrete;
+    }
+    .accordion[open]::details-content { block-size: auto; }
+  }
 
   /* ─ Post / page prose ─ (headings inherit the global scale; only rhythm here) */
   .post h2,
@@ -1953,6 +1967,23 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     font-size: var(--step-1);
   }
 
+  /* ─ Collapse ─ a region that slides shut and open with the 0fr → 1fr
+     grid-row technique, which animates in every current browser (unlike
+     display or height: auto). The region's one child is the content; it needs
+     overflow: hidden wherever the region can close, or it spills out while the
+     row grows. .is-closed shuts it; visibility: hidden (delayed by the
+     transition until the slide ends) takes the content out of the tab order and
+     the accessibility tree. A context can shut it by its own rule instead, as
+     the phone dock does from .result-dock:not(.is-open). */
+  .collapse {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows var(--transition-slow) var(--ease),
+                visibility var(--transition-slow) var(--ease);
+  }
+  .collapse > * { min-block-size: 0; }
+  .collapse.is-closed { grid-template-rows: 0fr; visibility: hidden; }
+
   /* ─ Dock layout ─ a form beside its docked result (the tax calculator;
      audit issue 5). The .result-dock holds the whole result card. Its base
      state is undocked: an ordinary card after the form, Details button and
@@ -1964,8 +1995,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      before the sources.
        Phone: the dock is a bar fixed to the bottom showing the headline, shown
      by JS (.is-visible) only while the layout is on screen; Details (.is-open)
-     slides it up into the full card. The two .dock-collapse regions animate
-     open with the 0fr → 1fr grid-row technique. */
+     slides it up into the full card. Its two .collapse regions animate it. */
   .result-dock :is(.dock-details, .dock-bar-label) { display: none; }
   /* undocked it follows the content column, so it takes the flow gap itself */
   .dock-layout > .result-dock { margin-block-start: var(--flow-space, var(--space-s)); }
@@ -1973,8 +2003,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     transition: font-size var(--transition-slow) var(--ease);
   }
   .result-dock .dock-head .stat-value { --stat-step: var(--step-5); }
-  .dock-collapse { display: grid; grid-template-rows: 1fr; }
-  .dock-collapse > * { min-block-size: 0; }
   @media (--md-and-up) {
     .dock-layout {
       --dock-layout-size: min(100vw - 2 * var(--gutter), var(--measure-wide));
@@ -2030,12 +2058,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     :root:not([data-textsize="150"]) .result-dock:not(.is-open) .dock-bar-label { display: block; }
     :root:not([data-textsize="150"]) .result-dock:not(.is-open) .dock-head .stat-value { --stat-step: var(--step-1); }
     :root:not([data-textsize="150"]) .result-dock:not(.is-open) .dock-head .stat-unit { font-size: var(--step--1); }
-    :root:not([data-textsize="150"]) .dock-collapse {
-      transition: grid-template-rows var(--transition-slow) var(--ease),
-                  visibility var(--transition-slow) var(--ease);
-    }
-    :root:not([data-textsize="150"]) .dock-collapse > * { overflow: hidden; }
-    :root:not([data-textsize="150"]) .result-dock:not(.is-open) .dock-collapse {
+    :root:not([data-textsize="150"]) .result-dock .collapse > * { overflow: hidden; }
+    :root:not([data-textsize="150"]) .result-dock:not(.is-open) .collapse {
       grid-template-rows: 0fr;
       visibility: hidden;
     }
@@ -2079,6 +2103,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      and the name and amount turn --muted. Sibling rows share a <details name> so one opens at a time. */
   .include-row {
     grid-template-columns: auto minmax(0, 1fr);
+    row-gap: 0;   /* the panel is always row 2 now; its fields carry the gap */
     align-items: center;   /* checkbox and summary, row 1 */
   }
   .include-row > details > summary {
@@ -2104,21 +2129,44 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     transition: transform var(--transition-fast) var(--ease);
   }
   .include-row > details[open] > summary > svg { transform: none; }
-  /* one single-column grid, so callouts, field sets and fields all sit
-     --grid-gap apart and every field runs full width (see "Forms" in
-     CLAUDE.md). No frame: the fields read as part of the row that opened them. */
+  /* The panel is a .collapse (JS sets .is-closed from the <details>' open
+     state) around one .include-fields: a single-column grid, so callouts,
+     field sets and fields all sit --grid-gap apart and every field runs full
+     width (see "Forms" in CLAUDE.md). No frame: the fields read as part of the
+     row that opened them. The gap above them is the panel's margin, which
+     closes with it (padding couldn't: a box never shrinks below its padding,
+     so a closed panel would keep the gap). The --space-2xs padding on all four
+     sides, cancelled by an equal negative margin, is room for the 3px + 3px
+     offset focus ring, which overflow: hidden would otherwise cut off. */
   .include-panel {
-    display: grid;
     grid-column: 2;
-    gap: var(--grid-gap, var(--space-s));
-    margin-block-start: var(--grid-gap, var(--space-s));
+    margin-block-start: calc(var(--space-xs) + var(--grid-gap, var(--space-s)));
+    transition: grid-template-rows var(--transition-slow) var(--ease),
+                visibility var(--transition-slow) var(--ease),
+                margin-block-start var(--transition-slow) var(--ease);
   }
-  .include-panel[hidden] { display: none; }
+  .include-panel.is-closed { margin-block-start: 0; }
+  .include-fields {
+    display: grid;
+    gap: var(--grid-gap, var(--space-s));
+    overflow: hidden;
+    padding: var(--space-2xs);
+    margin: calc(-1 * var(--space-2xs));
+  }
   .include-row:has(> .checkbox > input:not(:checked)) .levy-swatch { background: transparent; }
   .include-row:has(> .checkbox > input:not(:checked)) :is(.include-label, .step-value) { color: var(--muted); }
+  /* the strike is always drawn, transparent until unticked, so it can fade
+     in with the --muted color (text-decoration-line itself can't animate);
+     both run at the swatch's speed so the row changes together */
+  .include-row :is(.include-label, .step-value) {
+    transition: color var(--transition-fast) var(--ease);
+  }
+  .include-row .include-name {
+    text-decoration: line-through transparent var(--border-thin);
+    transition: text-decoration-color var(--transition-fast) var(--ease);
+  }
   .include-row:has(> .checkbox > input:not(:checked)) .include-name {
-    text-decoration: line-through;
-    text-decoration-thickness: var(--border-thin);
+    text-decoration-color: currentColor;
   }
 
   /* ─ Levy chart ─ the tax calculator's stacked year-by-year bars. Fills are

@@ -831,10 +831,11 @@
   }
 
   /* Piece rows: each .include-panel is the <details>' sibling, so mirror the open state onto
-     its [hidden] (exclusive <details name> fires toggle on the one it closes, too). */
+     its .is-closed, which slides it (exclusive <details name> fires toggle on the one it
+     closes, too). */
   document.querySelectorAll(".include-row > details").forEach(function (d) {
     var panel = d.parentNode.querySelector(".include-panel");
-    function sync() { panel.hidden = !d.open; }
+    function sync() { panel.classList.toggle("is-closed", !d.open); }
     d.addEventListener("toggle", sync);
     sync();
   });
