@@ -14,9 +14,9 @@ year the bill is paid. Bonds stop when they are repaid. Levy and operating incre
 
 <section class="card flow">
   <h2>Your numbers</h2>
-  <p class="text-deemphasized">Everything below is adjustable. Nothing you enter leaves your browser.</p>
+  <p class="text-deemphasized hint">Everything below is adjustable. Nothing entered is saved.</p>
 
-  <fieldset class="field-set field">
+  <fieldset class="field-set field mt-s">
     <legend>Do you own or rent?</legend>
     <div class="choice-group compact" id="tenure" role="group" aria-label="Own or rent">
       <button class="choice compact" type="button" data-tenure="own" aria-pressed="true">I own my home</button>
