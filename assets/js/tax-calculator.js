@@ -76,19 +76,33 @@
   /* Pass-through factor: 1 for owners, the landlord pass-through for renters */
   function PT() { return renter ? Math.min(num(passPct, 50), 100) / 100 : 1; }
 
-  var BONDS = {
-    hls:     { P: 22e6,  term: 20, rate: 4.5, start: 2028 },
-    capital: { P: 100e6, term: 25, rate: 4.5, start: 2030 }
-  };
-  var include = { ptell: true, hls: true, capital: true, operating: true };
+  /* Referendum scenarios: real proposals the operating and capital tabs can be loaded from.
+     Each sets the operating referendum (op = first-year dollars district-wide, opStart = first
+     bill year) and the capital bond (cap). DEFAULT_SCEN is loaded on page open; point it at
+     another key to change what the page opens with.
 
-  /* Referendum scenarios for the stack tab. v4 = For a Brighter Evanston, "D65 Ten-Year
-     Financial Model, v4" (New_Money tab): $17M operating from FY30 (first bills paid 2029
-     after a November 2028 vote), and $63,737,800 of bonds replacing the $7.97M/yr capital
-     transfers, level debt service at 4.5% over 20 years ($4.90M/yr), first repaid 2030. */
+     v4 = For a Brighter Evanston, "D65 Ten-Year Financial Model, v4" (New_Money tab): $17M
+     operating from FY30 (first bills paid 2029 after a November 2028 vote), and $63,737,800 of
+     bonds replacing the $7.97M/yr capital transfers, level debt service at 4.5% over 20 years
+     ($4.90M/yr), first repaid 2030.
+
+     To add a scenario: add an entry here, cite it in the page's sources, and add a matching
+     button to #scenarioPresets in tax-calculator.md (data-scenario = the key). For example:
+       district: { op: 12e6, opStart: 2029, cap: { P: 150e6, term: 25, rate: 4.5, start: 2030 } }
+     with
+       <button class="choice compact" type="button" data-scenario="district" aria-pressed="false">District proposal</button>
+     The button wiring, selected state, and loading all key off SCEN, so nothing else changes. */
   var SCEN = {
     v4:   { op: 17e6, opStart: 2029, cap: { P: 63737800, term: 20, rate: 4.5, start: 2030 } }
   };
+  var DEFAULT_SCEN = "v4";
+
+  /* Per-tab bond settings. Capital starts from the default scenario; applyScenario() replaces it. */
+  var BONDS = {
+    hls:     { P: 22e6,  term: 20, rate: 4.5, start: 2028 },
+    capital: Object.assign({}, SCEN[DEFAULT_SCEN].cap)
+  };
+  var include = { ptell: true, hls: true, capital: true, operating: true };
   function applyScenario(k) {
     var s = SCEN[k];
     if (!s) return;
@@ -812,5 +826,7 @@
   });
 
   setMode("stack");
-  applyScenario("v4");   /* open with the community v4 referendum package, for owners and renters alike */
+  /* Open with the default scenario. This also sets the operating inputs, overriding the
+     placeholder values in the page's HTML. */
+  applyScenario(DEFAULT_SCEN);
 })();
