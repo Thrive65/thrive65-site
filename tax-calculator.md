@@ -391,13 +391,13 @@ description: "District 65 could raise property taxes in several ways over the ne
       appear on a bill under the default start years.</p>
   </div>
 
-  <div class="field" id="windowField">
+  <div class="field">
     <label for="opYears">Show the running total over</label>
     <div class="input-group">
       <input id="opYears" type="number" min="1" max="30" step="1" value="20" inputmode="numeric">
       <span class="affix">years</span>
     </div>
-    <p class="hint" id="windowHint">Counted from bills paid in 2027. Levy and operating increases do not expire on their own,
+    <p class="hint">Counted from bills paid in 2027. Levy and operating increases do not expire on their own,
       so this is just a window for comparison.</p>
   </div>
 </section>

@@ -313,9 +313,12 @@
   function estimateCurTax() {
     if (!curTaxTouched) curTax.value = Math.round(num(homeEav, 0) * D65_RATE / 10) * 10;
   }
+  /* Read once per paint: pieceAt() calls this for every piece-year, so it's memoized for the
+     length of one render() (cleared before and after) instead of re-parsing the DOM each time. */
+  var ptellMemo = null;
   function ptellInputs() {
-    return { T0: renter ? renterD65() : num(curTax, 0), c1: Math.min(num(cpiNow, 2.7), 5) / 100,
-             cf: Math.min(num(cpiFut, 3), 5) / 100 };
+    return ptellMemo || (ptellMemo = { T0: renter ? renterD65() : num(curTax, 0),
+      c1: Math.min(num(cpiNow, 2.7), 5) / 100, cf: Math.min(num(cpiFut, 3), 5) / 100 });
   }
   /* A bond piece's fields as entered, and as computed (capped at the fields' max attributes). */
   function bondRaw(k) {
@@ -548,7 +551,9 @@
   function render() {
     var keep = keepEl, keepTop = keep && keep.getBoundingClientRect().top;
     keepEl = null;
+    ptellMemo = null;
     paint();
+    ptellMemo = null;
     if (keep) window.scrollBy(0, keep.getBoundingClientRect().top - keepTop);
   }
   function paint() {
@@ -569,7 +574,8 @@
     else setMsg($("opMsg"), "");
 
     var years = yearsFrom(FIRST_BILL, W);
-    var series = seriesFor(keys, years, share);
+    var series = seriesFor(keys, years, share), byKey = {};
+    series.forEach(function (se) { byKey[se.key] = se; });
     var totals = years.map(function (_, i) { return sum(series.map(function (se) { return se.values[i]; })); });
     var peak = Math.max(0, Math.min(clampYear(num(stackYear, 2030), 2030) - FIRST_BILL, W - 1));
     var spotYear = years[peak], headline = totals[peak] || 0;
@@ -582,7 +588,7 @@
     PIECES.forEach(function (k) {
       var on = included(k), note = pieceSummary(k);
       setText($(k + "Note"), on ? note : "Not included · " + note);
-      setText($(k + "Amount"), on ? usd(pieceAt(k, spotYear, share)) : "—");
+      setText($(k + "Amount"), on ? usd(byKey[k].values[peak]) : "—");
     });
     setText($("stackTotalLabel"), renter ? "Estimated added rent, " + spotYear + " bills" : "Added on your " + spotYear + " bill");
     setText($("stackTotal"), usd(headline));
@@ -618,8 +624,8 @@
 
     /* fixed 2027–2032 view, independent of the window and start-year settings */
     var yrs32 = yearsFrom(FIRST_BILL, HORIZON - FIRST_BILL + 1);
-    var tot32 = yrs32.map(function (y) {
-      return sum(keys.map(function (k) { return pieceAt(k, y, share); }));
+    var tot32 = yrs32.map(function (y, i) {   /* reuse the series' years; compute only past the window */
+      return i < W ? totals[i] : sum(keys.map(function (k) { return pieceAt(k, y, share); }));
     });
     $("out32Year").textContent = usd(tot32[tot32.length - 1]);
     $("out32Month").textContent = usd(tot32[tot32.length - 1] / 12);
