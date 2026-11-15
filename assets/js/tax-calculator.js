@@ -628,11 +628,7 @@
     $("resLabel").textContent = label;
     $("outYear").textContent = usd(headline);
     $("outMonth").textContent = usd(headline / 12);
-    /* the docked headline (#resultDock): same figures, no announcement of its own */
-    setText($("dockLabel"), spotYear + " bill");
-    setText($("dockYear"), usd(headline));
-    setText($("dockMonth"), usd(headline / 12) + " a month");
-    setText($("dockYearInline"), " · " + spotYear);
+    setText($("dockBarLabel"), "Added cost in " + spotYear);   /* the phone bar's collapsed label */
 
     $("chartTitle").textContent = keys.length > 1 ? "Year by year, stacked" : "Year by year";
     renderChart(years, series, peak);
@@ -784,19 +780,33 @@
     el.addEventListener("change", render);
   });
 
-  /* Phone bar: show the docked result only while the form sections are on screen and the full
-     result card (#result) isn't. CSS ignores .is-visible on desktop, where the dock is sticky. While
-     it shows, --dock-bar-size feeds scroll-padding so a focused field never lands under it. */
-  var dock = $("resultDock"), seen = { layout: false, card: false };
+  /* Phone bar: show the docked result (#result) only while the form sections are on screen. CSS
+     ignores .is-visible on desktop, where the dock is sticky. While it shows, --dock-bar-size feeds
+     scroll-padding so a focused field never lands under the collapsed bar. */
+  var dock = $("result"), details = $("dockDetails");
+  function setDockOpen(open) {
+    dock.classList.toggle("is-open", open);
+    details.setAttribute("aria-expanded", String(open));
+    $("dockDetailsLabel").textContent = open ? "Hide details" : "Details";
+  }
+  details.addEventListener("click", function () { setDockOpen(!dock.classList.contains("is-open")); });
+  dock.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && dock.classList.contains("is-open")) { setDockOpen(false); details.focus(); }
+  });
   if ("IntersectionObserver" in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { seen[e.target === dock.parentNode ? "layout" : "card"] = e.isIntersecting; });
-      var show = seen.layout && !seen.card;
+    new IntersectionObserver(function (entries) {
+      var show = entries[entries.length - 1].isIntersecting;
       dock.classList.toggle("is-visible", show);
-      if (show) document.documentElement.style.setProperty("--dock-bar-size", dock.offsetHeight + "px");
-    });
-    io.observe(dock.parentNode);
-    io.observe($("result"));
+      if (!show) setDockOpen(false);   /* scrolled away: come back to the slim bar */
+    }).observe(dock.parentNode);
+  }
+  /* track the collapsed bar's height as it settles (a ResizeObserver, so a measurement taken mid
+     slide or mid collapse is replaced by the final one) */
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(function () {
+      if (dock.classList.contains("is-open")) return;
+      document.documentElement.style.setProperty("--dock-bar-size", dock.offsetHeight + "px");
+    }).observe(dock);
   }
 
   /* Open with the default scenario. This also sets the operating and capital inputs, overriding

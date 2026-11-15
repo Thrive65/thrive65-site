@@ -12,7 +12,7 @@ sitemap: false     # omitted from sitemap.xml (jekyll-sitemap)
 bill differently. This adds them together: each is an increase over what you pay District 65 today, placed in the
 year the bill is paid. Bonds stop when they are repaid. Levy and operating increases keep building.</p>
 
-<!-- Two columns at --measure-wide on desktop: the form sections, and the docked result beside them. -->
+<!-- Two columns at --measure-wide on desktop: everything down to the sources, and the docked result beside it. -->
 <div class="dock-layout">
   <div class="flow">
 <section class="card flow">
@@ -409,48 +409,6 @@ year the bill is paid. Bonds stop when they are repaid. Levy and operating incre
   </div>
 </section>
 
-<section class="card surface-feature" id="result">
-  <p class="text-eyebrow" id="resLabel">Estimated cost to your household</p>
-  <p class="stat-value" style="--stat-step: var(--step-6)">
-    <span id="outYear">$0</span><span class="stat-unit"> / year</span>
-  </p>
-  <div class="stat-grid fit rule-above" id="resSplit" style="--stat-step: var(--step-2)">
-    <div class="stat">
-      <p class="text-eyebrow">Per month</p>
-      <p class="stat-value" id="outMonth">$0</p>
-    </div>
-  </div>
-  <p class="text-eyebrow rule-above">Through 2032</p>
-  <p class="hint">The district's own projections end in 2032.</p>
-  <div class="stat-grid fit" style="--stat-step: var(--step-2)">
-    <div class="stat">
-      <p class="text-eyebrow">Added on the 2032 bill</p>
-      <p class="stat-value" id="out32Year">$0</p>
-    </div>
-    <div class="stat">
-      <p class="text-eyebrow">Per month in 2032</p>
-      <p class="stat-value" id="out32Month">$0</p>
-    </div>
-    <div class="stat">
-      <p class="text-eyebrow">All extra paid, 2027–2032</p>
-      <p class="stat-value" id="out32Total">$0</p>
-    </div>
-  </div>
-</section>
-  </div>
-
-  <!-- Docked headline (audit issue 5): the year and month figures only; the full card above stays the
-       detailed view. Sticky in the right column on desktop, a slim bottom bar on phones (hidden while
-       #result is on screen). Not a live region: #resAnnounce already announces every result. -->
-  <aside class="result-dock card surface-feature" id="resultDock" aria-labelledby="dockLabel"
-         style="--eyebrow-color: var(--feature-ink); --stat-color: var(--feature-label)">
-    <p class="text-eyebrow" id="dockLabel">2030 bill</p>
-    <p class="stat-value"><span id="dockYear">$0</span>/yr<span class="dock-year-inline"
-       id="dockYearInline"> · 2030</span></p>
-    <p class="dock-month" id="dockMonth">$0 a month</p>
-    <a class="dock-details" href="#result">Details {% include icons/chevron.svg %}</a>
-  </aside>
-</div>
 
 <section class="card flow" id="ref2017Card">
   <p class="text-eyebrow">Already on your bill</p>
@@ -532,6 +490,53 @@ year the bill is paid. Bonds stop when they are repaid. Levy and operating incre
 </details>
 
 <p class="visually-hidden" id="resAnnounce" role="status" aria-live="polite"></p>
+  </div>
+
+  <!-- The result, docked (audit issue 5): all of it, in the right column on desktop (sticky below the
+       header), and on phones a bottom bar that shows the headline and slides up into the full card on
+       "Details". It docks down to the sources. With docking off (short screens, 150% text) it is an
+       ordinary card at the end of that column.
+       Not a live region: #resAnnounce already announces every result. -->
+  <aside class="result-dock card surface-feature" id="result" aria-labelledby="resLabel">
+    <div class="dock-collapse" id="dockTop">
+      <div><p class="text-eyebrow" id="resLabel">Estimated cost to your household</p></div>
+    </div>
+    <div class="dock-head">
+      <div>
+        <p class="text-eyebrow dock-bar-label" id="dockBarLabel">Added cost in 2030</p>
+        <p class="stat-value"><span id="outYear">$0</span><span class="stat-unit"> / year</span></p>
+      </div>
+      <button class="dock-details" type="button" id="dockDetails" aria-expanded="false"
+              aria-controls="dockTop dockMore"><span id="dockDetailsLabel">Details</span>{% include icons/chevron.svg %}</button>
+    </div>
+    <div class="dock-collapse" id="dockMore">
+      <div>
+        <div class="stat-grid fit rule-above" id="resSplit" style="--stat-step: var(--step-2)">
+          <div class="stat">
+            <p class="text-eyebrow">Per month</p>
+            <p class="stat-value" id="outMonth">$0</p>
+          </div>
+        </div>
+        <p class="text-eyebrow rule-above">Through 2032</p>
+        <p class="hint">The district's own projections end in 2032.</p>
+        <div class="stat-grid fit" style="--stat-step: var(--step-2)">
+          <div class="stat">
+            <p class="text-eyebrow">Added on the 2032 bill</p>
+            <p class="stat-value" id="out32Year">$0</p>
+          </div>
+          <div class="stat">
+            <p class="text-eyebrow">Per month in 2032</p>
+            <p class="stat-value" id="out32Month">$0</p>
+          </div>
+          <div class="stat">
+            <p class="text-eyebrow">All extra paid, 2027–2032</p>
+            <p class="stat-value" id="out32Total">$0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
 
 <hr>
 
