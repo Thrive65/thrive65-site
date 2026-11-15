@@ -92,12 +92,12 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
 
   <div id="ownerFields" class="flow">
   <div class="field">
-    <label for="homeEav">Your property's equalized assessed value (EAV)</label>
+    <label for="homeEav">Equalized assessed value (EAV), from your tax bill</label>
     <div class="input-group">
       <span class="affix">$</span>
       <input id="homeEav" type="number" min="0" step="1000" value="140000" inputmode="numeric">
     </div>
-    <p class="hint">On your property tax bill or Cook County assessment notice. Or estimate from market value below.</p>
+    <p class="hint">No bill handy? Estimate it from market value below.</p>
   </div>
 
   <div class="field">
@@ -149,10 +149,9 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
     </fieldset>
     <div class="steps" id="stackSummary"></div>
     <div class="field">
-      <label for="stackYear">Spotlight year</label>
+      <label for="stackYear">Show the total for bills paid in</label>
       <div class="input-group">
         <input id="stackYear" type="number" min="2027" max="2066" step="1" value="2030" inputmode="numeric">
-        <span class="affix">bill paid</span>
       </div>
       <p class="hint">The headline figure below is the total for this year. 2030 is the first year all four pieces would
         appear on a bill under the default start years.</p>
@@ -307,7 +306,8 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
       <p class="stat-value" id="outMonth">$0</p>
     </div>
   </div>
-  <p class="text-eyebrow rule-above" id="by32Label">Through 2032, the end of the district's current projections</p>
+  <p class="text-eyebrow rule-above">Through 2032</p>
+  <p class="hint">The district's own projections end in 2032.</p>
   <div class="stat-grid fit" style="--stat-step: var(--step-2)">
     <div class="stat">
       <p class="text-eyebrow">Added on the 2032 bill</p>
@@ -349,14 +349,18 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
   <h2>What the borrowing would cost the district</h2>
   <p class="text-deemphasized">Every taxpayer together, using the amounts, terms and rates set on the Health &amp; life
     safety and Capital referendum tabs.</p>
-  <div class="levy-table-wrap" id="finTable"></div>
-  <p class="hint">Annual payment is level debt service: principal plus interest, the same each year. Interest is highest
-    in the first year and falls as the loan is paid down, so the first-year figure is the peak; the average spreads total
-    interest evenly over the term. Existing bonds are shown for scale: District 65 extended $7.43&nbsp;million for bond
-    and interest on Tax Year 2025 bills and had $99.1&nbsp;million of long-term debt principal outstanding on June 30,
-    2025; the interest share of that payment is not published in the levy memo. The community v4 model's $63.7&nbsp;million
-    capital bond replaces the district's yearly building budget of about $7.97&nbsp;million with borrowed money, so the
-    interest is the added cost of paying for routine capital work over time. Thrive65 estimate.</p>
+  <!-- tabindex lets keyboard users scroll the table sideways when it overflows -->
+  <div class="levy-table-wrap" id="finTable" role="region" tabindex="0" aria-label="District-wide borrowing costs"></div>
+  <p class="hint"><strong>How to read this.</strong> Annual payment is level debt service: principal plus interest, the
+    same each year. Interest is highest in the first year and falls as the loan is paid down, so the first-year figure is
+    the peak, and the average spreads total interest evenly over the term.</p>
+  <p class="hint"><strong>For scale.</strong> District 65 extended $7.43&nbsp;million for bond and interest on Tax Year
+    2025 bills and had $99.1&nbsp;million of long-term debt principal outstanding on June 30, 2025. The levy memo doesn't
+    publish the interest share of that payment.</p>
+  <!-- phase 2 (scenario select) moves this sentence into the v4 scenario's note -->
+  <p class="hint">The community v4 model's $63.7&nbsp;million capital bond replaces the district's yearly building budget
+    of about $7.97&nbsp;million with borrowed money, so the interest is the added cost of paying for routine capital work
+    over time. Thrive65 estimate.</p>
 </section>
 
 <section class="card flow levy-chart" id="chartCard">
@@ -373,7 +377,8 @@ by year. Every piece keeps its own settings, so what you enter on one tab carrie
       <h3>Show as a table</h3>
       <span class="accordion-icon" aria-hidden="true"></span>
     </summary>
-    <div class="accordion-body levy-table-wrap" id="chartTable"></div>
+    <div class="accordion-body levy-table-wrap" id="chartTable" role="region" tabindex="0"
+         aria-label="Year-by-year amounts"></div>
   </details>
 </section>
 

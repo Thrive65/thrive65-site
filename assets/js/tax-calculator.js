@@ -57,6 +57,8 @@
   var PIECES = ["ptell", "hls", "capital", "operating"];
   var NAMES = { ptell: "Yearly levy increase", hls: "Health & life safety bonds",
                 capital: "Capital referendum", operating: "Operating referendum" };
+  /* column heads in the year-by-year table, where the full names would overflow the card */
+  var SHORT = { ptell: "Levy", hls: "HLS", capital: "Capital", operating: "Operating" };
   var SERIES = { ptell: 1, hls: 2, capital: 3, operating: 4 };   /* color follows the piece */
 
   var $ = function (i) { return document.getElementById(i); };
@@ -456,12 +458,22 @@
         SERIES[k] + ')"></span></div><div class="step-label">' + NAMES[k] +
         (include[k] ? "" : " (left out)") + '<small class="step-note">' + pieceSummary(k) + '</small></div>' +
         '<div class="step-value"><button class="choice compact" type="button" data-edit="' + k +
-        '">Edit</button></div></div>';
+        '">Edit<span class="visually-hidden"> ' + NAMES[k] + '</span></button></div></div>';
     });
     $("stackSummary").innerHTML = html;
     $("stackSummary").querySelectorAll("[data-edit]").forEach(function (b) {
-      b.addEventListener("click", function () { setMode(b.dataset.edit); });
+      b.addEventListener("click", function () {
+        setMode(b.dataset.edit);
+        /* the clicked button is gone with the stack view, so land on the first field of the
+           form that replaced it rather than dropping focus to <body> */
+        $(firstField(b.dataset.edit)).focus();
+      });
     });
+  }
+  function firstField(m) {
+    if (m === "ptell") return "cpiNow";
+    if (m === "operating") return opStyle === "rate" ? "opRate" : "opDollars";
+    return "bondNum";   /* hls, capital */
   }
 
   /* ---------- chart + table ---------- */
@@ -529,14 +541,19 @@
         ')"></span>' + se.name + '</span>';
     }).join("") : "";
 
-    /* table view */
-    var th = "<tr><th>Bill paid in</th>" + series.map(function (se) { return "<th>" + se.name + "</th>"; }).join("") +
-      (series.length > 1 ? "<th>Total</th>" : "") + "</tr>";
+    /* table view: short column heads with the chart's swatch keep six columns inside the
+       card; the full piece name stays in the header for screen readers */
+    var th = '<tr><th scope="col">Bill paid in</th>' + series.map(function (se) {
+      return '<th scope="col"><span class="levy-key cluster"><span class="levy-swatch" style="background:var(--series-' +
+        se.idx + ')"></span><span aria-hidden="true">' + SHORT[se.key] + '</span><span class="visually-hidden">' +
+        se.name + '</span></span></th>';
+    }).join("") + (series.length > 1 ? '<th scope="col">Total</th>' : "") + "</tr>";
     var rows = years.map(function (yr, i) {
-      return "<tr><td>" + yr + "</td>" + series.map(function (se) { return "<td>" + usd(se.values[i]) + "</td>"; })
+      return '<tr><th scope="row">' + yr + "</th>" + series.map(function (se) { return "<td>" + usd(se.values[i]) + "</td>"; })
         .join("") + (series.length > 1 ? "<td><strong>" + usd(totals[i]) + "</strong></td>" : "") + "</tr>";
     }).join("");
-    $("chartTable").innerHTML = "<table><thead>" + th + "</thead><tbody>" + rows + "</tbody></table>";
+    $("chartTable").innerHTML = '<table><caption class="visually-hidden">' + $("chartTitle").textContent + ". " +
+      $("chartSub").textContent + "</caption><thead>" + th + "</thead><tbody>" + rows + "</tbody></table>";
   }
 
   function showTip(i, evt) {
@@ -699,8 +716,6 @@
     var tot32 = yrs32.map(function (y) {
       return sum(keys32.map(function (k) { return pieceAt(k, y, share); }));
     });
-    $("by32Label").textContent = (mode === "stack" ? "All selected pieces through 2032" :
-      NAMES[mode] + " through 2032") + ", the end of the district's current projections";
     $("out32Year").textContent = usd(tot32[tot32.length - 1]);
     $("out32Month").textContent = usd(tot32[tot32.length - 1] / 12);
     $("out32Total").textContent = usd(sum(tot32));
@@ -741,18 +756,22 @@
       var fb = bondEff(k), pay = ds(fb.P, fb.term, fb.rate), itot = Math.max(0, pay * fb.term - fb.P);
       var i1 = fb.P * fb.rate / 100, iavg = fb.term ? itot / fb.term : 0;
       finTot.pay += pay; finTot.i1 += i1; finTot.iavg += iavg; finTot.itot += itot; finTot.P += fb.P;
-      finRows += "<tr><td>" + NAMES[k] + (mode === "stack" && !include[k] ? " (left out above)" : "") +
+      finRows += '<tr><th scope="row">' + NAMES[k] + (mode === "stack" && !include[k] ? " (left out above)" : "") +
         "<small class=\"step-note\">" + usdShort(fb.P) + ", " + fb.term + " years at " + fb.rate + "%, bills paid " +
-        fb.start + "–" + (fb.start + fb.term - 1) + "</small></td><td>" + usd(pay) + "</td><td>" + usd(i1) +
+        fb.start + "–" + (fb.start + fb.term - 1) + "</small></th><td>" + usd(pay) + "</td><td>" + usd(i1) +
         "</td><td>" + usd(iavg) + "</td><td>" + usd(itot) + "</td></tr>";
     });
-    finRows += "<tr><td><strong>New borrowing, total</strong></td><td><strong>" + usd(finTot.pay) + "</strong></td><td><strong>" +
-      usd(finTot.i1) + "</strong></td><td><strong>" + usd(finTot.iavg) + "</strong></td><td><strong>" + usd(finTot.itot) +
-      "</strong></td></tr>";
-    finRows += "<tr><td>Existing bonds, for scale<small class=\"step-note\">bond and interest extended on 2026 bills</small></td>" +
-      "<td>" + usd(7425249) + "</td><td>not published</td><td>not published</td><td>not published</td></tr>";
-    $("finTable").innerHTML = "<table><thead><tr><th>Borrowing</th><th>Annual payment</th><th>Interest, first year</th>" +
-      "<th>Interest, average per year</th><th>Total interest</th></tr></thead><tbody>" + finRows + "</tbody></table>";
+    finRows += '<tr><th scope="row"><strong>New borrowing, total</strong></th><td><strong>' + usd(finTot.pay) +
+      "</strong></td><td><strong>" + usd(finTot.i1) + "</strong></td><td><strong>" + usd(finTot.iavg) +
+      "</strong></td><td><strong>" + usd(finTot.itot) + "</strong></td></tr>";
+    finRows += '<tr><th scope="row">Existing bonds, for scale<small class="step-note">bond and interest extended on ' +
+      "2026 bills</small></th><td>" + usd(7425249) + "</td><td>not published</td><td>not published</td>" +
+      "<td>not published</td></tr>";
+    $("finTable").innerHTML = '<table><caption class="visually-hidden">What new borrowing would cost the district, ' +
+      "per year and in total interest</caption><thead><tr><th scope=\"col\">Borrowing</th>" +
+      '<th scope="col">Annual payment</th><th scope="col">Interest, first year</th>' +
+      '<th scope="col">Interest, average per year</th><th scope="col">Total interest</th></tr></thead><tbody>' +
+      finRows + "</tbody></table>";
 
     /* 2017 referendum: already in today's bill (renters: already in rent) */
     var base17 = renter ? renterD65() : num(curTax, 0);

@@ -1931,11 +1931,23 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      row carries the weight, the first column sizes to its content, and the
      figure columns right-align so place values line up. */
   .levy-table-wrap { overflow-x: auto; }
-  .levy-table-wrap :is(th, td) { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .levy-table-wrap :is(th, td) {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    padding-inline: var(--space-xs);   /* tighter than .page tables so six figure columns fit the card */
+  }
+  @media (--sm-and-down) {
+    .levy-table-wrap :is(th, td) { padding-inline: var(--space-2xs); }
+  }
   .levy-table-wrap th { font-weight: 700; }
+  .levy-table-wrap thead th { vertical-align: bottom; }
   .levy-table-wrap :is(th, td):first-child { background: none; width: auto; font-size: inherit; }
-  .levy-table-wrap td:first-child { font-weight: normal; }
+  /* body-row headers are <th scope="row"> for screen readers but read as plain labels */
+  .levy-table-wrap tbody :is(th, td):first-child { font-weight: normal; }
   .levy-table-wrap :is(th, td):not(:first-child) { text-align: end; }
+  /* short column heads carry the chart's swatch stacked above the label, so it adds
+     height, not width; inline-flex so the pair still right-aligns with the figures */
+  .levy-table-wrap th .levy-key { display: inline-flex; flex-direction: column; align-items: flex-end; }
 
   /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
   @media (--sm-and-down) {
