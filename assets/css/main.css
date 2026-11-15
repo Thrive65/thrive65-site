@@ -119,6 +119,9 @@
   /* Shared nav-control height (theme/lang pills + CTA). Font-INDEPENDENT so
      controls with different font sizes still line up at the 44px hit target. */
   --control-height: 2.75rem;
+  /* the sticky .site-header's block size (its control row plus padding and
+     rule), so things that stick below it can clear it */
+  --header-size: calc(var(--control-height) + 2 * var(--space-xs) + var(--border-bold));
 
   /* ---- Shared: surfaces & structure · LIGHT ----------------------------- */
   --bg:    #F7F5EC;                 /* warm page surface */
@@ -142,7 +145,10 @@
      also rides on the legend, tooltip and table, so color is never the only
      cue. Declared in all five theme blocks; high contrast swaps in sets that
      clear 5.7:1 on its flattened surfaces. ------------------------------ */
-  --series-1: #0072B2;   /* yearly levy increase */
+  /* navy, not Okabe–Ito blue: that equals --brand here, so the levy swatch
+     matched the ticked .checkbox beside it. 2.2:1 from --brand, 11:1 on
+     --card, ≥3.3:1 from the other three series. */
+  --series-1: #1B3A6B;   /* yearly levy increase */
   --series-2: #CC79A7;   /* health & life safety */
   --series-3: #E69F00;   /* capital referendum */
   --series-4: #009E73;   /* operating referendum */
@@ -188,6 +194,9 @@
 @custom-media --sm-and-down (max-width: 784px);
 @custom-media --md-and-up   (min-width: 785px);
 @custom-media --lg-and-up   (min-width: 1115px);
+/* tall enough to give up a strip of screen to a sticky/docked panel (below
+   this, docking is off so it doesn't eat the room people need to type) */
+@custom-media --dock-height (min-height: 501px);
 
 /* ============================================================================
    SHARED DARK surfaces + default hue (Lake Teal) DARK.
@@ -924,11 +933,13 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
   }
 
-  /* Hit-target expansion — the panel's compact controls (switch, stepper,
-     segment, close ✕) match the approved frames but read smaller than 44px.
-     A transparent, centered overlay guarantees a ≥44×44px pointer/tap target
-     (acceptance checklist) without altering the visual size or layout: it's
-     absolutely positioned, so it never changes the flex box it sits in. */
+  /* Hit-target expansion — the one shared rule for every compact control that
+     reads smaller than 44px: the a11y panel's switch, stepper, segment, close ✕
+     and reset, plus .checkbox, .choice.compact and .dock-details (each sets its
+     own position: relative). A transparent, centered overlay guarantees a
+     ≥44×44px pointer/tap target (acceptance checklist) without altering the
+     visual size or layout: it's absolutely positioned, so it never changes the
+     flex box it sits in. Add new compact controls to this list, don't copy it. */
   .a11y-step,
   .a11y-segment,
   .a11y-close,
@@ -937,7 +948,10 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .a11y-step::before,
   .a11y-segment::before,
   .a11y-close::before,
-  .a11y-reset::before {
+  .a11y-reset::before,
+  .checkbox::before,
+  .choice.compact::before,
+  .dock-details::before {
     content: "";
     position: absolute;
     top: 50%;
@@ -1278,6 +1292,22 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     color: var(--muted);
   }
   .accordion-body :last-child { margin-bottom: 0; }
+  /* sub-headings inside a panel never outsize the summary that titles it */
+  .accordion-body :is(h3, h4) { font-size: var(--step-0); }
+  /* open/close slides the panel: ::details-content is the part <details> shows
+     and hides, interpolate-size lets block-size animate to and from auto, and
+     allow-discrete holds content-visibility until the close finishes. Gated on
+     interpolate-size, so a browser without it snaps exactly as before. */
+  @supports (interpolate-size: allow-keywords) {
+    .accordion { interpolate-size: allow-keywords; }
+    .accordion::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition: block-size var(--transition-slow) var(--ease),
+                  content-visibility var(--transition-slow) var(--ease) allow-discrete;
+    }
+    .accordion[open]::details-content { block-size: auto; }
+  }
 
   /* ─ Post / page prose ─ (headings inherit the global scale; only rhythm here) */
   .post h2,
@@ -1724,6 +1754,71 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     align-items: stretch;
     inline-size: var(--field-width, 100%);
   }
+
+  /* ─ Select ─ swaps a native <select>'s arrow for the site's chevron (the same
+     icons/chevron.svg include the nav dropdowns use). A <select> can't hold
+     children, so the wrapper stacks the two in one grid cell:
+       <div class="select"><select>…</select>{% include icons/chevron.svg %}</div>
+     The chevron is click-through, follows the control's ink via currentColor,
+     and flips while the picker is open where `:open` is supported. */
+  .select {
+    display: grid;
+    align-items: center;
+    inline-size: var(--field-width, 100%);
+  }
+  .select > * { grid-area: 1 / 1; }
+  .select > select {
+    appearance: none;
+    padding-inline-end: var(--space-l);   /* room for the chevron */
+    cursor: pointer;
+  }
+  .select > svg {
+    justify-self: end;
+    margin-inline-end: var(--space-xs);
+    color: var(--ink);
+    pointer-events: none;
+    transition: transform var(--transition-fast) var(--ease);
+  }
+  .select:has(select:open) > svg { transform: rotate(180deg); }
+
+  /* ─ Checkbox ─ swaps a native checkbox's box for the site's checkbox glyph
+     (icons/checkbox.svg), the same way .select swaps the arrow. The wrapper is
+     the <label>, so its visually-hidden text names the control (and gets
+     translated, unlike aria-label) and its 44px overlay is a real click target:
+       <label class="checkbox"><input type="checkbox">{% include icons/checkbox.svg %}
+         <span class="visually-hidden">Name</span></label>
+     The input stays in place but transparent, so focus, keyboard and form
+     semantics are native; the glyph sits over it, click-through. Checked is a
+     brand fill with a card-colored tick (the .choice pressed convention), so it
+     inverts correctly in both high-contrast themes. */
+  .checkbox {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    cursor: pointer;
+  }
+  .checkbox > :is(input, svg) {
+    grid-area: 1 / 1;
+    inline-size: var(--step-1);
+    block-size: var(--step-1);
+  }
+  .checkbox > input {
+    appearance: none;
+    margin: 0;
+    border-radius: 20%;   /* the glyph's rx=3 of 16, so the focus ring follows it */
+    cursor: pointer;
+  }
+  .checkbox > svg {
+    color: var(--brand);
+    pointer-events: none;
+    transition: color var(--transition-fast) var(--ease);
+  }
+  .checkbox rect { fill: var(--card); transition: fill var(--transition-fast) var(--ease); }
+  .checkbox polyline { stroke: var(--card); opacity: 0; transition: opacity var(--transition-fast) var(--ease); }
+  .checkbox > input:checked + svg rect { fill: currentColor; }
+  .checkbox > input:checked + svg polyline { opacity: 1; }
+  .checkbox:hover > svg { color: var(--brand-strong); }
   .input-group > * { border-radius: 0; }
   .input-group > input { flex: 1 1 auto; }
   .input-group > :first-child {
@@ -1812,17 +1907,6 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     border-radius: var(--radius-pill);
     min-block-size: 0;
   }
-  .choice.compact::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 44px;
-    min-height: 44px;
-    width: 100%;
-    height: 100%;
-  }
   /* :not() guard so this doesn't out-order .choice[aria-pressed="true"]:hover
      and paint brand ink on the brand-strong pressed fill */
   .choice.compact:not([aria-pressed="true"]):hover { border-color: var(--brand); color: var(--brand); }
@@ -1883,6 +1967,208 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     font-size: var(--step-1);
   }
 
+  /* ─ Collapse ─ a region that slides shut and open with the 0fr → 1fr
+     grid-row technique, which animates in every current browser (unlike
+     display or height: auto). The region's one child is the content; it needs
+     overflow: hidden wherever the region can close, or it spills out while the
+     row grows. .is-closed shuts it; visibility: hidden (delayed by the
+     transition until the slide ends) takes the content out of the tab order and
+     the accessibility tree. A context can shut it by its own rule instead, as
+     the phone dock does from .result-dock:not(.is-open). */
+  .collapse {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows var(--transition-slow) var(--ease),
+                visibility var(--transition-slow) var(--ease);
+  }
+  .collapse > * { min-block-size: 0; }
+  .collapse.is-closed { grid-template-rows: 0fr; visibility: hidden; }
+
+  /* ─ Dock layout ─ a form beside its docked result (the tax calculator;
+     audit issue 5). The .result-dock holds the whole result card. Its base
+     state is undocked: an ordinary card after the form, Details button and
+     inline year hidden, which is also what short viewports, the 150% text
+     size and the unprocessed dev CSS get.
+       Desktop: the layout breaks out of --measure to --measure-wide, centred,
+     as two columns (form 1.6fr : dock 1fr), and the dock sticks below the
+     site header until the layout ends, which on the tax calculator is just
+     before the sources.
+       Phone: the dock is a bar fixed to the bottom showing the headline, shown
+     by JS (.is-visible) only while the layout is on screen; Details (.is-open)
+     slides it up into the full card. Its two .collapse regions animate it. */
+  .result-dock :is(.dock-details, .dock-bar-label) { display: none; }
+  /* undocked it follows the content column, so it takes the flow gap itself */
+  .dock-layout > .result-dock { margin-block-start: var(--flow-space, var(--space-s)); }
+  .result-dock .dock-head :is(.stat-value, .stat-unit) {
+    transition: font-size var(--transition-slow) var(--ease);
+  }
+  .result-dock .dock-head .stat-value { --stat-step: var(--step-5); }
+  @media (--md-and-up) {
+    .dock-layout {
+      --dock-layout-size: min(100vw - 2 * var(--gutter), var(--measure-wide));
+      inline-size: var(--dock-layout-size);
+      margin-inline: calc((100% - var(--dock-layout-size)) / 2);
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: var(--grid-gap, var(--space-s));
+      align-items: start;
+    }
+    .dock-layout > .result-dock { margin-block-start: 0; }   /* the grid gap spaces it */
+  }
+  @media (--md-and-up) and (--dock-height) {
+    :root:not([data-textsize="150"]) .result-dock {
+      position: sticky;
+      inset-block-start: calc(var(--header-size) + var(--space-s));
+      max-block-size: calc(100dvh - var(--header-size) - 2 * var(--space-s));
+      overflow-y: auto;
+    }
+  }
+  @media (--sm-and-down) and (--dock-height) {
+    :root:not([data-textsize="150"]) .result-dock {
+      position: fixed;
+      inset-inline: 0;
+      inset-block-end: 0;
+      z-index: 5;
+      padding: var(--space-xs) var(--gutter);
+      border-block-end: 0;
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      max-block-size: calc(100dvh - var(--header-size));
+      overflow-y: auto;
+      translate: 0 100%;
+      visibility: hidden;
+      transition: translate var(--transition-base) var(--ease),
+                  visibility var(--transition-base) var(--ease),
+                  padding-block var(--transition-slow) var(--ease);
+    }
+    :root:not([data-textsize="150"]) .result-dock.is-visible { translate: none; visibility: visible; }
+    /* open, the sheet takes one more step of block padding than the bar */
+    :root:not([data-textsize="150"]) .result-dock.is-open { padding-block: var(--space-s); }
+    :root:not([data-textsize="150"]) .dock-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2xs) var(--space-s);
+    }
+    :root:not([data-textsize="150"]) .dock-head .stat-value { margin-block: 0; }
+    :root:not([data-textsize="150"]) .result-dock .dock-details { display: inline-flex; }
+    /* collapsed, the bar names its figure with a short eyebrow of its own
+       (open, the full #resLabel above takes over), and the unit is a fixed
+       step: .stat-unit's 0.33em would be illegible on a --step-1 figure */
+    :root:not([data-textsize="150"]) .result-dock:not(.is-open) .dock-bar-label { display: block; }
+    :root:not([data-textsize="150"]) .result-dock:not(.is-open) .dock-head .stat-value { --stat-step: var(--step-1); }
+    :root:not([data-textsize="150"]) .result-dock:not(.is-open) .dock-head .stat-unit { font-size: var(--step--1); }
+    :root:not([data-textsize="150"]) .result-dock .collapse > * { overflow: hidden; }
+    :root:not([data-textsize="150"]) .result-dock:not(.is-open) .collapse {
+      grid-template-rows: 0fr;
+      visibility: hidden;
+    }
+    /* WCAG 2.2 focus not obscured: scrolling a field into view clears the bar
+       (JS keeps --dock-bar-size at the collapsed bar's measured height) */
+    :root:not([data-textsize="150"]):has(.result-dock.is-visible) { scroll-padding-block-end: var(--dock-bar-size, 0px); }
+  }
+  .dock-details {
+    position: relative;   /* for the shared 44px hit-target overlay */
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--feature-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+  /* collapsed it points up (the card opens upward); open, down */
+  .dock-details > svg { rotate: 180deg; transition: rotate var(--transition-fast) var(--ease); }
+  .result-dock.is-open .dock-details > svg { rotate: none; }
+
+  /* ─ Include row ─ one row of a .steps list: a .checkbox, then a <details>
+     whose <summary> reads [swatch + name + .step-note] [.step-value] [chevron],
+     then the row's .include-panel, which opens in place underneath, indented
+     past the checkbox. The panel is the <details>' sibling, not its content, so
+     the row grid can put checkbox and summary alone on row 1 and centre them on
+     each other. JS mirrors the <details>' open state onto the panel's
+     [hidden] (no :has(), so it works everywhere), the summary's aria-controls
+     names it, and <details name> still keeps one open.
+     Rides on .step for the dashed separator and rhythm; only the columns and
+     the disclosure are new. The checkbox stays outside the <summary> (an
+     interactive control inside one has an unreliable role and click target).
+     An unticked row is marked three ways, not by dimming alone: JS writes
+     "Not included" into its note and a dash for its amount, and here the
+     swatch drops to an outline, the name (.include-name) is struck through
+     and the name and amount turn --muted. Sibling rows share a <details name> so one opens at a time. */
+  .include-row {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: 0;   /* the panel is always row 2 now; its fields carry the gap */
+    align-items: center;   /* checkbox and summary, row 1 */
+  }
+  .include-row > details > summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    column-gap: var(--space-xs);
+    align-items: center;
+    list-style: none;
+    cursor: pointer;
+  }
+  .include-row > details > summary::-webkit-details-marker { display: none; }
+  .include-label { font-weight: 600; }
+  .include-label .levy-swatch {
+    inline-size: var(--step--1);
+    block-size: var(--step--1);
+    margin-inline-end: var(--space-2xs);
+  }
+  .include-label .step-note { font-weight: 400; }
+  /* closed ▸, open ▾ */
+  .include-row > details > summary > svg {
+    color: var(--muted);
+    transform: rotate(-90deg);
+    transition: transform var(--transition-fast) var(--ease);
+  }
+  .include-row > details[open] > summary > svg { transform: none; }
+  /* The panel is a .collapse (JS sets .is-closed from the <details>' open
+     state) around one .include-fields: a single-column grid, so callouts,
+     field sets and fields all sit --grid-gap apart and every field runs full
+     width (see "Forms" in CLAUDE.md). No frame: the fields read as part of the
+     row that opened them. The gap above them is the panel's margin, which
+     closes with it (padding couldn't: a box never shrinks below its padding,
+     so a closed panel would keep the gap). The --space-2xs padding on all four
+     sides, cancelled by an equal negative margin, is room for the 3px + 3px
+     offset focus ring, which overflow: hidden would otherwise cut off. */
+  .include-panel {
+    grid-column: 2;
+    margin-block-start: calc(var(--space-xs) + var(--grid-gap, var(--space-s)));
+    transition: grid-template-rows var(--transition-slow) var(--ease),
+                visibility var(--transition-slow) var(--ease),
+                margin-block-start var(--transition-slow) var(--ease);
+  }
+  .include-panel.is-closed { margin-block-start: 0; }
+  .include-fields {
+    display: grid;
+    gap: var(--grid-gap, var(--space-s));
+    overflow: hidden;
+    padding: var(--space-2xs);
+    margin: calc(-1 * var(--space-2xs));
+  }
+  .include-row:has(> .checkbox > input:not(:checked)) .levy-swatch { background: transparent; }
+  .include-row:has(> .checkbox > input:not(:checked)) :is(.include-label, .step-value) { color: var(--muted); }
+  /* the strike is always drawn, transparent until unticked, so it can fade
+     in with the --muted color (text-decoration-line itself can't animate);
+     both run at the swatch's speed so the row changes together */
+  .include-row :is(.include-label, .step-value) {
+    transition: color var(--transition-fast) var(--ease);
+  }
+  .include-row .include-name {
+    text-decoration: line-through transparent var(--border-thin);
+    transition: text-decoration-color var(--transition-fast) var(--ease);
+  }
+  .include-row:has(> .checkbox > input:not(:checked)) .include-name {
+    text-decoration-color: currentColor;
+  }
+
   /* ─ Levy chart ─ the tax calculator's stacked year-by-year bars. Fills are
      set inline from JS as var(--series-N) (theme tokens on :root). Legend and
      tooltip rows ride on .cluster; the tooltip takes the shared --menu-*
@@ -1900,12 +2186,17 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .levy-legend { column-gap: var(--space-s); font-size: var(--step--1); }
   .levy-legend:empty { display: none; }
   .levy-key { gap: var(--space-2xs); }
+  /* --swatch is set inline (var(--series-N)); the border in the same color lets
+     a swatch drop to an outline (an unticked .include-row) at the same size */
   .levy-swatch {
     display: inline-block;
     inline-size: var(--step-0);
     block-size: var(--step-0);
     border-radius: var(--border-bold);
     flex: none;
+    background: var(--swatch);
+    border: var(--border-bold) solid var(--swatch);
+    transition: background var(--transition-fast) var(--ease);
   }
   .levy-tip {
     position: absolute;
@@ -1931,11 +2222,23 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      row carries the weight, the first column sizes to its content, and the
      figure columns right-align so place values line up. */
   .levy-table-wrap { overflow-x: auto; }
-  .levy-table-wrap :is(th, td) { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .levy-table-wrap :is(th, td) {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    padding-inline: var(--space-xs);   /* tighter than .page tables so six figure columns fit the card */
+  }
+  @media (--sm-and-down) {
+    .levy-table-wrap :is(th, td) { padding-inline: var(--space-2xs); }
+  }
   .levy-table-wrap th { font-weight: 700; }
+  .levy-table-wrap thead th { vertical-align: bottom; }
   .levy-table-wrap :is(th, td):first-child { background: none; width: auto; font-size: inherit; }
-  .levy-table-wrap td:first-child { font-weight: normal; }
+  /* body-row headers are <th scope="row"> for screen readers but read as plain labels */
+  .levy-table-wrap tbody :is(th, td):first-child { font-weight: normal; }
   .levy-table-wrap :is(th, td):not(:first-child) { text-align: end; }
+  /* short column heads carry the chart's swatch stacked above the label, so it adds
+     height, not width; inline-flex so the pair still right-aligns with the figures */
+  .levy-table-wrap th .levy-key { display: inline-flex; flex-direction: column; align-items: flex-end; }
 
   /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
   @media (--sm-and-down) {
@@ -2125,6 +2428,10 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     color: var(--eyebrow-color, var(--secondary));
     margin-block-end: var(--step--2);
   }
+  /* …and the heading it labels doesn't push away from it: drop the heading's
+     own section margin (.page h2's --space-m, a .flow gap) to the page
+     header's 0.1em, so every eyebrow + heading pair reads as one unit. */
+  .text-eyebrow + :is(h1, h2, h3) { margin-block-start: 0.1em; }
 
   .font-display   { font-family: var(--font-display); }
 

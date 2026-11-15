@@ -39,18 +39,15 @@ module.exports = {
           "faq-anchor",
           "hidden",
           "visible",
-          // tax calculator: preset buttons and the derivation rows are built
-          // as JS strings (assets/js/tax-calculator.js), so these classes never
-          // appear as static class="" attributes in the built HTML.
-          "choice",
-          "compact",
+          // tax calculator: the derivation rows are built as JS strings
+          // (assets/js/tax-calculator.js), so these classes never appear as
+          // static class="" attributes in the built HTML.
           "step",
           "step-n",
           "step-label",
           "step-note",
           "step-value",
           "total",
-          "stripe-bloom",
           // tax calculator chart: SVG marks, legend, tooltip and the table
           // views are all injected as JS strings too.
           "levy-axis",
