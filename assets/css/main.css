@@ -2058,7 +2058,14 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     :root:not([data-textsize="150"]) .result-dock:not(.is-open) .dock-bar-label { display: block; }
     :root:not([data-textsize="150"]) .result-dock:not(.is-open) .dock-head .stat-value { --stat-step: var(--step-1); }
     :root:not([data-textsize="150"]) .result-dock:not(.is-open) .dock-head .stat-unit { font-size: var(--step--1); }
-    :root:not([data-textsize="150"]) .result-dock .collapse > * { overflow: hidden; }
+    /* the clip gets --space-xs of room below, cancelled by an equal negative
+       margin so layout is unchanged: the last .stat-value is trimmed to its
+       baseline (text-box), so a flush clip would cut its commas' tails off */
+    :root:not([data-textsize="150"]) .result-dock .collapse > * {
+      overflow: hidden;
+      padding-block-end: var(--space-xs);
+      margin-block-end: calc(-1 * var(--space-xs));
+    }
     :root:not([data-textsize="150"]) .result-dock:not(.is-open) .collapse {
       grid-template-rows: 0fr;
       visibility: hidden;
