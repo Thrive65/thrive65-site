@@ -105,7 +105,7 @@ Files edited by hand:
 - **utility** — single-purpose, function-named helpers. Names are **semantic, not literal**: colors are `.bg-surface` / `.bg-surface-alt` / `.bg-brand` / `.bg-accent` / `.text-base` / `.text-deemphasized` / `.text-brand` (role, not `.bg-marigold`); type is `.text-meta` / `.text-eyebrow`; plus `.text-center`, `.nowrap`, `.fit`, `.rule-above`, `.flow-space-*`, `.mt-*`, `.visually-hidden`. Utilities beat blocks because the utility layer comes last (before exception).
 - **exception** — third-party override block (EmailOctopus under `.signup`) where `!important` is the only option.
 
-**Global heading scale.** Headings are sized once, globally: `h1` → `--step-3`, `h2` → `--step-2`, `h3` → `--step-1`. Don't re-declare a heading size that already matches the global value; the **hero** is the only context that overrides it (`h1` → `--step-5`, eyebrow `h3` → `--step--1`).
+**Global heading scale.** Headings are sized once, globally: `h1` → `--step-3`, `h2` → `--step-2`, `h3` → `--step-1`. Don't re-declare a heading size that already matches the global value; only two contexts override it: the **hero** (`h1` → `--step-5`, eyebrow `h3` → `--step--1`) and the **accordion**, whose `<summary>` heading takes the summary's `--step-0` and whose panel `h3`/`h4` match it, so a sub-heading never outsizes the title that opens it.
 
 **Fully fluid type & space — root knobs + proportional rem + rlh**
 
