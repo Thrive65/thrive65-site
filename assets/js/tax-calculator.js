@@ -680,8 +680,13 @@
         mode === "stack" ? "already applied to the amounts above" : "applied to the amount above",
         Math.round(PT() * 100) + "%"]);
       steps.forEach(function (s) {
-        if (s[0] === "=") s[1] = mode === "stack" ? s[1].replace("Everything together in", "Estimated added rent in")
+        if (s[0] !== "=") return;
+        s[1] = mode === "stack" ? s[1].replace("Everything together in", "Estimated added rent in")
           : "Estimated added rent";
+        /* owner wording "added to what you pay today" reads as monthly rent; say per year */
+        s[2] = s[2].replace(/^(in the first year, )?(added to|on top of) what you pay today$/, function (_, fy) {
+          return "per year" + (fy ? " in the first year" : "") + ", on top of your current rent";
+        });
       });
     }
     $("chartSub").textContent = renter
