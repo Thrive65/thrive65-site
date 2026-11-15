@@ -30,6 +30,13 @@ steps listed in its own `CLAUDE.md`.
 - `reference/*.dc.html` — design-reference prototypes (recreate in Jekyll +
   CUBE CSS; do **not** ship the HTML).
 
+### `2026-11-14_tax-calculator-ux-audit/` — tax calculator UX audit
+**Canonical** until its fixes land. UX, WCAG 2.1 AA and copy audit of
+`/tax-calculator/`, with recommendations for six focus areas (picker vs tabs,
+in-place piece editing, include checkboxes, scenario select, docked result,
+wide tables), implementation notes and a suggested order. `README.md` is the
+condensed version for agents; `audit.html` is the full report.
+
 ### `hue-archive.css` — retired alternate hue colorsets
 The evergreen / electric-blue / ultraviolet `.hue-*` token blocks (light +
 dark) removed from `assets/css/main.css` when the hue system collapsed to a

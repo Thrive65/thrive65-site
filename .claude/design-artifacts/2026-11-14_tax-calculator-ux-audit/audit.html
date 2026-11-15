@@ -1,0 +1,342 @@
+<title>Tax Calculator UX Audit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Archivo:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: single reading column (~68ch) with full-width finding cards; wireframes sit inline as small diagrams. */
+:root {
+  --bg: #f6f3ec; --surface: #fffdf8; --ink: #17222a; --muted: #4f5c63; --line: #d9d3c6;
+  --brand: #0a6aa6; --accent: #e9a01c; --feature: #154a57; --feature-ink: #f4f1e8;
+  --crit: #b3261e; --major: #a25a00; --minor: #3b6f3b; --chip: #ebe6da; --code: #efe9dc;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Public Sans", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121a1f; --surface: #19242a; --ink: #e7ecee; --muted: #a6b3b9; --line: #2f3d44;
+  --brand: #5cb3e8; --accent: #f2b544; --feature: #0e3640; --feature-ink: #eef3f4;
+  --crit: #ff8a80; --major: #ffb454; --minor: #8fd18f; --chip: #24323a; --code: #22303a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121a1f; --surface: #19242a; --ink: #e7ecee; --muted: #a6b3b9; --line: #2f3d44;
+  --brand: #5cb3e8; --accent: #f2b544; --feature: #0e3640; --feature-ink: #eef3f4;
+  --crit: #ff8a80; --major: #ffb454; --minor: #8fd18f; --chip: #24323a; --code: #22303a; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--ink); font: 16px/1.6 var(--body); }
+.page { max-width: 46rem; margin: 0 auto; padding-block: 48px 96px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: 2.3rem; font-weight: 800; }
+h2 { font-size: 1.5rem; font-weight: 800; margin-top: 56px; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+p, ul, ol { margin: 0; }
+.stack > * + * { margin-top: 14px; }
+.eyebrow { font: 700 0.75rem/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--brand); }
+.meta { color: var(--muted); font-size: .9rem; }
+code { font-family: var(--mono); font-size: .85em; background: var(--code); padding: 1px 5px; border-radius: 4px; }
+a { color: var(--brand); }
+.lede { font-size: 1.15rem; }
+
+.scope { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+.scope > div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; min-width: 0; }
+.scope ul { padding-left: 18px; font-size: .92rem; }
+@media (max-width: 560px) { .scope { grid-template-columns: 1fr; } }
+
+.numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+.numbers > div { background: var(--feature); color: var(--feature-ink); border-radius: 10px; padding: 16px; min-width: 0; }
+.numbers b { display: block; font: 800 1.9rem/1 var(--display); font-variant-numeric: tabular-nums; color: var(--accent); }
+.numbers span { font-size: .85rem; display: block; margin-top: 8px; }
+@media (max-width: 560px) { .numbers { grid-template-columns: 1fr; } }
+
+.finding { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 22px; margin-top: 18px; }
+.finding > * + * { margin-top: 12px; }
+.finding .head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.finding .n { font: 800 1rem/1 var(--display); color: var(--brand); }
+.label { font: 700 .72rem/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 18px; }
+.finding ul, .finding ol { padding-left: 20px; }
+.finding li + li { margin-top: 6px; }
+
+.sev { display: inline-block; font: 700 .7rem/1 var(--body); letter-spacing: .08em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap; }
+.sev.crit { color: var(--crit); } .sev.major { color: var(--major); } .sev.minor { color: var(--minor); }
+
+.rec { border-left: 3px solid var(--accent); padding-left: 14px; }
+
+/* wireframes */
+.wf { border: 1.5px dashed var(--line); border-radius: 10px; padding: 14px; font-size: .85rem; background: var(--bg); }
+.wf-cap { font-size: .78rem; color: var(--muted); margin-top: 6px; }
+.wf-row { display: grid; grid-template-columns: auto 1fr auto auto; gap: 10px; align-items: center; padding: 9px 4px; border-bottom: 1px dashed var(--line); }
+.wf-row:last-child { border-bottom: 0; }
+.box { width: 16px; height: 16px; border: 2px solid var(--ink); border-radius: 3px; display: grid; place-items: center; font-size: 11px; line-height: 1; }
+.box.on { background: var(--brand); border-color: var(--brand); color: var(--surface); }
+.sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 6px; }
+.off .wf-name, .off .wf-amt { color: var(--muted); }
+.off .wf-name s { text-decoration-thickness: 1px; }
+.wf-name small { display: block; color: var(--muted); font-size: .75rem; }
+.wf-amt { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.wf-chev { color: var(--muted); }
+.wf-panel { margin: 4px 0 8px 26px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--muted); }
+.wf-panel .fake { height: 10px; background: var(--chip); border-radius: 4px; margin-top: 6px; }
+.wf-panel .fake:first-child { margin-top: 0; }
+
+.layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 10px; }
+.layout .col { border: 1px solid var(--line); border-radius: 8px; padding: 10px; background: var(--surface); min-width: 0; }
+.layout .dock { background: var(--feature); color: var(--feature-ink); border-radius: 8px; padding: 12px; align-self: start; }
+.dock b { font: 800 1.4rem/1 var(--display); color: var(--accent); display: block; }
+.bar { background: var(--feature); color: var(--feature-ink); border-radius: 8px 8px 0 0; padding: 10px 12px; display: flex; justify-content: space-between; gap: 8px; align-items: center; flex-wrap: wrap; }
+.bar b { color: var(--accent); font-family: var(--display); }
+.phone { max-width: 230px; border: 1.5px solid var(--line); border-radius: 18px; padding: 10px 8px 0; background: var(--surface); }
+.phone .fake { height: 9px; background: var(--chip); border-radius: 4px; margin: 7px 4px; }
+.two { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; align-items: end; }
+@media (max-width: 560px) { .two, .layout { grid-template-columns: 1fr; } }
+
+.select { display: inline-flex; align-items: center; gap: 30px; border: 1.5px solid var(--ink); border-radius: 8px; padding: 7px 10px; background: var(--surface); }
+
+.tbl { overflow-x: auto; margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: .88rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 700; background: var(--chip); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--mono); white-space: nowrap; }
+.pass { color: var(--minor); font-weight: 700; }
+
+.phase { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin-top: 14px; }
+.phase dt { font: 800 .95rem/1.5 var(--display); color: var(--brand); }
+.phase dd { margin: 0; }
+footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); }
+</style>
+
+<div class="page">
+  <header class="stack">
+    <p class="eyebrow">UX audit · Thrive65</p>
+    <h1>What would this cost my household?</h1>
+    <p class="lede">A review of the tax impact estimator at <a href="https://wethrive65.org/tax-calculator/">wethrive65.org/tax-calculator</a>: layout and hierarchy, WCAG 2.1 AA accessibility, and interface copy, with recommendations for the six areas you raised.</p>
+    <p class="meta">Reviewed 14 November 2026 against the live site. Source: <code>tax-calculator.md</code>, <code>assets/js/tax-calculator.js</code>.</p>
+  </header>
+
+  <div class="scope">
+    <div>
+      <h3>Checked</h3>
+      <ul>
+        <li>Chrome desktop, 1440px wide</li>
+        <li>Phone width (390px), rendered in a frame</li>
+        <li>Element positions, scroll widths and tap-target sizes, measured in the page</li>
+        <li>Text contrast computed from live colors</li>
+        <li>Focus and announcements after Edit, run by script</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Not checked</h3>
+      <ul>
+        <li>A real screen reader (VoiceOver, NVDA)</li>
+        <li>Spanish (<code>?lang=es-MX</code>) layout</li>
+        <li>Dark mode and high contrast</li>
+        <li>200% zoom, and a physical phone</li>
+        <li>The renter flow, beyond a read of its copy</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>The short version</h2>
+  <div class="stack" style="margin-top:14px">
+    <p>The estimator started as five separate calculators, and the combined view was added on top. Five visible symptoms trace back to that structure. The picker and the forms aren't visibly connected. Edit sends people away from the combined view. On/off toggles sit apart from the pieces they control. Scenario buttons load values into forms the person can't see. And the answer is far from the inputs that change it.</p>
+    <p>Issues 1, 2 and 3 have one fix: make the combined view the page, and let each piece open in place. Issues 4, 5 and 6 can each ship separately.</p>
+  </div>
+  <div class="numbers">
+    <div><b>2,640px</b><span>from the picker to the headline result at 1440px wide: more than three screens</span></div>
+    <div><b>~4 screens</b><span>of scrolling on a phone between a choice and its result (786px → 4,048px)</span></div>
+    <div><b>0 of 4</b><span>table number columns visible on a phone in “What the borrowing would cost”</span></div>
+  </div>
+  <p class="meta" style="margin-top:12px">What already works: the copy is careful, plain and well sourced. Contrast passes everywhere I measured. Compact buttons already have 44px hit areas, and focus rings are strong. The “How that number is built” trace is excellent and worth keeping as it is.</p>
+
+  <h2>Your six focus areas</h2>
+
+  <!-- 1 -->
+  <article class="finding">
+    <div class="head"><span class="n">1</span><h3>The picker looks like options, but behaves like tabs</h3><span class="sev crit">Must fix</span></div>
+    <p>The five large cards switch which form, result, notes, assumptions and “needs a vote” section the page shows. They are styled as option cards (<code>aria-pressed</code> buttons), and the form they control starts 210px below them, after a callout. Nothing visually ties the selection to the panel. At 1440px the cards wrap four plus one, which leaves “Operating referendum” on its own row and makes it look like an afterthought.</p>
+    <p>The copy calls them “tabs” (“open any tab to change its settings”), but they look like option cards and aren't announced as tabs, so the copy and the control disagree.</p>
+    <p class="label">Recommendation</p>
+    <div class="rec stack">
+      <p><strong>Drop the five-way picker and make “All together” the page.</strong> Viewing one piece becomes a filter instead of a separate mode: turn the other pieces off (see 3), or use a “Show only this” link inside a piece. When only one piece is on, the result label becomes that piece's name, for example “Capital referendum, added cost in 2030”. That covers the reason the picker exists, a simple starting point, without creating a second way to navigate.</p>
+      <p>If you want to keep a starting choice, keep it as a one-time question at the top (“What are you trying to figure out?”) that sets which pieces start switched on. It shouldn't stay as a control that permanently swaps the page.</p>
+      <p><strong>Interim fix if the restructure has to wait:</strong> make it a real tab strip attached to the top edge of the “Your numbers” card. Use <code>role="tablist"</code> with arrow-key movement, <code>aria-controls</code> pointing to the card, and the selected tab sharing the card's border. Move <code>#modeNote</code> inside the card, below the tabs.</p>
+    </div>
+  </article>
+
+  <!-- 2 -->
+  <article class="finding">
+    <div class="head"><span class="n">2</span><h3>Edit jumps away from the combined view and changes what the headline means</h3><span class="sev crit">Must fix</span></div>
+    <p>Here is what I saw on the live page when I clicked <em>Edit</em> next to Capital referendum:</p>
+    <ul>
+      <li>The whole page switches to the Capital view. The piece list disappears, and the scroll position stays put, so you land at the bottom of the bond form instead of its first field.</li>
+      <li><strong>Keyboard focus falls to <code>&lt;body&gt;</code></strong>, so a keyboard or screen-reader user starts over from the top of the page (WCAG 2.4.3).</li>
+      <li>The headline drops from <strong>$1,157 / year</strong> to <strong>$138 / year</strong>, and the only cue is a small eyebrow label. Someone glancing at the result would think the change cut their cost by 88%.</li>
+      <li>There's no “back to all together” control. You have to scroll up to the picker to return.</li>
+    </ul>
+    <p class="label">Recommendation</p>
+    <div class="rec stack">
+      <p>Make each row in <code>#stackSummary</code> a disclosure that opens that piece's fields in place. Keep “Your numbers” (own/rent, EAV or tax) always visible above the list. Move the piece-specific notes, assumptions and “needs a vote” text into the piece's own panel.</p>
+      <p>Show each piece's dollar amount for the spotlight year in the row's value column (the B–E figures from the trace). The list then works as a live breakdown of the headline, and opening a piece's settings never changes what the headline means.</p>
+    </div>
+    <div class="wf" aria-label="Wireframe of the piece list with checkboxes and in-place disclosure">
+      <div class="wf-row"><span class="box on">✓</span><span class="wf-name"><span class="sw" style="background:#0072B2"></span>Yearly levy increase<small>2.7% in 2027, then 3.0% a year</small></span><span class="wf-amt">$479</span><span class="wf-chev">▸</span></div>
+      <div class="wf-row"><span class="box on">✓</span><span class="wf-name"><span class="sw" style="background:#CC79A7"></span>Health &amp; life safety bonds<small>$22M over 20 years at 4.5%</small></span><span class="wf-amt">$48</span><span class="wf-chev">▸</span></div>
+      <div class="wf-row"><span class="box on">✓</span><span class="wf-name"><span class="sw" style="background:#E69F00"></span>Capital referendum<small>$63.7M over 20 years at 4.5%</small></span><span class="wf-amt">$138</span><span class="wf-chev">▾</span></div>
+      <div class="wf-panel"><div class="fake" style="width:70%"></div><div class="fake" style="width:45%"></div><div class="fake" style="width:55%"></div><div style="margin-top:8px">Amount · term · rate · first bill · needs a vote?</div></div>
+      <div class="wf-row off"><span class="box"></span><span class="wf-name"><span class="sw" style="background:transparent;border:1.5px solid #009E73"></span><s>Operating referendum</s><small>Not included · $17M a year from 2029</small></span><span class="wf-amt">—</span><span class="wf-chev">▸</span></div>
+      <div class="wf-row"><span></span><span class="wf-name"><strong>Added on your 2030 bill</strong></span><span class="wf-amt"><strong>$665</strong></span><span></span></div>
+    </div>
+    <p class="wf-cap">Sketch: checkbox to include, row opens in place, live amount per piece, total at the bottom.</p>
+    <p class="label">Implementation notes</p>
+    <ul>
+      <li><strong>The bond fields are shared.</strong> HLS and Capital use the same <code>#borrowBlock</code> inputs, swapped by <code>saveBond()</code>/<code>loadBond()</code>. For both to be editable in place, each needs its own field set. The cleaner route is to render one bond fieldset per bond piece with prefixed ids, and drop the save/load swap.</li>
+      <li><strong><code>renderStackSummary()</code> rebuilds the list's <code>innerHTML</code> on every render.</strong> That would wipe any inputs placed inside it, and lose focus on every keystroke. The rows need to become static markup in the page, with JS updating only each row's note and amount text.</li>
+      <li>Use the existing <code>.accordion</code> block for each panel. Adding <code>name="piece"</code> to the <code>&lt;details&gt;</code> elements makes it an exclusive accordion (one open at a time) with no extra JS, if you want that.</li>
+    </ul>
+  </article>
+
+  <!-- 3 -->
+  <article class="finding">
+    <div class="head"><span class="n">3</span><h3>“Include in the total” is separate from the pieces it controls</h3><span class="sev major">Should fix</span></div>
+    <p>The four toggle pills sit above the scenario section and the piece list, so the same four names appear twice, about 400px apart, with different controls. When a piece is off, the only sign in the list is “(left out)” appended to its name, which is easy to miss.</p>
+    <p class="label">Recommendation</p>
+    <div class="rec stack">
+      <p>Put a real <code>&lt;input type="checkbox"&gt;</code> at the start of each row, as in the sketch above, and delete <code>#stackPieces</code>. An excluded row shows its state three ways, not by dimming alone: the label reads “Not included”, the swatch turns to an outline, and the amount becomes a dash. Its settings stay editable.</p>
+      <p>Keep the checkbox <strong>outside</strong> the <code>&lt;summary&gt;</code>. An interactive control nested inside a summary has an unreliable role and click target across browsers and screen readers. Lay the row out as a grid of [checkbox] [disclosure button], with the checkbox labelled by the piece name.</p>
+    </div>
+  </article>
+
+  <!-- 4 -->
+  <article class="finding">
+    <div class="head"><span class="n">4</span><h3>A one-button scenario picker, with a note that always shows</h3><span class="sev major">Should fix</span></div>
+    <p>“Community v4 package” is the only choice, so it reads as a switch, but it can't be switched off. It loads silently on page open (<code>DEFAULT_SCEN</code>), and its pressed state disappears without explanation as soon as you change any referendum amount. Its 85-word note shows whether or not the scenario is active, and still says “This button loads…”.</p>
+    <p class="label">Recommendation</p>
+    <div class="rec stack">
+      <p>Use a labelled <code>&lt;select&gt;</code>. Its options come from <code>SCEN</code>, plus a final <strong>Custom</strong> option that is selected automatically whenever <code>scenarioMatch()</code> fails. Picking Custom by hand keeps the current values.</p>
+      <p style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><strong>Referendum amounts</strong> <span class="select">Community v4 package (Nov 2026) <span>▾</span></span></p>
+      <p>Show the note only for the selected scenario. Store it as <code>SCEN[k].note</code> and generate the options from the same object, so adding a proposal is still a single entry and no longer needs markup edits as well. For Custom, show: “You've changed the referendum amounts. Choose a scenario to start over from it.”</p>
+      <p>Place it directly above the Capital and Operating rows it affects, or label it so the scope is clear: “Referendum amounts (capital and operating)”.</p>
+    </div>
+  </article>
+
+  <!-- 5 -->
+  <article class="finding">
+    <div class="head"><span class="n">5</span><h3>The result is out of sight while you change things</h3><span class="sev crit">Must fix</span></div>
+    <p>The headline result card starts 2,640px below the picker on desktop and about four phone screens down. Every change (a scenario, a piece, a rate) means scrolling down to check and back up to adjust. That cuts against what the page is for: seeing what happens when you change something.</p>
+    <p class="label">Recommendation</p>
+    <div class="two">
+      <div>
+        <div class="layout">
+          <div class="col"><div class="wf-cap" style="margin:0 0 6px">Your numbers + pieces</div><div class="wf-panel" style="margin:0"><div class="fake"></div><div class="fake" style="width:70%"></div><div class="fake" style="width:85%"></div><div class="fake" style="width:60%"></div><div class="fake" style="width:75%"></div></div></div>
+          <div class="dock"><span style="font-size:.7rem;letter-spacing:.08em">2030 BILL</span><b>$1,157/yr</b><span style="font-size:.8rem">$96 a month</span><div style="font-size:.72rem;margin-top:8px;opacity:.85">sticky</div></div>
+        </div>
+        <p class="wf-cap">Desktop (≥ 785px): two columns at <code>--measure-wide</code>, with the result sticky on the right.</p>
+      </div>
+      <div>
+        <div class="phone"><div class="fake"></div><div class="fake" style="width:70%"></div><div class="fake" style="width:85%"></div><div class="fake" style="width:60%"></div><div class="bar"><span><b>$1,157</b>/yr · 2030</span><span style="font-size:.75rem">Details ↓</span></div></div>
+        <p class="wf-cap">Phone: a slim sticky bottom bar.</p>
+      </div>
+    </div>
+    <ul>
+      <li><strong>Dock only the headline:</strong> the year amount, per month, and the spotlight-year control. The full 467px card stays in place as the detailed view. Docking all of it would cover half a laptop screen.</li>
+      <li>On phones, hide the bar while the full result card is on screen (an IntersectionObserver), and turn docking off when the viewport is short (<code>max-height: 500px</code>) or text size is 150% or more. Otherwise it eats the space people need to type.</li>
+      <li>The dock must never cover a focused field (WCAG 2.2's “focus not obscured”). Add <code>scroll-padding-bottom</code> equal to the bar's height.</li>
+      <li>The existing <code>#resAnnounce</code> live region already announces the result after a short delay. Don't make the dock a second live region.</li>
+      <li>The breakpoint goes through <code>@custom-media</code>, so check the docking in Firefox with the flag on, or in a production build.</li>
+    </ul>
+  </article>
+
+  <!-- 6 -->
+  <article class="finding">
+    <div class="head"><span class="n">6</span><h3>The wide tables scroll sideways inside the cards, and on phones that hides every number</h3><span class="sev crit">Must fix (phone)</span></div>
+    <div class="tbl"><table>
+      <thead><tr><th>Table</th><th>Columns</th><th>Content width</th><th>Visible, desktop</th><th>Visible, phone</th></tr></thead>
+      <tbody>
+        <tr><td><code>#finTable</code></td><td class="num">5</td><td class="num">1,233px</td><td class="num">707px</td><td class="num">264px</td></tr>
+        <tr><td><code>#chartTable</code></td><td class="num">6</td><td class="num">1,288px</td><td class="num">703px</td><td class="num">not measured</td></tr>
+      </tbody>
+    </table></div>
+    <p>At 390px wide only the “Borrowing” label column shows. Every dollar figure is off to the right, and there's no shadow or other cue that the table scrolls. Neither scroll container can take keyboard focus, so keyboard users can't scroll them at all (WCAG 2.1.1).</p>
+    <p class="label">Recommendation</p>
+    <div class="rec stack">
+      <p><strong>Make the tables need less width before breaking them out.</strong> A table that pokes out past its card's border looks like a layout bug. And at 78rem the wide measure is still narrower than these tables' content on a 1280px laptop.</p>
+      <ul>
+        <li><strong><code>#chartTable</code>:</strong> the width comes from the long column headers. Use short headers with the matching chart swatch (Levy · HLS · Capital · Operating · Total), keep the full name in an <code>abbr</code> or visually-hidden span, and add <code>font-variant-numeric: tabular-nums</code>. Six short numeric columns fit in 41rem. On phones, make the first column sticky.</li>
+        <li><strong><code>#finTable</code>:</strong> on screens at <code>--sm-and-down</code>, stack each borrowing as its own block of label and value rows, reusing the <code>.steps</code> layout already on the page. On desktop, shorten the headers (“Yearly payment”, “Interest, year 1”, “Total interest”) and consider moving “Interest, average per year” into the note below.</li>
+        <li>If a breakout is still needed afterwards, end the card before the table and put the table in its own <code>.wide</code> section with a matching heading. Don't stretch it out of the card.</li>
+      </ul>
+      <p><strong>Accessibility fixes to make either way:</strong> give each <code>.levy-table-wrap</code> <code>tabindex="0"</code>, <code>role="region"</code> and an <code>aria-label</code>. Make the first cell of each body row <code>&lt;th scope="row"&gt;</code> (it's a <code>&lt;td&gt;</code> now). Add a <code>&lt;caption&gt;</code>.</p>
+    </div>
+  </article>
+
+  <h2>Other findings</h2>
+  <p class="meta" style="margin-top:8px">From the layout and hierarchy pass, ordered by how much they get in the way.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Severity</th><th>Where</th><th>Issue and fix</th></tr></thead>
+    <tbody>
+      <tr><td><span class="sev major">Should fix</span></td><td>Your numbers</td><td>The form asks for <strong>EAV first</strong>, a figure most people don't know, then market value, then their actual D65 tax, which is the most accurate. Reverse the order. Better still, ask “Which do you have handy?” with three choices (my D65 tax line, my EAV, my home's value) and show one field.</td></tr>
+      <tr><td><span class="sev major">Should fix</span></td><td>Piece list</td><td>All four buttons are named just “Edit”, so a screen reader can't tell them apart (2.4.6). This goes away with the redesign. Until then, add an <code>aria-label</code> like “Edit capital referendum” and move focus to the first field of the form that opens.</td></tr>
+      <tr><td><span class="sev major">Should fix</span></td><td>Result card</td><td>The eyebrow labels are full sentences in all caps (“ALL SELECTED PIECES THROUGH 2032, THE END OF THE DISTRICT'S CURRENT PROJECTIONS”). All caps slows reading of anything over about four words. Use sentence case for the long ones, or shorten them (see copy).</td></tr>
+      <tr><td><span class="sev major">Should fix</span></td><td>“Show the running total over”</td><td>The 20-year window drives the chart, but nothing near the field says so, and the headline never shows a 20-year figure. Move the field into the chart card next to what it controls.</td></tr>
+      <tr><td><span class="sev minor">Nice to have</span></td><td>Picker, 1440px</td><td>The cards wrap four plus one. If the picker survives, use five columns at the wide measure, or a single row of shorter cards.</td></tr>
+      <tr><td><span class="sev minor">Nice to have</span></td><td>Piece notes</td><td><code>.step-note</code> is 13.5px, below body size on a page about money. Contrast passes (7.6:1); it's the size that strains.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Accessibility, WCAG 2.1 AA</h2>
+  <p class="meta" style="margin-top:8px">Contrast and target sizes were measured on the live page. Focus behavior was checked by script. Screen-reader output is inferred from the markup, not heard.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>Issue</th><th>Criterion</th><th>Severity</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Edit moves focus to <code>&lt;body&gt;</code> and hides the control that was clicked</td><td>2.4.3 Focus order</td><td><span class="sev crit">Critical</span></td></tr>
+      <tr><td>2</td><td>Table scroll containers can't take keyboard focus, so hidden columns are unreachable</td><td>2.1.1 Keyboard</td><td><span class="sev crit">Critical</span></td></tr>
+      <tr><td>3</td><td>The mode picker swaps the page's main content but is exposed as toggle buttons, with no relationship to the region it changes</td><td>4.1.2 Name, role, value; 1.3.1</td><td><span class="sev major">Major</span></td></tr>
+      <tr><td>4</td><td>Four buttons share the name “Edit”</td><td>2.4.6 Headings and labels</td><td><span class="sev major">Major</span></td></tr>
+      <tr><td>5</td><td>Table row headers are <code>&lt;td&gt;</code>; no captions</td><td>1.3.1 Info and relationships</td><td><span class="sev minor">Minor</span></td></tr>
+      <tr><td>6</td><td>“Market value” uses a placeholder (“e.g. 500000”) as its only example of the format</td><td>3.3.2 Labels or instructions</td><td><span class="sev minor">Minor</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3 style="margin-top:22px">Contrast (all pass)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Element</th><th>Size</th><th>Ratio</th><th>Needs</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>Body, callout, table headers</td><td class="num">19.5px</td><td class="num">16.3:1</td><td class="num">4.5:1</td><td class="pass">Pass</td></tr>
+      <tr><td><code>.hint</code>, <code>.step-note</code>, table notes</td><td class="num">13.5–16px</td><td class="num">7.6:1</td><td class="num">4.5:1</td><td class="pass">Pass</td></tr>
+      <tr><td><code>.affix</code></td><td class="num">16px</td><td class="num">6.4:1</td><td class="num">4.5:1</td><td class="pass">Pass</td></tr>
+      <tr><td><code>.choice-note</code> (on and off)</td><td class="num">16px</td><td class="num">5.2:1</td><td class="num">4.5:1</td><td class="pass">Pass</td></tr>
+      <tr><td>Result eyebrow and “/ year” (marigold on teal)</td><td class="num">13.5px bold</td><td class="num">4.8:1</td><td class="num">4.5:1</td><td class="pass">Pass, narrowly</td></tr>
+      <tr><td>Result figure</td><td class="num">82px</td><td class="num">8.8:1</td><td class="num">3:1</td><td class="pass">Pass</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta" style="margin-top:10px">The marigold eyebrow on teal is the closest call. Keep it bold, and check it again under dark mode and high contrast. Compact buttons render 35px tall but carry a 44px <code>::before</code> hit area, which passes. The focus ring is a 3px solid outline with a 3px offset.</p>
+
+  <h2>Copy</h2>
+  <p class="meta" style="margin-top:8px">The voice is already right: plain, specific and sourced. These changes mostly bring the words in line with the new structure and shorten the places people read while deciding.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Where</th><th>Now</th><th>Suggested</th></tr></thead>
+    <tbody>
+      <tr><td>Intro</td><td>“…Every piece keeps its own settings, so what you enter on one tab carries into the combined view.”</td><td>“…Turn each piece on or off, and open any piece to change its amount, rate or start year. The total updates as you go.”</td></tr>
+      <tr><td>Stack callout</td><td>“…Turn pieces on or off below, and open any tab to change its settings.”</td><td>Drop it once the list explains itself. Keep the substance (“Bonds stop when they're repaid. Levy and operating increases keep building.”) as the list's intro line.</td></tr>
+      <tr><td>Piece list button</td><td>“Edit”</td><td>“Change settings” as the disclosure label, or the piece name itself as the toggle</td></tr>
+      <tr><td>Scenario legend</td><td>“Start the referendum pieces from a scenario”</td><td>“Referendum amounts”, with options “Community v4 package (Nov 2026)” and “Custom”</td></tr>
+      <tr><td>Scenario note</td><td>85 words, ending “…Neither referendum has formally been proposed by the district.”</td><td>“From For a Brighter Evanston's model (v4, Nov 2026): a $17M operating increase and $63.7M in building bonds over 20 years at 4.5%, both on the November 2028 ballot. The district hasn't proposed either one.” Link the full assumptions to the sources list.</td></tr>
+      <tr><td>Spotlight year</td><td>“Spotlight year” [2030] “bill paid”</td><td>“Show the total for bills paid in” [2030]. “Spotlight” is our word, not theirs.</td></tr>
+      <tr><td>Result eyebrow</td><td>“ALL SELECTED PIECES THROUGH 2032, THE END OF THE DISTRICT'S CURRENT PROJECTIONS”</td><td>“Through 2032”, with a hint in sentence case: “The district's own projections end in 2032.”</td></tr>
+      <tr><td>EAV label</td><td>“Your property's equalized assessed value (EAV)”</td><td>“Equalized assessed value (EAV), from your tax bill”. The hint then only needs the market-value fallback.</td></tr>
+      <tr><td>Fin table note</td><td>One 120-word paragraph</td><td>Split it in two: “How to read this” (level debt service, two sentences) and “For scale” (existing bonds). The v4 sentence moves into the scenario note.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta" style="margin-top:10px">Translation: Spanish usually runs 15–30% longer than English. Before you lock the layout, check the shortened table headers and the docked bar with <code>?lang=es-MX</code>. If Elfsight translates “HLS” or “EAV”, add them to its exclusion list.</p>
+
+  <h2>Suggested order</h2>
+  <dl class="phase">
+    <dt>1</dt><dd><strong>Quick fixes, no redesign:</strong> table scroll regions and row headers, the shortened chart-table headers, unique Edit labels with focus moved into the form, and the copy changes.</dd>
+    <dt>2</dt><dd><strong>The scenario select</strong> (issue 4). Self-contained, and it gets new proposals ready to add.</dd>
+    <dt>3</dt><dd><strong>The restructure</strong> (issues 1–3 together): static piece rows with checkboxes and in-place panels, a field set for each bond piece, and the five-way picker retired.</dd>
+    <dt>4</dt><dd><strong>Docked result</strong> (issue 5). Easier once the inputs are a single column of pieces.</dd>
+    <dt>5</dt><dd><strong>Stacked borrowing table on phones</strong> (issue 6), if the shorter headers aren't enough.</dd>
+  </dl>
+
+  <footer class="meta">
+    Prepared with Claude using the UI Design Review and Design (accessibility, UX copy) skills. Measurements come from the live page on 14 November 2026. Recheck after the next deploy.
+  </footer>
+</div>
