@@ -2058,7 +2058,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     }
     /* WCAG 2.2 focus not obscured: scrolling a field into view clears the bar
        (JS keeps --dock-bar-size at the collapsed bar's measured height) */
-    html:has(.result-dock.is-visible) { scroll-padding-block-end: var(--dock-bar-size, 0px); }
+    :root:not([data-textsize="150"]):has(.result-dock.is-visible) { scroll-padding-block-end: var(--dock-bar-size, 0px); }
   }
   .dock-details {
     position: relative;   /* 44px hit-target overlay, as .choice.compact */
@@ -2095,8 +2095,9 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      then the row's .include-panel, which opens in place underneath, indented
      past the checkbox. The panel is the <details>' sibling, not its content, so
      the row grid can put checkbox and summary alone on row 1 and centre them on
-     each other; it shows while the <details> is open (:has), so the summary
-     still owns the expanded state and <details name> still keeps one open.
+     each other. JS mirrors the <details>' open state onto the panel's
+     [hidden] (no :has(), so it works everywhere), the summary's aria-controls
+     names it, and <details name> still keeps one open.
      Rides on .step for the dashed separator and rhythm; only the columns and
      the disclosure are new. The checkbox stays outside the <summary> (an
      interactive control inside one has an unreliable role and click target).
@@ -2135,12 +2136,12 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      --grid-gap apart and every field runs full width (see "Forms" in
      CLAUDE.md). No frame: the fields read as part of the row that opened them. */
   .include-panel {
-    display: none;
+    display: grid;
     grid-column: 2;
     gap: var(--grid-gap, var(--space-s));
     margin-block-start: var(--grid-gap, var(--space-s));
   }
-  .include-row:has(> details[open]) > .include-panel { display: grid; }
+  .include-panel[hidden] { display: none; }
   .include-row:has(> .checkbox > input:not(:checked)) .levy-swatch { background: transparent; }
   .include-row:has(> .checkbox > input:not(:checked)) :is(.include-label, .step-value) { color: var(--muted); }
   .include-row:has(> .checkbox > input:not(:checked)) .include-name {

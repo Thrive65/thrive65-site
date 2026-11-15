@@ -628,7 +628,9 @@
     $("resLabel").textContent = label;
     $("outYear").textContent = usd(headline);
     $("outMonth").textContent = usd(headline / 12);
-    setText($("dockBarLabel"), "Added cost in " + spotYear);   /* the phone bar's collapsed label */
+    /* the phone bar's collapsed label, matching #resLabel / #stackTotalLabel */
+    setText($("dockBarLabel"), !keys.length ? "Nothing included"
+      : (renter ? "Added rent in " : "Added cost in ") + spotYear);
 
     $("chartTitle").textContent = keys.length > 1 ? "Year by year, stacked" : "Year by year";
     renderChart(years, series, peak);
@@ -793,11 +795,21 @@
   dock.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && dock.classList.contains("is-open")) { setDockOpen(false); details.focus(); }
   });
+  /* The bar stays up while it holds focus, even scrolled past the layout: hiding it
+     (visibility: hidden) would drop focus to <body>. It goes once focus leaves. */
+  var layoutOnScreen = false;
+  function syncDock() {
+    var show = layoutOnScreen || dock.contains(document.activeElement);
+    dock.classList.toggle("is-visible", show);
+    if (!show) setDockOpen(false);   /* scrolled away: come back to the slim bar */
+  }
+  dock.addEventListener("focusout", function (e) {
+    if (!dock.contains(e.relatedTarget)) setTimeout(syncDock, 0);
+  });
   if ("IntersectionObserver" in window) {
     new IntersectionObserver(function (entries) {
-      var show = entries[entries.length - 1].isIntersecting;
-      dock.classList.toggle("is-visible", show);
-      if (!show) setDockOpen(false);   /* scrolled away: come back to the slim bar */
+      layoutOnScreen = entries[entries.length - 1].isIntersecting;
+      syncDock();
     }).observe(dock.parentNode);
   }
   /* track the collapsed bar's height as it settles (a ResizeObserver, so a measurement taken mid
@@ -805,9 +817,21 @@
   if ("ResizeObserver" in window) {
     new ResizeObserver(function () {
       if (dock.classList.contains("is-open")) return;
-      document.documentElement.style.setProperty("--dock-bar-size", dock.offsetHeight + "px");
+      /* only the fixed phone bar covers anything; sticky or in-flow (desktop, short
+         screens, 150% text) it reserves nothing */
+      var fixed = getComputedStyle(dock).position === "fixed";
+      document.documentElement.style.setProperty("--dock-bar-size", (fixed ? dock.offsetHeight : 0) + "px");
     }).observe(dock);
   }
+
+  /* Piece rows: each .include-panel is the <details>' sibling, so mirror the open state onto
+     its [hidden] (exclusive <details name> fires toggle on the one it closes, too). */
+  document.querySelectorAll(".include-row > details").forEach(function (d) {
+    var panel = d.parentNode.querySelector(".include-panel");
+    function sync() { panel.hidden = !d.open; }
+    d.addEventListener("toggle", sync);
+    sync();
+  });
 
   /* Open with the default scenario. This also sets the operating and capital inputs, overriding
      the placeholder values in the page's HTML, and renders. */

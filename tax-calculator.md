@@ -122,13 +122,13 @@ description: "District 65 could raise property taxes in several ways over the ne
         <span class="visually-hidden">Include the yearly levy increase</span>
       </label>
       <details name="piece">
-        <summary>
-          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-1)"></span><span class="include-name">Yearly levy increase</span><small class="step-note" id="ptellNote"></small></span>
+        <summary aria-controls="ptellPanel">
+          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-1)"></span><span class="include-name" id="ptellName">Yearly levy increase</span><small class="step-note" id="ptellNote"></small></span>
           <span class="step-value" id="ptellAmount"></span>
           {% include icons/chevron.svg %}
         </summary>
       </details>
-      <div class="include-panel">
+      <div class="include-panel" id="ptellPanel" role="group" aria-labelledby="ptellName" hidden>
         <div class="callout">
           <p><strong>The district requested a 4.99% increase, but existing homeowners should expect closer to
             2.4%.</strong> State law caps growth on existing property at inflation, 2.7% for taxes paid in 2027, and
@@ -174,13 +174,13 @@ description: "District 65 could raise property taxes in several ways over the ne
         <span class="visually-hidden">Include health and life safety bonds</span>
       </label>
       <details name="piece">
-        <summary>
-          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-2)"></span><span class="include-name">Health &amp; life safety bonds</span><small class="step-note" id="hlsNote"></small></span>
+        <summary aria-controls="hlsPanel">
+          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-2)"></span><span class="include-name" id="hlsName">Health &amp; life safety bonds</span><small class="step-note" id="hlsNote"></small></span>
           <span class="step-value" id="hlsAmount"></span>
           {% include icons/chevron.svg %}
         </summary>
       </details>
-      <div class="include-panel">
+      <div class="include-panel" id="hlsPanel" role="group" aria-labelledby="hlsName" hidden>
         <div class="callout">
           <p><strong>The district has started to borrow for this work.</strong> Its FY2027 budget anticipates about
             $22.1 million in health and life safety bond proceeds, and the proposed summer 2027 repairs use
@@ -242,13 +242,13 @@ description: "District 65 could raise property taxes in several ways over the ne
         <span class="visually-hidden">Include a capital referendum</span>
       </label>
       <details name="piece">
-        <summary>
-          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-3)"></span><span class="include-name">Capital referendum</span><small class="step-note" id="capitalNote"></small></span>
+        <summary aria-controls="capitalPanel">
+          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-3)"></span><span class="include-name" id="capitalName">Capital referendum</span><small class="step-note" id="capitalNote"></small></span>
           <span class="step-value" id="capitalAmount"></span>
           {% include icons/chevron.svg %}
         </summary>
       </details>
-      <div class="include-panel">
+      <div class="include-panel" id="capitalPanel" role="group" aria-labelledby="capitalName" hidden>
         <div class="callout">
           <p><strong>No capital referendum has been proposed.</strong> The district has said it is exploring a bond
             referendum in November 2028 to build two new or significantly renovated schools and invest in the
@@ -312,13 +312,13 @@ description: "District 65 could raise property taxes in several ways over the ne
         <span class="visually-hidden">Include an operating referendum</span>
       </label>
       <details name="piece">
-        <summary>
-          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-4)"></span><span class="include-name">Operating referendum</span><small class="step-note" id="operatingNote"></small></span>
+        <summary aria-controls="operatingPanel">
+          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-4)"></span><span class="include-name" id="operatingName">Operating referendum</span><small class="step-note" id="operatingNote"></small></span>
           <span class="step-value" id="operatingAmount"></span>
           {% include icons/chevron.svg %}
         </summary>
       </details>
-      <div class="include-panel">
+      <div class="include-panel" id="operatingPanel" role="group" aria-labelledby="operatingName" hidden>
         <div class="callout stripe-bloom">
           <p><strong>No operating referendum has been proposed, and an operating increase does not expire on its
             own.</strong> Unlike bonds, which end when they are repaid, an approved operating increase becomes part
