@@ -1047,6 +1047,18 @@ dash.draw('cmp', cmpDraw);
 
 (function () {
 // Story sections: headline drop, private schools, ETHS feeders, births
+dash.draw('cv-sincek', (el) => {
+  const s = dash.data('district_grades');
+  if (s.status !== 'ok') { el.textContent = '—'; return; }
+  const m = {};
+  for (const r of s.data) (m[r.year] = m[r.year] || {})[r.grade] = +r.students;
+  let now = 0, atK = 0;
+  ['K', '1', '2', '3', '4', '5', '6', '7', '8'].forEach((g, i) => {
+    const ky = (2026 - i) + '-' + String(2027 - i).slice(2);
+    now += m['2026-27'][g]; atK += m[ky].K;
+  });
+  el.textContent = d65.fmt(Math.round((atK - now) / 10) * 10);
+});
 dash.draw('hl-drop', (el) => {
   const s = dash.data('district_trend');
   if (s.status !== 'ok') { el.textContent = '—'; return; }
