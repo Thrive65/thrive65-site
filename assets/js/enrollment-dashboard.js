@@ -531,7 +531,7 @@ dash.calc('national_compare', {
 dash.calc('national_summary', {
   inputs: ['national_compare'],
   fn: (rows) => {
-    const r = rows.find((d) => d.year === '2023-24');
+    const r = rows.find((d) => d.year === '2024-25');
     const c = (v) => Math.round((v - 100) * 10) / 10;
     const r25 = rows.find((d) => d.year === '2025-26');
     return [{ d65_k8_chg: c(r.d65_k8_idx), us_k8_chg: c(r.us_k8_idx), d65_k_chg: c(r.d65_k_idx), us_k_chg: c(r.us_k_idx),
