@@ -123,7 +123,7 @@ description: "District 65 could raise property taxes in several ways over the ne
       </label>
       <details name="piece">
         <summary aria-controls="ptellPanel">
-          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-1)"></span><span class="include-name" id="ptellName">Yearly levy increase</span><small class="step-note" id="ptellNote"></small></span>
+          <span class="include-label"><span class="chart-swatch" style="--swatch: var(--series-1)"></span><span class="include-name" id="ptellName">Yearly levy increase</span><small class="step-note" id="ptellNote"></small></span>
           <span class="step-value" id="ptellAmount"></span>
           {% include icons/chevron.svg %}
         </summary>
@@ -177,7 +177,7 @@ description: "District 65 could raise property taxes in several ways over the ne
       </label>
       <details name="piece">
         <summary aria-controls="hlsPanel">
-          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-2)"></span><span class="include-name" id="hlsName">Health &amp; life safety bonds</span><small class="step-note" id="hlsNote"></small></span>
+          <span class="include-label"><span class="chart-swatch" style="--swatch: var(--series-2)"></span><span class="include-name" id="hlsName">Health &amp; life safety bonds</span><small class="step-note" id="hlsNote"></small></span>
           <span class="step-value" id="hlsAmount"></span>
           {% include icons/chevron.svg %}
         </summary>
@@ -247,7 +247,7 @@ description: "District 65 could raise property taxes in several ways over the ne
       </label>
       <details name="piece">
         <summary aria-controls="capitalPanel">
-          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-3)"></span><span class="include-name" id="capitalName">Capital referendum</span><small class="step-note" id="capitalNote"></small></span>
+          <span class="include-label"><span class="chart-swatch" style="--swatch: var(--series-3)"></span><span class="include-name" id="capitalName">Capital referendum</span><small class="step-note" id="capitalNote"></small></span>
           <span class="step-value" id="capitalAmount"></span>
           {% include icons/chevron.svg %}
         </summary>
@@ -319,7 +319,7 @@ description: "District 65 could raise property taxes in several ways over the ne
       </label>
       <details name="piece">
         <summary aria-controls="operatingPanel">
-          <span class="include-label"><span class="levy-swatch" style="--swatch: var(--series-4)"></span><span class="include-name" id="operatingName">Operating referendum</span><small class="step-note" id="operatingNote"></small></span>
+          <span class="include-label"><span class="chart-swatch" style="--swatch: var(--series-4)"></span><span class="include-name" id="operatingName">Operating referendum</span><small class="step-note" id="operatingNote"></small></span>
           <span class="step-value" id="operatingAmount"></span>
           {% include icons/chevron.svg %}
         </summary>
@@ -437,7 +437,7 @@ description: "District 65 could raise property taxes in several ways over the ne
   <p class="text-deemphasized">Every taxpayer together, using the amounts, terms and rates set for Health &amp; life
     safety bonds and the Capital referendum above.</p>
   <!-- tabindex lets keyboard users scroll the table sideways when it overflows -->
-  <div class="levy-table-wrap" id="finTable" role="region" tabindex="0" aria-label="District-wide borrowing costs"></div>
+  <div class="data-table" id="finTable" role="region" tabindex="0" aria-label="District-wide borrowing costs"></div>
   <p class="hint"><strong>How to read this.</strong> Annual payment is level debt service: principal plus interest, the
     same each year. Interest is highest in the first year and falls as the loan is paid down, so the first-year figure is
     the peak, and the average spreads total interest evenly over the term. Thrive65 estimate.</p>
@@ -446,21 +446,21 @@ description: "District 65 could raise property taxes in several ways over the ne
     publish the interest share of that payment.</p>
 </section>
 
-<section class="card flow levy-chart" id="chartCard">
+<section class="card flow" id="chartCard">
   <h2 id="chartTitle">Year by year</h2>
   <p class="text-deemphasized" id="chartSub">Added to what you pay on your 2026 bill, by the year the bill is paid.</p>
-  <div class="levy-legend cluster" id="chartLegend"></div>
-  <div class="levy-chart-wrap" id="chartWrap">
+  <div class="chart-legend cluster" id="chartLegend"></div>
+  <div class="chart" id="chartWrap">
     <svg id="chartSvg" role="img" aria-labelledby="chartTitle chartSub" viewBox="0 0 640 280"
          preserveAspectRatio="xMidYMid meet"></svg>
-    <div class="levy-tip hidden" id="chartTip" aria-hidden="true"></div>
+    <div class="chart-tip hidden" id="chartTip" aria-hidden="true"></div>
   </div>
   <details class="accordion">
     <summary class="cluster">
       <h3>Show as a table</h3>
       <span class="accordion-icon" aria-hidden="true"></span>
     </summary>
-    <div class="accordion-body levy-table-wrap" id="chartTable" role="region" tabindex="0"
+    <div class="accordion-body data-table" id="chartTable" role="region" tabindex="0"
          aria-label="Year-by-year amounts"></div>
   </details>
 </section>
