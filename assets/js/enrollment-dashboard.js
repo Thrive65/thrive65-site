@@ -1107,7 +1107,7 @@ dash.draw('eths-chart', (el) => {
   const legend = document.createElement('div'); legend.className = 'legend';
   const add = (bg, text) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'box'; sw.style.opacity = '1'; sw.style.background = bg; sp.append(sw, document.createTextNode(text)); legend.append(sp); };
   add('var(--cds-chart-muted)', 'District 65 8th grade, the year before');
-  const segColor = (i) => dash.colors[i === 4 ? 7 : i];
+  const segColor = (i) => dash.colors[i === 4 ? 7 : i] || 'var(--cds-text-secondary)';
   segs.forEach(([, n], i) => add(segColor(i), n));
   const box = document.createElement('div'); box.className = 'chart'; el.append(legend, box);
   const rows = s.data.map((r) => Object.assign({}, r, { g8: +r.d65_8th_prior_year, tot: segs.reduce((a, [k]) => a + +r[k], 0) }));
