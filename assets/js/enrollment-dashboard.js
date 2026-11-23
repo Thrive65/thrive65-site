@@ -22,7 +22,10 @@ window.dash = (function () {
     nearby: 'nearby_districts.csv',
     il_districts: 'il_districts_2019_2026.csv',
     area_density: 'area_density.csv',
-    area_geometry: 'area_geometry.csv'
+    area_geometry: 'area_geometry.csv',
+    private_k8: 'private_k8.csv',
+    eths_feeder: 'eths_feeder.csv',
+    births: 'births.csv'
   };
   const store = {}, calcs = {}, draws = {};
   // Okabe–Ito colorblind-safe set, led by the site's brand blue and orange.
@@ -1040,6 +1043,148 @@ function cmpDraw(el) {
   }
 }
 dash.draw('cmp', cmpDraw);
+})();
+
+(function () {
+// Story sections: headline drop, private schools, ETHS feeders, births
+dash.draw('hl-drop', (el) => {
+  const s = dash.data('district_trend');
+  if (s.status !== 'ok') { el.textContent = '—'; return; }
+  const get = (y) => +(s.data.find((r) => r.year === y) || {}).actual;
+  const v = get('2016-17') - get('2026-27');
+  el.textContent = isNaN(v) ? '—' : d65.fmt(Math.round(v / 10) * 10);
+});
+dash.draw('pv-last', (el) => {
+  const s = dash.data('private_k8');
+  if (s.status !== 'ok') { el.textContent = '—'; return; }
+  const r = s.data[s.data.length - 1];
+  el.textContent = d65.fmt(Math.round(+r.private_k8 / 10) * 10);
+});
+dash.draw('lg-pv0', (el) => { el.style.borderTopColor = dash.colors[0]; });
+dash.draw('lg-pv1', (el) => { el.style.borderTopColor = dash.colors[1]; });
+dash.draw('private-chart', (el) => {
+  const s = dash.data('private_k8');
+  if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
+  el.replaceChildren();
+  const rows = s.data.map((r) => ({ year: r.year, d: +r.d65_k8, p: +r.private_k8, gap: +r.private_incomplete === 1 }));
+  const W = el.clientWidth || 600, H = 300, m = { t: 14, r: 175, b: 28, l: 48 };
+  const x = d3.scalePoint(rows.map((r) => r.year), [m.l, W - m.r]);
+  const y = d3.scaleLinear([0, 8000], [H - m.b, m.t]);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'District 65 and private school K-8 enrollment inside the district boundary, 2015-16 to 2025-26');
+  svg.append('g').attr('class', 'grid').selectAll('line').data([0, 2000, 4000, 6000, 8000]).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).tickValues([0, 2000, 4000, 6000, 8000]).tickFormat(d3.format(',')));
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(rows.map((r) => r.year).filter((_, i) => i % 2 === 0)).tickSizeOuter(0));
+  const line = (f, def) => d3.line().defined(def || (() => true)).x((r) => x(r.year)).y((r) => y(f(r)));
+  svg.append('path').datum(rows).attr('d', line((r) => r.d)).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2.5);
+  const gi = rows.findIndex((r) => r.gap);
+  const after = rows.filter((_, i) => gi < 0 || i > gi);
+  svg.append('path').datum(after).attr('d', line((r) => r.p)).attr('fill', 'none').style('stroke', dash.colors[1]).attr('stroke-width', 2.5);
+  if (gi > 0) {
+    svg.append('path').datum([rows[gi - 1], rows[gi + 1]]).attr('d', line((r) => r.p)).attr('fill', 'none').style('stroke', dash.colors[1]).attr('stroke-width', 2).attr('stroke-dasharray', '2 4');
+    svg.append('circle').attr('cx', x(rows[gi - 1].year)).attr('cy', y(rows[gi - 1].p)).attr('r', 3.5).style('fill', dash.colors[1]);
+    svg.append('circle').attr('cx', x(rows[gi].year)).attr('cy', y(rows[gi].p)).attr('r', 4).style('fill', 'none').style('stroke', dash.colors[1]).attr('stroke-width', 2);
+  }
+  const f = rows[0], l = rows[rows.length - 1];
+  const pct = (a, b) => (b < a ? '−' : '+') + Math.abs(Math.round((b - a) / a * 100)) + '%';
+  svg.append('circle').attr('cx', x(l.year)).attr('cy', y(l.d)).attr('r', 4).style('fill', dash.colors[0]);
+  svg.append('circle').attr('cx', x(l.year)).attr('cy', y(l.p)).attr('r', 4).style('fill', dash.colors[1]);
+  svg.append('text').attr('x', x(l.year) + 10).attr('y', y(l.d) + 4).text('District 65: ' + d65.fmt(l.d) + ' (' + pct(f.d, l.d) + ')');
+  svg.append('text').attr('x', x(l.year) + 10).attr('y', y(l.p) + 4).text('Private: ' + d65.fmt(l.p) + ' (' + pct(f.p, l.p) + ')');
+  const tip = d65.tip(el);
+  svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+    .on('pointermove', (ev) => {
+      const [px] = d3.pointer(ev);
+      const r = rows.reduce((a, b) => (Math.abs(x(b.year) - px) < Math.abs(x(a.year) - px) ? b : a));
+      tip.show([r.year, 'District 65 K-8: ' + d65.fmt(r.d), 'Private K-8 in the boundary: about ' + d65.fmt(r.p) + (r.gap ? ' (two schools missing from the state report)' : ''), 'Private share: ' + Math.round(r.p / (r.p + r.d) * 1000) / 10 + '%'], Math.min(x(r.year), W * 0.5) / W * el.clientWidth, 10);
+    })
+    .on('pointerleave', () => tip.hide());
+});
+dash.draw('eths-chart', (el) => {
+  const s = dash.data('eths_feeder');
+  if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
+  el.replaceChildren();
+  const segs = [['from_d65', 'District 65'], ['private_parochial', 'Private or parochial'], ['cps', 'Chicago Public Schools'], ['out_of_state_other_il', 'Out of state or country, other Illinois'], ['homeschool_other', 'Homeschool or other']];
+  const legend = document.createElement('div'); legend.className = 'legend';
+  const add = (bg, text) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'box'; sw.style.opacity = '1'; sw.style.background = bg; sp.append(sw, document.createTextNode(text)); legend.append(sp); };
+  add('var(--cds-chart-muted)', 'District 65 8th grade, the year before');
+  const segColor = (i) => dash.colors[i === 4 ? 7 : i];
+  segs.forEach(([, n], i) => add(segColor(i), n));
+  const box = document.createElement('div'); box.className = 'chart'; el.append(legend, box);
+  const rows = s.data.map((r) => Object.assign({}, r, { g8: +r.d65_8th_prior_year, tot: segs.reduce((a, [k]) => a + +r[k], 0) }));
+  const W = box.clientWidth || 600, H = 320, m = { t: 22, r: 10, b: 44, l: 48 };
+  const band = (W - m.l - m.r) / rows.length, bw = Math.min(56, band * 0.32);
+  const y = d3.scaleLinear([0, 1000], [H - m.b, m.t]);
+  const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Where each current ETHS class went to 8th grade, next to District 65 8th grade the year before');
+  svg.append('g').attr('class', 'grid').selectAll('line').data([0, 250, 500, 750, 1000]).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).tickValues([0, 250, 500, 750, 1000]).tickFormat(d3.format(',')));
+  const tip = d65.tip(box);
+  rows.forEach((r, i) => {
+    const cx = m.l + band * i + band / 2;
+    svg.append('rect').attr('x', cx - bw - 2).attr('y', y(r.g8)).attr('width', bw).attr('height', y(0) - y(r.g8)).attr('rx', 2).style('fill', 'var(--cds-chart-muted)');
+    svg.append('text').attr('x', cx - bw / 2 - 2).attr('y', y(r.g8) - 5).attr('text-anchor', 'middle').text(d65.fmt(r.g8));
+    let run = 0;
+    segs.forEach(([k], j) => {
+      const v = +r[k], b = run; run += v;
+      svg.append('rect').attr('x', cx + 2).attr('y', y(b + v) + 0.5).attr('width', bw).attr('height', Math.max(0, y(b) - y(b + v) - 1)).style('fill', segColor(j));
+      if (j < 2) svg.append('text').attr('x', cx + 2 + bw / 2).attr('y', (y(b) + y(b + v)) / 2 + 4).attr('text-anchor', 'middle').style('fill', '#fff').text(v);
+    });
+    svg.append('text').attr('x', cx + 2 + bw / 2).attr('y', y(r.tot) - 5).attr('text-anchor', 'middle').style('font-weight', '600').style('fill', 'var(--color-fg)').text(d65.fmt(r.tot));
+    svg.append('text').attr('x', cx).attr('y', H - m.b + 16).attr('text-anchor', 'middle').style('font-weight', '600').style('fill', 'var(--color-fg)').text(r.grade_now);
+    svg.append('text').attr('x', cx).attr('y', H - m.b + 30).attr('text-anchor', 'middle').text(r['class'] + ', entered ' + r.entered_fall);
+    svg.append('rect').attr('x', cx - band / 2).attr('y', m.t).attr('width', band).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+      .on('pointermove', () => tip.show([r['class'] + ' (' + r.grade_now.toLowerCase() + ')', 'District 65 8th grade, fall ' + (+r.entered_fall - 1) + ': ' + d65.fmt(r.g8)].concat(segs.map(([k, n]) => n + ': ' + r[k] + ' (' + Math.round(+r[k] / r.tot * 100) + '%)')).concat(['First-time freshmen: ' + d65.fmt(r.tot)]), Math.min(cx, W * 0.55) / W * box.clientWidth, 20))
+      .on('pointerleave', () => tip.hide());
+  });
+});
+dash.draw('births-chart', (el) => {
+  const s = dash.data('births');
+  if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
+  el.replaceChildren();
+  const n = d65.num;
+  const rows = s.data.map((r) => ({ y: +r.k_class, kof: n(r.kofron_births), kx: n(r.kofron_trend), rec: n(r.birth_records), hold: n(r.held_flat) }));
+  const legend = document.createElement('div'); legend.className = 'legend';
+  const add = (style, text) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; Object.assign(sw.style, style); sp.append(sw, document.createTextNode(text)); legend.append(sp); };
+  add({ borderTopColor: 'var(--color-fg-muted)' }, "Kofron's birth data");
+  add({ borderTopColor: 'var(--color-fg-muted)', borderTopStyle: 'dashed' }, "Kofron's straight-line extension");
+  add({ borderTopColor: dash.colors[0] }, 'Cook County birth records');
+  add({ borderTopColor: dash.colors[0], borderTopStyle: 'dotted' }, 'Held flat (assumption)');
+  const box = document.createElement('div'); box.className = 'chart'; el.append(legend, box);
+  const W = box.clientWidth || 600, H = 280, m = { t: 14, r: 40, b: 40, l: 48 };
+  const x = d3.scaleLinear([2015, 2031], [m.l, W - m.r]);
+  const y = d3.scaleLinear([400, 1100], [H - m.b, m.t]);
+  const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Births behind each kindergarten class: Kofron trend vs. Evanston birth records');
+  svg.append('g').attr('class', 'grid').selectAll('line').data([400, 600, 800, 1000]).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).tickValues([400, 600, 800, 1000]).tickFormat(d3.format(',')));
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(d3.range(2015, 2032, 2)).tickFormat((d) => "'" + String(d).slice(2)).tickSizeOuter(0));
+  svg.append('text').attr('x', W - m.r).attr('y', H - 6).attr('text-anchor', 'end').text('Kindergarten class (fall)');
+  svg.append('line').attr('x1', x(2026)).attr('x2', x(2026)).attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '3 3');
+  svg.append('text').attr('x', x(2026) + 4).attr('y', m.t + 10).text('this fall');
+  const ln = (k) => d3.line().defined((r) => r[k] !== null).x((r) => x(r.y)).y((r) => y(r[k]));
+  svg.append('path').datum(rows).attr('d', ln('kof')).attr('fill', 'none').style('stroke', 'var(--color-fg-muted)').attr('stroke-width', 2.5);
+  svg.append('path').datum(rows).attr('d', ln('kx')).attr('fill', 'none').style('stroke', 'var(--color-fg-muted)').attr('stroke-width', 2).attr('stroke-dasharray', '6 4');
+  svg.append('path').datum(rows).attr('d', ln('rec')).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2.5);
+  svg.append('path').datum(rows).attr('d', ln('hold')).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2).attr('stroke-dasharray', '2 3');
+  svg.append('g').selectAll('circle').data(rows.filter((r) => r.rec !== null)).join('circle').attr('cx', (r) => x(r.y)).attr('cy', (r) => y(r.rec)).attr('r', 3.5).style('fill', dash.colors[0]);
+  const r26 = rows.find((r) => r.y === 2026), r15 = rows[0], rEnd = rows[rows.length - 1];
+  svg.append('text').attr('x', x(r15.y) + 6).attr('y', y(r15.kof) - 8).text(d65.fmt(r15.kof));
+  svg.append('text').attr('x', x(2026) + 4).attr('y', y(r26.kx) - 10).text(d65.fmt(r26.kx));
+  svg.append('text').attr('x', x(2026) + 6).attr('y', y(r26.rec) + 18).style('fill', dash.colors[0]).text(d65.fmt(r26.rec));
+  svg.append('text').attr('x', x(rEnd.y) + 4).attr('y', y(rEnd.hold) - 6).style('fill', dash.colors[0]).text(d65.fmt(rEnd.hold));
+  svg.append('text').attr('x', x(rEnd.y) + 4).attr('y', y(rEnd.kx) + 14).text(d65.fmt(rEnd.kx));
+  const tip = d65.tip(box);
+  svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+    .on('pointermove', (ev) => {
+      const [px] = d3.pointer(ev);
+      const r = rows.reduce((a, b) => (Math.abs(x(b.y) - px) < Math.abs(x(a.y) - px) ? b : a));
+      const L = ['Kindergarten class of fall ' + r.y];
+      if (r.kof !== null) L.push("Kofron's birth data: " + d65.fmt(r.kof));
+      if (r.kx !== null && r.y > 2025) L.push("Kofron's trend line: " + d65.fmt(r.kx));
+      if (r.rec !== null) L.push('Birth records: ' + d65.fmt(r.rec));
+      else if (r.hold !== null) L.push('Held flat: ' + d65.fmt(r.hold));
+      tip.show(L, Math.min(x(r.y), W * 0.55) / W * box.clientWidth, 10);
+    })
+    .on('pointerleave', () => tip.hide());
+});
 })();
 
 document.addEventListener('DOMContentLoaded', () => dash.start());
