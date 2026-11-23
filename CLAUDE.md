@@ -33,7 +33,8 @@ Some contributors work through Claude Code on the web (claude.ai/code) in a clou
 - **There is no dev server.** Verify with `bundle install && bundle exec jekyll build --baseurl ""` and confirm the build succeeds with no errors. Don't try to start or reach `localhost:4000` for the user.
 - **Never edit the add-on-published files** listed under "How content flows" (`_data/faq.yml`, `_data/news.yml`, `_includes/home-overview.md`, `assets/images/content/`). The Google Docs add-on overwrites them. Posts in `_posts/` normally come from the add-on too; add new standalone pages instead unless the maintainer asks otherwise.
 - **Reuse before inventing.** Build pages from the shared blocks and tokens in "CSS & HTML methodology" (`.card`, `.stat-grid`, `.callout`, `.steps`, `--step-*`, `--space-*`). Don't add one-off components or hardcoded px/colors.
-- **Charts and JS-injected markup:** any class that only appears via JavaScript or a chart library must be added to the PurgeCSS safelist in `postcss.config.cjs`, or production strips it. Load third-party scripts only from a pinned CDN version.
+- **Charts:** use the site chart system ("Charts" under "CSS & HTML methodology"), not a chart library. Bar, dot and heat charts, tables and maps render at build time; only line charts need `assets/js/charts.js` (`charts: true` in front matter).
+- **JS-injected markup:** any class that only appears via JavaScript must be added to the PurgeCSS safelist in `postcss.config.cjs`, or production strips it. Load third-party scripts only from a pinned CDN version.
 - **Cite data sources** on the page for any chart or figure.
 - **Fill in the PR template** (`.github/pull_request_template.md`): a plain-English summary, the URL path(s) to check, and the checklist. The contributor may not be technical, so explain changes to them in plain language and describe in the PR anything you couldn't verify.
 - **When asked to address review comments**, read them from the PR and push fixes to the same branch; don't open a new PR.
@@ -55,6 +56,9 @@ Files overwritten by the publishing add-on (do not edit by hand):
 
 Files published from Google Docs via the add-on (content type "Post"):
 - `_posts/YYYY-MM-DD-slug.md` — Board meeting recaps and other posts. In Page Properties, set **Category** (e.g. `Board Meeting Recaps`, `Opinion`), **Post date** (YYYY-MM-DD), and the **Based on Date** permalink switch (on = `/{category}/{year}/{M-D}/`, off = `/{category}/{slug}/`). The eyebrow label on the post page is the category value.
+
+Generated files (edit the source and regenerate; never hand-edit the output):
+- `_data/enrollment/*.json`: everything on `/analysis/enrollment/` (summary numbers, chart specs, tables, map shapes). Generated from the raw CSVs in `data-src/enrollment/` (excluded from the site) by `npm run data:enrollment` (`scripts/enrollment/prepare.mjs`, plain Node, no dependencies). Commit the CSVs and the JSON together. Derived figures, sort orders, formatted labels, 0–1 shades and projected map paths are all computed there, because Liquid sorts CSV values as text and is clumsy at arithmetic. A new data page should follow the same pattern.
 
 Files edited by hand:
 - `_includes/home-hero.md` — Hero section
@@ -157,6 +161,24 @@ Always use `--step-*` tokens for font sizes and `--space-*` tokens for layout sp
 - `.choice-group` / `.choice` / `.choice-note` — `aria-pressed` option buttons, as radio cards or (with the `.compact` utility on both) as filter pills. Selected state follows the `.a11y-segment` convention: `background: var(--brand); color: var(--card)` so it inverts correctly under high contrast.
 - `.rule-above` / `.fit` (`utility` layer) — two layout helpers for grid blocks. `.rule-above` draws a hairline separator above a block with the **same** `--rule-gap` (default `--space-m`) as margin *and* padding, so the line sits midway between the two things it divides; prefer it to an `<hr>`, whose `--space-l` block margin is tuned for section breaks. `.fit` swaps a grid block to a wrapping flex row with `flex: 1 1 auto` children, sizing each column to its own content instead of to equal tracks — it has to be flex, because Grid cannot size `repeat(auto-fit, …)` tracks to content (intrinsic sizes are illegal in an auto-repeat track list).
 - `.steps` rows (`.step`, `.step-n`, `.step-label`, `.step-note`, `.step-value`, `.step.total`) — a numbered derivation with a tabular value column.
+
+**Charts.** One system serves every chart (the tax calculator and `/analysis/enrollment/`). Don't add a chart library or a page-only chart stylesheet.
+
+- **Colors are tokens only.** Series use `--series-1…4` (each ≥3:1 on `--card`, so any can be a line) and `--series-muted` for comparison or background series. Shading uses the `--seq-low` → `--seq-high` ramp, mixed by a 0–1 `--t` via `color-mix()`. The ramp is built so plain `--ink` text stays ≥4.5:1 on every shade, so labels never flip color. All of these are declared in all five theme blocks, like the `--feature-*` tokens. Keep one meaning per series within a figure, and pass colors as an inline `--swatch: var(--series-N)`.
+- **Line style is a utility.** `.swatch-line`, `.swatch-strong`, `.swatch-dashed`, `.swatch-dotted`, `.swatch-band`, `.swatch-dot`, `.swatch-diamond` and `.swatch-hatch` style both the legend `.chart-swatch` and the SVG `.chart-line`/`.chart-band` it keys, so a key can't drift from its line.
+- **Line and band charts.** Use `{% include chart.html spec=… labelledby="heading-id" %}` with a spec from `_data`, and set `charts: true` in front matter (which loads `assets/js/charts.js`). The include renders the legend, the variant `.choice-group` (hidden until JS) and a "Show the data as a table" accordion from the same spec, so the figure reads without JS.
+  - `charts.js` draws at the rendered width (1 viewBox unit = 1px), with labels at `--step--1` (`--chart-text`) and margins in rem, so charts follow the text-size setting.
+  - Each chart is one tab stop (`.chart-hit` focus bands with a roving tabindex); arrow keys, Home and End move the shared `.chart-tip`.
+  - A `ResizeObserver` redraws on width or text-size changes.
+  - The tax calculator's hand-built bars still use a fixed 640-unit viewBox (the `--chart-text` 11-unit default); moving it onto the `charts.js` helpers is a follow-up.
+- **Charts that are really lists or tables render in Liquid, with no JS:**
+  - `.bar-chart` (`charts/bar-chart.html`): diverging bars with `--offset`/`--size`/`--zero`.
+  - `.dot-chart` (`charts/dot-chart.html`): a dumbbell with `--at`/`--lo`/`--hi` and a `.chart-scale`.
+  - `.heat` (`charts/heat-table.html`): a real `<table>` shaded by `--t`, with a `.chart-ramp` key.
+  - At `--sm-and-down` the bar and dot rows put their label above the bar.
+- **Maps.** `.choropleth` (`charts/choropleth.html`) holds static SVGs projected once by the data script onto one shared viewBox, so switching maps never shifts them. Each `.choropleth-area` carries `data-t-*`/`data-v-*` per measure; `charts.js` only toggles `.is-hidden` and rewrites `--t`, so maps crossfade and fills transition, and focus stays on the pressed button. Use one color domain per measure across every map that shows it. `--map-scale` keeps labels near `--step--1`.
+- **Tables.** Use `charts/data-table.html` (`.data-table`, a focusable labelled scroll region, `<caption>`, `<th scope="row">`). Mark a notable value with `<strong>`, not a color.
+- **Every figure** is a `<figure class="card flow" aria-labelledby="heading-id">` with its data available as text (a table or the value column) and its sources cited on the page.
 
 **Forms.** Controls are styled as *elements* in `@layer base` (`input`, `select`, `textarea`, plus `input[type="range"]` via `accent-color`), so any form gets the brand treatment for free; text inputs pin to `--control-height` for the 44px target. The blocks on top are `.field` (label + control + `.hint` + `.field-msg`), `.field-set` (a reset `<fieldset>` whose `<legend>` carries the label weight), and `.input-group` + `.affix` for a control with a static prefix/suffix — the group draws no border itself, the parts do, the shared seam collapses, and `--field-width` can narrow an instance (but see the full-width standard below before narrowing an input). Wrap any `<select>` in `.select` with `{% include icons/chevron.svg %}` after it to replace the native arrow with the site's chevron (same `--field-width` knob). Likewise wrap a checkbox as `<label class="checkbox"><input type="checkbox">{% include icons/checkbox.svg %}<span class="visually-hidden">Name</span></label>` for the site's checkbox glyph: the label carries the 44px hit area and the (translatable) accessible name.
 

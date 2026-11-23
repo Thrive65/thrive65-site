@@ -1,6 +1,8 @@
 # Enrollment page v2 — no-d3 rebuild plan
 
-**Status:** canonical until it lands. After that the code is the source of truth; mark this archived.
+**Status:** implemented on `feature/enrollment-page-v2` (2026-11-23). Once merged, the code and CLAUDE.md ("Charts") are the source of truth, and this plan becomes **archived**.
+
+**Deviations from the plan, as built:** the summary numbers are in `summary.json` (not `.yml`). The map uses labels in plain `--ink` on a ramp built to keep ink ≥4.5:1, instead of a halo. The heatmap ramp is bounded the same way, so its text never flips color. The dot chart uses `--series-1`/`--series-3`. The Nov. 6 proposal series and the district's own marker use `--series-4`.
 **Branch:** `feature/enrollment-page-v2`, cut from `enrollment-page` at `9261f74` (the head of PR Thrive65/thrive65-site#21).
 **Goal:** rebuild `/analysis/enrollment/` without d3. Fold in every fix from the PR #21 review. Leave behind a shared chart system that the tax calculator and future pages use.
 
