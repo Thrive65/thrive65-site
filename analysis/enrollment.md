@@ -21,7 +21,7 @@ wide: true
 </div>
 
 <h2 id="trend-vs-forecasts">District K-8 enrollment vs. the forecasts</h2>
-<p class="note">Kofron's four forecasts are rescaled to start from the district's official 2021-22 count, because his totals count every resident student, a slightly different group. The district's own projection is from its November 2025 memo.</p>
+<p class="note">Kofron's four forecasts are rescaled to start from the district's official 2021-22 count, because his totals count every resident student, a slightly different group. The district's own projection is from its November 2025 memo. The McKibben line is the district's newer demographic study (McKibben Demographic Consulting, November 2024), scaled to start from the district's 2024-25 count because McKibben also counts Park, Rice and separately counted special education students.</p>
 <div class="card">
   <div class="legend">
     <span><span class="sw" data-draw="lg-actual"></span>Actual</span>
@@ -29,6 +29,7 @@ wide: true
     <span><span class="box" data-draw="lg-band"></span>Kofron low to high</span>
     <span><span class="sw" style="border-top-style: dotted" data-draw="lg-snap"></span>Kofron "snapshot"</span>
     <span><span class="sw" data-draw="lg-d65"></span>District projection (2025)</span>
+    <span><span class="sw" style="border-top-style: dashed" data-draw="lg-mck"></span>McKibben forecast (2024)</span>
   </div>
   <div class="chart" id="trend" data-draw="trend"></div>
 </div>
@@ -51,6 +52,7 @@ wide: true
 </table>
 </div>
 <p class="note">"Miss" is the forecast minus the actual count, as a share of the actual; positive means the forecast was too high. Average miss is the average size of the yearly misses, ignoring direction. Counting the roughly 117 separately counted special education students the old way would raise the 2025-26 and 2026-27 actuals, making both forecasts look slightly better on the high side and slightly worse on the low side.</p>
+<p class="note" id="mckibben-note"><b>Why McKibben runs higher.</b> The district's newer study, by McKibben Demographic Consulting (November 2024), forecasts that the decline slows and nearly stops around 2029-30, about 700 more K-8 students than Kofron's middle forecast by 2031-32. The difference comes mostly from kindergarten and 1st grade. McKibben derives each entering class from a forecast of how many young children will live in each attendance area, starting from the 2020 census and assuming young families keep moving in at the pace of the 2010s. It also assumes at least 120 new single-family homes and 910 home sales a year, and private school use held at 2024 levels. That puts kindergarten near 575 every year through 2032-33. Two years in, entering classes have come in smaller: 529 kindergartners and 550 first graders this fall, against McKibben's 576 and 594. Its K-5 forecast for this fall is about 4.6% high once scaled to the district's count, while its 6-8 forecast is on target. Kofron instead carried forward birth and class-size trends from mapped student and birth addresses, with no separate assumption about families moving in.</p>
 
 <h2 id="each-school">Each school: actual enrollment and the Kofron forecast</h2>
 <p class="note">Solid line: students enrolled in the building each fall. Dashed line and shading: Kofron's middle forecast and low-to-high range for the students living in that school's 2021 attendance area, rescaled to the school's 2021-22 enrollment so the two lines start together. The vertical line marks fall 2026, when Foster opened, Kingsley and Bessie Rhodes closed, and boundaries were redrawn, so jumps there reflect new boundaries rather than families arriving or leaving. Kofron made no forecast for Foster, King Arts or Bessie Rhodes.</p>
@@ -149,6 +151,7 @@ wide: true
   <summary class="cluster"><span>Definitions, sources and cautions</span></summary>
   <ul>
     <li>Kofron is the ES65 Geodemographic Study by Charles Kofron (final revision March 3, 2022). It projected resident students by 2021 attendance area through 2031-32 in four series: high, middle, low, and a "snapshot" series assuming pandemic-era losses continued.</li>
+    <li>McKibben is the Evanston-Skokie School District 65 Demographic Study Report by McKibben Demographic Consulting LLC (November 18, 2024), summarized for the board in the district's Feb. 10, 2025 memo. Its enrollment forecast (Appendix D) counts Park, Rice and separately counted special education students, so this page scales it to the district's 2024-25 counts without those students (K-5 3,747, 6-8 2,036, from the November 2025 enrollment memo) and compares percentage change.</li>
     <li>Actual enrollment 2012-13 to 2025-26 comes from Thrive65's compilation of the District 65 Opening of Schools reports (K-8, excluding Park School and the Rice Education Center). Fall 2026 comes from the district's 2026-27 enrollment and demographics table including permissive transfers. Its K-8 total (5,408) is two more than the district's October 1 count (5,406).</li>
     <li>From 2025-26 the district counts some special education students (evaluation and services only, or placed outside the district) separately rather than at a school, about 120 K-8 students, and its later reports restate 2022-23 to 2024-25 the same way. That makes 2025-26 and later counts lower than earlier years on a like-for-like basis, by roughly 10 to 15 students per grade.</li>
     <li>School counts in fall 2026 reflect new boundaries: Foster opened and Kingsley and Bessie Rhodes closed. Changes at the redraw are mostly students reassigned, not families arriving or leaving.</li>

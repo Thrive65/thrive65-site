@@ -137,6 +137,7 @@ dash.draw('lg-mid', (el) => { el.style.borderTopColor = dash.colors[0]; });
 dash.draw('lg-band', (el) => { el.style.background = dash.colors[0]; });
 dash.draw('lg-snap', (el) => { el.style.borderTopColor = dash.colors[2]; });
 dash.draw('lg-d65', (el) => { el.style.borderTopColor = dash.colors[1]; });
+dash.draw('lg-mck', (el) => { el.style.borderTopColor = dash.colors[3]; });
 dash.draw('lg-k', (el) => { el.style.background = dash.colors[0]; });
 dash.draw('lg-5', (el) => { el.style.background = dash.colors[1]; });
 })();
@@ -147,7 +148,7 @@ dash.draw('trend', (el) => {
   const s = dash.data('district_trend');
   if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
   el.replaceChildren();
-  const rows = s.data.map((r) => ({ year: r.year, actual: d65.num(r.actual), high: d65.num(r.kofron_high), mid: d65.num(r.kofron_mid), low: d65.num(r.kofron_low), snap: d65.num(r.kofron_snapshot), d65: d65.num(r.district_proj_2025) }));
+  const rows = s.data.map((r) => ({ year: r.year, actual: d65.num(r.actual), high: d65.num(r.kofron_high), mid: d65.num(r.kofron_mid), low: d65.num(r.kofron_low), snap: d65.num(r.kofron_snapshot), d65: d65.num(r.district_proj_2025), mck: d65.num(r.mckibben_2024) }));
   const W = el.clientWidth || 600, H = 300, m = { t: 14, r: 16, b: 28, l: 48 };
   const years = rows.map((r) => r.year);
   const x = d3.scalePoint(years, [m.l, W - m.r]);
@@ -164,6 +165,7 @@ dash.draw('trend', (el) => {
   svg.append('path').datum(rows).attr('d', line('mid')).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2).attr('stroke-dasharray', '6 4');
   svg.append('path').datum(rows).attr('d', line('snap')).attr('fill', 'none').style('stroke', dash.colors[2]).attr('stroke-width', 2).attr('stroke-dasharray', '2 3');
   svg.append('path').datum(rows).attr('d', line('d65')).attr('fill', 'none').style('stroke', dash.colors[1]).attr('stroke-width', 2);
+  svg.append('path').datum(rows).attr('d', line('mck')).attr('fill', 'none').style('stroke', dash.colors[3]).attr('stroke-width', 2).attr('stroke-dasharray', '8 3 2 3');
   svg.append('path').datum(rows).attr('d', line('actual')).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2.5).attr('stroke-linejoin', 'round');
   const last = rows.filter((r) => r.actual !== null).slice(-1)[0];
   svg.append('circle').attr('cx', x(last.year)).attr('cy', y(last.actual)).attr('r', 4).style('fill', dash.colors[0]);
@@ -179,6 +181,7 @@ dash.draw('trend', (el) => {
       if (r.mid !== null) L.push('Kofron middle: ' + d65.fmt(r.mid) + ' (' + d65.fmt(r.low) + '–' + d65.fmt(r.high) + ')');
       if (r.snap !== null) L.push('Kofron snapshot: ' + d65.fmt(r.snap));
       if (r.d65 !== null) L.push('District projection: ' + d65.fmt(r.d65));
+      if (r.mck !== null) L.push('McKibben (2024): ' + d65.fmt(r.mck));
       tip.show(L, x(r.year) / W * el.clientWidth, 10);
     })
     .on('pointerleave', () => { hover.attr('opacity', 0); tip.hide(); });
@@ -944,8 +947,9 @@ dash.calc('cmp_accuracy', {
       return { forecast: pre, years: from + '-' + String(from + 1).slice(2) + ' to 2026-27', k5_avg_err: avg(ek), k5_2026_err: Math.round(ek[ek.length - 1] * 10) / 10, m_avg_err: avg(em), m_2026_err: Math.round(em[em.length - 1] * 10) / 10, k5_2031: n(r31[k5f]), m_2031: n(r31[mf]) };
     };
     return [calc('Kofron (2022), from fall 2021', 2022, 'kof_mid_k5', 'kof_mid_68'),
-            calc('Thrive65 rerun, from fall 2020 (births falling)', 2021, 't65_mid_falling_k5', 't65_mid_falling_68'),
-            calc('Thrive65 rerun, from fall 2020 (births flat)', 2021, 't65_mid_data_k5', 't65_mid_data_68')];
+            calc('Thrive65 rerun, from fall 2020 (Kofron\'s birth line)', 2021, 't65_mid_falling_k5', 't65_mid_falling_68'),
+            calc('Thrive65 rerun, from fall 2020 (birth records)', 2021, 't65_mid_data_k5', 't65_mid_data_68'),
+            calc('McKibben (2024), from fall 2024', 2025, 'mck_k5', 'mck_68')];
   }
 });
 dash.draw('cmp-body', (tb) => {
@@ -982,6 +986,7 @@ function cmpDraw(el) {
   item({ background: dash.colors[0] }, 'Kofron low to high', true);
   item({ borderTopColor: dash.colors[1], borderTopStyle: 'dashed' }, 'Our rerun middle');
   item({ background: dash.colors[1] }, 'Our rerun low to high', true);
+  item({ borderTopColor: dash.colors[3], borderTopStyle: 'dashed' }, 'McKibben forecast (2024)');
   el.append(legend);
   const grid = document.createElement('div'); grid.className = 'nat-grid'; el.append(grid);
   const panels = [['k5', 'Grades K-5'], ['68', 'Grades 6-8']].map(([band, title]) => {
@@ -994,7 +999,7 @@ function cmpDraw(el) {
       kof: (s2) => (r) => get(r, `kof_${s2}_${band}`),
       t65: (s2) => (r) => get(r, `t65_${s2}_${bm}_${band}`)
     };
-    const vals = rows.flatMap((r) => [get(r, `band_${band}_actual`), series.kof('high')(r), series.kof('low')(r), series.t65('high')(r), series.t65('low')(r)]).filter((v) => v !== null);
+    const vals = rows.flatMap((r) => [get(r, `band_${band}_actual`), series.kof('high')(r), series.kof('low')(r), series.t65('high')(r), series.t65('low')(r), get(r, `mck_${band}`)]).filter((v) => v !== null);
     const W = box.clientWidth || 360, H = 300, m = { t: 12, r: 44, b: 26, l: 46 };
     const years = rows.map((r) => r.year);
     const x = d3.scalePoint(years, [m.l, W - m.r]);
@@ -1011,6 +1016,8 @@ function cmpDraw(el) {
       svg.append('path').datum(pr).attr('d', d3.area().x((r) => x(r.year)).y0((r) => y(series[key]('low')(r))).y1((r) => y(series[key]('high')(r)))).style('fill', c).style('opacity', 0.13);
       svg.append('path').datum(pr).attr('d', d3.line().x((r) => x(r.year)).y((r) => y(series[key]('mid')(r)))).attr('fill', 'none').style('stroke', c).attr('stroke-width', 2).attr('stroke-dasharray', '6 4');
     }
+    const mck = rows.filter((r) => get(r, `mck_${band}`) !== null);
+    svg.append('path').datum(mck).attr('d', d3.line().x((r) => x(r.year)).y((r) => y(get(r, `mck_${band}`)))).attr('fill', 'none').style('stroke', dash.colors[3]).attr('stroke-width', 2).attr('stroke-dasharray', '8 3 2 3');
     const act = rows.filter((r) => get(r, `band_${band}_actual`) !== null);
     svg.append('path').datum(act).attr('d', d3.line().x((r) => x(r.year)).y((r) => y(get(r, `band_${band}_actual`)))).attr('fill', 'none').style('stroke', 'var(--color-fg)').attr('stroke-width', 2.5).attr('stroke-linejoin', 'round');
     const la = act[act.length - 1];
@@ -1026,6 +1033,7 @@ function cmpDraw(el) {
         const a = get(r, `band_${band}_actual`); if (a !== null) L.push('Actual: ' + d65.fmt(a));
         if (series.kof('mid')(r) !== null) L.push('Kofron: ' + d65.fmt(series.kof('mid')(r)) + ' (' + d65.fmt(series.kof('low')(r)) + '–' + d65.fmt(series.kof('high')(r)) + ')');
         if (series.t65('mid')(r) !== null) L.push('Our rerun: ' + d65.fmt(series.t65('mid')(r)) + ' (' + d65.fmt(series.t65('low')(r)) + '–' + d65.fmt(series.t65('high')(r)) + ')');
+        if (get(r, `mck_${band}`) !== null) L.push('McKibben (2024): ' + d65.fmt(get(r, `mck_${band}`)));
         tip.show(L, Math.min(x(r.year), W * 0.45) / W * box.clientWidth, 10);
       })
       .on('pointerleave', () => { hover.attr('opacity', 0); tip.hide(); });
