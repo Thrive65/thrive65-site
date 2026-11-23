@@ -1,0 +1,17 @@
+{%- comment -%}
+  A table whose cells are shaded along the --seq-low → --seq-high ramp by a
+  0–1 --t (from the data script). Cell text stays --ink: the ramp is built to
+  keep it ≥4.5:1 on every shade, in every theme.
+  include.data = {years: [{short, full}], rows: [{label, full, cells: [{n, t}]}]}
+{%- endcomment -%}
+<div class="data-table" role="region" tabindex="0" aria-label="{{ include.caption | escape }}">
+<table class="heat">
+<caption class="visually-hidden">{{ include.caption }}</caption>
+<thead><tr><td></td>{% for y in include.data.years %}<th scope="col"><span aria-hidden="true">{{ y.short }}</span><span class="visually-hidden">{{ y.full }}</span></th>{% endfor %}</tr></thead>
+<tbody>
+{%- for r in include.data.rows %}
+<tr><th scope="row"><span aria-hidden="true">{{ r.label }}</span><span class="visually-hidden">{{ r.full }}</span></th>{% for c in r.cells %}<td style="--t: {{ c.t }}">{{ c.n }}</td>{% endfor %}</tr>
+{%- endfor %}
+</tbody>
+</table>
+</div>

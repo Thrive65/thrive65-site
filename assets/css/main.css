@@ -401,6 +401,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   *, *::before, *::after { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   img  { max-width: 100%; display: block; }
+  figure { margin: 0; }   /* UA default is 1em 40px, which squeezes chart cards on phones */
 }
 
 /* ── base ───────────────────────────────────────────────────────────────── */
@@ -1334,8 +1335,9 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      post/page articles and the homepage sections — so list styling is
      consistent everywhere without per-section targeting. `.post-list` (the
      blog index) opts out; it's a custom-classed component. */
-  .prose ul:not(.post-list), .prose ol { padding-left: 1.25em; }
-  .prose :is(ul:not(.post-list), ol) li + li { margin-block-start: var(--space-2xs); }
+  /* chart lists (legend keys, bar/dot rows) lay out their own items */
+  .prose :is(ul, ol):not(.post-list, .chart-legend, .bar-chart, .dot-chart) { padding-left: 1.25em; }
+  .prose :is(ul, ol):not(.post-list, .chart-legend, .bar-chart, .dot-chart) li + li { margin-block-start: var(--space-2xs); }
   /* Google Docs sometimes wraps a list item's content in a <p>; drop its
      inherited paragraph margin so it doesn't inflate item spacing. */
   .prose li > p { margin-block: 0; }
@@ -2225,7 +2227,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .chart-hit:hover { fill: var(--ink); fill-opacity: 0.05; }
   /* charts.js makes each x position a focusable band (arrow keys move along) */
   .chart-hit:focus-visible { fill: var(--ink); fill-opacity: 0.08; stroke: var(--focus); stroke-width: var(--border-bold); }
-  .chart-legend { column-gap: var(--space-s); font-size: var(--step--1); }
+  .chart-legend { column-gap: var(--space-s); font-size: var(--step--1); list-style: none; padding: 0; margin: 0; }
   .chart-legend:empty { display: none; }
   .chart-key { gap: var(--space-2xs); }
   /* --swatch is set inline (var(--series-N)); the border in the same color lets
@@ -2264,7 +2266,10 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      .page table edge but drop its definition-table label column: the header
      row carries the weight, the first column sizes to its content, and the
      figure columns right-align so place values line up. */
-  .data-table { overflow-x: auto; }
+  /* position: relative makes the scroll box the containing block, so the
+     absolutely positioned .visually-hidden text in wide tables is clipped with
+     the rest instead of widening the page */
+  .data-table { overflow-x: auto; position: relative; }
   .data-table :is(th, td) {
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -2358,6 +2363,12 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     border: var(--border-thin) solid var(--card);
   }
 
+  /* value scale under a dot chart: tick labels at --at, the end ones held inside the track */
+  .chart-scale { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .chart-scale > span { position: absolute; inset-inline-start: calc(var(--at) * 100%); translate: -50% 0; }
+  .chart-scale > span:first-child { translate: 0 0; }
+  .chart-scale > span:last-child { translate: -100% 0; }
+
   /* ─ Heat table ─ a real <table> whose cells are shaded from a 0–1 --t along
      the --seq-low → --seq-high ramp. The ramp keeps --ink text ≥4.5:1 on every
      shade in every theme, so cell text never flips color. Sits inside
@@ -2373,7 +2384,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      data script). Every map sits in one grid cell so switching maps
      crossfades in place; each area's fill mixes the sequential ramp by its
      --t, and a measure switch only rewrites --t, so the color transitions. */
-  .choropleth-stage { display: grid; max-inline-size: 32rem; margin-inline: auto; }
+  .choropleth-stage { display: grid; grid-template-columns: minmax(0, 1fr); max-inline-size: 32rem; margin-inline: auto; }
   .choropleth-stage > svg {
     grid-area: 1 / 1;
     inline-size: 100%;
@@ -2394,10 +2405,20 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .choropleth-hatch-bg { fill: var(--card); }
   .choropleth-hatch-line { stroke: var(--series-muted); stroke-width: var(--border-bold); }
   .choropleth-school { fill: var(--ink); stroke: var(--card); stroke-width: var(--border-thin); }
-  .choropleth-label { fill: var(--ink); font-size: var(--map-text, 11px); text-anchor: middle; pointer-events: none; }
+  /* --map-scale (viewBox units per rendered px, set by charts.js) keeps labels
+     at --step--1 on screen whatever the map's width; without JS they scale
+     with the map */
+  .choropleth-label {
+    fill: var(--ink);
+    /* capped at 11 viewBox units (as the tax calculator's axis labels), so on
+       a phone-width map labels shrink with the shapes instead of overlapping */
+    font-size: min(11px, calc(var(--step--1) * var(--map-scale, 1)));
+    text-anchor: middle;
+    pointer-events: none;
+  }
   .choropleth-label .name { font-weight: 700; }
   .choropleth-legend { font-size: var(--step--1); color: var(--muted); }
-  .choropleth-ramp {
+  .chart-ramp {
     display: inline-block;
     inline-size: 8rem;
     block-size: var(--step--1);
