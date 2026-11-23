@@ -1,10 +1,10 @@
 ---
-layout: page
 title: "District 65 enrollment: forecasts, actuals and where each grade is headed"
-eyebrow: "Enrollment data"
+date: "2026-11-23"
+category: "Analysis"
+permalink: "/analysis/enrollment/"
 description: "How many students District 65 serves, how that compares with the 2022 Kofron demographic study and with nearby districts, and what the numbers suggest for each school through 2031-32."
-permalink: /analysis/enrollment/
-wide: true
+charts: true
 ---
 
 <link rel="stylesheet" href="{{ '/assets/css/enrollment-dashboard.css' | relative_url }}">

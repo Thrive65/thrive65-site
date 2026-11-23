@@ -285,12 +285,12 @@ Today's UI offers 4 measures × 2 levels, then disables combinations that don't 
 - With JavaScript disabled: every number, table, bar, dot row, heatmap cell and the default map render.
 - Compare against PR #21: every figure and every number in the text matches (the `prepare.mjs` output against the old `dash.calc` results).
 
-## 9. Decisions for the maintainer
+## 9. Decisions (maintainer, 2026-11-23)
 
-1. **Series-3 contrast:** adjust the shared token (affects the tax calculator) or restrict it to fills? (§3.1)
-2. **PR handling:** open a new PR from this branch and close #21 as superseded, or merge this branch into `enrollment-page` so #21 carries it?
-3. **Wide layout:** keep the normal width (recommended) or add `wide` support to `post.html`? (§1.6)
-4. **Color domains:** share one color scale for "enrolled" across the middle-school and elementary maps, or scale each separately? (Projected 2031 is always shared across B and C.)
+1. **Series-3 contrast:** change the shared token everywhere. Light `--series-3` goes from `#E69F00` (2.25:1 on white) to `#B07300` (3.96:1). In deuteranopia, protanopia and tritanopia simulations it stays further from series 1, 2 and 4 than the existing pink/green pair is from each other. The dark and high-contrast values already pass and are unchanged. (§3.1)
+2. **PR handling:** open a new PR from this branch. Leave PR #21 as is.
+3. **Wide layout:** keep the normal width for now. (§1.6)
+4. **Color domains:** share one color scale per measure across every map that shows it (enrolled: A + B; children: A + B; projected 2031: B + C).
 
 ## Review-item traceability
 
