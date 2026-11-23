@@ -1,0 +1,658 @@
+{
+ "zero": 0.7,
+ "legend": [
+  {
+   "label": "District 65",
+   "swatch": "var(--series-1)",
+   "style": "box"
+  },
+  {
+   "label": "Chicago Public Schools",
+   "swatch": "var(--series-4)",
+   "style": "box"
+  },
+  {
+   "label": "Peer district cited by District 65",
+   "swatch": "var(--series-2)",
+   "style": "box"
+  },
+  {
+   "label": "Nearby suburban district",
+   "swatch": "var(--series-muted)",
+   "style": "box"
+  }
+ ],
+ "rows": [
+  {
+   "label": "Avoca 37",
+   "strong": false,
+   "value": "−29.0%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.12,
+   "size": 0.58
+  },
+  {
+   "label": "District 65",
+   "strong": true,
+   "value": "−24.2%",
+   "swatch": "var(--series-1)",
+   "offset": 0.216,
+   "size": 0.484
+  },
+  {
+   "label": "Berwyn South 100",
+   "strong": false,
+   "value": "−21.5%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.27,
+   "size": 0.43
+  },
+  {
+   "label": "Golf 67",
+   "strong": false,
+   "value": "−19.9%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.302,
+   "size": 0.398
+  },
+  {
+   "label": "Joliet PSD 86",
+   "strong": false,
+   "value": "−19.7%",
+   "swatch": "var(--series-2)",
+   "offset": 0.306,
+   "size": 0.394
+  },
+  {
+   "label": "Berwyn North 98",
+   "strong": false,
+   "value": "−18.4%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.332,
+   "size": 0.368
+  },
+  {
+   "label": "Chicago Public Schools",
+   "strong": false,
+   "value": "−13.7%",
+   "swatch": "var(--series-4)",
+   "offset": 0.426,
+   "size": 0.274
+  },
+  {
+   "label": "Comm Cons 59",
+   "strong": false,
+   "value": "−13.5%",
+   "swatch": "var(--series-2)",
+   "offset": 0.43,
+   "size": 0.27
+  },
+  {
+   "label": "Oak Park 97",
+   "strong": false,
+   "value": "−11.6%",
+   "swatch": "var(--series-2)",
+   "offset": 0.468,
+   "size": 0.232
+  },
+  {
+   "label": "Skokie 73-5",
+   "strong": false,
+   "value": "−10.7%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.486,
+   "size": 0.214
+  },
+  {
+   "label": "Glenview 34",
+   "strong": false,
+   "value": "−9.8%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.504,
+   "size": 0.196
+  },
+  {
+   "label": "Morton Grove 70",
+   "strong": false,
+   "value": "−9.6%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.508,
+   "size": 0.192
+  },
+  {
+   "label": "Wilmette 39",
+   "strong": false,
+   "value": "−9.6%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.508,
+   "size": 0.192
+  },
+  {
+   "label": "Palatine 15",
+   "strong": false,
+   "value": "−9.6%",
+   "swatch": "var(--series-2)",
+   "offset": 0.508,
+   "size": 0.192
+  },
+  {
+   "label": "Crystal Lake 47",
+   "strong": false,
+   "value": "−9.0%",
+   "swatch": "var(--series-2)",
+   "offset": 0.52,
+   "size": 0.18
+  },
+  {
+   "label": "SD 45 DuPage County",
+   "strong": false,
+   "value": "−8.6%",
+   "swatch": "var(--series-2)",
+   "offset": 0.528,
+   "size": 0.172
+  },
+  {
+   "label": "Skokie 68",
+   "strong": false,
+   "value": "−7.4%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.552,
+   "size": 0.148
+  },
+  {
+   "label": "North Shore 112",
+   "strong": false,
+   "value": "−7.0%",
+   "swatch": "var(--series-2)",
+   "offset": 0.56,
+   "size": 0.14
+  },
+  {
+   "label": "Lincolnwood 74",
+   "strong": false,
+   "value": "−6.2%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.576,
+   "size": 0.124
+  },
+  {
+   "label": "Arlington Heights 25",
+   "strong": false,
+   "value": "−5.7%",
+   "swatch": "var(--series-2)",
+   "offset": 0.586,
+   "size": 0.114
+  },
+  {
+   "label": "Woodridge 68",
+   "strong": false,
+   "value": "−5.7%",
+   "swatch": "var(--series-2)",
+   "offset": 0.586,
+   "size": 0.114
+  },
+  {
+   "label": "Park Ridge 64",
+   "strong": false,
+   "value": "−4.8%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.604,
+   "size": 0.096
+  },
+  {
+   "label": "Fairview 72",
+   "strong": false,
+   "value": "−4.7%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.606,
+   "size": 0.094
+  },
+  {
+   "label": "Orland 135",
+   "strong": false,
+   "value": "−3.4%",
+   "swatch": "var(--series-2)",
+   "offset": 0.632,
+   "size": 0.068
+  },
+  {
+   "label": "Northbrook 28",
+   "strong": false,
+   "value": "−2.8%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.644,
+   "size": 0.056
+  },
+  {
+   "label": "Schaumburg 54",
+   "strong": false,
+   "value": "−1.9%",
+   "swatch": "var(--series-2)",
+   "offset": 0.662,
+   "size": 0.038
+  },
+  {
+   "label": "Wheeling 21",
+   "strong": false,
+   "value": "−1.6%",
+   "swatch": "var(--series-2)",
+   "offset": 0.668,
+   "size": 0.032
+  },
+  {
+   "label": "Northbrook/Glenview 30",
+   "strong": false,
+   "value": "−1.1%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.678,
+   "size": 0.022
+  },
+  {
+   "label": "Kenilworth 38",
+   "strong": false,
+   "value": "+0.4%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.7,
+   "size": 0.008
+  },
+  {
+   "label": "CCSD 62",
+   "strong": false,
+   "value": "+1.7%",
+   "swatch": "var(--series-2)",
+   "offset": 0.7,
+   "size": 0.034
+  },
+  {
+   "label": "Northbrook 27",
+   "strong": false,
+   "value": "+3.5%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.7,
+   "size": 0.07
+  },
+  {
+   "label": "East Prairie 73",
+   "strong": false,
+   "value": "+4.4%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.7,
+   "size": 0.088
+  },
+  {
+   "label": "Winnetka 36",
+   "strong": false,
+   "value": "+6.6%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.7,
+   "size": 0.132
+  },
+  {
+   "label": "Sunset Ridge 29",
+   "strong": false,
+   "value": "+7.1%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.7,
+   "size": 0.142
+  },
+  {
+   "label": "Niles 71",
+   "strong": false,
+   "value": "+7.4%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.7,
+   "size": 0.148
+  },
+  {
+   "label": "Skokie 69",
+   "strong": false,
+   "value": "+8.3%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.7,
+   "size": 0.166
+  },
+  {
+   "label": "West Northfield 31",
+   "strong": false,
+   "value": "+12.9%",
+   "swatch": "var(--series-muted)",
+   "offset": 0.7,
+   "size": 0.258
+  }
+ ],
+ "table": [
+  [
+   "Avoca 37",
+   "Nearby suburb",
+   "732",
+   "520",
+   "−29.0%",
+   "12%",
+   ""
+  ],
+  [
+   "District 65",
+   "District 65",
+   "7,832",
+   "5,936",
+   "−24.2%",
+   "39%",
+   ""
+  ],
+  [
+   "Berwyn South 100",
+   "Nearby suburb",
+   "3,663",
+   "2,877",
+   "−21.5%",
+   "74%",
+   ""
+  ],
+  [
+   "Golf 67",
+   "Nearby suburb",
+   "722",
+   "578",
+   "−19.9%",
+   "33%",
+   ""
+  ],
+  [
+   "Joliet PSD 86",
+   "Peer (cited by District 65)",
+   "11,226",
+   "9,017",
+   "−19.7%",
+   "96%",
+   "Dec. 2025 memo"
+  ],
+  [
+   "Berwyn North 98",
+   "Nearby suburb",
+   "2,888",
+   "2,357",
+   "−18.4%",
+   "74%",
+   ""
+  ],
+  [
+   "Chicago Public Schools",
+   "Chicago",
+   "363,954",
+   "313,936",
+   "−13.7%",
+   "70%",
+   ""
+  ],
+  [
+   "Comm Cons 59",
+   "Peer (cited by District 65)",
+   "6,694",
+   "5,792",
+   "−13.5%",
+   "58%",
+   "Dec. 2025 memo and Sept. 2026 presentation"
+  ],
+  [
+   "Oak Park 97",
+   "Peer (cited by District 65)",
+   "6,117",
+   "5,405",
+   "−11.6%",
+   "19%",
+   "Dec. 2025 memo"
+  ],
+  [
+   "Skokie 73-5",
+   "Nearby suburb",
+   "1,120",
+   "1,000",
+   "−10.7%",
+   "36%",
+   ""
+  ],
+  [
+   "Glenview 34",
+   "Nearby suburb",
+   "4,740",
+   "4,274",
+   "−9.8%",
+   "23%",
+   ""
+  ],
+  [
+   "Morton Grove 70",
+   "Nearby suburb",
+   "960",
+   "868",
+   "−9.6%",
+   "31%",
+   ""
+  ],
+  [
+   "Wilmette 39",
+   "Nearby suburb",
+   "3,569",
+   "3,225",
+   "−9.6%",
+   "3%",
+   ""
+  ],
+  [
+   "Palatine 15",
+   "Peer (cited by District 65)",
+   "12,377",
+   "11,190",
+   "−9.6%",
+   "33%",
+   "Dec. 2025 memo and Sept. 2026 presentation"
+  ],
+  [
+   "Crystal Lake 47",
+   "Peer (cited by District 65)",
+   "7,431",
+   "6,762",
+   "−9.0%",
+   "32%",
+   "Dec. 2025 memo"
+  ],
+  [
+   "SD 45 DuPage County",
+   "Peer (cited by District 65)",
+   "3,354",
+   "3,066",
+   "−8.6%",
+   "42%",
+   "Sept. 2026 presentation"
+  ],
+  [
+   "Skokie 68",
+   "Nearby suburb",
+   "1,823",
+   "1,689",
+   "−7.4%",
+   "53%",
+   ""
+  ],
+  [
+   "North Shore 112",
+   "Peer (cited by District 65)",
+   "3,904",
+   "3,629",
+   "−7.0%",
+   "19%",
+   "Sept. 2026 presentation"
+  ],
+  [
+   "Lincolnwood 74",
+   "Nearby suburb",
+   "1,261",
+   "1,183",
+   "−6.2%",
+   "11%",
+   ""
+  ],
+  [
+   "Arlington Heights 25",
+   "Peer (cited by District 65)",
+   "5,581",
+   "5,261",
+   "−5.7%",
+   "13%",
+   "Dec. 2025 memo"
+  ],
+  [
+   "Woodridge 68",
+   "Peer (cited by District 65)",
+   "3,079",
+   "2,905",
+   "−5.7%",
+   "40%",
+   "Sept. 2026 presentation"
+  ],
+  [
+   "Park Ridge 64",
+   "Nearby suburb",
+   "4,707",
+   "4,480",
+   "−4.8%",
+   "5%",
+   ""
+  ],
+  [
+   "Fairview 72",
+   "Nearby suburb",
+   "740",
+   "705",
+   "−4.7%",
+   "31%",
+   ""
+  ],
+  [
+   "Orland 135",
+   "Peer (cited by District 65)",
+   "5,173",
+   "4,997",
+   "−3.4%",
+   "24%",
+   "Dec. 2025 memo and Sept. 2026 presentation"
+  ],
+  [
+   "Northbrook 28",
+   "Nearby suburb",
+   "1,842",
+   "1,790",
+   "−2.8%",
+   "5%",
+   ""
+  ],
+  [
+   "Schaumburg 54",
+   "Peer (cited by District 65)",
+   "15,328",
+   "15,044",
+   "−1.9%",
+   "19%",
+   "Dec. 2025 memo"
+  ],
+  [
+   "Wheeling 21",
+   "Peer (cited by District 65)",
+   "6,215",
+   "6,113",
+   "−1.6%",
+   "46%",
+   "Dec. 2025 memo"
+  ],
+  [
+   "Northbrook/Glenview 30",
+   "Nearby suburb",
+   "1,219",
+   "1,206",
+   "−1.1%",
+   "3%",
+   ""
+  ],
+  [
+   "Kenilworth 38",
+   "Nearby suburb",
+   "481",
+   "483",
+   "+0.4%",
+   "NaN%",
+   ""
+  ],
+  [
+   "CCSD 62",
+   "Peer (cited by District 65)",
+   "4,445",
+   "4,521",
+   "+1.7%",
+   "49%",
+   "Sept. 2026 presentation"
+  ],
+  [
+   "Northbrook 27",
+   "Nearby suburb",
+   "1,273",
+   "1,318",
+   "+3.5%",
+   "3%",
+   ""
+  ],
+  [
+   "East Prairie 73",
+   "Nearby suburb",
+   "502",
+   "524",
+   "+4.4%",
+   "45%",
+   ""
+  ],
+  [
+   "Winnetka 36",
+   "Nearby suburb",
+   "1,663",
+   "1,772",
+   "+6.6%",
+   "NaN%",
+   ""
+  ],
+  [
+   "Sunset Ridge 29",
+   "Nearby suburb",
+   "477",
+   "511",
+   "+7.1%",
+   "NaN%",
+   ""
+  ],
+  [
+   "Niles 71",
+   "Nearby suburb",
+   "610",
+   "655",
+   "+7.4%",
+   "52%",
+   ""
+  ],
+  [
+   "Skokie 69",
+   "Nearby suburb",
+   "1,749",
+   "1,895",
+   "+8.3%",
+   "56%",
+   ""
+  ],
+  [
+   "West Northfield 31",
+   "Nearby suburb",
+   "868",
+   "980",
+   "+12.9%",
+   "23%",
+   ""
+  ]
+ ]
+}

@@ -1,0 +1,23 @@
+{%- comment -%}
+  Two values per row joined by a link (a dumbbell), rendered at build time.
+  include.data = {ticks: [{at, label}], rows: [{label, k, g5, k_at, g5_at, lo, hi, value, strong}]}.
+  include.a / include.b name the two values; include.sa / include.sb are their swatches.
+{%- endcomment -%}
+<ol class="dot-chart" aria-label="{{ include.label | escape }}">
+{%- for r in include.data.rows %}
+  <li class="dot-row">
+    <span class="bar-label">{{ r.label }}<span class="visually-hidden">: {{ include.a }} {{ r.k }}, {{ include.b }} {{ r.g5 }}, change</span></span>
+    <span class="dot-track" aria-hidden="true" style="--lo: {{ r.lo }}; --hi: {{ r.hi }}">
+      <span class="dot-link"></span>
+      <span class="dot" style="--at: {{ r.g5_at }}; --swatch: {{ include.sb }}"></span>
+      <span class="dot" style="--at: {{ r.k_at }}; --swatch: {{ include.sa }}"></span>
+    </span>
+    <span class="bar-value">{% if r.strong %}<strong>{{ r.value }}</strong>{% else %}{{ r.value }}{% endif %}</span>
+  </li>
+{%- endfor %}
+  <li class="dot-row" aria-hidden="true">
+    <span class="bar-label"></span>
+    <span class="dot-track chart-scale">{% for t in include.data.ticks %}<span style="--at: {{ t.at }}">{{ t.label }}</span>{% endfor %}</span>
+    <span class="bar-value text-deemphasized">{{ include.value_label }}</span>
+  </li>
+</ol>

@@ -140,18 +140,28 @@
   --accent-hover: #FFC44F;                 /* CTA hover */
   --bloom:        #C4560A;                 /* Accent 2 (Okabe–Ito orange) — moment-of-change only */
 
-  /* ---- Chart series (tax calculator's .levy-chart) -----------------------
-     Okabe–Ito steps validated for CVD separation on each surface. Identity
+  /* ---- Chart series (site-wide: .chart, .bar-chart, .dot-chart) ----------
+     Okabe–Ito steps validated for CVD separation on each surface, and each
+     ≥3:1 on --card so a series can be drawn as a line (WCAG 1.4.11). Identity
      also rides on the legend, tooltip and table, so color is never the only
      cue. Declared in all five theme blocks; high contrast swaps in sets that
      clear 5.7:1 on its flattened surfaces. ------------------------------ */
-  /* navy, not Okabe–Ito blue: that equals --brand here, so the levy swatch
-     matched the ticked .checkbox beside it. 2.2:1 from --brand, 11:1 on
-     --card, ≥3.3:1 from the other three series. */
-  --series-1: #1B3A6B;   /* yearly levy increase */
-  --series-2: #CC79A7;   /* health & life safety */
-  --series-3: #E69F00;   /* capital referendum */
-  --series-4: #009E73;   /* operating referendum */
+  /* navy, not Okabe–Ito blue: that equals --brand here, so a swatch matched
+     the ticked .checkbox beside it. 2.2:1 from --brand, 11:1 on --card,
+     ≥3.3:1 from the other three series. */
+  --series-1: #1B3A6B;
+  --series-2: #CC79A7;
+  /* darkened amber: Okabe–Ito #E69F00 is only 2.25:1 on white. #B07300 is
+     3.96:1 and stays clear of series 1, 2 and 4 under simulated deutan,
+     protan and tritan vision. */
+  --series-3: #B07300;
+  --series-4: #009E73;
+  --series-muted: #7D8A83;   /* comparison / background series, no-data areas (3.6:1) */
+  /* Sequential ramp (heatmap cells, map areas): shades mix from --seq-low to
+     --seq-high by a 0–1 --t. Both ends keep --ink text ≥4.5:1, so labels sit
+     on any shade in plain ink with no light/dark flip. */
+  --seq-low:  #EEF5FB;
+  --seq-high: #6593C4;
 
   /* ---- Feature surface (spotlight panel: .surface-feature) --------------
      Deep teal wash with a marigold label and white figures. HSL so a theme
@@ -219,6 +229,7 @@
   --bloom:        #E69F00;          /* Okabe–Ito orange on dark */
 
   --series-1: #3A8FD6; --series-2: #BC6A9C; --series-3: #C08000; --series-4: #00A078;
+  --series-muted: #6F8378; --seq-low: #1C3142; --seq-high: #3B6C96;
 
   --feature-bg:    hsl(189, 65%, 14%);
   --feature-ink:   hsl(0, 0%, 100%);
@@ -303,6 +314,7 @@
     --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD; --focus: #8CE7B7;
     --secondary: #7EC8E3; --bloom: #E69F00;
     --series-1: #3A8FD6; --series-2: #BC6A9C; --series-3: #C08000; --series-4: #00A078;
+  --series-muted: #6F8378; --seq-low: #1C3142; --seq-high: #3B6C96;
     --feature-bg: hsl(189, 65%, 14%); --feature-ink: hsl(0, 0%, 100%);
     --feature-muted: hsl(189, 25%, 78%); --feature-label: hsl(39, 100%, 68%); --feature-line: hsl(189, 35%, 32%);
     --quiet-ink: hsl(45.5, 30%, 92%);
@@ -340,6 +352,7 @@ html[data-contrast="high"]:not([data-theme="dark"]) .hue-default {
   --line: var(--hc-color-dark); --ink: var(--hc-color-dark); --muted: var(--hc-color-dark); --edge: var(--hc-color-dark); --focus: var(--hc-color-dark);
   --brand: #005C31; --brand-strong: #00411F; --link: #005C31; --secondary: #00323C;
   --series-1: #005A8C; --series-2: #9E3C78; --series-3: #8A5A00; --series-4: #006B4F;
+  --series-muted: #595959; --seq-low: #EBEBEB; --seq-high: #858585;
   --hero-bg: var(--hc-color-light); --hero-ink: var(--hc-color-dark); --hero-muted: var(--hc-color-dark); --hero-em: #7A4C00;
   --feature-bg: var(--hc-color-light); --feature-ink: var(--hc-color-dark); --feature-muted: var(--hc-color-dark); --feature-label: #7A4C00; --feature-line: var(--hc-color-dark);
   --quiet-ink: var(--hc-color-dark);
@@ -349,6 +362,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   --line: var(--hc-color-light); --ink: var(--hc-color-light); --muted: var(--hc-color-light); --edge: var(--hc-color-light); --focus: #FFFF00;
   --brand: #4DFFA6; --brand-strong: #90FFC8; --link: #4DFFA6; --secondary: #9BE8FF;
   --series-1: #56B4E9; --series-2: #E59ACB; --series-3: #F0B429; --series-4: #2FD3A0;
+  --series-muted: #A6A6A6; --seq-low: #1F1F1F; --seq-high: #6E6E6E;
   --accent: #FFD34D; --accent-hover: #FFE58A; --on-accent: var(--hc-color-dark);
   --hero-bg: var(--hc-color-dark); --hero-ink: var(--hc-color-light); --hero-muted: var(--hc-color-light); --hero-em: #FFD34D;
   --feature-bg: var(--hc-color-dark); --feature-ink: var(--hc-color-light); --feature-muted: var(--hc-color-light); --feature-label: #FFD34D; --feature-line: var(--hc-color-light);
@@ -387,6 +401,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   *, *::before, *::after { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   img  { max-width: 100%; display: block; }
+  figure { margin: 0; }   /* UA default is 1em 40px, which squeezes chart cards on phones */
 }
 
 /* ── base ───────────────────────────────────────────────────────────────── */
@@ -1320,8 +1335,9 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      post/page articles and the homepage sections — so list styling is
      consistent everywhere without per-section targeting. `.post-list` (the
      blog index) opts out; it's a custom-classed component. */
-  .prose ul:not(.post-list), .prose ol { padding-left: 1.25em; }
-  .prose :is(ul:not(.post-list), ol) li + li { margin-block-start: var(--space-2xs); }
+  /* chart lists (legend keys, bar/dot rows) lay out their own items */
+  .prose :is(ul, ol):not(.post-list, .chart-legend, .bar-chart, .dot-chart) { padding-left: 1.25em; }
+  .prose :is(ul, ol):not(.post-list, .chart-legend, .bar-chart, .dot-chart) li + li { margin-block-start: var(--space-2xs); }
   /* Google Docs sometimes wraps a list item's content in a <p>; drop its
      inherited paragraph margin so it doesn't inflate item spacing. */
   .prose li > p { margin-block: 0; }
@@ -2123,7 +2139,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   }
   .include-row > details > summary::-webkit-details-marker { display: none; }
   .include-label { font-weight: 600; }
-  .include-label .levy-swatch {
+  .include-label .chart-swatch {
     inline-size: var(--step--1);
     block-size: var(--step--1);
     margin-inline-end: var(--space-2xs);
@@ -2160,7 +2176,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     padding: var(--space-2xs);
     margin: calc(-1 * var(--space-2xs));
   }
-  .include-row:has(> .checkbox > input:not(:checked)) .levy-swatch { background: transparent; }
+  .include-row:has(> .checkbox > input:not(:checked)) .chart-swatch { background: transparent; }
   .include-row:has(> .checkbox > input:not(:checked)) :is(.include-label, .step-value) { color: var(--muted); }
   /* the strike is always drawn, transparent until unticked, so it can fade
      in with the --muted color (text-decoration-line itself can't animate);
@@ -2176,26 +2192,47 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     text-decoration-color: currentColor;
   }
 
-  /* ─ Levy chart ─ the tax calculator's stacked year-by-year bars. Fills are
-     set inline from JS as var(--series-N) (theme tokens on :root). Legend and
-     tooltip rows ride on .cluster; the tooltip takes the shared --menu-*
-     popover treatment. */
-  .levy-chart-wrap { position: relative; }
-  .levy-chart-wrap svg { display: block; inline-size: 100%; block-size: auto; }
-  .levy-axis {
+  /* ─ Chart ─ the site-wide SVG chart frame (tax calculator's stacked bars,
+     the line charts drawn by assets/js/charts.js). Series colors arrive as an
+     inline --swatch: var(--series-N) (theme tokens, all five theme blocks);
+     line style rides on the .swatch-* utilities so a legend key and its line
+     share one class. Legend and tooltip rows ride on .cluster; the tooltip
+     takes the shared --menu-* popover treatment.
+     --chart-text is the label size in SVG user units: the tax calculator's
+     fixed 640-wide viewBox keeps the 11-unit default (it scales with the
+     card); charts.js draws at the rendered width (1 unit = 1px) and sets it
+     to var(--step--1), so its labels follow the text-size setting. */
+  .chart { position: relative; }
+  .chart svg { display: block; inline-size: 100%; block-size: auto; overflow: visible; }
+  .chart-axis {
     fill: var(--muted);
-    font-size: 11px;            /* SVG user units: scales with the viewBox */
+    font-size: var(--chart-text, 11px);
     font-variant-numeric: tabular-nums;
   }
-  .levy-spot { fill: var(--ink); font-weight: 700; }
-  .levy-hit { cursor: crosshair; }
-  .levy-hit:hover { fill: var(--ink); fill-opacity: 0.05; }
-  .levy-legend { column-gap: var(--space-s); font-size: var(--step--1); }
-  .levy-legend:empty { display: none; }
-  .levy-key { gap: var(--space-2xs); }
+  .chart-grid { stroke: var(--line); stroke-width: var(--border-thin); }
+  .chart-ref  { stroke: var(--muted); stroke-width: var(--border-thin); stroke-dasharray: 2 2; }
+  .chart-line {
+    fill: none;
+    stroke: var(--swatch);
+    stroke-width: var(--border-bold);
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .chart-band { fill: var(--swatch); fill-opacity: 0.16; stroke: none; }
+  .chart-dot  { fill: var(--swatch); stroke: var(--card); stroke-width: var(--border-thin); }
+  .chart-cursor { stroke: var(--muted); stroke-width: var(--border-thin); opacity: 0; transition: opacity var(--transition-fast) var(--ease); }
+  .chart-cursor.is-on { opacity: 1; }
+  .chart-spot { fill: var(--ink); font-weight: 700; }
+  .chart-hit { cursor: crosshair; outline: none; }
+  .chart-hit:hover { fill: var(--ink); fill-opacity: 0.05; }
+  /* charts.js makes each x position a focusable band (arrow keys move along) */
+  .chart-hit:focus-visible { fill: var(--ink); fill-opacity: 0.08; stroke: var(--focus); stroke-width: var(--border-bold); }
+  .chart-legend { column-gap: var(--space-s); font-size: var(--step--1); list-style: none; padding: 0; margin: 0; }
+  .chart-legend:empty { display: none; }
+  .chart-key { gap: var(--space-2xs); }
   /* --swatch is set inline (var(--series-N)); the border in the same color lets
      a swatch drop to an outline (an unticked .include-row) at the same size */
-  .levy-swatch {
+  .chart-swatch {
     display: inline-block;
     inline-size: var(--step-0);
     block-size: var(--step-0);
@@ -2205,9 +2242,10 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     border: var(--border-bold) solid var(--swatch);
     transition: background var(--transition-fast) var(--ease);
   }
-  .levy-tip {
+  .chart-tip {
     position: absolute;
     inset-block-start: 0;
+    inset-inline-start: 0;
     z-index: 2;
     display: grid;
     gap: var(--space-2xs);
@@ -2220,32 +2258,175 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     font-size: var(--step--1);
     pointer-events: none;
   }
-  .levy-tip-row { gap: var(--space-2xs); flex-wrap: nowrap; }
-  .levy-tip-row b { margin-inline-start: auto; padding-inline-start: var(--space-s); font-variant-numeric: tabular-nums; }
-  .levy-tip-total { border-block-start: var(--border-thin) solid var(--line); padding-block-start: var(--space-2xs); }
+  .chart-tip-row { gap: var(--space-2xs); flex-wrap: nowrap; }
+  .chart-tip-row b { margin-inline-start: auto; padding-inline-start: var(--space-s); font-variant-numeric: tabular-nums; }
+  .chart-tip-total { border-block-start: var(--border-thin) solid var(--line); padding-block-start: var(--space-2xs); }
 
   /* Data tables (chart table view, district financing). They keep the framed
      .page table edge but drop its definition-table label column: the header
      row carries the weight, the first column sizes to its content, and the
      figure columns right-align so place values line up. */
-  .levy-table-wrap { overflow-x: auto; }
-  .levy-table-wrap :is(th, td) {
+  /* position: relative makes the scroll box the containing block, so the
+     absolutely positioned .visually-hidden text in wide tables is clipped with
+     the rest instead of widening the page */
+  .data-table { overflow-x: auto; position: relative; }
+  .data-table :is(th, td) {
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
     padding-inline: var(--space-xs);   /* tighter than .page tables so six figure columns fit the card */
   }
   @media (--sm-and-down) {
-    .levy-table-wrap :is(th, td) { padding-inline: var(--space-2xs); }
+    .data-table :is(th, td) { padding-inline: var(--space-2xs); }
   }
-  .levy-table-wrap th { font-weight: 700; }
-  .levy-table-wrap thead th { vertical-align: bottom; }
-  .levy-table-wrap :is(th, td):first-child { background: none; width: auto; font-size: inherit; }
+  .data-table th { font-weight: 700; }
+  .data-table thead th { vertical-align: bottom; }
+  .data-table :is(th, td):first-child { background: none; width: auto; font-size: inherit; }
   /* body-row headers are <th scope="row"> for screen readers but read as plain labels */
-  .levy-table-wrap tbody :is(th, td):first-child { font-weight: normal; }
-  .levy-table-wrap :is(th, td):not(:first-child) { text-align: end; }
+  .data-table tbody :is(th, td):first-child { font-weight: normal; }
+  .data-table :is(th, td):not(:first-child) { text-align: end; }
   /* short column heads carry the chart's swatch stacked above the label, so it adds
      height, not width; inline-flex so the pair still right-aligns with the figures */
-  .levy-table-wrap th .levy-key { display: inline-flex; flex-direction: column; align-items: flex-end; }
+  .data-table th .chart-key { display: inline-flex; flex-direction: column; align-items: flex-end; }
+
+  .data-table caption { text-align: start; font-weight: 700; padding-block-end: var(--space-2xs); }
+  /* a scrolling table region is focusable (tabindex="0") so keyboard users can scroll it */
+  .data-table:focus-visible { outline: var(--border-bold) solid var(--focus); outline-offset: var(--border-bold); }
+  /* separator row between groups (e.g. elementary / middle school) */
+  .data-table tr.rule-above :is(th, td) { border-block-start: var(--border-bold) solid var(--line); }
+
+  /* ─ Bar chart ─ horizontal bars around a zero line, as an HTML list so
+     labels wrap, follow the text size and translate. Each .bar-row carries
+     --offset and --size (0–1 of the axis domain, from the data script) and a
+     --swatch; the list carries --zero, the zero line's 0–1 position. The value
+     column is real text, so the bars need no axis. */
+  .bar-chart {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-2xs);
+    font-size: var(--step--1);
+  }
+  .bar-row,
+  .dot-row {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) 1fr minmax(4.5em, auto);
+    align-items: center;
+    column-gap: var(--space-xs);
+  }
+  .bar-label { text-align: end; }
+  .bar-value { font-variant-numeric: tabular-nums; text-align: end; }
+  .bar-track {
+    position: relative;
+    block-size: var(--step-0);
+    /* zero line, drawn as a 1px background stripe at --zero */
+    background: linear-gradient(var(--muted), var(--muted)) no-repeat
+                calc(var(--zero, 0) * 100%) 0 / var(--border-thin) 100%;
+  }
+  .bar {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(var(--offset) * 100%);
+    inline-size: max(var(--border-bold), calc(var(--size) * 100%));
+    background: var(--swatch);
+    border-radius: var(--border-thin);
+  }
+  @media (--sm-and-down) {
+    .bar-row,
+    .dot-row { grid-template-columns: 1fr minmax(4.5em, auto); }
+    .bar-label { grid-column: 1 / -1; text-align: start; }
+  }
+
+  /* ─ Dot chart ─ two values per row joined by a link (a dumbbell). Same row
+     grid as .bar-row; each .dot takes --at (0–1) and --swatch, the link spans
+     --lo to --hi. */
+  .dot-chart { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-xs); font-size: var(--step--1); }
+  .dot-track { position: relative; block-size: var(--step-0); }
+  .dot-link {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(var(--lo) * 100%);
+    inline-size: calc((var(--hi) - var(--lo)) * 100%);
+    block-size: var(--border-bold);
+    translate: 0 -50%;
+    background: var(--series-muted);
+  }
+  .dot {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(var(--at) * 100%);
+    inline-size: var(--step-0);
+    block-size: var(--step-0);
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: var(--swatch);
+    border: var(--border-thin) solid var(--card);
+  }
+
+  /* value scale under a dot chart: tick labels at --at, the end ones held inside the track */
+  .chart-scale { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .chart-scale > span { position: absolute; inset-inline-start: calc(var(--at) * 100%); translate: -50% 0; }
+  .chart-scale > span:first-child { translate: 0 0; }
+  .chart-scale > span:last-child { translate: -100% 0; }
+
+  /* ─ Heat table ─ a real <table> whose cells are shaded from a 0–1 --t along
+     the --seq-low → --seq-high ramp. The ramp keeps --ink text ≥4.5:1 on every
+     shade in every theme, so cell text never flips color. Sits inside
+     .data-table for its scroll region and figure-table rules. */
+  .heat :is(th, td) { padding: var(--space-2xs); text-align: center; }
+  .heat td {
+    background: color-mix(in oklab, var(--seq-high) calc(var(--t, 0) * 100%), var(--seq-low));
+    color: var(--ink);
+  }
+  .heat tbody th { text-align: end; }
+
+  /* ─ Choropleth ─ static SVG maps (shapes projected at build time by the
+     data script). Every map sits in one grid cell so switching maps
+     crossfades in place; each area's fill mixes the sequential ramp by its
+     --t, and a measure switch only rewrites --t, so the color transitions. */
+  .choropleth-stage { display: grid; grid-template-columns: minmax(0, 1fr); max-inline-size: 32rem; margin-inline: auto; }
+  .choropleth-stage > svg {
+    grid-area: 1 / 1;
+    inline-size: 100%;
+    block-size: auto;
+    transition: opacity var(--transition-base) var(--ease), visibility var(--transition-base);
+  }
+  .choropleth-stage > svg.is-hidden { opacity: 0; visibility: hidden; }
+  .choropleth-area {
+    fill: color-mix(in oklab, var(--seq-high) calc(var(--t, 0) * 100%), var(--seq-low));
+    stroke: var(--card);
+    stroke-width: var(--border-bold);
+    stroke-linejoin: round;
+    transition: fill var(--transition-base) var(--ease);
+  }
+  /* no density to show (the King Arts magnet area): muted and hatched, so it
+     isn't marked by color alone */
+  .choropleth-area.is-empty { fill: url(#hatch); }
+  .choropleth-hatch-bg { fill: var(--card); }
+  .choropleth-hatch-line { stroke: var(--series-muted); stroke-width: var(--border-bold); }
+  .choropleth-school { fill: var(--ink); stroke: var(--card); stroke-width: var(--border-thin); }
+  /* --map-scale (viewBox units per rendered px, set by charts.js) keeps labels
+     at --step--1 on screen whatever the map's width; without JS they scale
+     with the map */
+  .choropleth-label {
+    fill: var(--ink);
+    /* capped at 11 viewBox units (as the tax calculator's axis labels), so on
+       a phone-width map labels shrink with the shapes instead of overlapping */
+    font-size: min(11px, calc(var(--step--1) * var(--map-scale, 1)));
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .choropleth-label .name { font-weight: 700; }
+  .choropleth-legend { font-size: var(--step--1); color: var(--muted); }
+  .chart-ramp {
+    display: inline-block;
+    inline-size: 8rem;
+    block-size: var(--step--1);
+    border-radius: var(--border-thin);
+    background: linear-gradient(to right, var(--seq-low), var(--seq-high));
+    border: var(--border-thin) solid var(--line);
+    vertical-align: middle;
+  }
 
   /* ─ Responsive: nav collapses into a slide-in panel on narrow viewports ─ */
   @media (--sm-and-down) {
@@ -2449,6 +2630,19 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     grid-template-columns: var(--grid-wide-columns);
     gap: var(--grid-gap, var(--space-s));
   }
+
+  /* Chart series shapes: one class styles both a legend .chart-swatch and the
+     SVG .chart-line / .chart-band it keys, so the two can't drift apart. */
+  .swatch-line   { block-size: 0; inline-size: var(--step-2); background: none; border: 0; border-radius: 0;
+                   border-block-start: var(--border-bold) solid var(--swatch); }
+  .swatch-strong { border-block-start-width: calc(var(--border-bold) * 1.5); stroke-width: calc(var(--border-bold) * 1.5); }
+  .swatch-dashed { border-block-start-style: dashed; stroke-dasharray: 6 4; }
+  .swatch-dotted { border-block-start-style: dotted; stroke-dasharray: 2 3; }
+  .swatch-band   { background: color-mix(in srgb, var(--swatch) 25%, transparent); border-color: transparent; }
+  .swatch-dot    { border-radius: 50%; }
+  .swatch-diamond { rotate: 45deg; scale: 0.75; }
+  .swatch-hatch  { background: repeating-linear-gradient(45deg, var(--series-muted) 0 var(--border-bold), transparent var(--border-bold) calc(var(--border-bold) * 2.5));
+                   border-color: var(--series-muted); }
 
   /* Recolor a .callout's stripe (see the .callout block) */
   .stripe-bloom { --callout-stripe: var(--bloom); }

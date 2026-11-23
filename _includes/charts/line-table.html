@@ -1,0 +1,13 @@
+{%- comment -%} The no-JS data table for one line-chart panel (same spec charts.js draws). {%- endcomment -%}
+{%- assign p = include.panel -%}
+<div class="data-table" role="region" tabindex="0" aria-label="{{ include.caption | escape }}">
+<table>
+<caption class="visually-hidden">{{ include.caption }}</caption>
+<thead><tr><th scope="col">{{ p.xName }}</th>{% for s in p.series reversed %}<th scope="col">{{ s.label }}</th>{% endfor %}{% for b in p.bands %}<th scope="col">{{ b.label }}</th>{% endfor %}{% for mk in p.markers %}<th scope="col">District's own projection</th>{% endfor %}</tr></thead>
+<tbody>
+{%- for xl in p.xLabels %}{% assign i = forloop.index0 %}
+<tr><th scope="row">{{ xl }}</th>{% for s in p.series reversed %}<td>{{ s.display[i] | default: "—" }}</td>{% endfor %}{% for b in p.bands %}<td>{{ b.display[i] | default: "—" }}</td>{% endfor %}{% for mk in p.markers %}<td>{% if mk.at == i %}{{ mk.label | split: ": " | last }}{% else %}—{% endif %}</td>{% endfor %}</tr>
+{%- endfor %}
+</tbody>
+</table>
+</div>

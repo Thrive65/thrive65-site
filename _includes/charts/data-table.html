@@ -1,0 +1,17 @@
+{%- comment -%}
+  A display-ready table from _data (scripts/enrollment/prepare.mjs writes
+  them): include.table = {caption, columns: [...], rows: [{rule?, cells: [{t, b?}]}]}.
+  The first cell of each row is a row header. The wrapper is a focusable,
+  labelled scroll region so keyboard users can scroll a wide table.
+{%- endcomment -%}
+<div class="data-table" role="region" tabindex="0" aria-label="{{ include.table.caption | escape }}">
+<table>
+<caption class="visually-hidden">{{ include.table.caption }}</caption>
+<thead><tr>{% for c in include.table.columns %}<th scope="col">{{ c }}</th>{% endfor %}</tr></thead>
+<tbody>
+{%- for r in include.table.rows %}
+<tr{% if r.rule %} class="rule-above"{% endif %}>{% for c in r.cells %}{% if forloop.first %}<th scope="row">{% else %}<td>{% endif %}{% if c.b %}<strong>{{ c.t }}</strong>{% else %}{{ c.t }}{% endif %}{% if forloop.first %}</th>{% else %}</td>{% endif %}{% endfor %}</tr>
+{%- endfor %}
+</tbody>
+</table>
+</div>
