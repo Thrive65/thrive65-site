@@ -13,12 +13,13 @@ wide: true
 
 <p class="lede" id="takeaway">District 65 has about <b data-draw="hl-drop">—</b> fewer K-8 students than at its 2016-17 peak. This fall it serves <b data-draw="hl-actual">—</b>, <b data-draw="hl-peakpct">—</b> below that peak. Most of the drop comes from smaller kindergarten classes, because fewer children have been born in or moved to Evanston and Skokie. Families who left during the pandemic, including some who chose private schools, account for a smaller share.</p>
 <p class="note">This page walks through the evidence in order: how District 65 compares with other districts, what happened with private schools, the drop in births, what the district's enrollment studies predicted and how they did, and then the same story school by school.</p>
+<p class="note" id="studies">The district has paid for two enrollment studies, and both appear throughout this page.The <b>Kofron study</b> (ES65 Geodemographic Study, Charles Kofron, 2022) was done for the district's facilities planning. It mapped the home addresses of enrolled students and of recent births, then projected each attendance area forward using how classes had grown or shrunk from grade to grade in past years. It gives four versions: high, middle, low, and a "snapshot" that assumes pandemic-era losses continue. The <b>McKibben study</b> (McKibben Demographic Consulting, 2024) forecast how many children would live in each area, starting from the 2020 census. The district also publishes its own short-range projection each year. The forecasts section below checks how each one has done.</p>
 
 <div class="tiles" id="tiles">
   <div class="tile"><div class="lab">K-8 students, fall 2026</div><div class="big" data-draw="t-actual">—</div><div class="sub">Peak: <span data-draw="t-peak">—</span> in 2016-17</div></div>
-  <div class="tile"><div class="lab">Kofron middle forecast for 2026-27</div><div class="big" data-draw="t-mid">—</div><div class="sub">Range <span data-draw="t-low">—</span> to <span data-draw="t-high">—</span></div></div>
+  <div class="tile"><div class="lab">Kofron study (2022), middle forecast for 2026-27</div><div class="big" data-draw="t-mid">—</div><div class="sub">Range <span data-draw="t-low">—</span> to <span data-draw="t-high">—</span></div></div>
   <div class="tile"><div class="lab">Kindergarten, fall 2026</div><div class="big" data-draw="t-k">—</div><div class="sub">vs <span data-draw="t-8">—</span> in 8th grade</div></div>
-  <div class="tile"><div class="lab">Kofron middle forecast for 2031-32</div><div class="big" data-draw="t-mid32">—</div><div class="sub">District's own 2030-31 projection: <span data-draw="t-d65">—</span></div></div>
+  <div class="tile"><div class="lab">Kofron study (2022), middle forecast for 2031-32</div><div class="big" data-draw="t-mid32">—</div><div class="sub">District's own 2030-31 projection: <span data-draw="t-d65">—</span></div></div>
 </div>
 
 <h2 id="compared">How District 65 compares with the nation and nearby districts</h2>
@@ -82,7 +83,7 @@ wide: true
 
 <h2 id="forecasts">What the district's forecasts predicted, and how they did</h2>
 <p class="lede">The district has paid for two enrollment studies. The 2022 Kofron study predicted this fall's enrollment within three students. The 2024 McKibben study expected more young families to move in and is running about 3% high so far.</p>
-<p class="note">The <b>Kofron study</b> (ES65 Geodemographic Study, Charles Kofron, 2022) was done for the district's facilities planning. It mapped the home addresses of enrolled students and of recent births, then projected each attendance area forward using how classes had grown or shrunk from grade to grade in past years. It gives four versions: high, middle, low, and a "snapshot" that assumes pandemic-era losses continue. The <b>McKibben study</b> (McKibben Demographic Consulting, 2024) instead forecast how many children would live in each area, starting from the 2020 census. The district also publishes its own short-range projection each year.</p>
+<p class="note">The studies are described at the <a href="#studies">top of this page</a>. The charts below compare each forecast with what happened.</p>
 
 <h3 id="trend-vs-forecasts">District K-8 enrollment vs. the forecasts</h3>
 <p class="note">Kofron's four forecasts are rescaled to start from the district's official 2021-22 count, because his totals count every resident student, a slightly different group. The district's own projection is from its November 2025 memo. The McKibben line is scaled to start from the district's 2024-25 count because McKibben also counts Park, Rice and separately counted special education students.</p>
