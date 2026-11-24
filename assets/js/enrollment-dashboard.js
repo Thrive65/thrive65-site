@@ -1199,4 +1199,67 @@ dash.draw('births-chart', (el) => {
 });
 })();
 
+(function () {
+// Future middle school classes from students already enrolled
+dash.draw('ms-future', (el) => {
+  const s = dash.data('feeder_grades'), cb = dash.data('compare_bands');
+  if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
+  el.replaceChildren();
+  const G = ['K', '1', '2', '3', '4', '5', '6', '7', '8'];
+  const f = {}; for (const r of s.data) (f[r.feeder] = f[r.feeder] || {})[r.grade] = +r.students;
+  const feeders = Object.keys(f);
+  const years = [0, 1, 2, 3, 4, 5, 6].map((t) => {
+    const from = [6 - t, 7 - t, 8 - t].map((i) => G[i]), v = {};
+    let total = 0;
+    for (const k of feeders) { v[k] = from.reduce((a, g) => a + f[k][g], 0); total += v[k]; }
+    return { year: (2026 + t) + '-' + String(2027 + t).slice(2), from, v, total };
+  });
+  const adj = {};
+  if (cb.status === 'ok') for (const r of cb.data) { const n = d65.num(r.t65_mid_68); if (n !== null) adj[r.year] = n; }
+  for (const y of years) y.adj = adj[y.year] ?? null;
+  const fromText = (y) => "today's " + y.from.map((g) => (g === 'K' ? 'kindergarten' : g === '1' ? '1st' : g === '2' ? '2nd' : g === '3' ? '3rd' : g + 'th')).join(', ').replace(/, ([^,]*)$/, ' and $1') + ' graders';
+  const legend = document.createElement('div'); legend.className = 'legend';
+  const add = (style, text) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; Object.assign(sw.style, style); sp.append(sw, document.createTextNode(text)); legend.append(sp); };
+  add({ borderTopColor: 'var(--color-fg)', borderTopWidth: '2.5px' }, 'All middle schools, students already enrolled');
+  add({ borderTopColor: dash.colors[6], borderTopStyle: 'dashed' }, 'All middle schools, Thrive65 update (allows for moves)');
+  feeders.forEach((k, i) => add({ borderTopColor: dash.colors[i], borderTopStyle: k === 'King Arts' ? 'dashed' : 'solid' }, k === 'King Arts' ? 'King Arts (K-8 magnet)' : k + ' feeder pattern'));
+  el.append(legend);
+  const grid = document.createElement('div'); grid.className = 'nat-grid'; el.append(grid);
+  const panel = (title) => { const w = document.createElement('div'); const t = document.createElement('div'); t.className = 'nat-t'; t.textContent = title; const box = document.createElement('div'); box.className = 'chart'; box.style.minHeight = '300px'; w.append(t, box); grid.append(w); return box; };
+  const draw = (box, series, ymin, ymax, label) => {
+    const W = box.clientWidth || 360, H = 300, m = { t: 14, r: 86, b: 26, l: 46 };
+    const x = d3.scalePoint(years.map((y) => y.year), [m.l, W - m.r]);
+    const y = d3.scaleLinear([ymin, ymax], [H - m.b, m.t]).nice();
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', label);
+    svg.append('g').attr('class', 'grid').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickFormat((d) => "'" + d.slice(2, 4)).tickSizeOuter(0));
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(',')));
+    const ends = [];
+    for (const sr of series) {
+      const pts = years.filter((yy) => sr.get(yy) !== null);
+      svg.append('path').datum(pts).attr('d', d3.line().x((yy) => x(yy.year)).y((yy) => y(sr.get(yy)))).attr('fill', 'none').style('stroke', sr.c).attr('stroke-width', sr.w || 2).attr('stroke-dasharray', sr.dash || null);
+      svg.append('g').selectAll('circle').data(pts).join('circle').attr('cx', (yy) => x(yy.year)).attr('cy', (yy) => y(sr.get(yy))).attr('r', 3).style('fill', sr.c);
+      const l = pts[pts.length - 1];
+      if (l) ends.push({ x: x(l.year) + 6, y: y(sr.get(l)) + 4, t: sr.label + ' ' + d65.fmt(sr.get(l)) });
+    }
+    ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 12) ends[i].y = ends[i - 1].y + 12;
+    svg.append('g').selectAll('text').data(ends).join('text').attr('x', (e) => e.x).attr('y', (e) => e.y).text((e) => e.t);
+    const tip = d65.tip(box);
+    svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+      .on('pointermove', (ev) => {
+        const [px] = d3.pointer(ev);
+        const yy = years.reduce((a, b) => (Math.abs(x(b.year) - px) < Math.abs(x(a.year) - px) ? b : a));
+        const L = ['Fall ' + yy.year.slice(0, 4) + ' grades 6-8', 'From ' + fromText(yy)].concat(series.filter((sr) => sr.get(yy) !== null).map((sr) => sr.name + ': ' + d65.fmt(sr.get(yy))));
+        tip.show(L, Math.min(x(yy.year), W * 0.45) / W * box.clientWidth, 10);
+      })
+      .on('pointerleave', () => tip.hide());
+  };
+  const b1 = panel('All middle schools'), b2 = panel('By middle school');
+  const tot = [{ name: 'Students already enrolled', label: '', get: (yy) => yy.total, c: 'var(--color-fg)', w: 2.5 }, { name: 'Thrive65 update', label: '', get: (yy) => yy.adj, c: dash.colors[6], dash: '5 3' }];
+  draw(b1, tot, 1400, d3.max(years, (yy) => yy.total) * 1.04, 'Grades 6-8 enrollment in each fall from 2026 to 2032, from students already enrolled, with the Thrive65 update');
+  const by = feeders.map((k, i) => ({ name: k, label: k, get: (yy) => yy.v[k], c: dash.colors[i], dash: k === 'King Arts' ? '5 3' : null }));
+  draw(b2, by, 0, d3.max(years, (yy) => d3.max(feeders, (k) => yy.v[k])) * 1.08, 'Grades 6-8 enrollment by middle school feeder pattern in each fall from 2026 to 2032, from students already enrolled');
+});
+})();
+
 document.addEventListener('DOMContentLoaded', () => dash.start());

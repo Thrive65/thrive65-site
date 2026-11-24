@@ -143,18 +143,10 @@ wide: true
 </div>
 <p class="note">Years are fall of each school year (2027 = 2027-28). Middle estimates use birth records; the range runs from the low series to the high series, using whichever birth assumption (records or Kofron's line) is lower or higher each year. Totals for the November 6 proposal match today's boundaries because the same children are reassigned. Lincolnwood's special education program (STEP) moves to Orrington under the proposal; this estimate sends those students with the rest of Lincolnwood, which likely puts a couple dozen too many at Willard and too few at Orrington.</p>
 
-<h3 id="k-vs-5th">Younger and older grades at each school this fall</h3>
-<p class="note">Each row compares a school's average class size in grades K-2 with its average in grades 3-5. Averaging three grades keeps one unusually large or small class from driving the comparison. A K-2 average well below 3-5 means smaller classes ahead. Counts include permissive transfers. About half of the 268 transfers approved last spring were families keeping a child at their old school after boundaries moved. Those students are mostly in older grades and will move on, while new kindergartners follow the new boundaries. Schools that took in the most transfers (Lincolnwood 53, Walker and Willard 39 each, Orrington 25) are likely to see their older grades shrink as those students age out. Foster's older grades also include former Bessie Rhodes students guaranteed seats there through 5th grade. Hover over a school for its single-grade counts and transfers (transfers from the district's May 18, 2026 enrollment update).</p>
+<h3 id="future-ms">Middle school classes already in our schools</h3>
+<p class="note">Each fall's grades 6-8 come from students enrolled today: fall 2027 from today's 5th through 7th graders, and so on to fall 2032, when today's kindergarten through 2nd graders will be in middle school. Elementary students are counted in the middle school their school feeds under the 2026-27 boundaries: Chute (Dawes, Oakton, Walker), Haven (Foster, Lincolnwood, Orrington, Willard) and Nichols (Dewey, Lincoln, Washington). King Arts is the K-8 magnet. The dashed line in the left panel is the Thrive65 update, which allows for students moving in and out at the rates of recent years. These counts follow where students attend now. Students on transfers in the older grades, and former Bessie Rhodes students at Foster, may attend a different middle school than their elementary school feeds, so Haven's numbers for 2027 to 2029 are likely a little high. Sixth grade magnet choices and families moving will also shift them.</p>
 <div class="card">
-  <div class="legend"><span><span class="box" style="opacity:1;border-radius:50%;width:10px" data-draw="lg-k"></span>Grades K-2, average per grade</span><span><span class="box" style="opacity:1;border-radius:50%;width:10px" data-draw="lg-5"></span>Grades 3-5, average per grade</span></div>
-  <div class="chart tall" id="k5" data-draw="k5"></div>
-</div>
-
-<h3 id="feeder-patterns">Students per grade in each middle school feeder pattern, fall 2026</h3>
-<p class="note">Grades K-5 add up the neighborhood elementary schools that feed each middle school under the 2026-27 boundaries: Chute (Dawes, Oakton, Walker), Haven (Foster, Lincolnwood, Orrington, Willard) and Nichols (Dewey, Lincoln, Washington). Grades 6-8 are the middle school itself. King Arts is the K-8 magnet. Read left to right, the line shows how large each class will be when it reaches middle school, before moves, magnet choices and transfers.</p>
-<div class="card">
-  <div class="legend" data-draw="feeder-legend"></div>
-  <div class="chart" id="feeder" data-draw="feeder"></div>
+  <div id="ms-future" data-draw="ms-future" style="min-height:380px"></div>
 </div>
 
 <h2 id="stability">Which schools have held steady and which have swung</h2>
