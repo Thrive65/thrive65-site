@@ -3,6 +3,8 @@
   in the page's front matter).
     include.spec        a chart spec from _data: {legend, panels} or {legend, variants}
     include.labelledby  id of the heading that names the figure
+    include.caption     optional figure title (a <figcaption>, which names the figure)
+    include.cls         optional extra classes (e.g. chapter-fig)
     include.table       optional: a _data table object to show in place of the
                         per-panel data tables; spec.table == "none" shows none
   Renders the legend, one .chart per panel (with its title/note), the
@@ -12,7 +14,8 @@
 {%- endcomment -%}
 {%- assign spec = include.spec -%}
 {%- if spec.variants -%}{%- assign panels = spec.variants.first.panels -%}{%- else -%}{%- assign panels = spec.panels -%}{%- endif -%}
-<figure class="card flow" style="--card-padding: var(--space-s)" data-chart-figure aria-labelledby="{{ include.labelledby }}">
+<figure class="card flow {{ include.cls }}" style="--card-padding: var(--space-s)" data-chart-figure{% if include.labelledby %} aria-labelledby="{{ include.labelledby }}"{% endif %}>
+{%- if include.caption %}<figcaption>{{ include.caption }}</figcaption>{% endif %}
 {%- if spec.variants %}
 <div class="cluster" data-variants hidden>
   <span class="text-meta">{{ spec.variantLabel }}:</span>
@@ -21,7 +24,9 @@
   </div>
 </div>
 {%- endif %}
+{%- if spec.legend.size > 0 %}
 {% include charts/legend.html items=spec.legend %}
+{%- endif %}
 <div class="{% if panels.size > 1 %}grid-wide{% endif %}">
 {%- for p in panels %}
 <div class="flow flow-space-2xs">

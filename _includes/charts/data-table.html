@@ -3,14 +3,18 @@
   them): include.table = {caption, columns: [...], rows: [{rule?, cells: [{t, b?}]}]}.
   The first cell of each row is a row header. The wrapper is a focusable,
   labelled scroll region so keyboard users can scroll a wide table.
+  table.sortable: column headings become sort buttons (assets/js/charts.js),
+  each cell carries its sort value `v` as data-v, and table.sortedBy names
+  the column the rows arrive sorted by (ascending). Without JS the table just
+  shows in that order.
 {%- endcomment -%}
 <div class="data-table" role="region" tabindex="0" aria-label="{{ include.table.caption | escape }}">
-<table>
+<table{% if include.table.sortable %} data-sortable{% endif %}>
 <caption class="visually-hidden">{{ include.table.caption }}</caption>
-<thead><tr>{% for c in include.table.columns %}<th scope="col">{{ c }}</th>{% endfor %}</tr></thead>
+<thead><tr>{% for c in include.table.columns %}<th scope="col"{% if include.table.sortable %} aria-sort="{% if forloop.index0 == include.table.sortedBy %}ascending{% else %}none{% endif %}"{% endif %}>{% if include.table.sortable %}<button type="button" class="sort-button" hidden>{{ c }}</button><span class="sort-label">{{ c }}</span>{% else %}{{ c }}{% endif %}</th>{% endfor %}</tr></thead>
 <tbody>
 {%- for r in include.table.rows %}
-<tr{% if r.rule %} class="rule-above"{% endif %}>{% for c in r.cells %}{% if forloop.first %}<th scope="row">{% else %}<td>{% endif %}{% if c.b %}<strong>{{ c.t }}</strong>{% else %}{{ c.t }}{% endif %}{% if forloop.first %}</th>{% else %}</td>{% endif %}{% endfor %}</tr>
+<tr{% if r.rule %} class="rule-above"{% endif %}>{% for c in r.cells %}{% if forloop.first %}<th scope="row"{% if c.v != nil %} data-v="{{ c.v | escape }}"{% endif %}>{% else %}<td{% if c.v != nil %} data-v="{{ c.v | escape }}"{% endif %}>{% endif %}{% if c.b %}<strong>{{ c.t }}</strong>{% else %}{{ c.t }}{% endif %}{% if forloop.first %}</th>{% else %}</td>{% endif %}{% endfor %}</tr>
 {%- endfor %}
 </tbody>
 </table>

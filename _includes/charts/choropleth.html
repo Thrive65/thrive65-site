@@ -10,19 +10,33 @@
 {%- assign mapdata = include.data -%}
 {%- assign first_map = mapdata.maps | where: "default", true | first -%}
 {%- assign first_measure = first_map.measures.first -%}
-<figure class="card flow choropleth" style="--card-padding: var(--space-s)" data-map aria-labelledby="{{ include.labelledby }}">
+<figure class="card flow choropleth {{ include.cls }}" style="--card-padding: var(--space-s)" data-map aria-labelledby="{{ include.labelledby }}">
 <div class="choice-group compact" role="group" aria-label="Map" data-map-group hidden>
 {%- for m in mapdata.maps %}<button type="button" class="choice compact" data-map-id="{{ m.id }}" aria-pressed="{% if m.default %}true{% else %}false{% endif %}">{{ m.label }}</button>{% endfor -%}
 </div>
-<div class="choice-group compact" role="group" aria-label="Measure" data-measure-group hidden></div>
-<p class="hint" data-map-note hidden></p>
+{%- comment -%} One control set per map, stacked in one grid cell (.choropleth-controls), so
+  switching maps never changes the height above the map. {%- endcomment %}
+<div class="choropleth-controls" hidden>
+{%- for m in mapdata.maps %}
+  <div class="flow flow-space-2xs{% unless m.default %} is-hidden{% endunless %}" data-controls-for="{{ m.id }}">
+  {%- if m.measures.size > 1 %}
+    <div class="choice-group compact" role="group" aria-label="Measure, {{ m.label | escape }}">
+    {%- for ms in m.measures %}<button type="button" class="choice compact" data-measure="{{ ms.id }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">{{ ms.label }}</button>{% endfor -%}
+    </div>
+  {%- else %}
+    <p class="hint">Showing: {{ m.measures.first.label }}</p>
+  {%- endif %}
+  {%- if m.note %}<p class="hint">{{ m.note }}</p>{% endif %}
+  </div>
+{%- endfor %}
+</div>
+{%- comment -%} The hatch pattern lives in its own always-rendered SVG: a paint server
+  inside a hidden map (visibility: hidden) stops painting in some browsers. {%- endcomment %}
+<svg class="visually-hidden" aria-hidden="true" focusable="false"><defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="choropleth-hatch-bg" width="6" height="6"/><line class="choropleth-hatch-line" x1="0" y1="0" x2="0" y2="6"/></pattern></defs></svg>
 <div class="choropleth-stage">
 {%- for m in mapdata.maps %}
 <svg viewBox="{{ mapdata.viewBox }}" role="img" aria-labelledby="map-{{ m.id }}-title" data-map-panel="{{ m.id }}"{% unless m.default %} class="is-hidden"{% endunless %}>
 <title id="map-{{ m.id }}-title">{{ m.label }}. Each area is labeled with its value; the tables below list every figure.</title>
-{%- if forloop.first %}
-<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect class="choropleth-hatch-bg" width="6" height="6"/><line class="choropleth-hatch-line" x1="0" y1="0" x2="0" y2="6"/></pattern></defs>
-{%- endif %}
 {%- for a in m.areas %}
 <path class="choropleth-area{% if a.empty %} is-empty{% endif %}" d="{{ a.d }}" style="--t: {{ a.t }}"{% for ms in m.measures %}{% assign v = a.values[ms.id] %}{% if v %} data-t-{{ ms.id }}="{{ v.t }}"{% endif %}{% endfor %}><title>{{ a.title }}</title></path>
 {%- endfor %}

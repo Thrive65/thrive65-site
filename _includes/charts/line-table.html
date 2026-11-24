@@ -3,10 +3,10 @@
 <div class="data-table" role="region" tabindex="0" aria-label="{{ include.caption | escape }}">
 <table>
 <caption class="visually-hidden">{{ include.caption }}</caption>
-<thead><tr><th scope="col">{{ p.xName }}</th>{% for s in p.series reversed %}<th scope="col">{{ s.label }}</th>{% endfor %}{% for b in p.bands %}<th scope="col">{{ b.label }}</th>{% endfor %}{% for mk in p.markers %}<th scope="col">District's own projection</th>{% endfor %}</tr></thead>
+<thead><tr><th scope="col">{{ p.xName }}</th>{% for s in p.series reversed %}{% unless s.hidden %}<th scope="col">{{ s.label }}</th>{% endunless %}{% endfor %}{% for b in p.bands %}<th scope="col">{{ b.label }}</th>{% endfor %}{% for mk in p.markers %}{% if mk.label %}<th scope="col">{{ mk.label | split: ": " | first }}</th>{% endif %}{% endfor %}</tr></thead>
 <tbody>
 {%- for xl in p.xLabels %}{% assign i = forloop.index0 %}
-<tr><th scope="row">{{ xl }}</th>{% for s in p.series reversed %}<td>{{ s.display[i] | default: "—" }}</td>{% endfor %}{% for b in p.bands %}<td>{{ b.display[i] | default: "—" }}</td>{% endfor %}{% for mk in p.markers %}<td>{% if mk.at == i %}{{ mk.label | split: ": " | last }}{% else %}—{% endif %}</td>{% endfor %}</tr>
+<tr><th scope="row">{{ xl }}</th>{% for s in p.series reversed %}{% unless s.hidden %}<td>{{ s.display[i] | default: "—" }}</td>{% endunless %}{% endfor %}{% for b in p.bands %}<td>{{ b.display[i] | default: "—" }}</td>{% endfor %}{% for mk in p.markers %}{% if mk.label %}<td>{% if mk.at == i %}{{ mk.label | split: ": " | last }}{% else %}—{% endif %}</td>{% endif %}{% endfor %}</tr>
 {%- endfor %}
 </tbody>
 </table>

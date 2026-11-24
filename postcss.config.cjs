@@ -73,6 +73,11 @@ module.exports = {
           "swatch-band",
           "swatch-dot",
           "swatch-diamond",
+          "swatch-dashdot",
+          "swatch-outline",
+          "chart-label",
+          // scroll story (assets/js/charts.js): the chapter in view
+          "is-active",
         ],
         // Attribute/state-driven selectors: a11y modes set data-* on <html> at
         // runtime; ARIA states are toggled by JS; EmailOctopus injects its own

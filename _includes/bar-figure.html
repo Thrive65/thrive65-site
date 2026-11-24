@@ -1,0 +1,23 @@
+{%- comment -%}
+  A bar chart figure (build time, no JS): legend, the bars and a "Show the
+  data as a table" accordion.
+    include.data        a bars.json entry
+    include.table       its tables.json entry (optional)
+    include.caption     figure title (a <figcaption>, which names the figure)
+    include.labelledby  or: id of the heading that names it
+    include.label       what the bars show, for screen readers
+    include.cls         extra classes (e.g. chapter-fig)
+{%- endcomment -%}
+<figure class="card flow {{ include.cls }}" style="--card-padding: var(--space-s)"{% if include.labelledby %} aria-labelledby="{{ include.labelledby }}"{% endif %}>
+{%- if include.caption %}<figcaption>{{ include.caption }}</figcaption>{% endif %}
+{%- if include.data.legend.size > 0 %}
+{% include charts/legend.html items=include.data.legend %}
+{%- endif %}
+{% include charts/bars.html data=include.data label=include.label %}
+{%- if include.table %}
+<details class="accordion">
+  <summary class="cluster"><span>Show the data as a table</span><span class="accordion-icon" aria-hidden="true"></span></summary>
+  <div class="accordion-body">{% include charts/data-table.html table=include.table %}</div>
+</details>
+{%- endif %}
+</figure>

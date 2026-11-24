@@ -141,22 +141,21 @@
   --bloom:        #C4560A;                 /* Accent 2 (Okabe–Ito orange) — moment-of-change only */
 
   /* ---- Chart series (site-wide: .chart, .bar-chart, .dot-chart) ----------
-     Okabe–Ito steps validated for CVD separation on each surface, and each
-     ≥3:1 on --card so a series can be drawn as a line (WCAG 1.4.11). Identity
-     also rides on the legend, tooltip and table, so color is never the only
-     cue. Declared in all five theme blocks; high contrast swaps in sets that
-     clear 5.7:1 on its flattened surfaces. ------------------------------ */
-  /* navy, not Okabe–Ito blue: that equals --brand here, so a swatch matched
-     the ticked .checkbox beside it. 2.2:1 from --brand, 11:1 on --card,
-     ≥3.3:1 from the other three series. */
-  --series-1: #1B3A6B;
-  --series-2: #CC79A7;
-  /* darkened amber: Okabe–Ito #E69F00 is only 2.25:1 on white. #B07300 is
-     3.96:1 and stays clear of series 1, 2 and 4 under simulated deutan,
-     protan and tritan vision. */
-  --series-3: #B07300;
-  --series-4: #009E73;
-  --series-muted: #7D8A83;   /* comparison / background series, no-data areas (3.6:1) */
+     Okabe–Ito blue, orange, bluish green and reddish purple, in that order,
+     each ≥3:1 on --card so a series can be drawn as a line (WCAG 1.4.11), and
+     series 1 and 2 ≥4.5:1 under --card text (labels inside a stacked bar).
+     Identity also rides on the legend, tooltip and table, so color is never
+     the only cue. Declared in all five theme blocks; high contrast swaps in
+     sets that clear 5.9:1 on its flattened surfaces. --------------------- */
+  --series-1: #0072B2;   /* Okabe–Ito blue (5.2:1); the same hue as --brand */
+  --series-2: #C0540A;   /* Okabe–Ito orange, a shade darker than --bloom so --card text on it clears 4.5:1 */
+  --series-3: #009E73;   /* bluish green (3.4:1) */
+  --series-4: #CC79A7;   /* reddish purple (3.1:1) */
+  /* context fill (kindergarten size, empty seats, nearby districts): a light
+     wash of --muted. Context marks carry a --muted outline (.swatch-outline),
+     so their edge still clears 3:1. Redeclared in every theme block so the
+     mix resolves against that theme's --muted and --card. */
+  --series-muted: color-mix(in srgb, var(--muted) 35%, var(--card));
   /* Sequential ramp (heatmap cells, map areas): shades mix from --seq-low to
      --seq-high by a 0–1 --t. Both ends keep --ink text ≥4.5:1, so labels sit
      on any shade in plain ink with no light/dark flip. */
@@ -207,6 +206,8 @@
 /* tall enough to give up a strip of screen to a sticky/docked panel (below
    this, docking is off so it doesn't eat the room people need to type) */
 @custom-media --dock-height (min-height: 501px);
+/* tall enough for a scroll-story figure (.chapter) to stay in view whole */
+@custom-media --story-height (min-height: 720px);
 
 /* ============================================================================
    SHARED DARK surfaces + default hue (Lake Teal) DARK.
@@ -228,8 +229,8 @@
   --accent-hover: #FFC44F;          /* constant */
   --bloom:        #E69F00;          /* Okabe–Ito orange on dark */
 
-  --series-1: #3A8FD6; --series-2: #BC6A9C; --series-3: #C08000; --series-4: #00A078;
-  --series-muted: #6F8378; --seq-low: #1C3142; --seq-high: #3B6C96;
+  --series-1: #56B4E9; --series-2: #E69F00; --series-3: #00A078; --series-4: #BC6A9C;
+  --series-muted: color-mix(in srgb, var(--muted) 35%, var(--card)); --seq-low: #1C3142; --seq-high: #3B6C96;
 
   --feature-bg:    hsl(189, 65%, 14%);
   --feature-ink:   hsl(0, 0%, 100%);
@@ -313,8 +314,8 @@
     --bg: #0B1410; --card: #17251C; --tint: #123122;
     --line: #283A2E; --ink: #E9F2EA; --muted: #A9BBAD; --focus: #8CE7B7;
     --secondary: #7EC8E3; --bloom: #E69F00;
-    --series-1: #3A8FD6; --series-2: #BC6A9C; --series-3: #C08000; --series-4: #00A078;
-  --series-muted: #6F8378; --seq-low: #1C3142; --seq-high: #3B6C96;
+    --series-1: #56B4E9; --series-2: #E69F00; --series-3: #00A078; --series-4: #BC6A9C;
+  --series-muted: color-mix(in srgb, var(--muted) 35%, var(--card)); --seq-low: #1C3142; --seq-high: #3B6C96;
     --feature-bg: hsl(189, 65%, 14%); --feature-ink: hsl(0, 0%, 100%);
     --feature-muted: hsl(189, 25%, 78%); --feature-label: hsl(39, 100%, 68%); --feature-line: hsl(189, 35%, 32%);
     --quiet-ink: hsl(45.5, 30%, 92%);
@@ -351,8 +352,8 @@ html[data-contrast="high"]:not([data-theme="dark"]) .hue-default {
   --bg: var(--hc-color-light); --card: var(--hc-color-light); --tint: var(--hc-color-light);
   --line: var(--hc-color-dark); --ink: var(--hc-color-dark); --muted: var(--hc-color-dark); --edge: var(--hc-color-dark); --focus: var(--hc-color-dark);
   --brand: #005C31; --brand-strong: #00411F; --link: #005C31; --secondary: #00323C;
-  --series-1: #005A8C; --series-2: #9E3C78; --series-3: #8A5A00; --series-4: #006B4F;
-  --series-muted: #595959; --seq-low: #EBEBEB; --seq-high: #858585;
+  --series-1: #005A8C; --series-2: #A04000; --series-3: #006B4F; --series-4: #9E3C78;
+  --series-muted: color-mix(in srgb, var(--muted) 35%, var(--card)); --seq-low: #EBEBEB; --seq-high: #858585;
   --hero-bg: var(--hc-color-light); --hero-ink: var(--hc-color-dark); --hero-muted: var(--hc-color-dark); --hero-em: #7A4C00;
   --feature-bg: var(--hc-color-light); --feature-ink: var(--hc-color-dark); --feature-muted: var(--hc-color-dark); --feature-label: #7A4C00; --feature-line: var(--hc-color-dark);
   --quiet-ink: var(--hc-color-dark);
@@ -361,8 +362,8 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   --bg: var(--hc-color-dark); --card: var(--hc-color-dark); --tint: var(--hc-color-dark);
   --line: var(--hc-color-light); --ink: var(--hc-color-light); --muted: var(--hc-color-light); --edge: var(--hc-color-light); --focus: #FFFF00;
   --brand: #4DFFA6; --brand-strong: #90FFC8; --link: #4DFFA6; --secondary: #9BE8FF;
-  --series-1: #56B4E9; --series-2: #E59ACB; --series-3: #F0B429; --series-4: #2FD3A0;
-  --series-muted: #A6A6A6; --seq-low: #1F1F1F; --seq-high: #6E6E6E;
+  --series-1: #56B4E9; --series-2: #F0B429; --series-3: #2FD3A0; --series-4: #E59ACB;
+  --series-muted: color-mix(in srgb, var(--muted) 35%, var(--card)); --seq-low: #1F1F1F; --seq-high: #6E6E6E;
   --accent: #FFD34D; --accent-hover: #FFE58A; --on-accent: var(--hc-color-dark);
   --hero-bg: var(--hc-color-dark); --hero-ink: var(--hc-color-light); --hero-muted: var(--hc-color-light); --hero-em: #FFD34D;
   --feature-bg: var(--hc-color-dark); --feature-ink: var(--hc-color-light); --feature-muted: var(--hc-color-light); --feature-label: #FFD34D; --feature-line: var(--hc-color-light);
@@ -1983,6 +1984,71 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
     font-size: var(--step-1);
   }
 
+  /* ─ Chapter ─ one chapter of a scroll story: a text column beside a figure
+     (a .card) that stays in place while the text is read. The base is one
+     column with the figure after its text, nothing sticky and nothing dimmed:
+     what phones, print and the unprocessed dev CSS get. At --md-and-up the
+     two sit side by side, and where the figure fits (--story-height, below
+     137% text) it sticks below the site header.
+     charts.js (an IntersectionObserver) puts .is-active on the chapter
+     crossing the middle of the viewport; its text gets a brand rule beside it.
+     Nothing is dimmed: any fade drops chart text (the figures written inside
+     stacked bars, at 4.65:1) below AA, so the rule is the only marker.
+     .tall is for a chapter whose figure is taller than the viewport: it
+     scrolls with the page instead. */
+  .chapter {
+    display: grid;
+    gap: var(--space-m);
+    padding-block: var(--space-l);
+    border-block-start: var(--border-thin) solid var(--line);
+  }
+  .chapter-text { max-inline-size: var(--measure); }
+  .chapter-fig { margin: 0; }
+  .chapter-fig > figcaption {
+    font-size: var(--step--1);
+    font-weight: 600;
+    line-height: var(--lh-body);
+  }
+  @media (--md-and-up) {
+    .chapter {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: var(--space-xl);
+      align-items: start;
+      min-block-size: 90vh;
+    }
+    .chapter-text {
+      padding-block: 18vh 30vh;
+      padding-inline-start: var(--space-s);
+      border-inline-start: var(--border-bold) solid transparent;
+      transition: border-color var(--transition-slow) var(--ease);
+    }
+    .chapter.is-active .chapter-text { border-inline-start-color: var(--brand); }
+    .chapter.tall { min-block-size: 0; }
+    .chapter.tall .chapter-text { padding-block: 0; }
+  }
+  /* The figure sticks only where it fits below the header: a tall enough
+     viewport, and not at the two largest text sizes. */
+  @media screen and (--md-and-up) and (--story-height) {
+    :root:not([data-textsize="137"], [data-textsize="150"]) .chapter:not(.tall) .chapter-fig {
+      position: sticky;
+      inset-block-start: calc(var(--header-size) + var(--space-s));
+    }
+  }
+  @media print {
+    .chapter {
+      display: block;
+      min-block-size: 0;
+      break-before: page;
+    }
+    .chapter:first-of-type { break-before: auto; }
+    .chapter-text { padding: 0; border: 0; }
+    .chapter-fig {
+      position: static;
+      margin-block-start: var(--space-m);
+      break-inside: avoid;
+    }
+  }
+
   /* ─ Collapse ─ a region that slides shut and open with the 0fr → 1fr
      grid-row technique, which animates in every current browser (unlike
      display or height: auto). The region's one child is the content; it needs
@@ -2220,6 +2286,18 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   }
   .chart-band { fill: var(--swatch); fill-opacity: 0.16; stroke: none; }
   .chart-dot  { fill: var(--swatch); stroke: var(--card); stroke-width: var(--border-thin); }
+  /* a value written on the chart (an end-of-line figure, a peak); the --card
+     halo keeps it legible where it crosses a line or band */
+  .chart-label {
+    fill: var(--swatch, var(--ink));
+    font-size: var(--chart-text, 11px);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    paint-order: stroke;
+    stroke: var(--card);
+    stroke-width: calc(var(--border-bold) * 1.5);
+    stroke-linejoin: round;
+  }
   .chart-cursor { stroke: var(--muted); stroke-width: var(--border-thin); opacity: 0; transition: opacity var(--transition-fast) var(--ease); }
   .chart-cursor.is-on { opacity: 1; }
   .chart-spot { fill: var(--ink); font-weight: 700; }
@@ -2229,7 +2307,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .chart-hit:focus-visible { fill: var(--ink); fill-opacity: 0.08; stroke: var(--focus); stroke-width: var(--border-bold); }
   .chart-legend { column-gap: var(--space-s); font-size: var(--step--1); list-style: none; padding: 0; margin: 0; }
   .chart-legend:empty { display: none; }
-  .chart-key { gap: var(--space-2xs); }
+  .chart-key { gap: var(--space-2xs); flex-wrap: nowrap; }   /* a long label wraps beside its swatch, never under it */
   /* --swatch is set inline (var(--series-N)); the border in the same color lets
      a swatch drop to an outline (an unticked .include-row) at the same size */
   .chart-swatch {
@@ -2288,23 +2366,51 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      height, not width; inline-flex so the pair still right-aligns with the figures */
   .data-table th .chart-key { display: inline-flex; flex-direction: column; align-items: flex-end; }
 
+  /* sortable columns (charts.js): the heading text is a button; aria-sort on
+     the <th> drives the arrow. The ::before overlay keeps a 44px target. */
+  .sort-button {
+    position: relative;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  .sort-button::before {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    min-inline-size: 44px;
+    min-block-size: 44px;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+  .sort-button::after { content: "\2195"; margin-inline-start: 0.3em; color: var(--muted); }
+  [aria-sort="ascending"] > .sort-button::after { content: "\2191"; color: var(--brand); }
+  [aria-sort="descending"] > .sort-button::after { content: "\2193"; color: var(--brand); }
   .data-table caption { text-align: start; font-weight: 700; padding-block-end: var(--space-2xs); }
   /* a scrolling table region is focusable (tabindex="0") so keyboard users can scroll it */
   .data-table:focus-visible { outline: var(--border-bold) solid var(--focus); outline-offset: var(--border-bold); }
   /* separator row between groups (e.g. elementary / middle school) */
   .data-table tr.rule-above :is(th, td) { border-block-start: var(--border-bold) solid var(--line); }
 
-  /* ─ Bar chart ─ horizontal bars around a zero line, as an HTML list so
-     labels wrap, follow the text size and translate. Each .bar-row carries
-     --offset and --size (0–1 of the axis domain, from the data script) and a
-     --swatch; the list carries --zero, the zero line's 0–1 position. The value
-     column is real text, so the bars need no axis. */
+  /* ─ Bar chart ─ horizontal bars, as an HTML list so labels wrap, follow
+     the text size and translate (_includes/charts/bars.html, data from the
+     data script). Each .bar takes --offset and --size (0–1 of the axis
+     domain) and a --swatch; the list takes --zero, the zero line's 0–1
+     position. A track can hold overlaid bars (.bar-inset draws the front one
+     thinner), one segmented .bar-stack (each .bar-seg takes --share of the
+     stack) and a .bar-note written over the bar. The value column is real
+     text, so the bars need no axis. */
   .bar-chart {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    gap: var(--space-2xs);
+    gap: var(--space-xs);
     font-size: var(--step--1);
   }
   .bar-row,
@@ -2316,21 +2422,47 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   }
   .bar-label { text-align: end; }
   .bar-value { font-variant-numeric: tabular-nums; text-align: end; }
+  .bar-detail { display: block; color: var(--muted); }
   .bar-track {
     position: relative;
-    block-size: var(--step-0);
+    display: flex;
+    align-items: center;
+    min-block-size: calc(var(--step-0) * 1.2);
     /* zero line, drawn as a 1px background stripe at --zero */
     background: linear-gradient(var(--muted), var(--muted)) no-repeat
                 calc(var(--zero, 0) * 100%) 0 / var(--border-thin) 100%;
   }
-  .bar {
+  .bar,
+  .bar-stack {
     position: absolute;
     inset-block: 0;
-    inset-inline-start: calc(var(--offset) * 100%);
+    inset-inline-start: calc(var(--offset, 0) * 100%);
     inline-size: max(var(--border-bold), calc(var(--size) * 100%));
-    background: var(--swatch);
     border-radius: var(--border-thin);
   }
+  .bar { background: var(--swatch); }
+  .bar-inset { inset-block: 22%; }
+  .bar-stack { display: flex; overflow: hidden; }
+  .bar-seg {
+    flex: 0 0 calc(var(--share) * 100%);
+    display: grid;
+    place-items: center;
+    background: var(--swatch);
+    color: var(--card);              /* series 1 and 2 keep --card text ≥4.5:1 */
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .bar-seg + .bar-seg { border-inline-start: var(--border-thin) solid var(--card); }
+  .bar-note {
+    position: relative;              /* over the bar, and sets the track's height */
+    padding-inline: var(--space-2xs);
+    line-height: var(--lh-heading);
+    color: var(--ink);
+  }
+  .bar-group + .bar-group { margin-block-start: var(--space-s); }
+  .bar-group > p { margin-block-end: var(--space-2xs); }
   @media (--sm-and-down) {
     .bar-row,
     .dot-row { grid-template-columns: 1fr minmax(4.5em, auto); }
@@ -2384,7 +2516,19 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      data script). Every map sits in one grid cell so switching maps
      crossfades in place; each area's fill mixes the sequential ramp by its
      --t, and a measure switch only rewrites --t, so the color transitions. */
-  .choropleth-stage { display: grid; grid-template-columns: minmax(0, 1fr); max-inline-size: 32rem; margin-inline: auto; }
+  /* left-aligned with the controls and legend; as wide as the card allows,
+     but never taller than most of the viewport (the map is about square) */
+  .choropleth-stage { display: grid; grid-template-columns: minmax(0, 1fr); max-inline-size: min(100%, 80svh); }
+  /* The map and measure controls for every map sit stacked in one grid cell
+     (like the maps themselves), so the cell is always as tall as the tallest
+     set: switching maps never pushes the map up or down. */
+  .choropleth-controls { display: grid; }
+  .choropleth-controls > * {
+    grid-area: 1 / 1;
+    align-self: start;
+    transition: opacity var(--transition-base) var(--ease), visibility var(--transition-base);
+  }
+  .choropleth-controls > .is-hidden { opacity: 0; visibility: hidden; }
   .choropleth-stage > svg {
     grid-area: 1 / 1;
     inline-size: 100%;
@@ -2403,7 +2547,7 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
      isn't marked by color alone */
   .choropleth-area.is-empty { fill: url(#hatch); }
   .choropleth-hatch-bg { fill: var(--card); }
-  .choropleth-hatch-line { stroke: var(--series-muted); stroke-width: var(--border-bold); }
+  .choropleth-hatch-line { stroke: var(--muted); stroke-width: var(--border-thin); }
   .choropleth-school { fill: var(--ink); stroke: var(--card); stroke-width: var(--border-thin); }
   /* --map-scale (viewBox units per rendered px, set by charts.js) keeps labels
      at --step--1 on screen whatever the map's width; without JS they scale
@@ -2641,8 +2785,19 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .swatch-band   { background: color-mix(in srgb, var(--swatch) 25%, transparent); border-color: transparent; }
   .swatch-dot    { border-radius: 50%; }
   .swatch-diamond { rotate: 45deg; scale: 0.75; }
-  .swatch-hatch  { background: repeating-linear-gradient(45deg, var(--series-muted) 0 var(--border-bold), transparent var(--border-bold) calc(var(--border-bold) * 2.5));
-                   border-color: var(--series-muted); }
+  .swatch-hatch  { background: repeating-linear-gradient(45deg, var(--muted) 0 var(--border-thin), transparent var(--border-thin) calc(var(--border-bold) * 2));
+                   border-color: var(--muted); }
+  /* dash-dot (a third line style, for a fourth series that shares a color) */
+  .swatch-dashdot { stroke-dasharray: 8 3 2 3; }
+  .swatch-line.swatch-dashdot {
+    border-block-start-color: transparent;
+    block-size: var(--border-bold);
+    border-block-start-width: 0;
+    background: repeating-linear-gradient(to right, var(--swatch) 0 8px, transparent 8px 11px, var(--swatch) 11px 13px, transparent 13px 16px);
+  }
+  /* context marks (the light --series-muted fill): a --muted edge keeps the
+     shape ≥3:1 against the card. Works on HTML bars and SVG marks alike. */
+  .swatch-outline { box-shadow: inset 0 0 0 var(--border-thin) var(--muted); stroke: var(--muted); stroke-width: var(--border-thin); }
 
   /* Recolor a .callout's stripe (see the .callout block) */
   .stripe-bloom { --callout-stripe: var(--bloom); }
@@ -2717,6 +2872,9 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .wide.wrapper {
     inline-size: min(100% - 2 * var(--gutter), var(--measure-wide));
   }
+  /* in a wide article, running text still stops at the reading measure;
+     figures, tables and chapters use the full width */
+  .wide :is(p, ul, ol, h2, h3, details):not(figure *, .chapter *, .data-table *) { max-inline-size: var(--measure); }
 
   .visually-hidden {
     position: absolute;

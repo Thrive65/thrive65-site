@@ -1,7 +1,7 @@
 {%- comment -%}
   Chart legend. include.items: [{label, swatch, style}] where swatch is a
   var(--series-N) token and style is line | strong | dashed | dotted | band |
-  box | dot | diamond (mapped onto the .swatch-* utilities, which also style
+  box | outline | dot | diamond | hatch | dashdot (mapped onto the .swatch-* utilities, which also style
   the SVG marks, so a key always matches its line).
 {%- endcomment -%}
 <ul class="chart-legend cluster">
@@ -11,6 +11,8 @@
     {%- when "strong" -%}{%- assign shape = "swatch-line swatch-strong" -%}
     {%- when "dashed" -%}{%- assign shape = "swatch-line swatch-dashed" -%}
     {%- when "dotted" -%}{%- assign shape = "swatch-line swatch-dotted" -%}
+    {%- when "dashdot" -%}{%- assign shape = "swatch-line swatch-dashdot" -%}
+    {%- when "outline" -%}{%- assign shape = "swatch-outline" -%}
     {%- when "band" -%}{%- assign shape = "swatch-band" -%}
     {%- when "dot" -%}{%- assign shape = "swatch-dot" -%}
     {%- when "diamond" -%}{%- assign shape = "swatch-diamond" -%}

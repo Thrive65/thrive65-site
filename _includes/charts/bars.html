@@ -1,0 +1,29 @@
+{%- comment -%}
+  Horizontal bar chart, rendered at build time (no JS). One model for every
+  bar chart, written by the data script (scripts/enrollment/prepare.mjs):
+    include.data  = {zero, groups: [{label?, rows: [row]}]}
+    row           = {label, strong?, value, detail?, note?,
+                     bars:  [{offset, size, swatch, cls?}],   overlaid; cls = utilities (bar-inset, swatch-outline)
+                     stack: [{share, swatch, text?, label}], stackSize}   one segmented bar
+    include.label = what each list shows, for screen readers
+  The track is decorative (aria-hidden); everything it shows is also in the
+  row's text, so screen readers get label + value (+ note, + segments).
+{%- endcomment -%}
+{%- for g in include.data.groups %}
+<div class="bar-group">
+  {%- if g.label %}<p class="text-meta"><strong>{{ g.label }}</strong></p>{% endif %}
+  <ol class="bar-chart" style="--zero: {{ include.data.zero | default: 0 }}" aria-label="{{ g.label | default: include.label | escape }}">
+  {%- for r in g.rows %}
+    <li class="bar-row">
+      <span class="bar-label">{% if r.strong %}<strong>{{ r.label }}</strong>{% else %}{{ r.label }}{% endif %}{% if r.note %}<span class="visually-hidden"> ({{ r.note }})</span>{% endif %}{% if r.stack %}<span class="visually-hidden">: {% for sg in r.stack %}{{ sg.label }}{% unless forloop.last %}, {% endunless %}{% endfor %}</span>{% endif %}</span>
+      <span class="bar-track" aria-hidden="true">
+        {%- for b in r.bars %}<span class="bar {{ b.cls }}" style="--offset: {{ b.offset }}; --size: {{ b.size }}; --swatch: {{ b.swatch }}"></span>{% endfor %}
+        {%- if r.stack %}<span class="bar-stack" style="--size: {{ r.stackSize }}">{% for sg in r.stack %}<span class="bar-seg" style="--share: {{ sg.share }}; --swatch: {{ sg.swatch }}">{{ sg.text }}</span>{% endfor %}</span>{% endif %}
+        {%- if r.note %}<span class="bar-note">{{ r.note }}</span>{% endif %}
+      </span>
+      <span class="bar-value">{% if r.strong %}<strong>{{ r.value }}</strong>{% else %}{{ r.value }}{% endif %}{% if r.detail %}<span class="bar-detail">{{ r.detail }}</span>{% endif %}</span>
+    </li>
+  {%- endfor %}
+  </ol>
+</div>
+{%- endfor %}
