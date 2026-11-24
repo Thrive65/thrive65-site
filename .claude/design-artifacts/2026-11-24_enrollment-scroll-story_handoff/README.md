@@ -1,6 +1,6 @@
 # Handoff: rebuild `/analysis/enrollment/` as a scroll story
 
-**Status:** canonical until it lands. After it lands, mark it archived in `../README.md`; from then on the page is the source of truth.
+**Status:** implemented on main's chart system (branch `feature/enrollment-scroll-story`); see "As built" at the end. `copy.md` remains the approved text. The layout and chart-code steps below describe the older d3 page and are kept as history.
 **Branch:** `enrollment-page` (open a PR into `main`; never push to `main`).
 **Files in this folder:**
 - `README.md`: this plan.
@@ -93,3 +93,33 @@ Use `copy.md` word for word. Values in `{braces}` are filled by drawers. The tab
 - Private school counts are schools inside the boundary: they include some non-residents and miss residents at Baker School in Wilmette and other outside schools.
 - The district's capacity count leaves out STEP and RISE (self-contained special education) classrooms and their students. The projection includes those students, so empty seats may run about 100 high.
 - The Thrive65 projection holds births flat after 2023. The births chapter explains what falling births would do: about 85 fewer K-5 students in 2031-32 at the recent pace, and about 165 fewer at Kofron's pace.
+
+## As built (2026-11-24)
+
+PR #23 implemented this plan on the old `enrollment-page` branch, which predates
+PR #22 (the site-wide chart system, no d3). That PR was ported onto `main`
+rather than merged:
+
+- **Copy:** `copy.md` word for word (checked automatically against PR #23's
+  page). The peak stays **7,558 / 28.4%** per `district_trend.csv`;
+  `private_k8.csv`'s 2016-17 District 65 count was corrected from 7,559 to
+  7,558 to match.
+- **Data:** PR #23's eight new or changed CSVs are in `data-src/enrollment/`.
+  Every filled value, chart, table and map is computed by
+  `scripts/enrollment/prepare.mjs` into `_data/enrollment/`. The capacity
+  constants (7,212 and 7,212 + 556 + 384) and the 150 still-K-8 figure live
+  there, with the citation.
+- **Layout:** the post stays an Analysis post (now `wide: true`; `post.html`
+  supports it). The `.chapter` block from PR #23 moved into `main.css`. The
+  chapter observer and the sortable stability table are in `assets/js/charts.js`.
+- **Charts:** line charts use `chart.html` + `charts.js` specs. Peers, ETHS,
+  classes vs. kindergarten and the levers are build-time HTML bars
+  (`bar-figure.html`).
+- **Colors:** PR #23's order: blue, orange, green, pink, as `--series-1…4`
+  site-wide (light orange `#C0540A`, a shade darker than `--bloom`, so `--card`
+  text inside a stacked bar clears 4.5:1).
+- **Departures from the plan:** no dimming of inactive chapters. Any fade drops
+  chart text below AA, so the chapter in view is marked only by the brand
+  rule (the plan allowed this). The map's controls no longer shift the map
+  when switching maps, its labels clear the school dots, and the King Arts
+  hatch now paints on the Nov. 6 map.

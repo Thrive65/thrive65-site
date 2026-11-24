@@ -38,7 +38,7 @@ wide tables), implementation notes and a suggested order. `README.md` is the
 condensed version for agents; `audit.html` is the full report.
 
 ### `2026-11-23_enrollment-page-v2/` — enrollment page no-d3 rebuild plan
-**Canonical** until it lands on `feature/enrollment-page-v2`. Plan to rebuild
+**Archived**: landed in PR #22; the code and CLAUDE.md ("Charts") are now the source of truth. Plan to rebuild
 `/analysis/enrollment/` (PR #21) without d3: post front matter, build-time data
 via `prepare.mjs` → `_data/enrollment/`, a site-wide `chart-*` system
 (`_includes/chart.html`, `assets/js/charts.js`) shared with the tax calculator,
