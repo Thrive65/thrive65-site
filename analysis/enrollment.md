@@ -143,10 +143,10 @@ wide: true
 </div>
 <p class="note">Years are fall of each school year (2027 = 2027-28). Middle estimates use birth records; the range runs from the low series to the high series, using whichever birth assumption (records or Kofron's line) is lower or higher each year. Totals for the November 6 proposal match today's boundaries because the same children are reassigned. Lincolnwood's special education program (STEP) moves to Orrington under the proposal; this estimate sends those students with the rest of Lincolnwood, which likely puts a couple dozen too many at Willard and too few at Orrington.</p>
 
-<h3 id="k-vs-5th">Kindergarten vs. 5th grade at each school this fall</h3>
-<p class="note">Each row compares this year's kindergarten with this year's 5th grade at the same school. A kindergarten much smaller than 5th grade means smaller classes ahead as today's 5th graders leave. Counts include permissive transfers.</p>
+<h3 id="k-vs-5th">Younger and older grades at each school this fall</h3>
+<p class="note">Each row compares a school's average class size in grades K-2 with its average in grades 3-5. Averaging three grades keeps one unusually large or small class from driving the comparison. A K-2 average well below 3-5 means smaller classes ahead. Counts include permissive transfers. About half of the 268 transfers approved last spring were families keeping a child at their old school after boundaries moved. Those students are mostly in older grades and will move on, while new kindergartners follow the new boundaries. Schools that took in the most transfers (Lincolnwood 53, Walker and Willard 39 each, Orrington 25) are likely to see their older grades shrink as those students age out. Foster's older grades also include former Bessie Rhodes students guaranteed seats there through 5th grade. Hover over a school for its single-grade counts and transfers (transfers from the district's May 18, 2026 enrollment update).</p>
 <div class="card">
-  <div class="legend"><span><span class="box" style="opacity:1;border-radius:50%;width:10px" data-draw="lg-k"></span>Kindergarten</span><span><span class="box" style="opacity:1;border-radius:50%;width:10px" data-draw="lg-5"></span>5th grade</span></div>
+  <div class="legend"><span><span class="box" style="opacity:1;border-radius:50%;width:10px" data-draw="lg-k"></span>Grades K-2, average per grade</span><span><span class="box" style="opacity:1;border-radius:50%;width:10px" data-draw="lg-5"></span>Grades 3-5, average per grade</span></div>
   <div class="chart tall" id="k5" data-draw="k5"></div>
 </div>
 

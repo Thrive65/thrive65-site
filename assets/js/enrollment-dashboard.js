@@ -305,11 +305,16 @@ dash.draw('k5', (el) => {
   const s = dash.data('current');
   if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
   el.replaceChildren();
-  const rows = s.data.filter((r) => r.level === 'Elementary').map((r) => ({ school: r.school, k: +r.k, g5: +r.g5, p: +r.k_vs_5_pct })).sort((a, b) => a.p - b.p);
+  const avg = (a) => a.reduce((t, v) => t + v, 0) / a.length;
+  const rows = s.data.filter((r) => r.level === 'Elementary').map((r) => {
+    const g = ['k', 'g1', 'g2', 'g3', 'g4', 'g5'].map((c) => +r[c]);
+    const k = avg(g.slice(0, 3)), g5 = avg(g.slice(3));
+    return { school: r.school, g, k, g5, p: Math.round((k / g5 - 1) * 1000) / 10, tin: d65.num(r.transfers_in_may2026), tout: d65.num(r.transfers_out_may2026) };
+  }).sort((a, b) => a.p - b.p);
   const W = el.clientWidth || 600, rowH = 32, m = { t: 22, r: 70, b: 24, l: 96 }, H = m.t + m.b + rows.length * rowH;
   const x = d3.scaleLinear([0, d3.max(rows, (r) => Math.max(r.k, r.g5)) * 1.1], [m.l, W - m.r]).nice();
   const y = d3.scaleBand(rows.map((r) => r.school), [m.t, H - m.b]).padding(0.4);
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Kindergarten and 5th grade enrollment at each elementary school, fall 2026');
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Average class size in grades K-2 and in grades 3-5 at each elementary school, fall 2026');
   svg.append('g').attr('class', 'grid').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', m.t).attr('y2', H - m.b);
   svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(5).tickSizeOuter(0));
   svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).tickSize(0)).call((g) => g.select('.domain').remove());
@@ -319,10 +324,10 @@ dash.draw('k5', (el) => {
   g.selectAll('circle.k').data(rows).join('circle').attr('cx', (r) => x(r.k)).attr('cy', cy).attr('r', 6).style('fill', dash.colors[0]);
   g.selectAll('circle.f').data(rows).join('circle').attr('cx', (r) => x(r.g5)).attr('cy', cy).attr('r', 6).style('fill', dash.colors[1]);
   g.selectAll('text.p').data(rows).join('text').attr('x', W - m.r + 8).attr('y', (r) => cy(r) + 4).text((r) => d65.pct1(r.p)).style('fill', (r) => (r.p <= -20 ? 'var(--color-bad)' : 'var(--cds-text-secondary)'));
-  svg.append('text').attr('x', W - m.r + 8).attr('y', 12).text('K vs. 5th');
+  svg.append('text').attr('x', W - m.r + 8).attr('y', 12).text('K-2 vs. 3-5');
   const tip = d65.tip(el);
   g.selectAll('rect.h').data(rows).join('rect').attr('x', m.l).attr('width', W - m.l - m.r).attr('y', (r) => y(r.school) - 6).attr('height', y.bandwidth() + 12).attr('fill', 'transparent')
-    .on('pointermove', (ev, r) => { tip.show([r.school, 'Kindergarten: ' + r.k, '5th grade: ' + r.g5, 'K vs. 5th: ' + d65.pct1(r.p)], x(Math.max(r.k, r.g5)) / W * el.clientWidth, cy(r) / W * el.clientWidth); })
+    .on('pointermove', (ev, r) => { tip.show([r.school, 'K-2 average: ' + Math.round(r.k) + ' (K ' + r.g[0] + ', 1st ' + r.g[1] + ', 2nd ' + r.g[2] + ')', '3-5 average: ' + Math.round(r.g5) + ' (3rd ' + r.g[3] + ', 4th ' + r.g[4] + ', 5th ' + r.g[5] + ')', 'K-2 vs. 3-5: ' + d65.pct1(r.p)].concat(r.tin !== null ? ['Transfers approved last spring: ' + r.tin + ' in, ' + r.tout + ' out'] : []), Math.min(x(Math.max(r.k, r.g5)), W * 0.5) / W * el.clientWidth, cy(r) / W * el.clientWidth); })
     .on('pointerleave', () => tip.hide());
 });
 
