@@ -63,3 +63,5 @@
 #enrollment-dashboard .nat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: var(--space-m); }
 #enrollment-dashboard .nat-t { font-size: var(--step--1); font-weight: 600; margin-block-end: 4px; }
 #enrollment-dashboard details li { margin-block-end: 6px; max-inline-size: 62em; }
+
+#enrollment-dashboard th[aria-sort="ascending"]::after { content: " \25B2"; font-size: 0.8em; } #enrollment-dashboard th[aria-sort="descending"]::after { content: " \25BC"; font-size: 0.8em; }

@@ -262,11 +262,21 @@ dash.draw('check-body', (tb) => {
     tb.append(tr);
   }
 });
+window.d65.volSort = window.d65.volSort || { col: 5, dir: 1 };
+const VOL_KEYS = ['school', 'avg_2012_2020', 'y2025_26', 'change_vs_avg_pct', 'avg_yearly_change_pct', 'volatility_sd_pct', 'worst_year_pct', 'worst_year', 'years_declined', 'y2026_27', 'boundary_change_2026_27'];
 dash.draw('vol-body', (tb) => {
   const s = dash.data('volatility');
   tb.replaceChildren();
   if (s.status !== 'ok') return;
-  const rows = s.data.slice().sort((a, b) => +a.volatility_sd_pct - +b.volatility_sd_pct);
+  const st = d65.volSort, key = VOL_KEYS[st.col], text = key === 'school' || key === 'worst_year';
+  const val = (r) => (r[key] === null || r[key] === undefined || r[key] === '' ? null : text ? String(r[key]) : +r[key]);
+  const rows = s.data.slice().sort((a, b) => {
+    const x = val(a), y = val(b);
+    if (x === null && y === null) return 0;
+    if (x === null) return 1;
+    if (y === null) return -1;
+    return (text ? x.localeCompare(y) : x - y) * st.dir;
+  });
   for (const r of rows) {
     const tr = document.createElement('tr');
     tdc(tr, r.school);
@@ -297,6 +307,29 @@ dash.draw('now-body', (tb) => {
     tb.append(tr);
   }
 });
+
+(function () {
+  const rerun = () => { if (dash.redraw) dash.redraw(); else dash.draw('vol-body'); };
+  document.querySelectorAll('tbody[data-draw="vol-body"]').forEach((tb) => {
+    const table = tb.closest('table');
+    if (!table) return;
+    const ths = table.querySelectorAll('thead th');
+    const mark = () => ths.forEach((th, i) => th.setAttribute('aria-sort', i === d65.volSort.col ? (d65.volSort.dir === 1 ? 'ascending' : 'descending') : 'none'));
+    ths.forEach((th, i) => {
+      th.style.cursor = 'pointer';
+      th.tabIndex = 0;
+      const go = () => {
+        const st = d65.volSort;
+        if (st.col === i) st.dir = -st.dir; else { st.col = i; st.dir = 1; }
+        mark(); rerun();
+      };
+      th.addEventListener('click', go);
+      th.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    });
+    mark();
+  });
+})();
+
 })();
 
 (function () {
