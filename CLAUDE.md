@@ -25,11 +25,26 @@ Visit `http://localhost:4000`. The `--baseurl ""` override is needed locally bec
 
 **CSS build step (production only).** CI post-processes the *built* `_site/assets/css/main.css` with PostCSS — PurgeCSS (treeshake against `_site/**/*.html`, safelist in `postcss.config.cjs`), then `postcss-preset-env` (fallbacks/autoprefix per `.browserslistrc`), then cssnano — via `npm ci && npm run build:css` after the Jekyll build in `.github/workflows/deploy.yml`. Dev serves the authored CSS untouched. Local one-off check (needs Node ≥20, see `.nvmrc`): `bundle exec jekyll build && npm run build:css`. **If you add a class that only ever appears via JS injection or third-party embed markup, add it to the PurgeCSS safelist** or production will strip it. Files kept out of `_site` (README/CLAUDE.md, the Node toolchain files, apps-script, etc.) are listed under `exclude:` in `_config.yml` — add any new repo-meta file there.
 
+## Stay on current main (every agent, every session)
+
+Several agents work on this repo, often from handoffs written days earlier, and `main` moves underneath them (merged PRs, plus Google Docs publishes several times a week). A branch that falls behind gets work built on code that no longer exists. That happened once already: an agent kept committing to a branch whose PR had been closed after a newer PR rebuilt the same page on `main`. It produced a PR that would have undone the merged work. Prevent it every time:
+
+1. **At the start of every session, and again before every commit you push and before opening a PR, run** `bash scripts/branch-check.sh`. It fetches `main` and compares it with your branch (including uncommitted work). Act on its exit code:
+   - **0, up to date:** carry on.
+   - **2, behind:** `main` moved on, but not in files you touch. Merge it in now (`git merge origin/main`, or rebase if the branch was never pushed), then carry on. This is the daily pull: a branch that lives longer than a day gets `main` merged in at least daily.
+   - **1, stale:** since your branch split off, `main` changed files you also change, or already holds your files at another path (merged, then moved). **Stop.** Read `main`'s changes (`git diff <split> origin/main -- <files>`, the command is printed), tell the user what you found, and agree on how to proceed before committing.
+2. **Check the branch's pull request before resuming any existing branch.** Use the GitHub tools (list pull requests whose head is the branch). If its PR was **merged or closed**, never commit to that branch again. Start a new branch from `origin/main`, port the work onto what `main` has now, and open a new PR. This holds even if a handoff, a prompt or the session's assigned branch name points at the old branch. When the session requires a specific branch, stop and ask the user rather than building on a superseded one.
+3. **Treat a handoff as a snapshot.** A handoff names files and a branch as they were when it was written. Before following one, diff `main` since the handoff's `Base:` commit for every file it names. If files it tells you to edit no longer exist on `main`, or `main` has rebuilt them, the handoff is stale. Say so and adapt its intent (copy, data, decisions) to `main`, rather than recreating the old files.
+4. **After opening a PR, confirm it is mergeable.** A PR that conflicts with `main` is almost always a stale branch: go back to step 1, don't ask the maintainer to resolve it.
+
+CI enforces step 1 on every pull request (`.github/workflows/branch-freshness.yml` runs the same script): a stale branch fails the check; one that is only behind gets a warning.
+
 ## Contributing from Claude Code on the web
 
 Some contributors work through Claude Code on the web (claude.ai/code) in a cloud sandbox, not on the maintainer's machine. In that setting:
 
 - **Always work on a branch and finish by opening a pull request.** `main` is protected and deploys to the live site; only the maintainer merges. Never push to `main`.
+- **Start from current `main` and keep up with it.** Follow "Stay on current main" above: run `bash scripts/branch-check.sh` at the start of the session and before every push or PR, and never resume a branch whose PR was merged or closed. Cloud sessions clone shallow; the script deepens history itself.
 - **There is no dev server.** Verify with `bundle install && bundle exec jekyll build --baseurl ""` and confirm the build succeeds with no errors. Don't try to start or reach `localhost:4000` for the user.
 - **Never edit the add-on-published files** listed under "How content flows" (`_data/faq.yml`, `_data/news.yml`, `_includes/home-overview.md`, `assets/images/content/`). The Google Docs add-on overwrites them. Posts in `_posts/` normally come from the add-on too; add new standalone pages instead unless the maintainer asks otherwise.
 - **Reuse before inventing.** Build pages from the shared blocks and tokens in "CSS & HTML methodology" (`.card`, `.stat-grid`, `.callout`, `.steps`, `--step-*`, `--space-*`). Don't add one-off components or hardcoded px/colors.

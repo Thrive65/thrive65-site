@@ -14,6 +14,14 @@ artifact should be marked archived to avoid drift.
 New handoffs: `YYYY-MM-DD_<topic>_handoff/` (or a clearly-named bundle dir).
 Keep each handoff self-contained (its own README, specs, references).
 
+Every handoff README starts with a **`Base:` line**, the `main` commit it was
+written against (`Base: main@<sha>`, from `git rev-parse --short origin/main`).
+It names no long-lived branch: say "a new branch from current `main`". The
+agent that implements it diffs `main` since that commit for every file the
+handoff names before starting, because files may have been rebuilt, moved or
+deleted since (CLAUDE.md, "Stay on current main"). A handoff that names a
+branch whose PR was closed is stale by definition.
+
 ## Index
 
 ### `design_handoff_common_ground/` — Common Ground brand system

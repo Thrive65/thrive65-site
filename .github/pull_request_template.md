@@ -8,6 +8,7 @@
 <!-- Optional: before/after or a screenshot of the new page -->
 
 ## Checklist
+- [ ] Branch is up to date with `main`: `bash scripts/branch-check.sh` exits 0, and this branch's earlier PR (if any) was not merged or closed
 - [ ] Built successfully with `bundle exec jekyll build`
 - [ ] Did not edit add-on-published files (`_data/faq.yml`, `_data/news.yml`, `_includes/home-overview.md`, `assets/images/content/`)
 - [ ] Used existing blocks/tokens (`.card`, `.stat-grid`, `--step-*`, `--space-*`) rather than new one-off styles

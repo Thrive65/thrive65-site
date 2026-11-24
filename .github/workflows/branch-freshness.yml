@@ -1,0 +1,45 @@
+name: Branch freshness
+
+# Fails a pull request whose branch is stale: main has, since the branch split
+# off, changed files the PR also changes, or already holds the PR's files at a
+# new path (the work was merged and moved on). This is the check that would
+# have stopped a PR built on a branch whose earlier PR had already been merged
+# and superseded. Being merely behind main, in files the PR does not touch,
+# only warns. Same script agents run by hand: scripts/branch-check.sh (see
+# CLAUDE.md, "Stay on current main").
+#
+# It re-runs on every push to the PR and when the PR is reopened. To also
+# block merging a PR that fell behind after its last run, turn on "Require
+# branches to be up to date before merging" for main in the repo settings.
+
+on:
+  pull_request:
+    branches: ["main"]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the PR branch with full history
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Compare with main
+        run: |
+          set +e
+          bash scripts/branch-check.sh HEAD origin/main
+          code=$?
+          if [ "$code" -eq 2 ]; then
+            echo "::warning title=Behind main::This branch is behind main (no overlapping files). Merge main in before merging."
+            exit 0
+          fi
+          if [ "$code" -eq 1 ]; then
+            echo "::error title=Stale branch::main has changed files this PR also changes (or already holds them at a new path). Read main's changes and merge or port before continuing. See CLAUDE.md, 'Stay on current main'."
+          fi
+          exit "$code"
