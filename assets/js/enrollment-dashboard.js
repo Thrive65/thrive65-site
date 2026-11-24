@@ -10,13 +10,10 @@ window.dash = (function () {
     district_trend: 'district_trend.csv',
     district_grades: 'district_grades.csv',
     school_trend: 'school_trend.csv',
-    kofron_rerun: 'kofron_rerun_2020.csv',
     compare_bands: 'compare_bands.csv',
     school_proj: 'school_proj.csv',
     school_proj_yearly: 'school_proj_yearly.csv',
     forecast_check: 'forecast_check_2025_26.csv',
-    current: 'current_2026_27.csv',
-    feeder_grades: 'feeder_grades_2026_27.csv',
     volatility: 'volatility.csv',
     national: 'national_k8.csv',
     nearby: 'nearby_districts.csv',
@@ -121,14 +118,8 @@ function cellWhere(id, pred, field) {
 }
 const txt = (el, v, f) => { el.textContent = v === null || Number.isNaN(v) ? '—' : f(v); };
 dash.draw('hl-actual', (el) => txt(el, cell('district_trend', '2026-27', 'actual'), d65.fmt));
-dash.draw('t-actual', (el) => txt(el, cell('district_trend', '2026-27', 'actual'), d65.fmt));
 dash.draw('t-peak', (el) => txt(el, cell('district_trend', '2016-17', 'actual'), d65.fmt));
 dash.draw('hl-mid', (el) => txt(el, cell('district_trend', '2026-27', 'kofron_mid'), d65.fmt));
-dash.draw('t-mid', (el) => txt(el, cell('district_trend', '2026-27', 'kofron_mid'), d65.fmt));
-dash.draw('t-low', (el) => txt(el, cell('district_trend', '2026-27', 'kofron_low'), d65.fmt));
-dash.draw('t-high', (el) => txt(el, cell('district_trend', '2026-27', 'kofron_high'), d65.fmt));
-dash.draw('t-mid32', (el) => txt(el, cell('district_trend', '2031-32', 'kofron_mid'), d65.fmt));
-dash.draw('t-d65', (el) => txt(el, cell('district_trend', '2030-31', 'district_proj_2025'), d65.fmt));
 dash.draw('t-k', (el) => txt(el, cellWhere('district_grades', (r) => r.grade === 'K' && r.year === '2026-27', 'students'), d65.fmt));
 dash.draw('t-8', (el) => txt(el, cellWhere('district_grades', (r) => r.grade === '8' && r.year === '2026-27', 'students'), d65.fmt));
 dash.draw('hl-peakpct', (el) => {
@@ -138,62 +129,10 @@ dash.draw('hl-peakpct', (el) => {
 dash.draw('lg-actual', (el) => { el.style.borderTopColor = dash.colors[0]; });
 dash.draw('lg-mid', (el) => { el.style.borderTopColor = dash.colors[0]; });
 dash.draw('lg-band', (el) => { el.style.background = dash.colors[0]; });
-dash.draw('lg-snap', (el) => { el.style.borderTopColor = dash.colors[2]; });
-dash.draw('lg-d65', (el) => { el.style.borderTopColor = dash.colors[1]; });
 dash.draw('lg-mck', (el) => { el.style.borderTopColor = dash.colors[3]; });
 dash.draw('lg-t65', (el) => { el.style.borderTopColor = dash.colors[6]; });
+dash.draw('lg-t65band', (el) => { el.style.background = dash.colors[6]; });
 dash.draw('lg-k', (el) => { el.style.background = dash.colors[0]; });
-dash.draw('lg-5', (el) => { el.style.background = dash.colors[1]; });
-})();
-
-(function () {
-// District trend chart
-dash.draw('trend', (el) => {
-  const s = dash.data('district_trend');
-  if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
-  el.replaceChildren();
-  const rows = s.data.map((r) => ({ year: r.year, actual: d65.num(r.actual), high: d65.num(r.kofron_high), mid: d65.num(r.kofron_mid), low: d65.num(r.kofron_low), snap: d65.num(r.kofron_snapshot), d65: d65.num(r.district_proj_2025), mck: d65.num(r.mckibben_2024), t65: d65.num(r.t65_mid), t65lo: d65.num(r.t65_low), t65hi: d65.num(r.t65_high) }));
-  const W = el.clientWidth || 600, H = 300, m = { t: 14, r: 16, b: 28, l: 48 };
-  const years = rows.map((r) => r.year);
-  const x = d3.scalePoint(years, [m.l, W - m.r]);
-  const ymax = d3.max(rows, (r) => Math.max(r.actual || 0, r.high || 0));
-  const y = d3.scaleLinear([3000, ymax * 1.03], [H - m.b, m.t]).nice();
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Line chart of District 65 K-8 enrollment from 2012-13 to 2026-27 with Kofron forecasts and the district projection to 2031-32');
-  svg.append('g').attr('class', 'grid').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
-  const step = Math.max(1, Math.ceil(years.length / Math.max(2, Math.floor((W - m.l) / 70))));
-  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(years.filter((_, i) => i % step === 0)).tickSizeOuter(0));
-  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(',')));
-  const band = rows.filter((r) => r.low !== null);
-  svg.append('path').datum(band).attr('d', d3.area().x((r) => x(r.year)).y0((r) => y(r.low)).y1((r) => y(r.high))).style('fill', dash.colors[0]).style('opacity', 0.14);
-  const line = (k) => d3.line().defined((r) => r[k] !== null).x((r) => x(r.year)).y((r) => y(r[k]));
-  svg.append('path').datum(rows).attr('d', line('mid')).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2).attr('stroke-dasharray', '6 4');
-  svg.append('path').datum(rows).attr('d', line('snap')).attr('fill', 'none').style('stroke', dash.colors[2]).attr('stroke-width', 2).attr('stroke-dasharray', '2 3');
-  svg.append('path').datum(rows).attr('d', line('d65')).attr('fill', 'none').style('stroke', dash.colors[1]).attr('stroke-width', 2);
-  svg.append('path').datum(rows).attr('d', line('mck')).attr('fill', 'none').style('stroke', dash.colors[3]).attr('stroke-width', 2).attr('stroke-dasharray', '8 3 2 3');
-  const t65b = rows.filter((r) => r.t65lo !== null);
-  svg.append('path').datum(t65b).attr('d', d3.area().x((r) => x(r.year)).y0((r) => y(r.t65lo)).y1((r) => y(r.t65hi))).style('fill', dash.colors[6]).style('opacity', 0.14);
-  svg.append('path').datum(rows).attr('d', line('t65')).attr('fill', 'none').style('stroke', dash.colors[6]).attr('stroke-width', 2).attr('stroke-dasharray', '3 2');
-  svg.append('path').datum(rows).attr('d', line('actual')).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2.5).attr('stroke-linejoin', 'round');
-  const last = rows.filter((r) => r.actual !== null).slice(-1)[0];
-  svg.append('circle').attr('cx', x(last.year)).attr('cy', y(last.actual)).attr('r', 4).style('fill', dash.colors[0]);
-  const tip = d65.tip(el);
-  const hover = svg.append('line').attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-reference)').attr('opacity', 0);
-  svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
-    .on('pointermove', (ev) => {
-      const [px] = d3.pointer(ev);
-      const r = rows.reduce((a, b) => (Math.abs(x(b.year) - px) < Math.abs(x(a.year) - px) ? b : a));
-      hover.attr('x1', x(r.year)).attr('x2', x(r.year)).attr('opacity', 1);
-      const L = [r.year];
-      if (r.actual !== null) L.push('Actual: ' + d65.fmt(r.actual));
-      if (r.mid !== null) L.push('Kofron middle: ' + d65.fmt(r.mid) + ' (' + d65.fmt(r.low) + '–' + d65.fmt(r.high) + ')');
-      if (r.snap !== null) L.push('Kofron snapshot: ' + d65.fmt(r.snap));
-      if (r.d65 !== null) L.push('District projection: ' + d65.fmt(r.d65));
-      if (r.mck !== null) L.push('McKibben (2024): ' + d65.fmt(r.mck));
-      if (r.t65 !== null && r.year !== '2026-27') L.push('Thrive65 update: ' + d65.fmt(r.t65) + ' (' + d65.fmt(r.t65lo) + '–' + d65.fmt(r.t65hi) + ')');
-      tip.show(L, x(r.year) / W * el.clientWidth, 10);
-    })
-    .on('pointerleave', () => { hover.attr('opacity', 0); tip.hide(); });
-});
 })();
 
 (function () {
@@ -290,24 +229,6 @@ dash.draw('vol-body', (tb) => {
     tb.append(tr);
   }
 });
-dash.draw('now-body', (tb) => {
-  const s = dash.data('current');
-  tb.replaceChildren();
-  if (s.status !== 'ok') return;
-  let lvl = null;
-  for (const r of s.data) {
-    const tr = document.createElement('tr');
-    if (lvl !== null && r.level !== lvl) tr.className = 'sep';
-    lvl = r.level;
-    tdc(tr, r.school); tdc(tr, r.feeder); tdc(tr, d65.fmt(+r.total));
-    tdc(tr, r.k === null || r.k === '' ? '' : r.k); tdc(tr, r.g5 === null || r.g5 === '' ? '' : r.g5);
-    const kv = d65.num(r.k_vs_5_pct); tdc(tr, kv === null ? '' : d65.pct1(kv), kv !== null && kv <= -20 ? 'neg' : '');
-    tdc(tr, d65.pct0(+r.frl_pct)); tdc(tr, d65.pct0(+r.el_pct)); tdc(tr, d65.pct0(+r.iep_pct)); tdc(tr, d65.pct0(+r.black_hisp_pct)); tdc(tr, d65.pct0(+r.white_pct));
-    tdc(tr, r.twi === null || r.twi === '' ? '' : r.twi);
-    tb.append(tr);
-  }
-});
-
 (function () {
   const rerun = () => { if (dash.redraw) dash.redraw(); else dash.draw('vol-body'); };
   document.querySelectorAll('tbody[data-draw="vol-body"]').forEach((tb) => {
@@ -333,241 +254,21 @@ dash.draw('now-body', (tb) => {
 })();
 
 (function () {
-// K vs 5th dumbbell
-dash.draw('k5', (el) => {
-  const s = dash.data('current');
-  if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
-  el.replaceChildren();
-  const avg = (a) => a.reduce((t, v) => t + v, 0) / a.length;
-  const rows = s.data.filter((r) => r.level === 'Elementary').map((r) => {
-    const g = ['k', 'g1', 'g2', 'g3', 'g4', 'g5'].map((c) => +r[c]);
-    const k = avg(g.slice(0, 3)), g5 = avg(g.slice(3));
-    return { school: r.school, g, k, g5, p: Math.round((k / g5 - 1) * 1000) / 10, tin: d65.num(r.transfers_in_may2026), tout: d65.num(r.transfers_out_may2026) };
-  }).sort((a, b) => a.p - b.p);
-  const W = el.clientWidth || 600, rowH = 32, m = { t: 22, r: 70, b: 24, l: 96 }, H = m.t + m.b + rows.length * rowH;
-  const x = d3.scaleLinear([0, d3.max(rows, (r) => Math.max(r.k, r.g5)) * 1.1], [m.l, W - m.r]).nice();
-  const y = d3.scaleBand(rows.map((r) => r.school), [m.t, H - m.b]).padding(0.4);
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Average class size in grades K-2 and in grades 3-5 at each elementary school, fall 2026');
-  svg.append('g').attr('class', 'grid').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', m.t).attr('y2', H - m.b);
-  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(5).tickSizeOuter(0));
-  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).tickSize(0)).call((g) => g.select('.domain').remove());
-  const g = svg.append('g');
-  const cy = (r) => y(r.school) + y.bandwidth() / 2;
-  g.selectAll('line.c').data(rows).join('line').attr('x1', (r) => x(r.k)).attr('x2', (r) => x(r.g5)).attr('y1', cy).attr('y2', cy).style('stroke', 'var(--cds-chart-muted)').attr('stroke-width', 3);
-  g.selectAll('circle.k').data(rows).join('circle').attr('cx', (r) => x(r.k)).attr('cy', cy).attr('r', 6).style('fill', dash.colors[0]);
-  g.selectAll('circle.f').data(rows).join('circle').attr('cx', (r) => x(r.g5)).attr('cy', cy).attr('r', 6).style('fill', dash.colors[1]);
-  g.selectAll('text.p').data(rows).join('text').attr('x', W - m.r + 8).attr('y', (r) => cy(r) + 4).text((r) => d65.pct1(r.p)).style('fill', (r) => (r.p <= -20 ? 'var(--color-bad)' : 'var(--cds-text-secondary)'));
-  svg.append('text').attr('x', W - m.r + 8).attr('y', 12).text('K-2 vs. 3-5');
-  const tip = d65.tip(el);
-  g.selectAll('rect.h').data(rows).join('rect').attr('x', m.l).attr('width', W - m.l - m.r).attr('y', (r) => y(r.school) - 6).attr('height', y.bandwidth() + 12).attr('fill', 'transparent')
-    .on('pointermove', (ev, r) => { tip.show([r.school, 'K-2 average: ' + Math.round(r.k) + ' (K ' + r.g[0] + ', 1st ' + r.g[1] + ', 2nd ' + r.g[2] + ')', '3-5 average: ' + Math.round(r.g5) + ' (3rd ' + r.g[3] + ', 4th ' + r.g[4] + ', 5th ' + r.g[5] + ')', 'K-2 vs. 3-5: ' + d65.pct1(r.p)].concat(r.tin !== null ? ['Transfers approved last spring: ' + r.tin + ' in, ' + r.tout + ' out'] : []), Math.min(x(Math.max(r.k, r.g5)), W * 0.5) / W * el.clientWidth, cy(r) / W * el.clientWidth); })
-    .on('pointerleave', () => tip.hide());
-});
-
-// Feeder pipeline lines
-dash.draw('feeder-legend', (el) => {
-  const s = dash.data('feeder_grades');
-  el.replaceChildren();
-  if (s.status !== 'ok') return;
-  [...new Set(s.data.map((r) => r.feeder))].forEach((f, i) => {
-    const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.borderTopColor = dash.colors[i];
-    if (f === 'King Arts') sw.style.borderTopStyle = 'dashed';
-    sp.append(sw, document.createTextNode(f === 'King Arts' ? 'King Arts (K-8 magnet)' : f + ' feeder')); el.append(sp);
-  });
-});
-dash.draw('feeder', (el) => {
-  const s = dash.data('feeder_grades');
-  if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
-  el.replaceChildren();
-  const grades = ['K', '1', '2', '3', '4', '5', '6', '7', '8'];
-  const groups = d3.group(s.data, (r) => r.feeder);
-  const W = el.clientWidth || 600, H = 280, m = { t: 14, r: 70, b: 28, l: 44 };
-  const x = d3.scalePoint(grades, [m.l, W - m.r]);
-  const y = d3.scaleLinear([0, d3.max(s.data, (r) => +r.students) * 1.08], [H - m.b, m.t]).nice();
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Students per grade, K through 8, in each middle school feeder pattern, fall 2026');
-  svg.append('g').attr('class', 'grid').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
-  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickFormat((g) => (g === 'K' ? 'K' : 'Gr ' + g)).tickSizeOuter(0));
-  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5));
-  svg.append('line').attr('x1', (x('5') + x('6')) / 2).attr('x2', (x('5') + x('6')) / 2).attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '3 3');
-  svg.append('text').attr('x', (x('5') + x('6')) / 2 + 4).attr('y', m.t + 10).text('middle school');
-  const all = [], ends = [];
-  [...groups.keys()].forEach((f, i) => {
-    const rs = grades.map((g) => ({ f, g, n: +((groups.get(f).find((r) => r.grade === g) || {}).students) }));
-    all.push(...rs);
-    svg.append('path').datum(rs).attr('d', d3.line().x((r) => x(r.g)).y((r) => y(r.n))).attr('fill', 'none').style('stroke', dash.colors[i]).attr('stroke-width', 2).attr('stroke-dasharray', f === 'King Arts' ? '5 3' : null);
-    svg.append('g').selectAll('circle').data(rs).join('circle').attr('cx', (r) => x(r.g)).attr('cy', (r) => y(r.n)).attr('r', 3.5).style('fill', dash.colors[i]);
-    ends.push({ f, y: y(rs[rs.length - 1].n) + 4 });
-  });
-  ends.sort((a, b) => a.y - b.y);
-  for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
-  svg.append('g').selectAll('text').data(ends).join('text').attr('x', W - m.r + 6).attr('y', (e) => e.y).text((e) => e.f);
-  const tip = d65.tip(el);
-  svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
-    .on('pointermove', (ev) => {
-      const [px] = d3.pointer(ev);
-      const g = grades.reduce((a, b) => (Math.abs(x(b) - px) < Math.abs(x(a) - px) ? b : a));
-      tip.show([g === 'K' ? 'Kindergarten' : 'Grade ' + g].concat(all.filter((r) => r.g === g).map((r) => r.f + ': ' + r.n)), x(g) / W * el.clientWidth, 10);
-    })
-    .on('pointerleave', () => tip.hide());
-});
-
-// Grade x year heatmap
-dash.draw('grades', (el) => {
-  const s = dash.data('district_grades');
-  if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
-  el.replaceChildren();
-  const grades = ['K', '1', '2', '3', '4', '5', '6', '7', '8'];
-  const years = [...new Set(s.data.map((r) => r.year))].sort();
-  const W = Math.max(el.clientWidth || 600, 560), m = { t: 22, r: 4, b: 4, l: 36 }, cw = (W - m.l - m.r) / years.length, ch = 26, H = m.t + m.b + grades.length * ch;
-  const col = d3.scaleSequential([500, 950], d3.interpolateBlues);
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Heat map of District 65 enrollment by grade (rows) and school year (columns), 2012-13 to 2026-27');
-  years.forEach((yr, i) => svg.append('text').attr('x', m.l + i * cw + cw / 2).attr('y', 14).attr('text-anchor', 'middle').text("'" + yr.slice(2, 4)));
-  grades.forEach((g, j) => svg.append('text').attr('x', m.l - 6).attr('y', m.t + j * ch + ch / 2 + 4).attr('text-anchor', 'end').text(g === 'K' ? 'K' : 'Gr ' + g));
-  const tip = d65.tip(el);
-  for (const r of s.data) {
-    const i = years.indexOf(r.year), j = grades.indexOf(r.grade), n = +r.students;
-    const c = d3.color(col(n));
-    svg.append('rect').attr('x', m.l + i * cw + 1).attr('y', m.t + j * ch + 1).attr('width', cw - 2).attr('height', ch - 2).attr('rx', 2).attr('fill', c.formatHex())
-      .on('pointermove', () => tip.show([(r.grade === 'K' ? 'Kindergarten' : 'Grade ' + r.grade) + ', ' + r.year, d65.fmt(n) + ' students'], (m.l + i * cw) / W * el.clientWidth, (m.t + j * ch) / W * el.clientWidth))
-      .on('pointerleave', () => tip.hide());
-    if (cw > 30) svg.append('text').attr('x', m.l + i * cw + cw / 2).attr('y', m.t + j * ch + ch / 2 + 4).attr('text-anchor', 'middle').style('fill', n > 760 ? '#fff' : '#0b0b0b').style('pointer-events', 'none').text(n);
-  }
-});
-})();
-
-(function () {
-// COVID retention section
-const SEES_2025 = 94; // 2024-25 total (5,854) minus the district's restated total excluding SEES students (5,760), SY2024-25 Opening of Schools
-const G9 = ['K', '1', '2', '3', '4', '5', '6', '7', '8'];
-function byYear(rows) { const m = {}; for (const r of rows) { (m[r.year] = m[r.year] || {})[r.grade] = +r.students; } return m; }
-function nextYear(y) { const a = +y.slice(0, 4) + 1; return a + '-' + String(a + 1).slice(2); }
-dash.calc('change_summary', {
-  title: 'COVID-era losses and the decline since the peak',
-  description: 'Fall 2020 + 2021 losses among enrolled students, and the 2016-17 to 2026-27 decline split into smaller kindergartens vs. enrolled students leaving.',
-  inputs: ['district_grades'],
-  fn: (grades) => {
-    const m = byYear(grades), years = Object.keys(m).sort();
-    const cont = (y, p) => G9.slice(1).reduce((s, g) => s + m[y][g], 0) - G9.slice(0, 8).reduce((s, g) => s + m[p][g], 0);
-    const covid = cont('2020-21', '2019-20') + cont('2021-22', '2020-21');
-    const base = G9.slice(0, 8).reduce((s, g) => s + m['2019-20'][g], 0);
-    let entry = 0, cc = 0;
-    for (let i = years.indexOf('2017-18'); i < years.length; i++) { const y = years[i], p = years[i - 1]; entry += m[y].K - m[p]['8']; cc += cont(y, p); }
-    const total = entry + cc;
-    return [{ covid_loss: covid, covid_pct: Math.round(-covid / base * 1000) / 10, since_peak_total: total, since_peak_entry: entry, since_peak_continuing: cc,
-      entry_share_pct: Math.round(entry / total * 100), sees_adjustment: SEES_2025 }];
-  }
-});
-dash.calc('cohorts', {
-  title: 'Kindergarten classes followed up the grades',
-  description: 'Each kindergarten class from 2016-17 on, by grade, as a count and a share of its kindergarten size.',
-  inputs: ['district_grades'],
-  fn: (grades) => {
-    const m = byYear(grades), years = Object.keys(m).sort(), out = [];
-    for (const k of years.filter((y) => y >= '2016-17')) {
-      let y = k; const k0 = m[k].K;
-      for (const g of G9) { if (!m[y]) break; out.push({ k_year: k, grade: g, students: m[y][g], pct_of_k: Math.round(m[y][g] / k0 * 1000) / 10 }); y = nextYear(y); }
-    }
-    return out;
-  }
-});
-function sumRow() { const s = dash.data('change_summary'); return s.status === 'ok' && s.data && s.data[0] ? s.data[0] : null; }
-const sgn = (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + d65.fmt(Math.abs(v));
-dash.draw('cv-loss', (el) => { const r = sumRow(); el.textContent = r ? d65.fmt(Math.abs(r.covid_loss)) : '—'; });
-dash.draw('cv-loss2', (el) => { const r = sumRow(); el.textContent = r ? sgn(r.covid_loss) : '—'; });
-dash.draw('cv-pct', (el) => { const r = sumRow(); el.textContent = r ? r.covid_pct.toFixed(1) + '%' : '—'; });
-dash.draw('cv-pct2', (el) => { const r = sumRow(); el.textContent = r ? r.covid_pct.toFixed(1) + '%' : '—'; });
-dash.draw('cv-entry', (el) => { const r = sumRow(); el.textContent = r ? r.entry_share_pct + '%' : '—'; });
-dash.draw('cv-total', (el) => { const r = sumRow(); el.textContent = r ? sgn(r.since_peak_total) : '—'; });
-dash.draw('cv-entry2', (el) => { const r = sumRow(); el.textContent = r ? sgn(r.since_peak_entry) : '—'; });
-dash.draw('cv-cont', (el) => { const r = sumRow(); el.textContent = r ? sgn(r.since_peak_continuing) : '—'; });
-function coh(k, g, f) { const s = dash.data('cohorts'); if (s.status !== 'ok' || !s.data) return null; const r = s.data.find((d) => d.k_year === k && d.grade === g); return r ? r[f] : null; }
-dash.draw('cv-k20', (el) => { const v = coh('2020-21', '6', 'students'); el.textContent = v === null ? '—' : d65.fmt(v); });
-dash.draw('cv-k20k', (el) => { const v = coh('2020-21', 'K', 'students'); el.textContent = v === null ? '—' : d65.fmt(v); });
-dash.draw('cv-k20p', (el) => { const v = coh('2020-21', '6', 'pct_of_k'); el.textContent = v === null ? '—' : v.toFixed(1) + '%'; });
-dash.draw('cohort-legend', (el) => {
-  const s = dash.data('cohorts');
-  el.replaceChildren();
-  if (s.status !== 'ok' || !s.data) return;
-  const ks = [...new Set(s.data.map((r) => r.k_year))].filter((k) => k >= '2020-21' && s.data.filter((r) => r.k_year === k).length > 1);
-  const pre = document.createElement('span'); const sw0 = document.createElement('span'); sw0.className = 'sw'; sw0.style.borderTopColor = 'var(--cds-chart-muted)'; pre.append(sw0, document.createTextNode('Started K 2016-2019')); el.append(pre);
-  ks.forEach((k, i) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.borderTopColor = dash.colors[i]; sp.append(sw, document.createTextNode('K in fall ' + k.slice(0, 4))); el.append(sp); });
-  const xs = document.createElement('span'); const xm = document.createElement('b'); xm.textContent = '× '; xm.style.color = 'var(--color-fg)'; xs.append(xm, document.createTextNode('Fall 2020, first COVID school year')); el.append(xs);
-});
-dash.draw('covid-cohorts', (el) => {
-  const s = dash.data('cohorts');
-  if (s.status !== 'ok' || !s.data) { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
-  el.replaceChildren();
-  const groups = d3.group(s.data, (r) => r.k_year);
-  const W = el.clientWidth || 600, H = 340, m = { t: 14, r: 92, b: 30, l: 46 };
-  const x = d3.scalePoint(G9, [m.l, W - m.r]);
-  const y = d3.scaleLinear([78, 112], [H - m.b, m.t]);
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Line chart of each kindergarten class since 2016 as a percent of its kindergarten size by grade; classes starting in 2020 or later stay near 100 percent');
-  svg.append('g').attr('class', 'grid').selectAll('line').data([80, 85, 90, 95, 105, 110]).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
-  svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(100)).attr('y2', y(100)).style('stroke', 'var(--cds-chart-reference)');
-  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickFormat((g) => (g === 'K' ? 'K' : 'Gr ' + g)).tickSizeOuter(0));
-  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).tickValues([80, 85, 90, 95, 100, 105, 110]).tickFormat((v) => v + '%'));
-  const line = d3.line().x((r) => x(r.grade)).y((r) => y(Math.max(78, Math.min(112, r.pct_of_k))));
-  const post = [...groups.keys()].filter((k) => k >= '2020-21' && groups.get(k).length > 1);
-  const ends = [];
-  for (const [k, rs] of groups) {
-    if (rs.length < 2) continue;
-    const isPost = k >= '2020-21', i = post.indexOf(k);
-    svg.append('path').datum(rs).attr('d', line).attr('fill', 'none').style('stroke', isPost ? dash.colors[i] : 'var(--cds-chart-muted)').attr('stroke-width', isPost ? 2.5 : 2);
-    const last = rs[rs.length - 1];
-    svg.append('circle').attr('cx', x(last.grade)).attr('cy', y(last.pct_of_k)).attr('r', isPost ? 4 : 3).style('fill', isPost ? dash.colors[i] : 'var(--cds-chart-muted)');
-    if (!isPost && last.grade === '8') ends.push({ t: 'K ' + k.slice(0, 4) + ': ' + last.pct_of_k.toFixed(0) + '%', y: y(last.pct_of_k) + 4 });
-  }
-  ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
-  svg.append('g').selectAll('text').data(ends).join('text').attr('x', x('8') + 8).attr('y', (e) => e.y).text((e) => e.t);
-  const covidPts = [];
-  for (const [k, rs] of groups) {
-    if (rs.length < 2) continue;
-    const gi = 2020 - +k.slice(0, 4);
-    if (gi < 0 || gi > 8) continue;
-    const r = rs.find((d) => d.grade === G9[gi]);
-    if (r) covidPts.push({ k, r, isPost: k >= '2020-21', i: post.indexOf(k) });
-  }
-  const xg = svg.append('g');
-  for (const p of covidPts) {
-    const cx = x(p.r.grade), cy = y(Math.max(78, Math.min(112, p.r.pct_of_k))), d = 3.5;
-    xg.append('path').attr('d', `M${cx - d},${cy - d}L${cx + d},${cy + d}M${cx - d},${cy + d}L${cx + d},${cy - d}`)
-      .style('stroke', 'var(--color-panel)').attr('stroke-width', 4.5).attr('stroke-linecap', 'round');
-    xg.append('path').attr('d', `M${cx - d},${cy - d}L${cx + d},${cy + d}M${cx - d},${cy + d}L${cx + d},${cy - d}`)
-      .style('stroke', p.isPost ? dash.colors[p.i] : 'var(--color-fg)').attr('stroke-width', 1.75).attr('stroke-linecap', 'round');
-  }
-  const tip = d65.tip(el);
-  svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
-    .on('pointermove', (ev) => {
-      const [px] = d3.pointer(ev);
-      const g = G9.reduce((a, b) => (Math.abs(x(b) - px) < Math.abs(x(a) - px) ? b : a));
-      const L = [(g === 'K' ? 'Kindergarten' : 'Grade ' + g) + ': share of kindergarten size'];
-      for (const [k, rs] of groups) { const r = rs.find((d) => d.grade === g); if (r && rs.length > 1) L.push('K fall ' + k.slice(0, 4) + ': ' + r.pct_of_k.toFixed(1) + '% (' + d65.fmt(r.students) + ')'); }
-      tip.show(L, Math.min(x(g), W * 0.45) / W * el.clientWidth, 10);
-    })
-    .on('pointerleave', () => tip.hide());
-});
-})();
-
-(function () {
 // National comparison
 const NAT_BASE = '2019-20';
 dash.calc('national_compare', {
-  inputs: ['district_grades', 'national', 'district_trend'],
-  fn: (grades, national, trend) => {
+  inputs: ['district_grades', 'national'],
+  fn: (grades, national) => {
     const m = {};
     for (const r of grades) { (m[r.year] = m[r.year] || {})[r.grade] = +r.students; }
     const k8 = (y) => (m[y] ? ['K', '1', '2', '3', '4', '5', '6', '7', '8'].reduce((s, g) => s + m[y][g], 0) : null);
     const n = {}; for (const r of national) n[r.year] = r;
-    const t = {}; for (const r of trend) t[r.year] = r;
     const num = (v) => (v === null || v === undefined || v === '' ? null : +v);
-    const d0 = k8(NAT_BASE), dk0 = m[NAT_BASE].K, u0 = num(n[NAT_BASE].us_k8), uk0 = num(n[NAT_BASE].us_k), km0 = num(t['2021-22'].kofron_mid), a21 = k8('2021-22'), c0 = num(n[NAT_BASE].cps_k8);
+    const d0 = k8(NAT_BASE), u0 = num(n[NAT_BASE].us_k8), c0 = num(n[NAT_BASE].cps_k8);
     const idx = (v, b) => (v === null ? null : Math.round(v / b * 1000) / 10);
     return national.map((r) => {
-      const y = r.year, d = k8(y), km = t[y] ? num(t[y].kofron_mid) : null;
-      return { year: y, d65_k8: d, d65_k8_idx: idx(d, d0), d65_k: m[y] ? m[y].K : null, d65_k_idx: m[y] ? idx(m[y].K, dk0) : null,
-        us_k8: num(r.us_k8), us_k8_idx: idx(num(r.us_k8), u0), us_k: num(r.us_k), us_k_idx: idx(num(r.us_k), uk0),
-        cps_k8: num(r.cps_k8), cps_k8_idx: idx(num(r.cps_k8), c0),
-        us_k8_proj_idx: idx(num(r.us_k8_projected), u0), d65_kofron_idx: y >= '2026-27' && km !== null ? idx(a21 * km / km0, d0) : null };
+      const y = r.year, d = k8(y);
+      return { year: y, d65_k8: d, d65_k8_idx: idx(d, d0), us_k8: num(r.us_k8), us_k8_idx: idx(num(r.us_k8), u0), cps_k8: num(r.cps_k8), cps_k8_idx: idx(num(r.cps_k8), c0) };
     });
   }
 });
@@ -576,52 +277,42 @@ dash.calc('national_summary', {
   fn: (rows) => {
     const r = rows.find((d) => d.year === '2024-25');
     const c = (v) => Math.round((v - 100) * 10) / 10;
-    const r25 = rows.find((d) => d.year === '2025-26');
-    return [{ d65_k8_chg: c(r.d65_k8_idx), us_k8_chg: c(r.us_k8_idx), d65_k_chg: c(r.d65_k_idx), us_k_chg: c(r.us_k_idx),
-      cps_k8_chg: c(r.cps_k8_idx), cps_k8_chg_2025: c(r25.cps_k8_idx), d65_k8_chg_2025: c(r25.d65_k8_idx) }];
+    return [{ d65_k8_chg: c(r.d65_k8_idx), us_k8_chg: c(r.us_k8_idx), cps_k8_chg: c(r.cps_k8_idx) }];
   }
 });
 function natRow() { const s = dash.data('national_summary'); return s.status === 'ok' && s.data && s.data[0] ? s.data[0] : null; }
-const natPct = (v) => (v < 0 ? '−' : '+') + Math.abs(v).toFixed(1) + '%';
 dash.draw('nt-us', (el) => { const r = natRow(); el.textContent = r ? Math.abs(r.us_k8_chg).toFixed(1) + '%' : '—'; });
 dash.draw('nt-d65', (el) => { const r = natRow(); el.textContent = r ? Math.abs(r.d65_k8_chg).toFixed(1) + '%' : '—'; });
-dash.draw('nt-usk', (el) => { const r = natRow(); el.textContent = r ? natPct(r.us_k_chg) : '—'; });
-dash.draw('nt-d65k', (el) => { const r = natRow(); el.textContent = r ? natPct(r.d65_k_chg) : '—'; });
 dash.draw('lg-nd', (el) => { el.style.borderTopColor = dash.colors[0]; });
 dash.draw('lg-nu', (el) => { el.style.borderTopColor = dash.colors[1]; });
 dash.draw('lg-nc', (el) => { el.style.borderTopColor = dash.colors[2]; });
 dash.draw('nt-cps', (el) => { const r = natRow(); el.textContent = r ? Math.abs(r.cps_k8_chg).toFixed(1) + '%' : '—'; });
-dash.draw('nt-cps25', (el) => { const r = natRow(); el.textContent = r ? Math.abs(r.cps_k8_chg_2025).toFixed(1) + '%' : '—'; });
-dash.draw('nt-d6525', (el) => { const r = natRow(); el.textContent = r ? Math.abs(r.d65_k8_chg_2025).toFixed(1) + '%' : '—'; });
-function natChart(el, key) {
+dash.draw('nat-k8', (el) => {
   const s = dash.data('national_compare');
   if (s.status !== 'ok' || !s.data) { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
   el.replaceChildren();
-  const isK8 = key === 'k8';
-  const rows = s.data.filter((r) => isK8 || r.year <= '2026-27'), years = rows.map((r) => r.year);
-  const series = isK8
-    ? [{ f: 'd65_k8_idx', raw: 'd65_k8', c: dash.colors[0], name: 'District 65' }, { f: 'us_k8_idx', raw: 'us_k8', c: dash.colors[1], name: 'U.S. public' },
-       { f: 'cps_k8_idx', raw: 'cps_k8', c: dash.colors[2], name: 'Chicago Public Schools' },
-       { f: 'd65_kofron_idx', c: dash.colors[0], dash: true, name: 'District 65 forecast (Kofron middle)' }, { f: 'us_k8_proj_idx', c: dash.colors[1], dash: true, name: 'U.S. forecast (NCES)' }]
-    : [{ f: 'd65_k_idx', raw: 'd65_k', c: dash.colors[0], name: 'District 65' }, { f: 'us_k_idx', raw: 'us_k', c: dash.colors[1], name: 'U.S. public' }];
+  const series = [{ f: 'd65_k8_idx', raw: 'd65_k8', c: dash.colors[0], name: 'District 65' }, { f: 'us_k8_idx', raw: 'us_k8', c: dash.colors[1], name: 'U.S. public' },
+    { f: 'cps_k8_idx', raw: 'cps_k8', c: dash.colors[2], name: 'Chicago Public Schools' }];
+  // Actual counts only: stop at the last year any series has a value.
+  const rows = s.data.filter((r) => series.some((sr) => r[sr.f] !== null)), years = rows.map((r) => r.year);
   const vals = rows.flatMap((r) => series.map((sr) => r[sr.f])).filter((v) => v !== null);
-  const W = el.clientWidth || 320, H = 260, m = { t: 16, r: 44, b: 26, l: 38 };
+  const W = el.clientWidth || 320, H = 300, m = { t: 16, r: 44, b: 26, l: 38 };
   const x = d3.scalePoint(years, [m.l, W - m.r]);
   const y = d3.scaleLinear([Math.min(60, d3.min(vals) - 3), Math.max(110, d3.max(vals) + 3)], [H - m.b, m.t]).nice();
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', (isK8 ? 'K-8' : 'Kindergarten') + ' enrollment for District 65 and U.S. public schools, indexed to fall 2019 = 100');
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'K-8 enrollment for District 65, U.S. public schools and Chicago Public Schools, indexed to fall 2019 = 100');
   svg.append('rect').attr('x', x('2020-21') - 4).attr('width', x('2021-22') - x('2020-21') + 8).attr('y', m.t).attr('height', H - m.t - m.b).style('fill', 'var(--cds-chart-muted)').style('opacity', 0.25);
   svg.append('text').attr('x', x('2020-21') - 2).attr('y', m.t + 10).text('COVID');
   svg.append('g').attr('class', 'grid').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
   svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(100)).attr('y2', y(100)).style('stroke', 'var(--cds-chart-reference)');
-  const tv = years.filter((yr) => ['2012-13', '2016-17', '2019-20', '2023-24', '2026-27', '2031-32'].includes(yr) && (isK8 || yr <= '2026-27'));
-  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(W < 380 ? tv.filter((_, i) => i % 2 === 0) : tv).tickFormat((d) => "'" + d.slice(2, 4)).tickSizeOuter(0));
+  const every = Math.max(1, Math.ceil(years.length / Math.max(2, Math.floor((W - m.l - m.r) / 48))));
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(years.filter((_, i) => (years.length - 1 - i) % every === 0)).tickFormat((d) => "'" + d.slice(2, 4)).tickSizeOuter(0));
   svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5));
   const ends = [];
   for (const sr of series) {
     const line = d3.line().defined((r) => r[sr.f] !== null).x((r) => x(r.year)).y((r) => y(r[sr.f]));
-    svg.append('path').datum(rows).attr('d', line).attr('fill', 'none').style('stroke', sr.c).attr('stroke-width', sr.dash ? 1.75 : 2.5).attr('stroke-dasharray', sr.dash ? '5 3' : null);
+    svg.append('path').datum(rows).attr('d', line).attr('fill', 'none').style('stroke', sr.c).attr('stroke-width', 2.5);
     const last = rows.filter((r) => r[sr.f] !== null).slice(-1)[0];
-    if (last) { svg.append('circle').attr('cx', x(last.year)).attr('cy', y(last[sr.f])).attr('r', sr.dash ? 2.5 : 3.5).style('fill', sr.c); ends.push({ y: y(last[sr.f]) + 4, x: x(last.year) + 5, t: Math.round(last[sr.f]) }); }
+    if (last) { svg.append('circle').attr('cx', x(last.year)).attr('cy', y(last[sr.f])).attr('r', 3.5).style('fill', sr.c); ends.push({ y: y(last[sr.f]) + 4, x: x(last.year) + 5, t: Math.round(last[sr.f]) }); }
   }
   ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) if (Math.abs(ends[i].x - ends[i - 1].x) < 1 && ends[i].y - ends[i - 1].y < 12) ends[i].y = ends[i - 1].y + 12;
   svg.append('g').selectAll('text').data(ends).join('text').attr('x', (e) => e.x).attr('y', (e) => e.y).text((e) => e.t);
@@ -631,13 +322,11 @@ function natChart(el, key) {
       const [px] = d3.pointer(ev);
       const r = rows.reduce((a, b) => (Math.abs(x(b.year) - px) < Math.abs(x(a.year) - px) ? b : a));
       const L = ['Fall ' + r.year.slice(0, 4) + ' (fall 2019 = 100)'];
-      for (const sr of series) if (r[sr.f] !== null) L.push(sr.name + ': ' + r[sr.f].toFixed(1) + (sr.raw && r[sr.raw] !== null ? ' (' + d65.fmt(r[sr.raw]) + (sr.raw.startsWith('us') ? ' thousand' : '') + ')' : ''));
+      for (const sr of series) if (r[sr.f] !== null) L.push(sr.name + ': ' + r[sr.f].toFixed(1) + (r[sr.raw] !== null ? ' (' + d65.fmt(r[sr.raw]) + (sr.raw.startsWith('us') ? ' thousand' : '') + ')' : ''));
       tip.show(L, Math.min(x(r.year), W * 0.4) / W * el.clientWidth, 10);
     })
     .on('pointerleave', () => tip.hide());
-}
-dash.draw('nat-k8', (el) => natChart(el, 'k8'));
-dash.draw('nat-k', (el) => natChart(el, 'k'));
+});
 
 // Nearby and peer districts comparison
 const shortName = (n) => n.replace('Chicago Public Schools District 299', 'Chicago Public Schools').replace('Evanston CCSD 65', 'District 65').replace(/ (CCSD|ESD|SD)/, '');
@@ -666,7 +355,6 @@ dash.draw('nb-n', (el) => { const r = nbRow('nearby_summary'); el.textContent = 
 dash.draw('nb-d65', (el) => { const r = nbRow('nearby_summary'); el.textContent = r ? nbPct(r.d65_chg) : '—'; });
 dash.draw('nb-med', (el) => { const r = nbRow('nearby_summary'); el.textContent = r ? d65.pct1(r.median_chg) : '—'; });
 dash.draw('nb-grew', (el) => { const r = nbRow('nearby_summary'); el.textContent = r ? r.n_grew : '—'; });
-dash.draw('nb-cps', (el) => { const r = nbRow('nearby_summary'); el.textContent = r ? nbPct(r.cps_chg) : '—'; });
 dash.draw('ck-n', (el) => { const r = nbRow('cook_rank'); el.textContent = r ? r.n : '—'; });
 dash.draw('ck-rank', (el) => { const r = nbRow('cook_rank'); el.textContent = r ? r.rank_text : '—'; });
 dash.draw('ck-ahead', (el) => { const r = nbRow('cook_rank'); el.textContent = r ? r.ahead : '—'; });
@@ -817,74 +505,6 @@ function densMap(el) {
   svg.append('text').attr('x', lx + lw + 24).attr('y', ly + 30).text('School building');
 }
 dash.draw('density-map', densMap);
-})();
-
-(function () {
-// Kofron method rerun from 2020: two panels (births falling / births flat)
-dash.draw('rerun', (el) => {
-  const s = dash.data('kofron_rerun');
-  if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
-  el.replaceChildren();
-  const num = d65.num;
-  const rows = s.data.map((r) => ({ year: r.year, actual: num(r.actual),
-    f: { high: num(r.high_births_falling), mid: num(r.mid_births_falling), low: num(r.low_births_falling), snap: num(r.snapshot_births_falling) },
-    k: { high: num(r.high_births_data), mid: num(r.mid_births_data), low: num(r.low_births_data), snap: num(r.snapshot_births_data) } }))
-    .filter((r) => r.year >= '2016-17');
-  const legend = document.createElement('div'); legend.className = 'legend';
-  const item = (style, text) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; Object.assign(sw.style, style); sp.append(sw, document.createTextNode(text)); legend.append(sp); };
-  item({ borderTopColor: dash.colors[0], borderTopWidth: '2.5px' }, 'Actual');
-  item({ borderTopColor: dash.colors[1], borderTopStyle: 'dashed' }, 'Middle series');
-  const bx = document.createElement('span'); const bsw = document.createElement('span'); bsw.className = 'box'; bsw.style.background = dash.colors[1]; bx.append(bsw, document.createTextNode('Low to high series')); legend.append(bx);
-  item({ borderTopColor: dash.colors[1], borderTopStyle: 'dotted' }, 'Snapshot (last 2 years only)');
-  el.append(legend);
-  const grid = document.createElement('div'); grid.className = 'nat-grid'; el.append(grid);
-  const all = rows.flatMap((r) => [r.actual, r.f.high, r.f.snap, r.k.high, r.k.snap]).filter((v) => v !== null);
-  const ymin = Math.floor((d3.min(all) - 200) / 500) * 500, ymax = Math.ceil((d3.max(all) + 100) / 500) * 500;
-  const panels = [['f', 'If births keep falling (Kofron\'s straight-line trend)'], ['k', 'Using birth records through 2023']].map(([key, title]) => {
-    const wrap = document.createElement('div');
-    const t = document.createElement('div'); t.className = 'nat-t'; t.textContent = title; wrap.append(t);
-    const box = document.createElement('div'); box.className = 'chart'; box.style.minHeight = '280px'; wrap.append(box); grid.append(wrap);
-    return [key, title, box];
-  });
-  for (const [key, title, box] of panels) {
-    const W = box.clientWidth || 340, H = 280, m = { t: 12, r: 44, b: 26, l: 46 };
-    const years = rows.map((r) => r.year);
-    const x = d3.scalePoint(years, [m.l, W - m.r]);
-    const y = d3.scaleLinear([ymin, ymax], [H - m.b, m.t]);
-    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
-      .attr('aria-label', 'District 65 K-8 enrollment, actual and projected from fall 2020 using the Kofron method, ' + title.toLowerCase());
-    svg.append('g').attr('class', 'grid').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
-    const tv = years.filter((yr) => ['2016-17', '2020-21', '2026-27', '2030-31', '2034-35'].includes(yr));
-    svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(W < 380 ? tv.filter((_, i) => i % 2 === 0) : tv).tickFormat((d) => "'" + d.slice(2, 4)).tickSizeOuter(0));
-    svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(',')));
-    svg.append('line').attr('x1', x('2020-21')).attr('x2', x('2020-21')).attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '2 2');
-    svg.append('text').attr('x', x('2020-21') + 4).attr('y', m.t + 10).text('start, fall 2020');
-    const pr = rows.filter((r) => r[key].mid !== null);
-    svg.append('path').datum(pr).attr('d', d3.area().x((r) => x(r.year)).y0((r) => y(r[key].low)).y1((r) => y(r[key].high))).style('fill', dash.colors[1]).style('opacity', 0.16);
-    const ln = (f) => d3.line().defined((r) => f(r) !== null).x((r) => x(r.year)).y((r) => y(f(r)));
-    svg.append('path').datum(pr).attr('d', ln((r) => r[key].snap)).attr('fill', 'none').style('stroke', dash.colors[1]).attr('stroke-width', 1.75).attr('stroke-dasharray', '2 3');
-    svg.append('path').datum(pr).attr('d', ln((r) => r[key].mid)).attr('fill', 'none').style('stroke', dash.colors[1]).attr('stroke-width', 2).attr('stroke-dasharray', '6 4');
-    svg.append('path').datum(rows).attr('d', ln((r) => r.actual)).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2.5).attr('stroke-linejoin', 'round');
-    const lastA = rows.filter((r) => r.actual !== null).slice(-1)[0];
-    svg.append('circle').attr('cx', x(lastA.year)).attr('cy', y(lastA.actual)).attr('r', 3.5).style('fill', dash.colors[0]);
-    const end = pr[pr.length - 1];
-    svg.append('text').attr('x', x(end.year) + 4).attr('y', y(end[key].high) + 4).text(d3.format(',')(end[key].high));
-    svg.append('text').attr('x', x(end.year) + 4).attr('y', y(end[key].low) + 4).text(d3.format(',')(end[key].low));
-    const tip = d65.tip(box);
-    const hover = svg.append('line').attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-reference)').attr('opacity', 0).style('pointer-events', 'none');
-    svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
-      .on('pointermove', (ev) => {
-        const [px] = d3.pointer(ev);
-        const r = rows.reduce((a, b) => (Math.abs(x(b.year) - px) < Math.abs(x(a.year) - px) ? b : a));
-        hover.attr('x1', x(r.year)).attr('x2', x(r.year)).attr('opacity', 1);
-        const L = [r.year];
-        if (r.actual !== null) L.push('Actual: ' + d65.fmt(r.actual));
-        if (r[key].mid !== null && r.year !== '2020-21') { L.push('High: ' + d65.fmt(r[key].high)); L.push('Middle: ' + d65.fmt(r[key].mid)); L.push('Low: ' + d65.fmt(r[key].low)); L.push('Snapshot: ' + d65.fmt(r[key].snap)); }
-        tip.show(L, Math.min(x(r.year), W * 0.5) / W * box.clientWidth, 10);
-      })
-      .on('pointerleave', () => { hover.attr('opacity', 0); tip.hide(); });
-  }
-});
 })();
 
 (function () {
@@ -1080,24 +700,19 @@ dash.draw('cmp', cmpDraw);
 
 (function () {
 // Story sections: headline drop, private schools, ETHS feeders, births
+// Shares d65.classesNow() with the c-classes chart so the two can't disagree.
 dash.draw('cv-sincek', (el) => {
-  const s = dash.data('district_grades');
-  if (s.status !== 'ok') { el.textContent = '—'; return; }
-  const m = {};
-  for (const r of s.data) (m[r.year] = m[r.year] || {})[r.grade] = +r.students;
-  let now = 0, atK = 0;
-  ['K', '1', '2', '3', '4', '5', '6', '7', '8'].forEach((g, i) => {
-    const ky = (2026 - i) + '-' + String(2027 - i).slice(2);
-    now += m['2026-27'][g]; atK += m[ky].K;
-  });
-  el.textContent = d65.fmt(Math.round((atK - now) / 10) * 10);
+  const rows = d65.classesNow();
+  if (!rows) { el.textContent = '—'; return; }
+  const v = rows.reduce((t, r) => t + r.atK - r.now, 0);
+  el.textContent = d65.fmt(Math.round(v / 10) * 10);
 });
-dash.draw('hl-drop', (el) => {
+dash.draw('s-drop', (el) => {
   const s = dash.data('district_trend');
   if (s.status !== 'ok') { el.textContent = '—'; return; }
   const get = (y) => +(s.data.find((r) => r.year === y) || {}).actual;
   const v = get('2016-17') - get('2026-27');
-  el.textContent = isNaN(v) ? '—' : d65.fmt(Math.round(v / 10) * 10);
+  el.textContent = isNaN(v) ? '—' : 'about ' + d65.fmt(Math.round(v / 10) * 10);
 });
 dash.draw('pv-last', (el) => {
   const s = dash.data('private_k8');
@@ -1189,11 +804,10 @@ dash.draw('births-chart', (el) => {
   const rows = s.data.map((r) => ({ y: +r.k_class, kof: n(r.kofron_births), kx: n(r.kofron_trend), rec: n(r.birth_records), hold: n(r.held_flat), pace: n(r.birth_pace), ks: n(r.birth_kofron_slope) }));
   const legend = document.createElement('div'); legend.className = 'legend';
   const add = (style, text) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; Object.assign(sw.style, style); sp.append(sw, document.createTextNode(text)); legend.append(sp); };
-  add({ borderTopColor: 'var(--color-fg-muted)' }, "Kofron's birth data");
-  add({ borderTopColor: 'var(--color-fg-muted)', borderTopStyle: 'dashed' }, "Kofron's straight-line extension");
+  add({ borderTopColor: 'var(--color-fg-muted)' }, 'Kofron study data and trend');
   add({ borderTopColor: dash.colors[0] }, 'Cook County birth records');
-  add({ borderTopColor: dash.colors[0], borderTopWidth: '8px', opacity: '0.25' }, 'Assumed range: births flat, or falling at Kofron\'s pace');
-  add({ borderTopColor: dash.colors[0], borderTopStyle: 'dotted' }, 'Middle: recent pace, about 3% fewer a year');
+  add({ borderTopColor: dash.colors[0], borderTopWidth: '8px', opacity: '0.25' }, 'Assumed range after 2023');
+  add({ borderTopColor: dash.colors[0], borderTopStyle: 'dotted' }, 'Recent pace');
   const box = document.createElement('div'); box.className = 'chart'; el.append(legend, box);
   const W = box.clientWidth || 600, H = 280, m = { t: 14, r: 40, b: 40, l: 48 };
   const x = d3.scaleLinear([2015, 2031], [m.l, W - m.r]);
@@ -1235,66 +849,190 @@ dash.draw('births-chart', (el) => {
 })();
 
 (function () {
-// Future middle school classes from students already enrolled
-dash.draw('ms-future', (el) => {
-  const s = dash.data('feeder_grades'), cb = dash.data('compare_bands');
-  if (s.status !== 'ok') { el.textContent = s.status === 'error' ? 'Failed to load' : '—'; return; }
-  el.replaceChildren();
-  const G = ['K', '1', '2', '3', '4', '5', '6', '7', '8'];
-  const f = {}; for (const r of s.data) (f[r.feeder] = f[r.feeder] || {})[r.grade] = +r.students;
-  const feeders = Object.keys(f);
-  const years = [0, 1, 2, 3, 4, 5, 6].map((t) => {
-    const from = [6 - t, 7 - t, 8 - t].map((i) => G[i]), v = {};
-    let total = 0;
-    for (const k of feeders) { v[k] = from.reduce((a, g) => a + f[k][g], 0); total += v[k]; }
-    return { year: (2026 + t) + '-' + String(2027 + t).slice(2), from, v, total };
-  });
-  const adj = {};
-  if (cb.status === 'ok') for (const r of cb.data) { const n = d65.num(r.t65_mid_68); if (n !== null) adj[r.year] = n; }
-  for (const y of years) y.adj = adj[y.year] ?? null;
-  const fromText = (y) => "today's " + y.from.map((g) => (g === 'K' ? 'kindergarten' : g === '1' ? '1st' : g === '2' ? '2nd' : g === '3' ? '3rd' : g + 'th')).join(', ').replace(/, ([^,]*)$/, ' and $1') + ' graders';
-  const legend = document.createElement('div'); legend.className = 'legend';
-  const add = (style, text) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; Object.assign(sw.style, style); sp.append(sw, document.createTextNode(text)); legend.append(sp); };
-  add({ borderTopColor: 'var(--color-fg)', borderTopWidth: '2.5px' }, 'All middle schools, students already enrolled');
-  add({ borderTopColor: dash.colors[6], borderTopStyle: 'dashed' }, 'All middle schools, Thrive65 update (allows for moves)');
-  feeders.forEach((k, i) => add({ borderTopColor: dash.colors[i], borderTopStyle: k === 'King Arts' ? 'dashed' : 'solid' }, k === 'King Arts' ? 'King Arts (K-8 magnet)' : k + ' feeder pattern'));
-  el.append(legend);
-  const grid = document.createElement('div'); grid.className = 'nat-grid'; el.append(grid);
-  const panel = (title) => { const w = document.createElement('div'); const t = document.createElement('div'); t.className = 'nat-t'; t.textContent = title; const box = document.createElement('div'); box.className = 'chart'; box.style.minHeight = '300px'; w.append(t, box); grid.append(w); return box; };
-  const draw = (box, series, ymin, ymax, label) => {
-    const W = box.clientWidth || 360, H = 300, m = { t: 14, r: 86, b: 26, l: 46 };
-    const x = d3.scalePoint(years.map((y) => y.year), [m.l, W - m.r]);
-    const y = d3.scaleLinear([ymin, ymax], [H - m.b, m.t]).nice();
-    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', label);
-    svg.append('g').attr('class', 'grid').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
-    svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickFormat((d) => "'" + d.slice(2, 4)).tickSizeOuter(0));
-    svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(',')));
-    const ends = [];
-    for (const sr of series) {
-      const pts = years.filter((yy) => sr.get(yy) !== null);
-      svg.append('path').datum(pts).attr('d', d3.line().x((yy) => x(yy.year)).y((yy) => y(sr.get(yy)))).attr('fill', 'none').style('stroke', sr.c).attr('stroke-width', sr.w || 2).attr('stroke-dasharray', sr.dash || null);
-      svg.append('g').selectAll('circle').data(pts).join('circle').attr('cx', (yy) => x(yy.year)).attr('cy', (yy) => y(sr.get(yy))).attr('r', 3).style('fill', sr.c);
-      const l = pts[pts.length - 1];
-      if (l) ends.push({ x: x(l.year) + 6, y: y(sr.get(l)) + 4, t: sr.label + ' ' + d65.fmt(sr.get(l)) });
-    }
-    ends.sort((a, b) => a.y - b.y); for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 12) ends[i].y = ends[i - 1].y + 12;
-    svg.append('g').selectAll('text').data(ends).join('text').attr('x', (e) => e.x).attr('y', (e) => e.y).text((e) => e.t);
-    const tip = d65.tip(box);
-    svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
-      .on('pointermove', (ev) => {
-        const [px] = d3.pointer(ev);
-        const yy = years.reduce((a, b) => (Math.abs(x(b.year) - px) < Math.abs(x(a.year) - px) ? b : a));
-        const L = ['Fall ' + yy.year.slice(0, 4) + ' grades 6-8', 'From ' + fromText(yy)].concat(series.filter((sr) => sr.get(yy) !== null).map((sr) => sr.name + ': ' + d65.fmt(sr.get(yy))));
-        tip.show(L, Math.min(x(yy.year), W * 0.45) / W * box.clientWidth, 10);
-      })
-      .on('pointerleave', () => tip.hide());
-  };
-  const b1 = panel('All middle schools'), b2 = panel('By middle school');
-  const tot = [{ name: 'Students already enrolled', label: '', get: (yy) => yy.total, c: 'var(--color-fg)', w: 2.5 }, { name: 'Thrive65 update', label: '', get: (yy) => yy.adj, c: dash.colors[6], dash: '5 3' }];
-  draw(b1, tot, 1400, d3.max(years, (yy) => yy.total) * 1.04, 'Grades 6-8 enrollment in each fall from 2026 to 2032, from students already enrolled, with the Thrive65 update');
-  const by = feeders.map((k, i) => ({ name: k, label: k, get: (yy) => yy.v[k], c: dash.colors[i], dash: k === 'King Arts' ? '5 3' : null }));
-  draw(b2, by, 0, d3.max(years, (yy) => d3.max(feeders, (k) => yy.v[k])) * 1.08, 'Grades 6-8 enrollment by middle school feeder pattern in each fall from 2026 to 2032, from students already enrolled');
+// Scroll-story chapters: the charts new with the scroll story, their filled
+// values, and the observer that highlights the chapter in view.
+const num = d65.num, fmt = d65.fmt;
+const trendVal = (y, f) => {
+  const s = dash.data('district_trend'); if (s.status !== 'ok') return null;
+  const r = s.data.find((d) => d.year === y); return r ? num(r[f]) : null;
+};
+const failed = (el, s) => { el.replaceChildren(); el.textContent = s.status === 'error' ? 'This chart could not load.' : ''; };
+const svgFor = (el, W, H, label) => d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', label);
+
+// ---- Capacity (district Nov. 6, 2026 utilization table) -------------------
+// 7,212 K-8 seats with Dewey and Lincolnwood closed (King Arts included).
+// Today's buildings add Dewey (556) and Lincolnwood (about 384), Thrive65
+// estimates using the district's method. These are the only capacity figures
+// on the page.
+const CAP_PLAN = 7212, CAP_NOW = 7212 + 556 + 384;
+// Of the 444 students lost (net) in fall 2020 and 2021, about 150 are still
+// K-8 age; the rest are in high school or have graduated. A fixed figure.
+const LEFT_STILL_K8 = 150;
+const gap2031 = (cap) => { const t = trendVal('2031-32', 't65_mid'); return t === null ? null : cap - t; };
+
+dash.draw('s-gap', (el) => { const v = gap2031(CAP_NOW); el.textContent = v === null ? '—' : 'about ' + fmt(Math.round(v / 100) * 100); });
+dash.draw('s-gap2', (el) => { const v = gap2031(CAP_PLAN); el.textContent = v === null ? '—' : 'about ' + fmt(Math.round(v / 100) * 100); });
+dash.draw('s-t65', (el) => { const v = trendVal('2031-32', 't65_mid'); el.textContent = v === null ? '—' : fmt(Math.round(v / 10) * 10); });
+dash.draw('s-t65r', (el) => {
+  const a = trendVal('2031-32', 't65_low'), b = trendVal('2031-32', 't65_high');
+  el.textContent = a === null || b === null ? '—' : 'range ' + fmt(Math.round(a / 10) * 10) + ' to ' + fmt(Math.round(b / 10) * 10);
 });
+
+// ---- Shared line-chart frame --------------------------------------------
+function lineFrame(el, years, ymin, ymax, label, m) {
+  const W = el.clientWidth || 600, H = 320;
+  const x = d3.scalePoint(years, [m.l, W - m.r]);
+  const y = d3.scaleLinear([ymin, ymax], [H - m.b, m.t]).nice();
+  const svg = svgFor(el, W, H, label);
+  svg.append('g').attr('class', 'grid').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
+  const every = Math.max(1, Math.ceil(years.length / Math.max(2, Math.floor((W - m.l - m.r) / 64))));
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickValues(years.filter((_, i) => i % every === 0)).tickFormat((d) => "'" + d.slice(2, 4)).tickSizeOuter(0));
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(',')));
+  return { svg, x, y, W, H };
+}
+function hoverYears(el, f, rows, lines) {
+  const tip = d65.tip(el);
+  f.svg.append('rect').attr('width', f.W).attr('height', f.H).attr('fill', 'transparent')
+    .on('pointermove', (ev) => {
+      const [px] = d3.pointer(ev);
+      const r = rows.reduce((a, b) => (Math.abs(f.x(b.year) - px) < Math.abs(f.x(a.year) - px) ? b : a));
+      const L = lines(r); if (!L) return tip.hide();
+      tip.show(L, Math.min(f.x(r.year), f.W * 0.55) / f.W * el.clientWidth, 8);
+    })
+    .on('pointerleave', () => tip.hide());
+}
+
+// ---- 1. K-8 enrollment each fall ------------------------------------------
+dash.draw('c-k8', (el) => {
+  const s = dash.data('district_trend');
+  if (s.status !== 'ok') return failed(el, s);
+  el.replaceChildren();
+  const rows = s.data.map((r) => ({ year: r.year, a: num(r.actual) })).filter((r) => r.a !== null);
+  const f = lineFrame(el, rows.map((r) => r.year), 4000, 8000, 'District 65 K-8 enrollment, 2012-13 to 2026-27', { t: 20, r: 20, b: 26, l: 48 });
+  f.svg.append('path').datum(rows).attr('d', d3.line().x((r) => f.x(r.year)).y((r) => f.y(r.a))).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2.5);
+  const pk = rows.reduce((a, b) => (b.a > a.a ? b : a)), last = rows[rows.length - 1];
+  for (const [r, anchor, dy] of [[pk, 'middle', -10], [last, 'end', 20]]) {
+    f.svg.append('circle').attr('cx', f.x(r.year)).attr('cy', f.y(r.a)).attr('r', 4).style('fill', dash.colors[0]);
+    f.svg.append('text').attr('x', f.x(r.year)).attr('y', f.y(r.a) + dy).attr('text-anchor', anchor).style('fill', 'var(--color-fg)').text(r.year + ': ' + fmt(r.a));
+  }
+  hoverYears(el, f, rows, (r) => [r.year, fmt(r.a) + ' students']);
+});
+
+// ---- 6. Each grade this fall vs. its size in kindergarten ------------------
+// For grade index i, the class's kindergarten size is the K count in fall
+// (2026 - i). The cv-sincek drawer sums the same rows.
+const G9 = ['K', '1', '2', '3', '4', '5', '6', '7', '8'];
+window.d65.classesNow = function () {
+  const s = dash.data('district_grades'); if (s.status !== 'ok') return null;
+  const m = {}; for (const r of s.data) (m[r.year] = m[r.year] || {})[r.grade] = +r.students;
+  return G9.map((g, i) => ({ g, now: m['2026-27'][g], atK: (m[(2026 - i) + '-' + String(2027 - i).slice(2)] || {}).K }));
+};
+dash.draw('c-classes', (el) => {
+  const s = dash.data('district_grades');
+  if (s.status !== 'ok') return failed(el, s);
+  el.replaceChildren();
+  const rows = d65.classesNow();
+  const W = el.clientWidth || 600, H = 320, m = { t: 22, r: 10, b: 28, l: 44 };
+  const x = d3.scaleBand(rows.map((r) => r.g), [m.l, W - m.r]).padding(0.25);
+  const y = d3.scaleLinear([0, d3.max(rows, (r) => Math.max(r.now, r.atK)) * 1.12], [H - m.b, m.t]).nice();
+  const svg = svgFor(el, W, H, 'Each grade in fall 2026 next to the size of the same class in kindergarten');
+  svg.append('g').attr('class', 'grid').selectAll('line').data(y.ticks(4)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y);
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4));
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickFormat((g) => (g === 'K' ? 'K' : 'Gr ' + g)).tickSizeOuter(0));
+  const bw = x.bandwidth();
+  svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', (r) => x(r.g)).attr('width', bw).attr('y', (r) => y(r.atK)).attr('height', (r) => y(0) - y(r.atK)).attr('rx', 3).style('fill', 'var(--cds-chart-muted)');
+  svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', (r) => x(r.g) + bw * 0.2).attr('width', bw * 0.6).attr('y', (r) => y(r.now)).attr('height', (r) => y(0) - y(r.now)).attr('rx', 3).style('fill', dash.colors[0]);
+  svg.append('g').selectAll('text').data(rows).join('text').attr('x', (r) => x(r.g) + bw / 2).attr('y', (r) => y(Math.max(r.now, r.atK)) - 6).attr('text-anchor', 'middle').text((r) => fmt(r.now));
+  const tip = d65.tip(el);
+  svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', (r) => x(r.g)).attr('width', bw).attr('y', m.t).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+    .on('pointermove', (ev, r) => tip.show([(r.g === 'K' ? 'Kindergarten' : 'Grade ' + r.g) + ', fall 2026', 'Now: ' + fmt(r.now), 'In kindergarten: ' + fmt(r.atK), 'Change: ' + (r.now - r.atK >= 0 ? '+' : '−') + Math.abs(r.now - r.atK)], Math.min(x(r.g), W * 0.6) / W * el.clientWidth, 8))
+    .on('pointerleave', () => tip.hide());
+});
+
+// ---- 8 and 9. Forecast charts ---------------------------------------------
+// c-fcst: 2018-19 on, Kofron band low-high, Kofron middle, McKibben, actual.
+// c-ahead: 2016-17 on, adds the Thrive65 band/line and two capacity lines.
+function forecastChart(el, ahead) {
+  const s = dash.data('district_trend');
+  if (s.status !== 'ok') return failed(el, s);
+  el.replaceChildren();
+  const rows = s.data.map((r) => ({ year: r.year, a: num(r.actual), lo: num(r.kofron_low), mid: num(r.kofron_mid), hi: num(r.kofron_high), mck: num(r.mckibben_2024) })).filter((r) => r.year >= (ahead ? '2016-17' : '2018-19'));
+  const f = lineFrame(el, rows.map((r) => r.year), ahead ? 3000 : 3500, ahead ? 8500 : 7600, ahead ? 'K-8 enrollment and forecasts to 2031-32 against building capacity' : 'K-8 enrollment, actual vs. the Kofron and McKibben forecasts', { t: 16, r: 56, b: 26, l: 48 });
+  if (!ahead) {
+    const band = rows.filter((r) => r.lo !== null);
+    f.svg.append('path').datum(band).attr('d', d3.area().x((r) => f.x(r.year)).y0((r) => f.y(r.lo)).y1((r) => f.y(r.hi))).style('fill', dash.colors[0]).style('opacity', 0.13);
+  } else {
+    for (const [cap, label] of [[CAP_NOW, "Today's buildings: about 8,150 seats"], [CAP_PLAN, 'After the two proposed closures: about 7,200']]) {
+      f.svg.append('line').attr('x1', f.x.range()[0]).attr('x2', f.x.range()[1]).attr('y1', f.y(cap)).attr('y2', f.y(cap)).style('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '2 3');
+      f.svg.append('text').attr('x', f.x.range()[1]).attr('y', f.y(cap) - 6).attr('text-anchor', 'end').text(label);
+    }
+    const tr = s.data.map((r) => ({ year: r.year, lo: num(r.t65_low), mid: num(r.t65_mid), hi: num(r.t65_high) })).filter((r) => r.mid !== null);
+    f.svg.append('path').datum(tr).attr('d', d3.area().x((r) => f.x(r.year)).y0((r) => f.y(r.lo)).y1((r) => f.y(r.hi))).style('fill', dash.colors[6]).style('opacity', 0.14);
+    f.svg.append('path').datum(tr).attr('d', d3.line().x((r) => f.x(r.year)).y((r) => f.y(r.mid))).attr('fill', 'none').style('stroke', dash.colors[6]).attr('stroke-width', 2).attr('stroke-dasharray', '3 2');
+    const te = tr[tr.length - 1];
+    if (te) f.svg.append('text').attr('x', f.x(te.year) + 6).attr('y', f.y(te.mid) + 16).text(fmt(te.mid));
+  }
+  const ln = (k) => d3.line().defined((r) => r[k] !== null).x((r) => f.x(r.year)).y((r) => f.y(r[k]));
+  f.svg.append('path').datum(rows).attr('d', ln('mid')).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2).attr('stroke-dasharray', '6 4');
+  f.svg.append('path').datum(rows).attr('d', ln('mck')).attr('fill', 'none').style('stroke', dash.colors[3]).attr('stroke-width', 2).attr('stroke-dasharray', '8 3 2 3');
+  f.svg.append('path').datum(rows).attr('d', ln('a')).attr('fill', 'none').style('stroke', dash.colors[0]).attr('stroke-width', 2.5);
+  const la = rows.filter((r) => r.a !== null).slice(-1)[0];
+  f.svg.append('circle').attr('cx', f.x(la.year)).attr('cy', f.y(la.a)).attr('r', 4).style('fill', dash.colors[0]);
+  const end = rows[rows.length - 1], labs = [];
+  if (end.mid !== null) labs.push({ y: f.y(end.mid) + 4, t: fmt(end.mid) });
+  if (end.mck !== null) labs.push({ y: f.y(end.mck) + 4, t: fmt(end.mck) });
+  labs.sort((a, b) => a.y - b.y); for (let i = 1; i < labs.length; i++) if (labs[i].y - labs[i - 1].y < 13) labs[i].y = labs[i - 1].y + 13;
+  f.svg.append('g').selectAll('text').data(labs).join('text').attr('x', f.x(end.year) + 6).attr('y', (l) => l.y).text((l) => l.t);
+  hoverYears(el, f, rows, (r) => [r.year].concat(r.a !== null ? ['Actual: ' + fmt(r.a)] : []).concat(r.mid !== null ? ['Kofron middle: ' + fmt(r.mid) + ' (' + fmt(r.lo) + '–' + fmt(r.hi) + ')'] : []).concat(r.mck !== null ? ['McKibben: ' + fmt(r.mck)] : []));
+}
+dash.draw('c-fcst', (el) => forecastChart(el, false));
+dash.draw('c-ahead', (el) => forecastChart(el, true));
+
+// ---- 10. What the district can change ------------------------------------
+dash.draw('c-levers', (el) => {
+  const s = dash.data('district_trend'), p = dash.data('private_k8');
+  if (s.status !== 'ok') return failed(el, s);
+  if (p.status !== 'ok') return failed(el, p);
+  el.replaceChildren();
+  const gap = gap2031(CAP_NOW), gap2 = gap2031(CAP_PLAN), priv = +p.data[p.data.length - 1].private_k8;
+  if (gap === null) { el.textContent = 'This chart could not load.'; return; }
+  const rows = [
+    { n: 'Every private K-8 student in the boundary', v: Math.round(priv / 10) * 10, c: dash.colors[1] },
+    { n: 'Students who left in 2020-21, still K-8 age', v: LEFT_STILL_K8, c: dash.colors[1] },
+    { n: "Empty seats in 2031-32, today's buildings", v: Math.round(gap / 100) * 100, c: 'var(--cds-chart-muted)', u: Math.round((CAP_NOW - gap) / CAP_NOW * 100) },
+    { n: 'Empty seats in 2031-32, after the two proposed closures', v: Math.round(gap2 / 100) * 100, c: 'var(--cds-chart-muted)', u: Math.round((CAP_PLAN - gap2) / CAP_PLAN * 100) }
+  ];
+  const W = el.clientWidth || 600, H = 300, m = { t: 8, r: 80, b: 10, l: 10 };
+  const x = d3.scaleLinear([0, d3.max(rows, (r) => r.v)], [m.l, W - m.r]);
+  const rowH = (H - m.t - m.b) / rows.length, bh = Math.min(26, rowH * 0.42);
+  const svg = svgFor(el, W, H, 'Students each possibility could add, compared with empty building space expected by 2031-32');
+  rows.forEach((r, i) => {
+    const y0 = m.t + rowH * i;
+    svg.append('text').attr('x', m.l).attr('y', y0 + 14).style('fill', 'var(--color-fg)').text(r.n);
+    svg.append('rect').attr('x', m.l).attr('y', y0 + 22).attr('width', Math.max(2, x(r.v) - m.l)).attr('height', bh).attr('rx', 3).style('fill', r.c);
+    svg.append('text').attr('x', x(r.v) + 6).attr('y', y0 + 22 + bh / 2 + 4).text('about ' + fmt(r.v));
+    if (r.u !== undefined) svg.append('text').attr('x', m.l + 8).attr('y', y0 + 22 + bh / 2 + 4).style('fill', 'var(--color-fg)').text('Buildings about ' + r.u + '% full');
+  });
+});
+
+// ---- Highlight the chapter in view ---------------------------------------
+// Each .chapter gets .is-active while it crosses the middle fifth of the
+// viewport. The CSS dims only inactive figures, and only under .has-story, so
+// the page reads normally if this never runs.
+const root = document.getElementById('enrollment-dashboard');
+const steps = document.querySelectorAll('#enrollment-dashboard .chapter');
+const allActive = () => steps.forEach((s) => s.classList.add('is-active'));
+if (!steps.length || !('IntersectionObserver' in window)) allActive();
+else {
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) e.target.classList.toggle('is-active', e.isIntersecting);
+  }, { rootMargin: '-40% 0px -40% 0px' });
+  steps.forEach((s) => io.observe(s));
+  root.classList.add('has-story');
+  window.addEventListener('beforeprint', allActive);
+  // Observing again reports each chapter's current state, undoing allActive.
+  window.addEventListener('afterprint', () => steps.forEach((s) => { io.unobserve(s); io.observe(s); }));
+}
 })();
 
 document.addEventListener('DOMContentLoaded', () => dash.start());

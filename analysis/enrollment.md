@@ -1,8 +1,8 @@
 ---
 layout: page
-title: "District 65 enrollment: what happened and what comes next"
+title: "Why District 65 has fewer students, and what comes next"
 eyebrow: "Enrollment data"
-description: "Why District 65 has fewer students than at its 2016-17 peak: how it compares with other districts, what happened with private schools and births, how the enrollment studies did, and what it means school by school."
+description: "Why District 65 enrollment has fallen since 2016-17, whether it will keep falling, and how much the district can change it."
 permalink: /analysis/enrollment/
 wide: true
 ---
@@ -11,118 +11,167 @@ wide: true
 
 <div id="enrollment-dashboard" class="flow" data-data-base="{{ '/assets/data/enrollment/' | relative_url }}" markdown="0">
 
-<p class="lede" id="takeaway">District 65 has about <b data-draw="hl-drop">—</b> fewer K-8 students than at its 2016-17 peak. This fall it serves <b data-draw="hl-actual">—</b>, <b data-draw="hl-peakpct">—</b> below that peak. Most of the drop comes from smaller kindergarten classes, because fewer children have been born in or moved to Evanston and Skokie. Families who left during the pandemic, including some who chose private schools, account for a smaller share.</p>
-<p class="note">This page walks through the evidence in order: how District 65 compares with other districts, what happened with private schools, the drop in births, what the district's enrollment studies predicted and how they did, and then the same story school by school.</p>
-<p class="note" id="studies">The district has paid for two enrollment studies, and both appear throughout this page. The <b>Kofron study</b> (ES65 Geodemographic Study, Charles Kofron, 2022) was done for the district's facilities planning. It mapped the home addresses of enrolled students and of recent births, then projected each attendance area forward using how classes had grown or shrunk from grade to grade in past years. It gives four versions: high, middle, low, and a "snapshot" that assumes pandemic-era losses continue. The <b>McKibben study</b> (McKibben Demographic Consulting, 2024) forecast how many children would live in each area, starting from the 2020 census. The district also publishes its own short-range projection each year. The forecasts section below checks how each one has done. We lean on Kofron more often because it has more years to check against actual enrollment, it has been closer so far, and it gives a high-to-low range. McKibben appears alongside it wherever we compare forecasts. As the more optimistic of the two, it still expects far fewer students than the district's buildings were sized for.</p>
+<p class="lede">District 65 serves <span data-draw="hl-actual">—</span> K-8 students this fall, <span data-draw="s-drop">—</span> fewer than at its 2016-17 peak. Most of the drop comes from smaller kindergarten classes, and the district's 2022 enrollment study predicted this. The latest birth records point to more of the same.</p>
 
-<div class="tiles" id="tiles">
-  <div class="tile"><div class="lab">K-8 students, fall 2026</div><div class="big" data-draw="t-actual">—</div><div class="sub">Peak: <span data-draw="t-peak">—</span> in 2016-17</div></div>
-  <div class="tile"><div class="lab">Kofron study (2022), middle forecast for 2026-27</div><div class="big" data-draw="t-mid">—</div><div class="sub">Range <span data-draw="t-low">—</span> to <span data-draw="t-high">—</span></div></div>
-  <div class="tile"><div class="lab">Kindergarten, fall 2026</div><div class="big" data-draw="t-k">—</div><div class="sub">vs <span data-draw="t-8">—</span> in 8th grade</div></div>
-  <div class="tile"><div class="lab">Kofron study (2022), middle forecast for 2031-32</div><div class="big" data-draw="t-mid32">—</div><div class="sub">District's own 2030-31 projection: <span data-draw="t-d65">—</span></div></div>
-</div>
-
-<h2 id="compared">How District 65 compares with the nation and nearby districts</h2>
-<p class="lede">Enrollment fell nationally after 2020, but District 65's drop has been steeper than the national average and steeper than every peer district the district has used for comparison.</p>
-
-<h3 id="national">District 65 and the national trend</h3>
-<p class="note" id="national-takeaway">Both lines start at 100 in fall 2019, the last fall before COVID, so they show the change from that point. Nationally, public school K-8 enrollment fell <b data-draw="nt-us">—</b> from fall 2019 to fall 2024, the latest national count; District 65 fell <b data-draw="nt-d65">—</b>. Chicago Public Schools fell <b data-draw="nt-cps">—</b> over the same years, more than twice the national rate and still well short of District 65. By fall 2025 the gap held: Chicago was down <b data-draw="nt-cps25">—</b> from fall 2019 and District 65 <b data-draw="nt-d6525">—</b>. Most of the gap with the nation is kindergarten. Nationally, kindergarten dropped in fall 2020 and partly recovered (<b data-draw="nt-usk">—</b> by fall 2024). District 65's kindergarten classes did not recover (<b data-draw="nt-d65k">—</b> by fall 2024), which points to something happening in this area in particular. That steeper local decline was forecast. The Kofron study, finished in early 2022, projected continued decline in all four of its versions. It pointed to births in the district falling every year since 2010 (down 25% between the 2019 and 2025 kindergarten classes), fewer adults in their 30s, the ages when most people have young children, and 1st grade classes coming in smaller than the kindergarten classes before them, a sign that fewer families with young children were moving in. It also raised the cost of housing as a possible factor. Its middle forecast has tracked actual enrollment closely since (see the <a href="#forecasts">forecasts section</a> below). Dashed lines are forecasts: the National Center for Education Statistics (NCES) projection for the nation, and Kofron's middle forecast for District 65.</p>
-<div class="card">
-  <div class="legend"><span><span class="sw" data-draw="lg-nd"></span>District 65</span><span><span class="sw" data-draw="lg-nu"></span>U.S. public schools</span><span><span class="sw" data-draw="lg-nc"></span>Chicago Public Schools (K-8 panel)</span><span><span class="sw" style="border-top-style:dashed;border-top-color:var(--color-fg-muted)"></span>Forecast</span></div>
-  <div class="nat-grid">
-    <div><div class="nat-t">All grades, K-8</div><div class="chart" id="nat-k8" data-draw="nat-k8"></div></div>
-    <div><div class="nat-t">Kindergarten</div><div class="chart" id="nat-k" data-draw="nat-k"></div></div>
+<section class="chapter" id="ch-drop" aria-labelledby="ch-drop-title">
+  <div class="chapter-text flow">
+    <h2 id="ch-drop-title">A steady decline since 2016</h2>
+    <p>Enrollment peaked at <span data-draw="t-peak">—</span> in 2016-17 and has fallen every year since, to <span data-draw="hl-actual">—</span> this fall. That is <span data-draw="hl-peakpct">—</span> fewer students.</p>
+    <p>The pandemic years were the steepest, but the decline started before 2020 and has continued after.</p>
+    <p class="text-meta text-deemphasized">Source: K-8 counts from District 65 Opening of Schools reports, excluding Park, Rice and special education students placed outside the district.</p>
   </div>
-</div>
+  <figure class="chapter-fig card">
+    <figcaption>District 65 K-8 enrollment each fall</figcaption>
+    <div class="chart" data-draw="c-k8"></div>
+  </figure>
+</section>
 
-<h3 id="nearby-and-peers">District 65 and nearby and peer districts, 2018-19 to 2025-26</h3>
-<p class="note" id="nearby-takeaway">Among <b data-draw="nb-n">—</b> nearby suburban elementary districts, District 65's drop of <b data-draw="nb-d65">—</b> is the second steepest, behind only Avoca 37, a district of about 500 students. The typical nearby district changed <b data-draw="nb-med">—</b>, and <b data-draw="nb-grew">—</b> grew. Chicago Public Schools fell <b data-draw="nb-cps">—</b>. Across Cook County, of <b data-draw="ck-n">—</b> elementary districts with at least 1,500 students, District 65 has the <b data-draw="ck-rank">—</b> steepest decline, behind <span data-draw="ck-ahead">—</span>. In each of those districts most students are from low-income families, compared with about 39% in District 65. The district's December 2025 school-closure memo and September 2026 financial sustainability presentation compared District 65 with 13 other districts, from Palatine, Wheeling and Schaumburg to Orland Park and Joliet. Every one of them lost a smaller share of students than District 65 did; the closest was Joliet 86 at −19.7%, and Des Plaines 62 grew.</p>
-<div class="card">
-  <div class="legend"><span><span class="box" style="opacity:1;width:12px" data-draw="lg-nb0"></span>District 65</span><span><span class="box" style="opacity:1;width:12px" data-draw="lg-nb2"></span>Chicago Public Schools</span><span><span class="box" style="opacity:1;width:12px" data-draw="lg-nb1"></span>Peer district cited by District 65</span><span><span class="box" style="opacity:1;width:12px;background:var(--cds-chart-muted)"></span>Nearby suburban district</span></div>
-  <div class="chart tall" id="nearby-chart" data-draw="nearby-chart"></div>
-</div>
-<p class="note">Totals include pre-K and come from the state's Illinois Report Card, so District 65's figures here (7,832 to 5,936) differ slightly from the K-8 counts used elsewhere on this page. The state's "2019" report covers the 2018-19 school year, one year earlier than the fall 2019 starting point used above.</p>
-
-<h2 id="private">Did families leave for private schools?</h2>
-<p class="lede">Some did. From fall 2019 to fall 2022, District 65 lost about 1,260 K-8 students, and private schools inside the district boundary gained about 200. Private enrollment has since fallen back more than halfway, and students already in District 65 have mostly stayed.</p>
-<p class="note" id="covid-takeaway">The pandemic shows up most clearly among students who were already enrolled. In fall 2020 and fall 2021, <b data-draw="cv-loss">—</b> students who would normally have moved up a grade did not return, about <b data-draw="cv-pct">—</b> of those enrolled. Those losses eased in 2022-23, and since then they have looked much like they did before the pandemic. About two-thirds of the students lost in fall 2020 and 2021 would be in high school or graduated by now, and the rest would be in middle school, so a return of those families would add few students for long. Private schools have not held on to their pandemic-era gains either: their K-8 enrollment in the boundary fell from about 1,060 in 2022-23 to about 940 in 2025-26.</p>
-<div class="tiles" id="covid-tiles">
-  <div class="tile"><div class="lab">Students lost in fall 2020 and fall 2021</div><div class="big" data-draw="cv-loss2">—</div><div class="sub">Already-enrolled students, net: <span data-draw="cv-pct2">—</span> of those enrolled. In a typical year before 2020 the loss was 20 to 50.</div></div>
-  <div class="tile"><div class="lab">Decline since the 2016-17 peak</div><div class="big" data-draw="cv-total">—</div><div class="sub">Today's students are about <span data-draw="cv-sincek">—</span> fewer than when their classes started kindergarten; the rest comes from smaller starting classes</div></div>
-  <div class="tile"><div class="lab">Fall 2020 kindergarten class today</div><div class="big" data-draw="cv-k20">—</div><div class="sub">6th graders, from <span data-draw="cv-k20k">—</span> kindergartners (<span data-draw="cv-k20p">—</span> of its starting size)</div></div>
-</div>
-
-<h3 id="private-vs-d65">Private school and District 65 enrollment, K-8</h3>
-<p class="note">Both lines use the same scale. Private and parochial K-8 enrollment at schools inside the District 65 boundary rose from about 860 in 2019-20 to about 1,060 in 2022-23, then fell to about 940 in 2025-26. Its share of all K-8 students in the boundary went from 10.5% to 14.3%, mostly because District 65 got smaller. These counts include some private school students who live outside Evanston and Skokie, and leave out residents who attend private schools elsewhere. The 2016-17 state report is missing two schools, so that year is shown as an open circle.</p>
-<div class="card">
-  <div class="legend"><span><span class="sw" data-draw="lg-pv0"></span>District 65 K-8</span><span><span class="sw" data-draw="lg-pv1"></span>Private and parochial K-8 inside the boundary</span></div>
-  <div class="chart" id="private-chart" data-draw="private-chart"></div>
-</div>
-
-<h3 id="eths-feeders">Where each ETHS class went to 8th grade</h3>
-<p class="note">Evanston Township High School (ETHS, District 202) reports where each class's first-time freshmen went to 8th grade. Each pair of bars compares one current ETHS class with District 65's 8th grade the fall before that class started high school. Private and parochial schools send 11% to 14% of each class, and about a quarter of each class comes from outside District 65. The share of District 65 8th graders who went on to ETHS rose from about 84% for the class of 2026 to about 93% for the class of 2029. Freshmen arriving from out of state or elsewhere in Illinois fell from 59 to 25 over the same classes.</p>
-<div class="card">
-  <div id="eths-chart" data-draw="eths-chart" style="min-height:360px"></div>
-</div>
-<p class="note">All the private K-8 schools in the boundary together enroll about <b data-draw="pv-last">—</b> students, fewer than half of the roughly <b data-draw="hl-drop">—</b> students District 65 has lost since its peak. If every one of them enrolled in District 65 tomorrow, the district would still be well below its 2016-17 size.</p>
-
-<h2 id="births">Fewer children starting school</h2>
-<p class="lede">Each new kindergarten class has been smaller than the 8th grade class leaving. This fall <b data-draw="t-k">—</b> kindergartners started, and <b data-draw="t-8">—</b> students are in 8th grade. Year after year, that gap adds up. Today's students are only about <b data-draw="cv-sincek">—</b> fewer than when their classes started kindergarten, so nearly all of the drop since the 2016-17 peak comes from classes starting smaller. Births in Evanston fell by roughly a third in the years before these children reached kindergarten, and they are still falling, more slowly.</p>
-
-<h3 id="births-chart-h">Births behind each kindergarten class</h3>
-<p class="note">Births are shown for the kindergarten class they became, five years later. Gray: the birth data in the Kofron study and his straight-line extension of it (about 32 fewer births each year). Blue: Evanston births from Cook County birth reports for 2020 to 2023, scaled up 8% to cover the Skokie part of the district. Births fell faster than Kofron's line through 2021 and have kept falling since, more slowly: about 3% a year from 2021 to 2023. The county has not yet published births after 2023, so the shading shows a range of assumptions: births holding at the 2023 level at the top, and falling at the pace of Kofron's line, about 32 fewer a year, at the bottom. The dotted line continues the recent pace of about 3% fewer a year. By the class of 2031, that puts births between about 480 and 580. The Thrive65 projections below use the top of that range; at the recent pace, K-5 enrollment in 2031-32 would be about 85 students lower, and at Kofron's pace about 165 lower, close to the low end of our projections. The 2020 census counted about 92% to 93% as many young children in the district as had been born there in the five years before (closer to 95% to 98% after allowing for the census's known undercount of young children), so few families with young children moved away on net before the pandemic.</p>
-<div class="card">
-  <div id="births-chart" data-draw="births-chart" style="min-height:320px"></div>
-</div>
-
-<h3 id="by-grade">District enrollment by grade and year</h3>
-<p class="note">Each cell is one grade in one fall. Read down a column to compare grades in the same year, or follow a diagonal from upper left to lower right to track a class as it moves up. The smaller kindergarten classes since 2020 are now moving through the elementary grades. Fall 2020 through fall 2025 use the state's Illinois Report Card counts, one consistent source for those years; earlier years come from District 65's Opening of Schools reports, and fall 2026 from the district's own count, since the state has not published it yet. Totals for fall 2020-2025 can therefore differ slightly from the K-8 totals in the forecast charts below, which use the district's reports (by up to about 60 students a year). The state's counts have run about 20 to 35 students above the district's in recent years, so part of the drop shown for fall 2026 may come from the change of source.</p>
-<div class="card tw">
-  <div class="chart" id="grades" data-draw="grades"></div>
-</div>
-
-<h2 id="forecasts">What the district's forecasts predicted, and how they did</h2>
-<p class="lede">The district has paid for two enrollment studies. The 2022 Kofron study predicted this fall's enrollment within three students. The 2024 McKibben study expected more young families to move in and is running about 3% high so far.</p>
-<p class="note">The studies are described at the <a href="#studies">top of this page</a>. The charts below compare each forecast with what happened.</p>
-
-<h3 id="trend-vs-forecasts">District K-8 enrollment vs. the forecasts</h3>
-<p class="note">Kofron's four forecasts are rescaled to start from the district's official 2021-22 count, because his totals count every resident student, a slightly different group. The district's own projection is from its November 2025 memo. The McKibben line is scaled to start from the district's 2024-25 count because McKibben also counts Park, Rice and separately counted special education students. The <b>Thrive65 update</b> runs Kofron's method forward from this fall's actual count: each class moves up a grade at the rates of the last five years, and each kindergarten class comes from county birth records, as in the school-by-school projections below. It starts on the fall 2026 count, so it only shows what comes next.</p>
-<div class="card">
-  <div class="legend">
-    <span><span class="sw" data-draw="lg-actual"></span>Actual</span>
-    <span><span class="sw" style="border-top-style: dashed" data-draw="lg-mid"></span>Kofron middle</span>
-    <span><span class="box" data-draw="lg-band"></span>Kofron low to high</span>
-    <span><span class="sw" style="border-top-style: dotted" data-draw="lg-snap"></span>Kofron "snapshot"</span>
-    <span><span class="sw" data-draw="lg-d65"></span>District projection (2025)</span>
-    <span><span class="sw" style="border-top-style: dashed" data-draw="lg-mck"></span>McKibben forecast (2024)</span>
-    <span><span class="sw" style="border-top-style: dotted" data-draw="lg-t65"></span>Thrive65 update from fall 2026 (shaded: low to high)</span>
+<section class="chapter" id="ch-nation" aria-labelledby="ch-nation-title">
+  <div class="chapter-text flow">
+    <h2 id="ch-nation-title">Steeper than the nation and Chicago</h2>
+    <p>From fall 2019 to fall 2024, public school K-8 enrollment fell <span data-draw="nt-us">—</span> nationally and <span data-draw="nt-cps">—</span> in Chicago. District 65 fell <span data-draw="nt-d65">—</span>.</p>
+    <p>Most of the difference is in kindergarten. Nationally, kindergarten enrollment partly recovered after 2020, while District 65's kept shrinking. That points to something happening locally.</p>
+    <p class="text-meta text-deemphasized">Source: National Center for Education Statistics, Digest 2025, table 203.10; CPS FY2027 Budget; Illinois Report Card.</p>
   </div>
-  <div class="chart" id="trend" data-draw="trend"></div>
-</div>
+  <figure class="chapter-fig card">
+    <figcaption>K-8 enrollment, fall 2019 = 100</figcaption>
+    <div class="legend"><span><span class="sw" data-draw="lg-nd"></span>District 65</span><span><span class="sw" data-draw="lg-nu"></span>U.S. public schools</span><span><span class="sw" data-draw="lg-nc"></span>Chicago Public Schools</span></div>
+    <div class="chart" id="nat-k8" data-draw="nat-k8"></div>
+  </figure>
+</section>
 
-<h3 id="kofron-vs-update">Kofron, McKibben and the Thrive65 update, K-5 and 6-8</h3>
-<p class="note">Each forecast compared with what happened, split into elementary and middle grades. <b>Kofron (2022)</b> started from fall 2021; his numbers count every resident student, so they are scaled down to match the district's official count in 2021-22 (by 14% for K-5 and 13% for 6-8). The <b>Thrive65 update</b> starts from this fall's actual count and runs to 2031-32. Its K-5 line is the total of the school-by-school projections below; its 6-8 line moves today's 1st through 8th graders up a grade each year at the rates of the last five years. Shaded bands run from each forecast's low series to its high series; dashed lines are the middle series. Kofron's forecast ends in 2031-32.</p>
-<div class="card">
-  <div id="cmp" data-draw="cmp" style="min-height:420px"></div>
-</div>
-<div class="card tw">
-<table id="cmp-table">
-  <thead><tr><th>Forecast (middle series)</th><th>Years checked</th><th>K-5: average miss</th><th>K-5: miss in 2026-27</th><th>6-8: average miss</th><th>6-8: miss in 2026-27</th><th>K-5 in 2031-32</th><th>6-8 in 2031-32</th></tr></thead>
-  <tbody data-draw="cmp-body"></tbody>
-</table>
-</div>
-<p class="note">"Miss" is the forecast minus the actual count, as a share of the actual; positive means the forecast was too high. Average miss is the average size of the yearly misses, ignoring direction.</p>
-<p class="note" id="mckibben-note"><b>Why McKibben runs higher.</b> McKibben forecasts that the decline slows and nearly stops around 2029-30, about 700 more K-8 students than Kofron's middle forecast by 2031-32. The difference comes mostly from kindergarten and 1st grade. McKibben derives each entering class from a forecast of how many young children will live in each attendance area, starting from the 2020 census and assuming young families keep moving in at the pace of the 2010s. It also assumes at least 120 new single-family homes and 910 home sales a year, and private school use held at 2024 levels. That puts kindergarten near 575 every year through 2032-33. Two years in, entering classes have come in smaller: 529 kindergartners and 550 first graders this fall, against McKibben's 576 and 594. Its K-5 forecast for this fall is about 4.1% high once scaled to the district's count, and its 6-8 forecast is on target. Kofron carried forward birth and class-size trends from mapped student and birth addresses, with no separate assumption about families moving in.</p>
+<section class="chapter tall" id="ch-peers" aria-labelledby="ch-peers-title">
+  <div class="chapter-text flow">
+    <h2 id="ch-peers-title">Most nearby districts are shrinking too, though less</h2>
+    <p>Among <span data-draw="nb-n">—</span> nearby suburban elementary districts, the typical one changed <span data-draw="nb-med">—</span> from 2018-19 to 2025-26, and only <span data-draw="nb-grew">—</span> grew. District 65's drop of <span data-draw="nb-d65">—</span> is the second steepest, behind only Avoca 37, a district of about 500 students. Each of the 13 peer districts District 65 cites lost a smaller share or grew; the closest was Joliet 86 at −19.7%.</p>
+    <p>Across Cook County, of <span data-draw="ck-n">—</span> elementary districts with at least 1,500 students, District 65 has the <span data-draw="ck-rank">—</span> steepest decline, behind <span data-draw="ck-ahead">—</span>.</p>
+    <p class="text-meta text-deemphasized">Source: Illinois Report Card, total enrollment including pre-K, 2018-19 and 2025-26. Peer districts are those named in the district's Dec. 2025 school-closure memo and Sept. 2026 financial sustainability presentation.</p>
+  </div>
+  <figure class="chapter-fig card">
+    <figcaption>Change in enrollment, 2018-19 to 2025-26</figcaption>
+    <div class="legend"><span><span class="box" style="opacity:1;width:12px" data-draw="lg-nb0"></span>District 65</span><span><span class="box" style="opacity:1;width:12px" data-draw="lg-nb2"></span>Chicago Public Schools</span><span><span class="box" style="opacity:1;width:12px" data-draw="lg-nb1"></span>Peer district cited by District 65</span><span><span class="box" style="opacity:1;width:12px;background:var(--cds-chart-muted)"></span>Nearby suburban district</span></div>
+    <div class="chart tall" id="nearby-chart" data-draw="nearby-chart"></div>
+  </figure>
+</section>
 
-<h2 id="schools-section">School by school: past enrollment and projections</h2>
-<p class="lede">The same pattern shows up at most schools, though the size and timing vary by neighborhood.</p>
+<section class="chapter" id="ch-private" aria-labelledby="ch-private-title">
+  <div class="chapter-text flow">
+    <h2 id="ch-private-title">Private schools gained some students during the pandemic, but don't explain our decline in enrollment</h2>
+    <p>Private K-8 enrollment in the boundary rose by about 200 from 2019-20 to 2022-23, then fell back to about 940.</p>
+    <p>In fall 2020 and 2021, District 65 lost 444 students who were already enrolled, net, for any reason, including moving away. About two-thirds of them would be in high school or graduated by now, so even if their families came back, few of them would still be in District 65 for long.</p>
+    <p class="text-meta text-deemphasized">Source: Illinois State Board of Education nonpublic school enrollment; District 65 counts. Note: Private school data is for schools within Evanston. A family choosing Baker School in Wilmette (148 students, not all Evanston) does not appear here, and some children included in totals at Evanston private schools live elsewhere and would not be D65.</p>
+  </div>
+  <figure class="chapter-fig card">
+    <figcaption>K-8 enrollment inside the District 65 boundary</figcaption>
+    <div class="legend"><span><span class="sw" data-draw="lg-pv0"></span>District 65</span><span><span class="sw" data-draw="lg-pv1"></span>Private and parochial schools</span></div>
+    <div class="chart" id="private-chart" data-draw="private-chart"></div>
+  </figure>
+</section>
+
+<section class="chapter" id="ch-eths" aria-labelledby="ch-eths-title">
+  <div class="chapter-text flow">
+    <h2 id="ch-eths-title">More District 65 8th graders now stay for ETHS</h2>
+    <p>Evanston Township High School (ETHS) reports where each class went to 8th grade. The share of District 65 8th graders who went on to ETHS rose from about 84% for the class of 2026 to about 93% for the class of 2029.</p>
+    <p>Private and parochial schools send 11% to 14% of each freshman class. Fewer freshmen now arrive from out of state or elsewhere in Illinois: 59 for the class of 2026, 25 for the class of 2029.</p>
+    <p class="text-meta text-deemphasized">Source: District 202 feeder report, fall 2025; District 65 Opening of Schools reports.</p>
+  </div>
+  <figure class="chapter-fig card">
+    <figcaption>Each ETHS class by where it went to 8th grade, next to District 65's 8th grade the year before</figcaption>
+    <div class="chart" id="eths-chart" data-draw="eths-chart"></div>
+  </figure>
+</section>
+
+<section class="chapter" id="ch-classes" aria-labelledby="ch-classes-title">
+  <div class="chapter-text flow">
+    <h2 id="ch-classes-title">Today's classes started smaller</h2>
+    <p>Most classes in school this fall are close to the size they were in kindergarten. The oldest, who were in early elementary school during the pandemic, are somewhat smaller. Together they are only about <span data-draw="cv-sincek">—</span> students smaller than when they started.</p>
+    <p>So nearly all of the drop since 2016-17 comes from smaller kindergarten classes. Families leaving explains only a small part.</p>
+    <p class="text-meta text-deemphasized">Source: District enrollment by grade: state Illinois Report Card counts for fall 2020 to 2025, district counts for other years.</p>
+  </div>
+  <figure class="chapter-fig card">
+    <figcaption>Each grade this fall, next to its size in kindergarten</figcaption>
+    <div class="legend"><span><span class="box swatch-wide" style="opacity:1;background:var(--cds-chart-muted)"></span>Size in kindergarten</span><span><span class="box" style="opacity:1" data-draw="lg-k"></span>Fall 2026</span></div>
+    <div class="chart" data-draw="c-classes"></div>
+  </figure>
+</section>
+
+<section class="chapter" id="ch-births" aria-labelledby="ch-births-title">
+  <div class="chapter-text flow">
+    <h2 id="ch-births-title">Fewer children were born here</h2>
+    <p>Births behind each kindergarten class fell from about 1,050 for the class of 2015 to about 720 for the class of 2025 in Kofron's data. County records, which count somewhat lower, show about 610 for this fall's class and about 580 for the class of 2028. The decline has slowed but not stopped. Births after 2023 are not yet published, so the shading shows a range: births holding at the 2023 level at the top, and falling at the pace of Kofron's trend line, about 32 fewer a year, at the bottom. The dotted line continues the recent pace of about 3% fewer a year. By the class of 2031, that puts births between about 480 and 580. The Thrive65 projections later on this page use the top of that range; at the recent pace, K-5 enrollment in 2031-32 would be about 85 students lower, and at Kofron's pace about 165 lower.</p>
+    <p>This fall <span data-draw="t-k">—</span> children started kindergarten, while <span data-draw="t-8">—</span> are in 8th grade. Each year the class leaving is larger than the class arriving.</p>
+    <p>The children who will start kindergarten through fall 2028 have already been born, so the size of those classes is largely set.</p>
+    <p class="text-meta text-deemphasized">Source: Kofron study birth data; Cook County Department of Public Health birth reports for Evanston, scaled up 8% for Skokie.</p>
+  </div>
+  <figure class="chapter-fig card">
+    <figcaption>Births five years before each kindergarten class</figcaption>
+    <div class="chart" id="births-chart" data-draw="births-chart"></div>
+  </figure>
+</section>
+
+<section class="chapter" id="ch-forecast" aria-labelledby="ch-forecast-title">
+  <div class="chapter-text flow">
+    <h2 id="ch-forecast-title">The district's own study saw this coming</h2>
+    <p>The 2022 Kofron study, done for the district's facilities planning, forecast <span data-draw="hl-mid">—</span> students for this fall. The actual count was <span data-draw="hl-actual">—</span>.</p>
+    <p>It pointed to births falling steadily since 2010 and fewer young families moving in. The 2024 McKibben study expected more young families and is running a little high.</p>
+    <p>Split into grades K-5 and 6-8, Kofron's middle forecast has stayed within a few percent of actual enrollment in both. That comparison is at the foot of the page.</p>
+    <p class="text-meta text-deemphasized">Source: Kofron, ES65 Geodemographic Study (2022); McKibben Demographic Consulting (2024); both scaled to district counts.</p>
+  </div>
+  <figure class="chapter-fig card">
+    <figcaption>K-8 enrollment: actual and forecasts</figcaption>
+    <div class="legend">
+      <span><span class="sw" style="border-top-width:2.5px" data-draw="lg-actual"></span>Actual</span>
+      <span><span class="sw" style="border-top-style:dashed" data-draw="lg-mid"></span><span class="box" data-draw="lg-band"></span>Kofron middle (shaded: low to high)</span>
+      <span><span class="sw" style="border-top-style:dashed" data-draw="lg-mck"></span>McKibben</span>
+    </div>
+    <div class="chart" data-draw="c-fcst"></div>
+  </figure>
+</section>
+
+<section class="chapter" id="ch-ahead" aria-labelledby="ch-ahead-title">
+  <div class="chapter-text flow">
+    <h2 id="ch-ahead-title">What comes next</h2>
+    <p>Both studies expect about 4,500 to 5,300 K-8 students by 2031-32. Thrive65's update of Kofron's method, starting from this fall's actual count, points to about <span data-draw="s-t65">—</span> (<span data-draw="s-t65r">—</span>). Using the district's capacity method, today's buildings hold about 8,150 students, and about 7,200 after the two proposed closures.</p>
+    <p>The Thrive65 update uses county birth records for each kindergarten class. It assumes births hold at the 2023 level, so if they keep falling, enrollment will land nearer the low end.</p>
+    <p class="text-meta text-deemphasized">Source: Kofron rescaled to the district's 2021-22 count; McKibben rescaled to its 2024-25 count.</p>
+  </div>
+  <figure class="chapter-fig card">
+    <figcaption>Forecasts to 2031-32 against building capacity</figcaption>
+    <div class="legend">
+      <span><span class="sw" style="border-top-width:2.5px" data-draw="lg-actual"></span>Actual</span>
+      <span><span class="sw" style="border-top-style:dashed" data-draw="lg-mid"></span>Kofron middle</span>
+      <span><span class="sw" style="border-top-style:dashed" data-draw="lg-mck"></span>McKibben</span>
+      <span><span class="sw" style="border-top-style:dotted" data-draw="lg-t65"></span><span class="box" data-draw="lg-t65band"></span>Thrive65 update (shaded: low to high)</span>
+      <span><span class="sw" style="border-top-style:dotted;border-top-color:var(--cds-chart-reference)"></span>Building capacity</span>
+    </div>
+    <div class="chart" data-draw="c-ahead"></div>
+  </figure>
+</section>
+
+<section class="chapter" id="ch-levers" aria-labelledby="ch-levers-title">
+  <div class="chapter-text flow">
+    <h2 id="ch-levers-title">What the district can change, and how far that goes</h2>
+    <p>Every family that chooses District 65 matters. It also helps to know how many students each possibility could bring. If every K-8 student at a private school inside the boundary enrolled in District 65, that would add about <span data-draw="pv-last">—</span>. That is close to what private schools here have enrolled for decades: in the years with complete records since the late 1990s, between about 850 and 1,200 K-8 students. Of the students who left in fall 2020 and 2021, about 150 are still young enough for grades K-8.</p>
+    <p>Housing that young families can afford and programs that draw families from nearby could add students too, though there is no good estimate yet of how many. Taken together, the options within reach are measured in hundreds of students. By 2031-32, today's buildings will have room for <span data-draw="s-gap">—</span> more students than the district expects to serve, and <span data-draw="s-gap2">—</span> more even after the two proposed closures.</p>
+    <p>Bringing families back is worth the effort, but it cannot fill that space on its own. Decisions about buildings should start from the expected number of students.</p>
+    <p class="text-meta text-deemphasized">Source: This chapter is Thrive65's view. Private schools: Illinois State Board of Education nonpublic enrollment reports, 2010-11 to 2025-26, and the National Center for Education Statistics Private School Survey, 1997-98 to 2017-18 (Evanston schools, years when all the larger schools reported). Students who left: net change in grade counts, fall 2020 and 2021. Empty seats: the district's building capacities from its Nov. 6, 2026 utilization table (7,212 K-8 seats after the proposed closures; about 8,150 with Dewey and Lincolnwood, using the district's method for those two schools) minus the Thrive65 middle projection for 2031-32. The district's capacity count leaves out STEP and RISE special education classrooms and their students.</p>
+  </div>
+  <figure class="chapter-fig card">
+    <figcaption>Students each possibility could add, next to the empty seats expected by 2031-32</figcaption>
+    <div class="chart" data-draw="c-levers"></div>
+  </figure>
+</section>
+
+<section class="story-foot flow" aria-labelledby="foot-title">
+<h2 id="foot-title">How the decline is felt across the district</h2>
+<p class="note">The same pattern shows up at most schools, though the size and timing vary by neighborhood. Some schools have always moved up and down from year to year; others held steady for years and have declined since 2020.</p>
 
 <h3 id="each-school">Each school: actual enrollment and the Kofron forecast</h3>
-<p class="note">Solid line: students enrolled in the building each fall. Dashed line and shading: Kofron's middle forecast and low-to-high range for the students living in that school's 2021 attendance area, rescaled to the school's 2021-22 enrollment so the two lines start together. The vertical line marks fall 2026, when Foster opened, Kingsley and Bessie Rhodes closed, and boundaries were redrawn. Jumps at that line come from students being reassigned to new schools. Kofron made no forecast for Foster, King Arts or Bessie Rhodes.</p>
+<p class="note">Solid line: students enrolled in the building each fall. Dashed line and shading: Kofron's middle forecast and low-to-high range for the students living in that school's 2021 attendance area, rescaled to the school's 2021-22 enrollment. The vertical line marks fall 2026, when Foster opened, Kingsley and Bessie Rhodes closed and boundaries were redrawn; jumps there come from students being reassigned. Kofron made no forecast for Foster, King Arts or Bessie Rhodes.</p>
 <div class="multiples" id="schools" data-draw="schools"></div>
 
-<h3 id="kofron-by-school">How close was Kofron by school? (2025-26, the last year on his boundaries)</h3>
-<p class="note">Rescaled forecasts compared with fall 2025 enrollment. Kofron forecast where students live, while these are counts of where they attend, so magnet, dual-language and transfer choices account for part of any gap.</p>
+<h3 id="kofron-by-school">How close Kofron was by school, 2025-26 (the last year on his boundaries)</h3>
+<p class="note">Kofron forecast where students live, while these are counts of where they attend, so magnet, dual-language and transfer choices account for part of any gap.</p>
 <div class="card tw">
 <table id="check-table">
   <thead><tr><th>School</th><th>2021-22 actual</th><th>Kofron low</th><th>Kofron middle</th><th>Kofron high</th><th>2025-26 actual</th><th>Actual vs. middle</th><th>Result</th></tr></thead>
@@ -131,7 +180,7 @@ wide: true
 </div>
 
 <h3 id="school-projections">Each elementary school through 2031-32: today's boundaries vs. the November 6 proposal</h3>
-<p class="note">A Thrive65 estimate using the Kofron method. Each school starts from this fall's students by grade; each class moves up a grade at district-wide rates from the last five years; each year's kindergarten class comes from births five years earlier and is split among schools by each school's share of this fall's students in kindergarten through 2nd grade (a three-grade average, so one unusually large or small kindergarten class does not drive a school's forecast). Oakton is the case where this matters: its kindergarten this fall (68) is its largest grade, and basing the split on kindergarten alone would show Oakton holding at about 350 by 2031 where this estimate has it easing to about 315. The November 6 version moves current students once in fall 2027 and sends new kindergartners to their new schools after that, following the district's own counts of where students live. Births come from Evanston birth records through 2023. The shaded band runs from the low series to the high series, also allowing for births following Kofron's straight-line guess instead. The diamond marks the district's own fall 2027 projection from its November 6 utilization table. Treat individual schools as about plus or minus 10%: the estimate cannot see changes in two-way immersion placements, transfers, or a single neighborhood's turnover.</p>
+<p class="note">A Thrive65 estimate using the Kofron method: each class moves up a grade at district-wide rates from the last five years, and each kindergarten class comes from births five years earlier, split among schools by their share of this fall's K-2 students. The diamond marks the district's own fall 2027 projection from its November 6 utilization table. Treat individual schools as about plus or minus 10%. Years are fall of each school year.</p>
 <div class="card">
   <div id="schoolproj" data-draw="schoolproj" style="min-height:520px"></div>
 </div>
@@ -141,11 +190,9 @@ wide: true
   <tbody data-draw="schoolproj-body"></tbody>
 </table>
 </div>
-<p class="note">Years are fall of each school year (2027 = 2027-28). Middle estimates use birth records; the range runs from the low series to the high series, using whichever birth assumption (records or Kofron's line) is lower or higher each year. Totals for the November 6 proposal match today's boundaries because the same children are reassigned. Lincolnwood's special education program (STEP) moves to Orrington under the proposal; this estimate sends those students with the rest of Lincolnwood, which likely puts a couple dozen too many at Willard and too few at Orrington.</p>
 
-<h2 id="stability">Which schools have held steady and which have swung</h2>
-<p class="lede">Some schools have always moved up and down from year to year. Others held steady for years and have declined since 2020.</p>
-<p class="note">Volatility is how much a school's enrollment typically moves from one fall to the next (the standard deviation of yearly percentage changes, 2012-13 to 2025-26). Lower means steadier. Compare the average from 2012 to 2020 with 2025-26 to see which schools have shrunk the most. The last column shows the change in fall 2026, when boundaries were redrawn. The table starts sorted by volatility; click any column heading to sort by it, and click again to reverse.</p>
+<h3 id="stability">Which schools have held steady and which have swung</h3>
+<p class="note">Volatility is how much a school's enrollment typically moves from one fall to the next (the standard deviation of yearly percentage changes, 2012-13 to 2025-26). Lower means steadier. The last column shows the change in fall 2026, when boundaries were redrawn. The table starts sorted by volatility; click any column heading to sort by it, and click again to reverse.</p>
 <div class="card tw">
 <table id="vol-table">
   <thead><tr><th>School</th><th>Avg. 2012-20</th><th>2025-26</th><th>2025-26 vs. avg.</th><th>Avg. yearly change</th><th>Volatility</th><th>Worst year</th><th>Which year</th><th>Years down (of 13)</th><th>2026-27</th><th>Change at redraw</th></tr></thead>
@@ -154,7 +201,7 @@ wide: true
 </div>
 
 <h3 id="density">Where students live: density by attendance area</h3>
-<p class="note" id="density-takeaway">Each measure is per square mile of land in each attendance area. <b>Enrolled students</b> is everyone attending the area's school this fall, including students who come from other areas through transfers or the two-way immersion (TWI) program; students at the King Arts magnet are not assigned to any area. <b>Resident children</b> is every child ages 5 to 14 living in the area at the 2020 census, whether they attend District 65, a private school or another option. <b>Projected students</b> is the Thrive65 estimate for fall 2031 at each elementary school, from the projections above, shown either on today's boundaries or on the district's November 6 proposed boundaries (Dewey and Lincolnwood closed, their areas split among neighboring schools, and a small King Arts area). King Arts is shaded gray because most of its students come from across the district through the magnet lottery. Projections are not available for middle school areas. Lake Michigan and other water are left out of the land area.</p>
+<p class="note">Each measure is per square mile of land in each attendance area. <b>Enrolled students</b> counts everyone attending the area's school this fall, including transfers and two-way immersion (TWI) students. <b>Resident children</b> counts every child ages 5 to 14 living in the area at the 2020 census, whatever school they attend. <b>Projected students</b> is the Thrive65 estimate for fall 2031, on today's boundaries or the November 6 proposal. King Arts is shaded gray because most of its students come from across the district.</p>
 <div class="card">
   <div id="density-map" data-draw="density-map" style="min-height:620px"></div>
 </div>
@@ -165,27 +212,45 @@ wide: true
 </table>
 </div>
 
-<h2 id="thrive65-view">Thrive65's view</h2>
-<p class="lede">Bringing families back to District 65 is worth the effort, and every family that returns helps. The district's buildings were sized for about 7,500 students. Both studies expect about 4,500 to 5,300 by 2031, so welcoming families back cannot fill the space on its own. Decisions about buildings should start from the number of children the district expects to serve.</p>
+<h3 id="k5-and-6-8">K-5 and 6-8: actual enrollment and forecasts</h3>
+<p class="note">Kofron is rescaled to the district's 2021-22 counts and McKibben to its 2024-25 counts. McKibben's K-5 forecast runs higher because it expected more young families to move in. The Thrive65 update starts from this fall's count.</p>
+<div class="card">
+  <div id="cmp" data-draw="cmp" style="min-height:420px"></div>
+</div>
+
+<h3 id="forecast-accuracy">How close each forecast came</h3>
+<p class="note">"Miss" is the forecast minus the actual count, as a share of the actual; positive means the forecast was too high. Average miss is the average size of the yearly misses, ignoring direction.</p>
+<div class="card tw">
+<table id="accuracy-table">
+  <thead><tr><th>Forecast (middle series)</th><th>Years checked</th><th>K-5: average miss</th><th>K-5: miss in 2026-27</th><th>6-8: average miss</th><th>6-8: miss in 2026-27</th><th>K-5 in 2031-32</th><th>6-8 in 2031-32</th></tr></thead>
+  <tbody data-draw="cmp-body"></tbody>
+</table>
+</div>
 
 <details id="sources" class="accordion">
-  <summary class="cluster"><span>Definitions, sources and cautions</span></summary>
+  <summary class="cluster"><span>Definitions, sources and cautions</span><span class="accordion-icon" aria-hidden="true"></span></summary>
+  <div class="accordion-body">
   <ul>
     <li>Kofron is the ES65 Geodemographic Study by Charles Kofron (final revision March 3, 2022). It projected resident students by 2021 attendance area through 2031-32 in four series: high, middle, low, and a "snapshot" series assuming pandemic-era losses continued.</li>
     <li>McKibben is the Evanston-Skokie School District 65 Demographic Study Report by McKibben Demographic Consulting LLC (November 18, 2024), summarized for the board in the district's Feb. 10, 2025 memo. Its enrollment forecast (Appendix D) counts Park, Rice and separately counted special education students, so this page scales it to the district's 2024-25 counts without those students (K-5 3,728, 6-8 2,032, from the 2024-25 Opening of Schools report) and compares percentage change.</li>
     <li>Actual enrollment 2012-13 to 2025-26 comes from Thrive65's compilation of the District 65 Opening of Schools reports (K-8, excluding Park School and the Rice Education Center). Fall 2026 comes from the district's 2026-27 enrollment and demographics table including permissive transfers. Its K-8 total (5,408) is two more than the district's October 1 count (5,406).</li>
     <li>Special education students placed outside the district or receiving only evaluation or services are left out of the school counts used here. Reports before 2022 left them out too (36 to 47 outplaced students a year). The district's original 2022-23 to 2024-25 reports included them, but its later reports restate those years without them, and this page uses the restated figures.</li>
-    <li>Private school enrollment is K-8 enrollment at private and parochial schools located inside the District 65 boundary, from the Illinois State Board of Education's nonpublic school enrollment reports. The 2016-17 report is missing two schools.</li>
+    <li>Grade-by-grade counts for fall 2020 to 2025 come from the state's Illinois Report Card. They run about 20 to 35 students above the district's own counts in recent years.</li>
+    <li>Students lost in fall 2020 and 2021 and the comparison of classes with their kindergarten size are net figures from grade counts, not individual student records.</li>
+    <li>Private school enrollment is K-8 enrollment at private and parochial schools located inside the District 65 boundary, from the Illinois State Board of Education's nonpublic school enrollment reports. The 2016-17 report is missing two schools. Longer-run figures (2010-11 to 2014-15 state reports, and the National Center for Education Statistics Private School Survey from 1997-98) are used only for the range quoted in the last chapter. The 2010-11 and 2012-13 state reports each miss one school.</li>
     <li>ETHS figures are first-time freshmen by sending school from District 202's fall 2025 feeder report, for the classes of 2026 through 2029. District 65 8th grade counts are from the District 65 Opening of Schools reports for the fall before each class entered ETHS.</li>
-    <li>Birth counts are from the Cook County Department of Public Health's Suburban Cook County birth data reports (2015 and 2017-2023), for the City of Evanston, weighted by the kindergarten birthday cutoff and scaled up 8% for the Skokie part of the district. Earlier births are from the Kofron study.</li>
+    <li>Birth counts are from the Cook County Department of Public Health's Suburban Cook County birth data reports (2015 and 2017-2023), for the City of Evanston, weighted by the kindergarten birthday cutoff and scaled up 8% for the Skokie part of the district. Earlier births are from the Kofron study. Kofron's birth figures and the county records differ by about 8% for the same years, so this page does not measure change from one source to the other.</li>
+    <li>Building capacity: District 65 utilization table, Nov. 6, 2026 (7,212 K-8 seats with Dewey and Lincolnwood closed). Dewey (556) and Lincolnwood (about 384) are Thrive65 estimates using the district's method. The district's count leaves out STEP and RISE classrooms and their students. Because the projections include those students, the empty-seat figures may run about 100 high.</li>
     <li>School counts in fall 2026 reflect new boundaries: Foster opened and Kingsley and Bessie Rhodes closed. Changes at the redraw are mostly students reassigned to new schools.</li>
-    <li>Feeder patterns are taken from the district's 2026-27 attendance boundaries: every elementary area falls within one middle school area. November 6 proposal boundaries are from the district's published proposal map.</li>
-    <li>National figures are U.S. public school enrollment from the National Center for Education Statistics: Digest of Education Statistics 2025, table 203.10 (actual counts through fall 2024, the latest published; K-8 excludes prekindergarten), and Digest 2022, table 105.30 (projections to fall 2031, made in December 2022 and applied here as percent change from the fall 2023 actual). These are the same national data behind recent New York Times coverage of falling enrollment.</li>
+    <li>November 6 proposal boundaries are from the district's published proposal map.</li>
+    <li>National figures are U.S. public school enrollment from the National Center for Education Statistics: Digest of Education Statistics 2025, table 203.10 (actual counts through fall 2024, the latest published; K-8 excludes prekindergarten). These are the same national data behind recent New York Times coverage of falling enrollment.</li>
     <li>Chicago Public Schools figures are fall K-8 enrollment from the CPS FY2027 Budget, Appendix A (the "Elementary Schools (K-8)" row, which leaves out school-based pre-K). CPS reported a further drop to 304,687 students in all grades in fall 2026, but has not yet published the K-8 breakdown for that year.</li>
     <li>Nearby and peer district figures are total enrollment, including pre-K, from the Illinois State Board of Education's Illinois Report Card public data sets for 2019 (school year 2018-19) and 2026 (school year 2025-26). "Nearby" is the North Shore, Skokie-area, Northbrook and Glenview elementary districts plus Oak Park 97 and the two Berwyn districts. Peer districts are those District 65 compared itself with in the SDRP III school-closure scenario memo for the Dec. 1, 2025 special board meeting (Comm Cons SD 59, Wheeling 21, Oak Park 97, Joliet 86, Orland 135, Schaumburg 54, Palatine 15, Arlington Heights 25, Crystal Lake 47) and the Sept. 14, 2026 Financial Sustainability presentation (CCSD 59, Des Plaines CCSD 62, Palatine 15, Woodridge 68, North Shore 112, Orland 135, DuPage County SD 45). The Cook County ranking covers every Cook County elementary (K-8) district that had at least 1,500 students in 2018-19. The Evanston RoundTable has reported District 65's decline as the steepest among 21 nearby K-8 districts; that holds for this nearby group apart from very small Avoca 37, but not county-wide.</li>
     <li>Census figures are from the 2020 decennial census, apportioned to attendance areas by block group.</li>
   </ul>
+  </div>
 </details>
+</section>
 
 </div>
 

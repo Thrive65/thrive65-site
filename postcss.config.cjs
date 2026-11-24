@@ -57,6 +57,10 @@ module.exports = {
           "levy-swatch",
           "levy-tip-row",
           "levy-tip-total",
+          // enrollment scroll story: set by the chapter observer in
+          // assets/js/enrollment-dashboard.js.
+          "is-active",
+          "has-story",
         ],
         // Attribute/state-driven selectors: a11y modes set data-* on <html> at
         // runtime; ARIA states are toggled by JS; EmailOctopus injects its own

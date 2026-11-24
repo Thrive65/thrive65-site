@@ -197,6 +197,8 @@
 /* tall enough to give up a strip of screen to a sticky/docked panel (below
    this, docking is off so it doesn't eat the room people need to type) */
 @custom-media --dock-height (min-height: 501px);
+/* tall enough for a scroll-story figure (.chapter) to stay in view whole */
+@custom-media --story-height (min-height: 720px);
 
 /* ============================================================================
    SHARED DARK surfaces + default hue (Lake Teal) DARK.
@@ -1965,6 +1967,85 @@ html[data-contrast="high"][data-theme="dark"] .hue-default {
   .step.total .step-value {
     color: var(--brand-strong);
     font-size: var(--step-1);
+  }
+
+  /* ─ Chapter ─ one chapter of a scroll story: a text column beside a figure
+     (a .card) that stays in place while the text is read. The base is one
+     column with the figure after its text, nothing sticky and nothing dimmed:
+     what phones, print and the unprocessed dev CSS get. At --md-and-up the
+     two sit side by side, and where the figure fits (--story-height, below
+     137% text) it sticks below the site header.
+     JS (an IntersectionObserver) puts .is-active on the chapter crossing the
+     middle of the viewport and .has-story on the container once it is
+     watching. The active chapter's text gets a brand rule beside it, and
+     inactive figures are dimmed; the text itself is never dimmed, because
+     body text at reduced opacity drops below AA. .tall is for a chapter whose
+     figure is taller than the viewport: it scrolls with the page instead. */
+  .chapter {
+    display: grid;
+    gap: var(--space-m);
+    padding-block: var(--space-l);
+    border-block-start: var(--border-thin) solid var(--line);
+  }
+  .chapter-text { max-inline-size: var(--measure); }
+  .chapter-fig {
+    margin: 0;
+    transition: opacity var(--transition-slow) var(--ease);
+  }
+  .chapter-fig > figcaption {
+    font-size: var(--step--1);
+    font-weight: 600;
+    line-height: var(--lh-body);
+  }
+
+  @media (--md-and-up) {
+    .chapter {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: var(--space-xl);
+      align-items: start;
+      min-block-size: 90vh;
+    }
+    .chapter-text {
+      padding-block: 18vh 30vh;
+      padding-inline-start: var(--space-s);
+      border-inline-start: var(--border-bold) solid transparent;
+      transition: border-color var(--transition-slow) var(--ease);
+    }
+    .chapter.is-active .chapter-text { border-inline-start-color: var(--brand); }
+    .has-story .chapter:not(.is-active) .chapter-fig { opacity: 0.55; }
+    .chapter.tall { min-block-size: 0; }
+    .chapter.tall .chapter-text { padding-block: 0; }
+  }
+  /* The figure sticks only where it fits below the header: a tall enough
+     viewport, and not at the two largest text sizes. */
+  @media screen and (--md-and-up) and (--story-height) {
+    :root:not([data-textsize="137"], [data-textsize="150"]) .chapter:not(.tall) .chapter-fig {
+      position: sticky;
+      inset-block-start: calc(var(--header-size) + var(--space-s));
+    }
+  }
+  /* High contrast keeps every figure at full strength. */
+  [data-contrast="high"] .has-story .chapter:not(.is-active) .chapter-fig { opacity: 1; }
+
+  @media print {
+    .chapter {
+      display: block;
+      min-block-size: 0;
+      break-before: page;
+    }
+    .chapter:first-of-type { break-before: auto; }
+    .chapter-text { padding: 0; border: 0; }
+    .chapter-fig {
+      position: static;
+      margin-block-start: var(--space-m);
+      break-inside: avoid;
+    }
+    /* Matches the dimming rule's specificity so print always wins. */
+    .chapter-fig,
+    .has-story .chapter:not(.is-active) .chapter-fig {
+      opacity: 1;
+      transition: none;
+    }
   }
 
   /* ─ Collapse ─ a region that slides shut and open with the 0fr → 1fr
