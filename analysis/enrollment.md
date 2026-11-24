@@ -145,7 +145,7 @@ wide: true
 
 <h2 id="stability">Which schools have held steady and which have swung</h2>
 <p class="lede">Some schools have always moved up and down from year to year. Others held steady for years and have declined since 2020.</p>
-<p class="note">Volatility is how much a school's enrollment typically moves from one fall to the next (the standard deviation of yearly percentage changes, 2012-13 to 2025-26). Lower means steadier. Compare the average from 2012 to 2020 with 2025-26 to see which schools have shrunk the most. The last column shows the change in fall 2026, when boundaries were redrawn.</p>
+<p class="note">Volatility is how much a school's enrollment typically moves from one fall to the next (the standard deviation of yearly percentage changes, 2012-13 to 2025-26). Lower means steadier. Compare the average from 2012 to 2020 with 2025-26 to see which schools have shrunk the most. The last column shows the change in fall 2026, when boundaries were redrawn. The table starts sorted by volatility; click any column heading to sort by it, and click again to reverse.</p>
 <div class="card tw">
 <table id="vol-table">
   <thead><tr><th>School</th><th>Avg. 2012-20</th><th>2025-26</th><th>2025-26 vs. avg.</th><th>Avg. yearly change</th><th>Volatility</th><th>Worst year</th><th>Which year</th><th>Years down (of 13)</th><th>2026-27</th><th>Change at redraw</th></tr></thead>
