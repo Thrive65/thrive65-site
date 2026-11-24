@@ -75,14 +75,20 @@ dash.draw('c-k8', (el) => {
 });
 
 // ---- 6. Each grade this fall vs. its size in kindergarten ------------------
-// Needs window.classesNow from the site's story block (it already exists for
-// cv-sincek). If not, build it: for grade index i, kindergarten size is the
-// K count in fall (2026 - i).
+// For grade index i, the class's kindergarten size is the K count in fall
+// (2026 - i). The site's cv-sincek drawer does the same sum inline; consider
+// having it call classesNow() too so the two can't disagree.
+const G9 = ['K', '1', '2', '3', '4', '5', '6', '7', '8'];
+function classesNow() {
+  const s = dash.data('district_grades'); if (s.status !== 'ok') return null;
+  const m = {}; for (const r of s.data) (m[r.year] = m[r.year] || {})[r.grade] = +r.students;
+  return G9.map((g, i) => ({ g, now: m['2026-27'][g], atK: (m[(2026 - i) + '-' + String(2027 - i).slice(2)] || {}).K }));
+}
 dash.draw('c-classes', (el) => {
   const s = dash.data('district_grades');
   if (s.status !== 'ok') return failed(el, s);
   el.replaceChildren();
-  const rows = window.classesNow();
+  const rows = classesNow();
   const W = el.clientWidth || 600, H = 320, m = { t: 22, r: 10, b: 28, l: 44 };
   const x = d3.scaleBand(rows.map((r) => r.g), [m.l, W - m.r]).padding(0.25);
   const y = d3.scaleLinear([0, d3.max(rows, (r) => Math.max(r.now, r.atK)) * 1.12], [H - m.b, m.t]).nice();
