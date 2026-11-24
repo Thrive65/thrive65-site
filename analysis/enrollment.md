@@ -143,12 +143,6 @@ wide: true
 </div>
 <p class="note">Years are fall of each school year (2027 = 2027-28). Middle estimates use birth records; the range runs from the low series to the high series, using whichever birth assumption (records or Kofron's line) is lower or higher each year. Totals for the November 6 proposal match today's boundaries because the same children are reassigned. Lincolnwood's special education program (STEP) moves to Orrington under the proposal; this estimate sends those students with the rest of Lincolnwood, which likely puts a couple dozen too many at Willard and too few at Orrington.</p>
 
-<h3 id="future-ms">Middle school classes already in our schools</h3>
-<p class="note">Each fall's grades 6-8 come from students enrolled today: fall 2027 from today's 5th through 7th graders, and so on to fall 2032, when today's kindergarten through 2nd graders will be in middle school. Elementary students are counted in the middle school their school feeds under the 2026-27 boundaries: Chute (Dawes, Oakton, Walker), Haven (Foster, Lincolnwood, Orrington, Willard) and Nichols (Dewey, Lincoln, Washington). King Arts is the K-8 magnet. The dashed line in the left panel is the Thrive65 update, which allows for students moving in and out at the rates of recent years. These counts follow where students attend now. Students on transfers in the older grades, and former Bessie Rhodes students at Foster, may attend a different middle school than their elementary school feeds, so Haven's numbers for 2027 to 2029 are likely a little high. Sixth grade magnet choices and families moving will also shift them.</p>
-<div class="card">
-  <div id="ms-future" data-draw="ms-future" style="min-height:380px"></div>
-</div>
-
 <h2 id="stability">Which schools have held steady and which have swung</h2>
 <p class="lede">Some schools have always moved up and down from year to year. Others held steady for years and have declined since 2020.</p>
 <p class="note">Volatility is how much a school's enrollment typically moves from one fall to the next (the standard deviation of yearly percentage changes, 2012-13 to 2025-26). Lower means steadier. Compare the average from 2012 to 2020 with 2025-26 to see which schools have shrunk the most. The last column shows the change in fall 2026, when boundaries were redrawn.</p>
