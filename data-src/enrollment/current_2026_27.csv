@@ -1,16 +1,16 @@
-level,school,feeder,k,g1,g2,g3,g4,g5,g6,g7,g8,total,k_minus_5,k_vs_5_pct,frl_pct,el_pct,iep_pct,black_hisp_pct,white_pct,twi,district_cap,district_util,lower_cap,lower_src,lower_util
-Elementary,Dawes,Chute,39,42,41,48,60,51,,,,281,-12,-23.5,45,23,19,57,28,112,552,50.9,432,SDRP hub,65.0
-Elementary,Dewey,Nichols,47,55,46,52,65,50,,,,315,-3,-6.0,36,14,16,37,43,101,,,537,Cordogan Clark,58.7
-Elementary,Foster,Haven,45,39,61,77,58,70,,,,350,-25,-35.7,64,29,20,79,15,194,576,60.8,576,SDRP hub,60.8
-Elementary,Lincoln,Nichols,56,68,51,43,63,55,,,,336,1,1.8,35,16,21,28,51,,624,53.8,576,SDRP hub,58.3
-Elementary,Lincolnwood,Haven,49,60,54,43,48,79,,,,333,-30,-38.0,21,4,19,24,62,,,,432,SDRP hub,77.1
-Elementary,Oakton,Chute,68,53,59,53,69,63,,,,365,5,7.9,49,18,13,57,29,75,514,71.0,467,Cordogan Clark,78.2
-Elementary,Orrington,Haven,40,36,40,52,26,54,,,,248,-14,-25.9,11,8,12,10,62,,360,68.9,432,SDRP hub,57.4
-Elementary,Walker,Chute,45,58,42,63,66,44,,,,318,1,2.3,30,13,17,34,41,,432,73.6,432,SDRP hub,73.6
-Elementary,Washington,Nichols,58,57,63,63,60,81,,,,382,-23,-28.4,37,25,19,51,37,196,576,66.3,530,SDRP hub,72.1
-Elementary,Willard,Haven,40,43,43,53,47,47,,,,273,-7,-14.9,14,4,11,18,72,,512,53.3,533,Cordogan Clark,51.2
-Elementary,King Arts,K-8 magnet,42,39,37,56,53,46,,,,273,-4,-8.7,51,12,27,58,25,,636,69.8,651,SDRP hub,68.2
-Middle,Chute,Chute,,,,,,,187,207,197,591,,,43,14,16,56,26,,818,72.2,792,Both,74.6
-Middle,Haven,Haven,,,,,,,182,209,213,604,,,30,9,18,35,53,,1008,59.9,936,SDRP hub,64.5
-Middle,Nichols,Nichols,,,,,,,190,167,211,568,,,30,11,12,40,43,,604,94.0,705,Both,80.6
-Middle,King Arts (6-8),K-8 magnet,,,,,,,43,67,61,171,,,50,10,29,58,27,,,,,,
+level,school,feeder,k,g1,g2,g3,g4,g5,g6,g7,g8,total,k_minus_5,k_vs_5_pct,frl_pct,el_pct,iep_pct,black_hisp_pct,white_pct,twi,district_cap,district_util,lower_cap,lower_src,lower_util,transfers_in_may2026,transfers_out_may2026
+Elementary,Dawes,Chute,39,42,41,48,60,51,,,,281,-12,-23.5,45,23,19,57,28,112,552,50.9,432,SDRP hub,65.0,7,6
+Elementary,Dewey,Nichols,47,55,46,52,65,50,,,,315,-3,-6.0,36,14,16,37,43,101,,,537,Cordogan Clark,58.7,22,37
+Elementary,Foster,Haven,45,39,61,77,58,70,,,,350,-25,-35.7,64,29,20,79,15,194,576,60.8,576,SDRP hub,60.8,7,100
+Elementary,Lincoln,Nichols,56,68,51,43,63,55,,,,336,1,1.8,35,16,21,28,51,,624,53.8,576,SDRP hub,58.3,3,10
+Elementary,Lincolnwood,Haven,49,60,54,43,48,79,,,,333,-30,-38.0,21,4,19,24,62,,,,432,SDRP hub,77.1,53,7
+Elementary,Oakton,Chute,68,53,59,53,69,63,,,,365,5,7.9,49,18,13,57,29,75,514,71.0,467,Cordogan Clark,78.2,6,9
+Elementary,Orrington,Haven,40,36,40,52,26,54,,,,248,-14,-25.9,11,8,12,10,62,,360,68.9,432,SDRP hub,57.4,25,8
+Elementary,Walker,Chute,45,58,42,63,66,44,,,,318,1,2.3,30,13,17,34,41,,432,73.6,432,SDRP hub,73.6,39,7
+Elementary,Washington,Nichols,58,57,63,63,60,81,,,,382,-23,-28.4,37,25,19,51,37,196,576,66.3,530,SDRP hub,72.1,9,17
+Elementary,Willard,Haven,40,43,43,53,47,47,,,,273,-7,-14.9,14,4,11,18,72,,512,53.3,533,Cordogan Clark,51.2,39,8
+Elementary,King Arts,K-8 magnet,42,39,37,56,53,46,,,,273,-4,-8.7,51,12,27,58,25,,636,69.8,651,SDRP hub,68.2,,
+Middle,Chute,Chute,,,,,,,187,207,197,591,,,43,14,16,56,26,,818,72.2,792,Both,74.6,32,14
+Middle,Haven,Haven,,,,,,,182,209,213,604,,,30,9,18,35,53,,1008,59.9,936,SDRP hub,64.5,6,22
+Middle,Nichols,Nichols,,,,,,,190,167,211,568,,,30,11,12,40,43,,604,94.0,705,Both,80.6,20,18
+Middle,King Arts (6-8),K-8 magnet,,,,,,,43,67,61,171,,,50,10,29,58,27,,,,,,,,

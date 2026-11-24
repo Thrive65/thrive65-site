@@ -5,7 +5,7 @@
  * Run by hand whenever the source CSVs change:   npm run data:enrollment
  * Commit both the source CSVs and the generated JSON. Nothing here runs in CI
  * or in the browser: the page (_posts/…-district-65-enrollment-forecasts.md)
- * renders numbers, tables, bar/dot charts, the heatmap and the maps from this
+ * renders numbers, tables, bar charts and the maps from this
  * output in Liquid, and assets/js/charts.js draws the line charts from it.
  *
  * Why here and not in Liquid: Liquid sorts CSV values as text and is clumsy at
@@ -58,26 +58,29 @@ const shortYear = (y) => '’' + y.slice(2, 4); // 2012-13 → ’12
 const fall = (y) => 'Fall ' + y.slice(0, 4);
 const unique = (a) => [...new Set(a)];
 const by = (f) => (a, b) => (f(a) < f(b) ? -1 : f(a) > f(b) ? 1 : 0);
-const sw = (n) => (n === 'muted' ? 'var(--series-muted)' : `var(--series-${n})`);
+// swatch tokens: 1-4 series, 'muted' (context fill), 'ink' and 'text' (--muted ink, for reference lines)
+const sw = (n) => (n === 'muted' ? 'var(--series-muted)' : n === 'ink' ? 'var(--ink)' : n === 'text' ? 'var(--muted)' : `var(--series-${n})`);
+const round10 = (v) => Math.round(v / 10) * 10;
+const round100 = (v) => Math.round(v / 100) * 100;
 
 /* ---------------------------------------------------------------- load */
 const D = {
   trend: load('district_trend.csv'),
   grades: load('district_grades.csv'),
   schoolTrend: load('school_trend.csv'),
-  rerun: load('kofron_rerun_2020.csv'),
   bands: load('compare_bands.csv'),
   schoolProj: load('school_proj.csv'),
   schoolProjYearly: load('school_proj_yearly.csv'),
   check: load('forecast_check_2025_26.csv'),
-  current: load('current_2026_27.csv'),
-  feeder: load('feeder_grades_2026_27.csv'),
   volatility: load('volatility.csv'),
   national: load('national_k8.csv'),
   nearby: load('nearby_districts.csv'),
   il: load('il_districts_2019_2026.csv'),
   density: load('area_density.csv'),
   geometry: load('area_geometry.csv'),
+  priv: load('private_k8.csv'),
+  eths: load('eths_feeder.csv'),
+  births: load('births.csv'),
 };
 const G9 = ['K', '1', '2', '3', '4', '5', '6', '7', '8'];
 const gradeName = (g) => (g === 'K' ? 'Kindergarten' : 'Grade ' + g);
@@ -88,47 +91,37 @@ const gradeAt = (y, g) => num((D.grades.find((r) => r.year === y && r.grade === 
 /* ============================================================ summary */
 const byYearGrade = {};
 for (const r of D.grades) (byYearGrade[r.year] ||= {})[r.grade] = +r.students;
-const gradeYears = Object.keys(byYearGrade).sort();
 const sumGrades = (y, gs) => gs.reduce((s, g) => s + byYearGrade[y][g], 0);
 const k8 = (y) => (byYearGrade[y] ? sumGrades(y, G9) : null);
 
-// COVID-era losses and the decline since the peak (was dash.calc 'change_summary')
-const cont = (y, p) => sumGrades(y, G9.slice(1)) - sumGrades(p, G9.slice(0, 8));
-const covid = cont('2020-21', '2019-20') + cont('2021-22', '2020-21');
-const covidBase = sumGrades('2019-20', G9.slice(0, 8));
-let entry = 0, continuing = 0;
-for (let i = gradeYears.indexOf('2017-18'); i < gradeYears.length; i++) {
-  const y = gradeYears[i], p = gradeYears[i - 1];
-  entry += byYearGrade[y].K - byYearGrade[p]['8'];
-  continuing += cont(y, p);
-}
-const sinceTotal = entry + continuing;
+/* Capacity, from the district's Nov. 6, 2026 utilization table
+   (https://resources.finalsite.net/images/v1793999411/district65net/jvpg6fw1yuufwph9z6h5/UtilizationNov6.pdf):
+   7,212 K-8 seats with Dewey and Lincolnwood closed (King Arts' 636 included).
+   Today's buildings add Dewey (556) and Lincolnwood (about 384), Thrive65
+   estimates using the district's method, for about 8,150. These are the only
+   capacity figures on the page. */
+const CAP_PLAN = 7212, CAP_NOW = 7212 + 556 + 384;
+/* Of the 444 students lost (net) in fall 2020 and 2021, about 150 are still
+   K-8 age; the rest are in high school or have graduated. A fixed figure. */
+const LEFT_STILL_K8 = 150;
 
-// the fall 2020 kindergarten class, now in 6th grade (was 'cohorts')
-const k20 = byYearGrade['2020-21'].K, k20now = byYearGrade['2026-27']['6'];
+// Each class in school this fall next to its kindergarten size: grade index i
+// started kindergarten in fall (2026 - i). Shared by the chart and the text.
+const classesNow = G9.map((g, i) => ({ g, now: byYearGrade['2026-27'][g], atK: byYearGrade[`${2026 - i}-${String(2027 - i).slice(2)}`].K }));
 
-// national comparison (was 'national_compare' / 'national_summary')
-const NAT_BASE = '2019-20';
+// national comparison: K-8, fall 2019 = 100, latest national count fall 2024
+const NAT_BASE = '2019-20', NAT_LAST = '2024-25';
 const nat = {}; for (const r of D.national) nat[r.year] = r;
 const idx = (v, b) => (v === null ? null : round1((v / b) * 100));
-const d0 = k8(NAT_BASE), dk0 = byYearGrade[NAT_BASE].K;
-const u0 = num(nat[NAT_BASE].us_k8), uk0 = num(nat[NAT_BASE].us_k), c0 = num(nat[NAT_BASE].cps_k8);
-const km0 = trendAt('2021-22', 'kofron_mid'), a21 = k8('2021-22');
-const natRows = D.national.map((r) => {
-  const y = r.year, d = k8(y), km = trendAt(y, 'kofron_mid');
-  return {
-    year: y, d65_k8: d, d65_k8_idx: idx(d, d0), d65_k: byYearGrade[y] ? byYearGrade[y].K : null,
-    d65_k_idx: byYearGrade[y] ? idx(byYearGrade[y].K, dk0) : null,
-    us_k8: num(r.us_k8), us_k8_idx: idx(num(r.us_k8), u0), us_k: num(r.us_k), us_k_idx: idx(num(r.us_k), uk0),
-    cps_k8: num(r.cps_k8), cps_k8_idx: idx(num(r.cps_k8), c0),
-    us_k8_proj_idx: idx(num(r.us_k8_projected), u0),
-    d65_kofron_idx: y >= '2026-27' && km !== null ? idx((a21 * km) / km0, d0) : null,
-  };
-});
+const d0 = k8(NAT_BASE), u0 = num(nat[NAT_BASE].us_k8), c0 = num(nat[NAT_BASE].cps_k8);
+const natRows = D.national.map((r) => ({
+  year: r.year, d65_k8: k8(r.year), d65_k8_idx: idx(k8(r.year), d0),
+  us_k8: num(r.us_k8), us_k8_idx: idx(num(r.us_k8), u0), cps_k8: num(r.cps_k8), cps_k8_idx: idx(num(r.cps_k8), c0),
+})).filter((r) => r.d65_k8_idx !== null || r.us_k8_idx !== null || r.cps_k8_idx !== null);
 const natAt = (y) => natRows.find((r) => r.year === y);
 const chg = (v) => round1(v - 100);
 
-// nearby districts (was 'nearby_summary') and the Cook County rank ('cook_rank')
+// nearby districts and the Cook County rank
 const shortName = (n) => n.replace('Chicago Public Schools District 299', 'Chicago Public Schools')
   .replace('Evanston CCSD 65', 'District 65').replace(/ (CCSD|ESD|SD)/, '');
 const subs = D.nearby.filter((r) => r.group === 'Nearby suburb').map((r) => +r.pct_change).sort((a, b) => a - b);
@@ -141,42 +134,36 @@ const ORD = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 
 const ahead = cook.slice(0, cookI).map((r) => shortName(r.district) + ' (' + pct1(+r.pct_change) + ')');
 const aheadText = ahead.length > 1 ? ahead.slice(0, -1).join(', ') + ' and ' + ahead.slice(-1) : ahead.join('');
 
+const peak = trendAt('2016-17', 'actual'), now = trendAt('2026-27', 'actual');
+const t65 = (f) => trendAt('2031-32', 't65_' + f);
+const privLast = +D.priv[D.priv.length - 1].private_k8;
+const gap = (cap) => cap - t65('mid');
+const fullPct = (cap) => Math.round(((cap - round100(gap(cap))) / cap) * 100);
+
 const summary = {
-  actual_2026: int(trendAt('2026-27', 'actual')),
-  peak_2016: int(trendAt('2016-17', 'actual')),
-  below_peak_pct: (Math.round((1 - trendAt('2026-27', 'actual') / trendAt('2016-17', 'actual')) * 1000) / 10).toFixed(1) + '%',
-  kofron_mid_2026: int(trendAt('2026-27', 'kofron_mid')),
-  kofron_low_2026: int(trendAt('2026-27', 'kofron_low')),
-  kofron_high_2026: int(trendAt('2026-27', 'kofron_high')),
-  kofron_mid_2031: int(trendAt('2031-32', 'kofron_mid')),
-  district_proj_2030: int(trendAt('2030-31', 'district_proj_2025')),
-  k_2026: int(gradeAt('2026-27', 'K')),
-  g8_2026: int(gradeAt('2026-27', '8')),
-  covid_loss: int(Math.abs(covid)),
-  covid_loss_signed: signedInt(covid),
-  covid_pct: (Math.round((-covid / covidBase) * 1000) / 10).toFixed(1) + '%',
-  since_peak_total: signedInt(sinceTotal),
-  since_peak_entry: signedInt(entry),
-  since_peak_continuing: signedInt(continuing),
-  entry_share_pct: Math.round((entry / sinceTotal) * 100) + '%',
-  k2020_now: int(k20now),
-  k2020_k: int(k20),
-  k2020_pct: (Math.round((k20now / k20) * 1000) / 10).toFixed(1) + '%',
-  nat_us_k8: pctAbs(chg(natAt('2023-24').us_k8_idx)),
-  nat_d65_k8: pctAbs(chg(natAt('2023-24').d65_k8_idx)),
-  nat_cps_k8: pctAbs(chg(natAt('2023-24').cps_k8_idx)),
-  nat_cps_k8_2025: pctAbs(chg(natAt('2025-26').cps_k8_idx)),
-  nat_d65_k8_2025: pctAbs(chg(natAt('2025-26').d65_k8_idx)),
-  nat_us_k: (chg(natAt('2023-24').us_k_idx) < 0 ? MINUS : '+') + pctAbs(chg(natAt('2023-24').us_k_idx)),
-  nat_d65_k: (chg(natAt('2023-24').d65_k_idx) < 0 ? MINUS : '+') + pctAbs(chg(natAt('2023-24').d65_k_idx)),
+  actual_2026: int(now),                                                    // {s-now}
+  drop_since_peak: 'about ' + int(round10(peak - now)),                     // {s-drop}
+  peak_2016: int(peak),                                                     // {s-peak}
+  below_peak_pct: (Math.round((1 - now / peak) * 1000) / 10).toFixed(1) + '%', // {s-pct}
+  nat_us_k8: pctAbs(chg(natAt(NAT_LAST).us_k8_idx)),                        // {s-us}
+  nat_cps_k8: pctAbs(chg(natAt(NAT_LAST).cps_k8_idx)),                      // {s-cps}
+  nat_d65_k8: pctAbs(chg(natAt(NAT_LAST).d65_k8_idx)),                      // {s-d65}
   nearby_n: String(subs.length),
   nearby_d65: pctAbs(nearbyPct('District 65')),
   nearby_median: pct1(round1(median)),
   nearby_grew: String(subs.filter((v) => v > 0).length),
-  nearby_cps: pctAbs(nearbyPct('Chicago')),
   cook_n: String(cook.length),
   cook_rank: ORD[cookI] || cookI + 1 + 'th',
   cook_ahead: aheadText,
+  classes_since_k: int(round10(classesNow.reduce((t, r) => t + r.atK - r.now, 0))), // {s-sincek}
+  k_2026: int(gradeAt('2026-27', 'K')),                                     // {s-k}
+  g8_2026: int(gradeAt('2026-27', '8')),                                    // {s-8}
+  kofron_mid_2026: int(trendAt('2026-27', 'kofron_mid')),                   // {s-kmid}
+  t65_2031: int(round10(t65('mid'))),                                       // {s-t65}
+  t65_2031_range: 'range ' + int(round10(t65('low'))) + ' to ' + int(round10(t65('high'))), // {s-t65r}
+  private_now: int(round10(privLast)),                                      // {s-priv}
+  gap_now: 'about ' + int(round100(gap(CAP_NOW))),                          // {s-gap}
+  gap_plan: 'about ' + int(round100(gap(CAP_PLAN))),                        // {s-gap2}
 };
 
 /* ===================================================== line charts */
@@ -184,100 +171,179 @@ const summary = {
  * A chart spec, as read by charts.js and by _includes/chart.html (which
  * renders the legend and the no-JS table from the same object):
  *   { x: [...], xLabels: [...], xName, ticks: [x...], yMin?, yMax?, zero?,
- *     refs: [{at: index, label}], hrefs: [value], spans: [{from, to, label}],
- *     series: [{label, swatch, style, values, display}]   style: line | strong | dashed | dotted
+ *     refs: [{at: index, label}], spans: [{from, to, label}],
+ *     hrefs: [value | {value, label, below?}],
+ *     series: [{label, swatch, style, values, display, dots?, hidden?, joinGaps?}]
+ *             style: line | strong | dashed | dotted | dashdot
  *     bands:  [{label, swatch, low, high, display}],
- *     markers:[{at, value, swatch, label}], title?, note? }
- * `display` holds the preformatted strings shown in the tooltip and table.
+ *     markers:[{at, value, swatch, label, shape?: 'diamond' | 'ring'}],
+ *     labels: [{at, value, text, swatch?, anchor?: start|middle|end, dy?: em}],
+ *     title?, note?, compact?, flag? }
+ * `display` holds the preformatted strings shown in the tooltip and table. A
+ * `hidden` series is drawn but left out of the tooltip and table (e.g. the
+ * dotted bridge over a missing year); `joinGaps` draws across nulls.
  */
 const series = (label, swatch, style, values, display) => ({ label, swatch: sw(swatch), style, values, display: display || values.map(dash) });
 const band = (label, swatch, low, high) => ({ label, swatch: sw(swatch), low, high, display: low.map((l, i) => range(l, high[i])) });
 const legendOf = (items) => items.map(([label, swatch, style]) => ({ label, swatch: sw(swatch), style }));
 const ticksFrom = (x, wanted) => x.filter((v) => wanted.includes(v));
+const lastIndex = (vals) => vals.map((v, i) => (v === null ? -1 : i)).filter((i) => i >= 0).pop();
 
 const charts = {};
 
-// District trend vs the forecasts
+// 1. K-8 enrollment each fall
 {
-  const x = D.trend.map((r) => r.year), col = (f) => D.trend.map((r) => num(r[f]));
-  charts.trend = {
-    legend: legendOf([['Actual', 1, 'strong'], ['Kofron middle', 2, 'dashed'], ['Kofron low to high', 2, 'band'],
-      ['Kofron "snapshot"', 2, 'dotted'], ['District projection (2025)', 4, 'line']]),
+  const rows = D.trend.filter((r) => num(r.actual) !== null), x = rows.map((r) => r.year), a = rows.map((r) => num(r.actual));
+  const pk = a.indexOf(Math.max(...a)), last = a.length - 1;
+  charts.k8 = {
+    legend: [],
     panels: [{
-      x, xLabels: x, xName: 'School year', ticks: ticksFrom(x, ['2012-13', '2016-17', '2021-22', '2026-27', '2031-32']),
-      yMin: 3000,
-      bands: [band('Kofron low to high', 2, col('kofron_low'), col('kofron_high'))],
-      series: [series('Kofron middle', 2, 'dashed', col('kofron_mid')), series('Kofron "snapshot"', 2, 'dotted', col('kofron_snapshot')),
-        series('District projection (2025)', 4, 'line', col('district_proj_2025')), series('Actual', 1, 'strong', col('actual'))],
+      x, xLabels: x, xName: 'School year', ticks: ticksFrom(x, ['2012-13', '2014-15', '2016-17', '2018-19', '2020-21', '2022-23', '2024-25', '2026-27']),
+      yMin: 4000, yMax: 8000,
+      series: [series('K-8 students', 1, 'strong', a)],
+      markers: [{ at: pk, value: a[pk], swatch: sw(1), shape: 'dot' }],
+      labels: [{ at: pk, value: a[pk], text: x[pk] + ': ' + int(a[pk]), anchor: 'middle', dy: -0.9, swatch: 'var(--ink)' },
+        { at: last, value: a[last], text: x[last] + ': ' + int(a[last]), anchor: 'end', dy: 1.6, swatch: 'var(--ink)' }],
     }],
   };
 }
 
-// Kofron method rerun from fall 2020: two panels
+// 2. Steeper than the nation and Chicago (K-8 only, actual counts)
 {
-  const rows = D.rerun.filter((r) => r.year >= '2016-17'), x = rows.map((r) => r.year), col = (f) => rows.map((r) => num(r[f]));
-  const all = rows.flatMap((r) => ['actual', 'high_births_falling', 'snapshot_births_falling', 'high_births_data', 'snapshot_births_data'].map((f) => num(r[f]))).filter((v) => v !== null);
-  const yMin = Math.floor((Math.min(...all) - 200) / 500) * 500, yMax = Math.ceil((Math.max(...all) + 100) / 500) * 500;
-  const panel = (key, title) => {
-    const mid = col('mid_' + key).map((v, i) => (x[i] === '2020-21' ? null : v)); // the start year is the actual count
-    return {
-      title, x, xLabels: x, xName: 'School year', ticks: ticksFrom(x, ['2016-17', '2020-21', '2026-27', '2030-31', '2034-35']),
-      yMin, yMax, refs: [{ at: x.indexOf('2020-21'), label: 'start, fall 2020' }],
-      bands: [band('Low to high series', 3, col('low_' + key), col('high_' + key))],
-      series: [series('Snapshot', 3, 'dotted', col('snapshot_' + key)), series('Middle series', 3, 'dashed', mid), series('Actual', 1, 'strong', col('actual'))],
-    };
-  };
-  charts.rerun = {
-    legend: legendOf([['Actual', 1, 'strong'], ['Middle series', 3, 'dashed'], ['Low to high series', 3, 'band'], ['Snapshot (last 2 years only)', 3, 'dotted']]),
-    panels: [panel('births_falling', "If births keep falling (Kofron's straight-line trend)"), panel('births_data', 'Using birth records through 2023')],
+  const x = natRows.map((r) => r.year), col = (f) => natRows.map((r) => r[f]);
+  const disp = (f, raw, unit) => natRows.map((r) => (r[f] === null ? null : r[f].toFixed(1) + (r[raw] !== null ? ' (' + int(r[raw]) + unit + ')' : '')));
+  const s = [series('Chicago Public Schools', 3, 'line', col('cps_k8_idx'), disp('cps_k8_idx', 'cps_k8', '')),
+    series('U.S. public schools', 2, 'line', col('us_k8_idx'), disp('us_k8_idx', 'us_k8', ' thousand')),
+    series('District 65', 1, 'strong', col('d65_k8_idx'), disp('d65_k8_idx', 'd65_k8', ''))];
+  const vals = s.flatMap((q) => q.values).filter((v) => v !== null);
+  charts.nation = {
+    legend: legendOf([['District 65', 1, 'strong'], ['U.S. public schools', 2, 'line'], ['Chicago Public Schools', 3, 'line']]),
+    panels: [{
+      x, xLabels: x.map(shortYear), xName: 'Fall (fall 2019 = 100)',
+      yMin: Math.min(60, Math.min(...vals) - 3), yMax: Math.max(110, Math.max(...vals) + 3),
+      hrefs: [100], spans: [{ from: x.indexOf('2020-21'), to: x.indexOf('2021-22'), label: 'COVID' }],
+      series: s,
+      labels: s.map((q) => { const i = lastIndex(q.values); return { at: i, value: q.values[i], text: String(Math.round(q.values[i])), anchor: 'start', swatch: q.swatch }; }),
+    }],
   };
 }
 
-// Kofron vs the Thrive65 rerun, K-5 and 6-8, with a births toggle
+// 4. Private schools inside the boundary
+{
+  const rows = D.priv, x = rows.map((r) => r.year), d = rows.map((r) => +r.d65_k8);
+  const gi = rows.findIndex((r) => +r.private_incomplete === 1);
+  const p = rows.map((r, i) => (i === gi ? null : +r.private_k8));
+  const pDisp = rows.map((r, i) => 'about ' + int(+r.private_k8) + (i === gi ? ' (two schools missing from the state report)' : ''));
+  const bridge = rows.map((r, i) => (gi > 0 && (i === gi - 1 || i === gi + 1) ? +r.private_k8 : null));
+  const pct = (a, b) => (b < a ? MINUS : '+') + Math.abs(Math.round(((b - a) / a) * 100)) + '%';
+  const L = rows.length - 1;
+  const priv = series('Private and parochial schools', 2, 'strong', p, pDisp);
+  charts.private = {
+    legend: legendOf([['District 65', 1, 'strong'], ['Private and parochial schools', 2, 'strong']]),
+    panels: [{
+      x, xLabels: x, xName: 'School year', yMin: 0, yMax: 8000, zero: true,
+      series: [{ ...series('Private, gap year', 2, 'dotted', bridge), hidden: true, joinGaps: true }, priv, series('District 65', 1, 'strong', d)],
+      markers: gi > 0 ? [{ at: gi, value: +rows[gi].private_k8, swatch: sw(2), shape: 'ring', label: 'Private (incomplete report): about ' + int(+rows[gi].private_k8) }] : [],
+      labels: [{ at: L, value: d[L], text: 'District 65: ' + int(d[L]) + ' (' + pct(d[0], d[L]) + ')', anchor: 'end', dy: 1.7, swatch: 'var(--ink)' },
+        { at: L, value: p[L], text: 'Private: ' + int(p[L]) + ' (' + pct(+rows[0].private_k8, p[L]) + ')', anchor: 'end', dy: -0.9, swatch: 'var(--ink)' }],
+    }],
+  };
+}
+
+// 7. Births five years before each kindergarten class
+{
+  const rows = D.births, x = rows.map((r) => r.k_class), col = (f) => rows.map((r) => num(r[f]));
+  const kof = col('kofron_births'), kx = col('kofron_trend'), rec = col('birth_records'), hold = col('held_flat'), pace = col('birth_pace'), ks = col('birth_kofron_slope');
+  const i26 = x.indexOf('2026'), L = x.length - 1;
+  charts.births = {
+    legend: legendOf([['Kofron study data and trend', 'text', 'strong'], ['Cook County birth records', 1, 'strong'], ['Assumed range after 2023', 1, 'band'], ['Recent pace', 1, 'dotted']]),
+    panels: [{
+      x, xLabels: x.map((y) => '’' + y.slice(2)), xName: 'Kindergarten class (fall)', yMin: 400, yMax: 1100,
+      refs: [{ at: i26, label: 'this fall' }],
+      bands: [band('Assumed range after 2023', 1, ks, hold)],
+      series: [series("Kofron's birth data", 'text', 'strong', kof), series("Kofron's trend line", 'text', 'dashed', kx),
+        series('Recent pace', 1, 'dotted', pace), { ...series('Cook County birth records', 1, 'strong', rec), dots: true }],
+      labels: [{ at: 0, value: kof[0], text: int(kof[0]), anchor: 'start', dy: -0.8, swatch: 'var(--ink)' },
+        { at: i26, value: kx[i26], text: int(kx[i26]), anchor: 'start', dy: -0.8, swatch: 'var(--ink)' },
+        { at: i26, value: rec[i26], text: int(rec[i26]), anchor: 'start', dy: 1.4, swatch: sw(1) },
+        { at: L, value: hold[L], text: int(hold[L]), anchor: 'start', swatch: sw(1) },
+        { at: L, value: pace[L], text: int(pace[L]), anchor: 'start', swatch: sw(1) },
+        { at: L, value: ks[L], text: int(ks[L]), anchor: 'start', swatch: sw(1) }],
+    }],
+  };
+}
+
+// 8 and 9. K-8 actual vs the forecasts; forecasts to 2031-32 against capacity
+{
+  const panel = (aheadView) => {
+    const rows = D.trend.filter((r) => r.year >= (aheadView ? '2016-17' : '2018-19')), x = rows.map((r) => r.year), col = (f) => rows.map((r) => num(r[f]));
+    const L = x.length - 1, mid = col('kofron_mid'), mck = col('mckibben_2024');
+    const p = {
+      x, xLabels: x, xName: 'School year', ticks: ticksFrom(x, ['2016-17', '2018-19', '2020-21', '2022-23', '2024-25', '2026-27', '2028-29', '2031-32']),
+      yMin: aheadView ? 3000 : 3500, yMax: aheadView ? 8500 : 7600,
+      bands: [], series: [series('Kofron middle', 1, 'dashed', mid), series('McKibben', 4, 'dashdot', mck), series('Actual', 1, 'strong', col('actual'))],
+      labels: [{ at: L, value: mid[L], text: int(mid[L]), anchor: 'start', swatch: sw(1) }],
+    };
+    if (mck[L] !== null) p.labels.push({ at: L, value: mck[L], text: int(mck[L]), anchor: 'start', swatch: sw(4) });
+    if (!aheadView) p.bands.push(band('Kofron low to high', 1, col('kofron_low'), col('kofron_high')));
+    else {
+      const t = col('t65_mid');
+      p.hrefs = [{ value: CAP_NOW, label: "Today's buildings: about 8,150 seats" }, { value: CAP_PLAN, label: 'After the two proposed closures: about 7,200', below: true }];
+      p.bands.push(band('Thrive65 update, low to high', 2, col('t65_low'), col('t65_high')));
+      p.series.splice(2, 0, series('Thrive65 update', 2, 'dotted', t));
+      p.labels.push({ at: L, value: t[L], text: int(t[L]), anchor: 'start', swatch: sw(2) });
+    }
+    return p;
+  };
+  charts.forecast = {
+    legend: legendOf([['Actual', 1, 'strong'], ['Kofron middle (shaded: low to high)', 1, 'dashed'], ['McKibben', 4, 'dashdot']]),
+    panels: [panel(false)],
+  };
+  charts.ahead = {
+    legend: legendOf([['Actual', 1, 'strong'], ['Kofron middle', 1, 'dashed'], ['McKibben', 4, 'dashdot'], ['Thrive65 update (shaded: low to high)', 2, 'dotted'], ['Building capacity', 'text', 'dotted']]),
+    panels: [panel(true)],
+  };
+}
+
+// Foot: K-5 and 6-8, actual vs Kofron, McKibben and the Thrive65 update
 {
   const rows = D.bands.filter((r) => r.year >= '2016-17'), x = rows.map((r) => r.year), col = (f) => rows.map((r) => num(r[f]));
-  const panel = (b, title, mode) => {
-    const vals = ['actual'].map((k) => col(`band_${b}_actual`)).concat(['kof_high', 'kof_low', 't65_high_falling', 't65_low_falling', 't65_high_data', 't65_low_data'].map((k) => col(`${k}_${b}`)))
-      .flat().filter((v) => v !== null);
+  const panel = (b, title) => {
+    const vals = [`band_${b}_actual`, `kof_high_${b}`, `kof_low_${b}`, `t65_high_${b}`, `t65_low_${b}`, `mck_${b}`].flatMap(col).filter((v) => v !== null);
     return {
-      title, x, xLabels: x, xName: 'School year', ticks: ticksFrom(x, ['2016-17', '2020-21', '2026-27', '2031-32', '2034-35']),
-      yMin: Math.min(...vals) * 0.92, yMax: Math.max(...vals) * 1.03,
-      refs: [{ at: x.indexOf('2026-27'), label: 'this fall' }],
-      bands: [band('Kofron low to high', 2, col(`kof_low_${b}`), col(`kof_high_${b}`)), band('Our rerun low to high', 3, col(`t65_low_${mode}_${b}`), col(`t65_high_${mode}_${b}`))],
-      series: [series('Kofron middle', 2, 'dashed', col(`kof_mid_${b}`)), series('Our rerun middle', 3, 'dashed', col(`t65_mid_${mode}_${b}`)),
-        series('Actual (official count)', 1, 'strong', col(`band_${b}_actual`))],
+      title, x, xLabels: x, xName: 'School year', ticks: ticksFrom(x, ['2016-17', '2020-21', '2026-27', '2031-32']),
+      yMin: Math.min(...vals) * 0.92, yMax: Math.max(...vals) * 1.03, refs: [{ at: x.indexOf('2026-27'), label: 'this fall' }],
+      bands: [band('Kofron low to high', 1, col(`kof_low_${b}`), col(`kof_high_${b}`)), band('Thrive65 update, low to high', 2, col(`t65_low_${b}`), col(`t65_high_${b}`))],
+      series: [series('Kofron middle', 1, 'dashed', col(`kof_mid_${b}`)), series('Thrive65 update from fall 2026, middle', 2, 'dashed', col(`t65_mid_${b}`)),
+        series('McKibben forecast (2024)', 4, 'dashdot', col(`mck_${b}`)), series('Actual (official count)', 'ink', 'strong', col(`band_${b}_actual`))],
     };
   };
-  const legend = legendOf([['Actual (official count)', 1, 'strong'], ['Kofron middle', 2, 'dashed'], ['Kofron low to high', 2, 'band'], ['Our rerun middle', 3, 'dashed'], ['Our rerun low to high', 3, 'band']]);
   charts.cmp = {
-    legend,
-    variantLabel: 'Our rerun after 2025',
-    variants: [
-      { id: 'data', label: 'Birth records through 2023', panels: [panel('k5', 'Grades K-5', 'data'), panel('68', 'Grades 6-8', 'data')] },
-      { id: 'falling', label: "Kofron's straight-line births", panels: [panel('k5', 'Grades K-5', 'falling'), panel('68', 'Grades 6-8', 'falling')] },
-    ],
+    legend: legendOf([['Actual (official count)', 'ink', 'strong'], ['Kofron middle', 1, 'dashed'], ['Kofron low to high', 1, 'band'],
+      ['Thrive65 update from fall 2026, middle', 2, 'dashed'], ['Thrive65 update, low to high', 2, 'band'], ['McKibben forecast (2024)', 4, 'dashdot']]),
+    panels: [panel('k5', 'Grades K-5'), panel('68', 'Grades 6-8')],
   };
 }
 
-// Each school: actual and the Kofron forecast (small multiples)
+// Foot: each school, actual and the Kofron forecast (small multiples)
 const YEARS_ALL = unique(D.trend.map((r) => r.year)).sort();
 {
   const schools = unique(D.schoolTrend.map((r) => r.school));
   charts.schools = {
-    legend: legendOf([['Enrolled', 1, 'strong'], ['Kofron middle', 2, 'dashed'], ['Kofron low to high', 2, 'band']]),
+    legend: legendOf([['Enrolled', 1, 'strong'], ['Kofron middle', 1, 'dashed'], ['Kofron low to high', 1, 'band']]),
     table: 'schools_actual',
     panels: schools.map((s) => {
       const rs = YEARS_ALL.map((y) => D.schoolTrend.find((r) => r.school === s && r.year === y) || {});
       const col = (f) => rs.map((r) => num(r[f]));
-      const a = col('actual'), lastI = a.map((v, i) => (v === null ? -1 : i)).filter((i) => i >= 0).pop();
+      const a = col('actual'), lastI = lastIndex(a);
       const p = {
         title: s, note: lastI === undefined ? '' : YEARS_ALL[lastI] + ': ' + int(a[lastI]), compact: true,
         x: YEARS_ALL, xLabels: YEARS_ALL, xName: 'School year', ticks: ['2012-13', '2021-22', '2031-32'], zero: true,
         refs: [{ at: YEARS_ALL.indexOf('2026-27') }], bands: [], series: [],
       };
       if (col('kofron_low').some((v) => v !== null)) {
-        p.bands.push(band('Kofron low to high', 2, col('kofron_low'), col('kofron_high')));
-        p.series.push(series('Kofron middle', 2, 'dashed', col('kofron_mid')));
+        p.bands.push(band('Kofron low to high', 1, col('kofron_low'), col('kofron_high')));
+        p.series.push(series('Kofron middle', 1, 'dashed', col('kofron_mid')));
       }
       p.series.push(series('Enrolled', 1, 'strong', a));
       return p;
@@ -285,13 +351,13 @@ const YEARS_ALL = unique(D.trend.map((r) => r.year)).sort();
   };
 }
 
-// Each elementary school through 2031-32: today's boundaries vs the Nov. 6 proposal
+// Foot: each elementary school through 2031-32, today's boundaries vs the Nov. 6 proposal
 {
   const rows = D.schoolProjYearly, schools = unique(rows.map((r) => r.school)), years = unique(rows.map((r) => r.year));
   const yMax = Math.max(...rows.map((r) => +r.high)) * 1.05;
   const fy28 = {}; for (const r of D.schoolProj) if (num(r.district_fy28_nov6) > 0) fy28[r.school] = +r.district_fy28_nov6;
   charts.schoolproj = {
-    legend: legendOf([["Today's boundaries", 1, 'strong'], ['Nov. 6 proposal', 4, 'strong'], ['Low to high range', 'muted', 'band'], ["District's own fall 2027 projection", 4, 'diamond']]),
+    legend: legendOf([["Today's boundaries", 1, 'strong'], ['Nov. 6 proposal', 2, 'strong'], ['Low to high range', 'muted', 'band'], ["District's own fall 2027 projection", 2, 'diamond']]),
     table: 'none', // the schoolproj table below the figure carries every value
     panels: schools.map((s) => {
       const get = (b) => years.map((y) => rows.find((r) => r.school === s && r.boundaries === b && r.year === y));
@@ -307,103 +373,99 @@ const YEARS_ALL = unique(D.trend.map((r) => r.year)).sort();
       };
       if (closes) p.flag = 'Closes under Nov. 6 proposal';
       else {
-        p.bands.push(band('Nov. 6 proposal, low to high', 4, live(n, 'low'), live(n, 'high')));
-        p.series.push(series('Nov. 6 proposal', 4, 'strong', live(n, 'mid')));
+        p.bands.push(band('Nov. 6 proposal, low to high', 2, live(n, 'low'), live(n, 'high')));
+        p.series.push(series('Nov. 6 proposal', 2, 'strong', live(n, 'mid')));
       }
-      if (fy28[s]) p.markers.push({ at: 1, value: fy28[s], swatch: sw(4), label: "District's own projection: " + int(fy28[s]) });
+      if (fy28[s]) p.markers.push({ at: 1, value: fy28[s], swatch: sw(2), label: "District's own projection: " + int(fy28[s]) });
       return p;
     }),
   };
 }
 
-// Feeder patterns: students per grade, fall 2026
-{
-  const feeders = unique(D.feeder.map((r) => r.feeder));
-  const legend = feeders.map((f, i) => ({ label: f === 'King Arts' ? 'King Arts (K-8 magnet)' : f + ' feeder', swatch: sw(i + 1), style: f === 'King Arts' ? 'dashed' : 'line' }));
-  charts.feeder = {
-    legend,
-    panels: [{
-      x: G9, xLabels: G9.map(gradeShort), xName: 'Grade', ticks: G9, zero: true, dots: true,
-      refs: [{ at: 5.5, label: 'middle school' }],
-      bands: [],
-      series: feeders.map((f, i) => series(legend[i].label, i + 1, f === 'King Arts' ? 'dashed' : 'line',
-        G9.map((g) => num((D.feeder.find((r) => r.feeder === f && r.grade === g) || {}).students)))),
-    }],
-  };
-}
+/* ========================================================= bar charts */
+/*
+ * Build-time horizontal bars (_includes/charts/bars.html). One model for every
+ * bar chart: { zero?, legend, groups: [{label?, rows: [row]}] } where a row is
+ *   { label, strong?, value, detail?, note?,
+ *     bars:  [{offset, size, swatch, cls?}]   — overlaid; cls takes utilities
+ *                                              (bar-inset = thinner, swatch-outline)
+ *     stack: [{share, swatch, text?, label}], stackSize } — one segmented bar;
+ *            share is the segment's fraction of the stack
+ * offset/size are 0–1 of the axis domain, so CSS only positions.
+ */
+const bars = {};
+const f4 = (v) => +v.toFixed(4);
+const muted = (offset, size) => ({ offset: f4(offset), size: f4(size), swatch: sw('muted'), cls: 'swatch-outline' });
 
-// National comparison: two panels, fall 2019 = 100
+// 3. Nearby and peer districts: diverging bars around zero
 {
-  const panel = (isK8) => {
-    const rows = natRows.filter((r) => isK8 || r.year <= '2026-27'), x = rows.map((r) => r.year), col = (f) => rows.map((r) => r[f]);
-    const disp = (f, raw, unit) => rows.map((r) => (r[f] === null ? null : r[f].toFixed(1) + (raw && r[raw] !== null ? ' (' + int(r[raw]) + unit + ')' : '')));
-    const s = isK8
-      ? [series('District 65 forecast (Kofron middle)', 1, 'dashed', col('d65_kofron_idx'), disp('d65_kofron_idx')),
-        series('U.S. forecast (NCES)', 3, 'dashed', col('us_k8_proj_idx'), disp('us_k8_proj_idx')),
-        series('Chicago Public Schools', 4, 'line', col('cps_k8_idx'), disp('cps_k8_idx', 'cps_k8', '')),
-        series('U.S. public', 3, 'line', col('us_k8_idx'), disp('us_k8_idx', 'us_k8', ' thousand')),
-        series('District 65', 1, 'strong', col('d65_k8_idx'), disp('d65_k8_idx', 'd65_k8', ''))]
-      : [series('U.S. public', 3, 'line', col('us_k_idx'), disp('us_k_idx', 'us_k', ' thousand')),
-        series('District 65', 1, 'strong', col('d65_k_idx'), disp('d65_k_idx', 'd65_k', ''))];
-    const vals = s.flatMap((q) => q.values).filter((v) => v !== null);
-    return {
-      title: isK8 ? 'All grades, K-8' : 'Kindergarten', x, xLabels: x, xName: 'Fall (fall 2019 = 100)',
-      ticks: ticksFrom(x, ['2012-13', '2016-17', '2019-20', '2023-24', '2026-27', '2031-32']),
-      yMin: Math.min(60, Math.min(...vals) - 3), yMax: Math.max(110, Math.max(...vals) + 3),
-      hrefs: [100], spans: [{ from: x.indexOf('2020-21'), to: x.indexOf('2021-22'), label: 'COVID' }],
-      bands: [], series: s,
-    };
-  };
-  charts.national = {
-    legend: legendOf([['District 65', 1, 'strong'], ['U.S. public schools', 3, 'line'], ['Chicago Public Schools (K-8 panel)', 4, 'line'], ['Forecast', 'muted', 'dashed']]),
-    panels: [panel(true), panel(false)],
-  };
-}
-
-/* ========================================================= HTML charts */
-// Nearby and peer districts: diverging bars, pre-sorted
-const bars = (() => {
   const rows = D.nearby.map((r) => ({ name: shortName(r.district), group: r.group, a: +r.enr_2018_19, b: +r.enr_2025_26, p: +r.pct_change, li: num(r.low_income_pct_2026), peer: r.district_peer || '' }))
     .sort((a, b) => a.p - b.p);
   const lo = Math.floor(Math.min(-30, Math.min(...rows.map((r) => r.p)) - 2) / 5) * 5, hi = Math.ceil(Math.max(15, Math.max(...rows.map((r) => r.p)) + 2) / 5) * 5;
   const pos = (v) => (v - lo) / (hi - lo);
-  const swatch = (r) => (r.group === 'District 65' ? 1 : r.group === 'Chicago' ? 4 : r.peer ? 2 : 'muted');
+  const swatch = (r) => (r.group === 'District 65' ? 1 : r.group === 'Chicago' ? 3 : r.peer ? 2 : 'muted');
   const peerText = (p) => (p === 'Both' ? 'Dec. 2025 memo and Sept. 2026 presentation' : p === 'Dec. 2025' ? 'Dec. 2025 memo' : p ? 'Sept. 2026 presentation' : '');
-  return {
-    zero: +pos(0).toFixed(4),
-    legend: legendOf([['District 65', 1, 'box'], ['Chicago Public Schools', 4, 'box'], ['Peer district cited by District 65', 2, 'box'], ['Nearby suburban district', 'muted', 'box']]),
-    rows: rows.map((r) => ({
-      label: r.name, strong: r.group === 'District 65', value: pct1(r.p), swatch: sw(swatch(r)),
-      offset: +pos(Math.min(0, r.p)).toFixed(4), size: +(Math.abs(r.p) / (hi - lo)).toFixed(4),
-    })),
-    table: rows.map((r) => [r.name, r.group === 'Nearby suburb' ? (r.peer ? 'Peer (cited by District 65)' : 'Nearby suburb') : r.group === 'Chicago' ? 'Chicago' : r.peer ? 'Peer (cited by District 65)' : r.group,
+  bars.nearby = {
+    zero: f4(pos(0)),
+    legend: legendOf([['District 65', 1, 'box'], ['Chicago Public Schools', 3, 'box'], ['Peer district cited by District 65', 2, 'box'], ['Nearby suburban district', 'muted', 'outline']]),
+    groups: [{ rows: rows.map((r) => {
+      const o = pos(Math.min(0, r.p)), z = Math.abs(r.p) / (hi - lo);
+      return { label: r.name, strong: r.group === 'District 65', value: pct1(r.p), bars: [swatch(r) === 'muted' ? muted(o, z) : { offset: f4(o), size: f4(z), swatch: sw(swatch(r)) }] };
+    }) }],
+    table: rows.map((r) => [r.name, r.group === 'Chicago' ? 'Chicago' : r.peer ? 'Peer (cited by District 65)' : r.group,
       int(r.a), int(r.b), pct1(r.p), r.li === null ? 'not reported' : Math.round(r.li) + '%', peerText(r.peer)]),
   };
-})();
+}
 
-// Kindergarten vs 5th grade at each elementary school: dumbbells
-const dots = (() => {
-  const rows = D.current.filter((r) => r.level === 'Elementary').map((r) => ({ school: r.school, k: +r.k, g5: +r.g5, p: +r.k_vs_5_pct })).sort((a, b) => a.p - b.p);
-  const max = Math.ceil((Math.max(...rows.map((r) => Math.max(r.k, r.g5))) * 1.1) / 20) * 20;
-  const pos = (v) => +(v / max).toFixed(4);
-  const step = max / 4;
-  return {
-    legend: legendOf([['Kindergarten', 1, 'dot'], ['5th grade', 3, 'dot']]),
-    ticks: [0, 1, 2, 3, 4].map((i) => ({ at: i / 4, label: int(i * step) })),
-    rows: rows.map((r) => ({ label: r.school, k: int(r.k), g5: int(r.g5), k_at: pos(r.k), g5_at: pos(r.g5), lo: pos(Math.min(r.k, r.g5)), hi: pos(Math.max(r.k, r.g5)), value: pct1(r.p), strong: r.p <= -20 })),
+// 5. ETHS classes by where they went to 8th grade, next to District 65's 8th grade the year before
+const ETHS_SEGS = [['from_d65', 'District 65', 1], ['private_parochial', 'Private or parochial', 2], ['cps', 'Chicago Public Schools', 3],
+  ['out_of_state_other_il', 'Out of state or country, other Illinois', 4], ['homeschool_other', 'Homeschool or other', 'text']];
+{
+  const rows = D.eths.map((r) => ({ ...r, g8: +r.d65_8th_prior_year, tot: ETHS_SEGS.reduce((a, [k]) => a + +r[k], 0) }));
+  const max = Math.ceil(Math.max(...rows.map((r) => Math.max(r.g8, r.tot))) / 100) * 100;
+  bars.eths = {
+    zero: 0,
+    legend: [{ label: 'District 65 8th grade, the year before', swatch: sw('muted'), style: 'outline' }].concat(ETHS_SEGS.map(([, n, c]) => ({ label: n, swatch: sw(c), style: 'box' }))),
+    groups: rows.map((r) => ({
+      label: r.grade_now + ': ' + r['class'] + ', entered ETHS in fall ' + r.entered_fall,
+      rows: [
+        { label: 'District 65 8th grade, fall ' + (+r.entered_fall - 1), value: int(r.g8), bars: [muted(0, r.g8 / max)] },
+        { label: 'First-time ETHS freshmen', value: int(r.tot), stackSize: f4(r.tot / max),
+          stack: ETHS_SEGS.map(([k, n, c], j) => ({ share: f4(+r[k] / r.tot), swatch: sw(c), text: j < 2 ? int(+r[k]) : '', label: n + ' ' + int(+r[k]) })) },
+      ],
+    })),
   };
-})();
+}
 
-// District enrollment by grade and year: heat table
-const heat = (() => {
-  const years = gradeYears;
-  const vals = D.grades.map((r) => +r.students), lo = Math.min(...vals), hi = Math.max(...vals);
-  return {
-    years: years.map((y) => ({ short: shortYear(y), full: y })),
-    rows: G9.map((g) => ({ label: gradeShort(g), full: gradeName(g), cells: years.map((y) => { const n = byYearGrade[y][g]; return { n: int(n), t: +((n - lo) / (hi - lo)).toFixed(3) }; }) })),
-    min: int(lo), max: int(hi),
+// 6. Each grade this fall, next to its size in kindergarten
+{
+  const max = Math.ceil((Math.max(...classesNow.map((r) => Math.max(r.now, r.atK))) * 1.05) / 50) * 50;
+  bars.classes = {
+    zero: 0,
+    legend: [{ label: 'Size in kindergarten', swatch: sw('muted'), style: 'outline' }, { label: 'Fall 2026', swatch: sw(1), style: 'box' }],
+    groups: [{ rows: classesNow.map((r) => ({
+      label: gradeName(r.g), value: int(r.now), detail: 'in K: ' + int(r.atK),
+      bars: [muted(0, r.atK / max), { offset: 0, size: f4(r.now / max), swatch: sw(1), cls: 'bar-inset' }],
+    })) }],
   };
-})();
+}
+
+// 10. What the district can change, next to the empty seats expected by 2031-32
+{
+  const items = [
+    { n: 'Every private K-8 student in the boundary', v: round10(privLast), c: 2 },
+    { n: 'Students who left in 2020-21, still K-8 age', v: LEFT_STILL_K8, c: 2 },
+    { n: "Empty seats in 2031-32, today's buildings", v: round100(gap(CAP_NOW)), note: 'Buildings about ' + fullPct(CAP_NOW) + '% full' },
+    { n: 'Empty seats in 2031-32, after the two proposed closures', v: round100(gap(CAP_PLAN)), note: 'Buildings about ' + fullPct(CAP_PLAN) + '% full' },
+  ];
+  const max = Math.max(...items.map((r) => r.v));
+  bars.levers = {
+    zero: 0,
+    legend: [],
+    groups: [{ rows: items.map((r) => ({ label: r.n, value: 'about ' + int(r.v), note: r.note || null,
+      bars: [r.c ? { offset: 0, size: f4(r.v / max), swatch: sw(r.c) } : muted(0, r.v / max)] })) }],
+  };
+}
 
 /* ============================================================== tables */
 const cell = (t, b) => (b ? { t, b: true } : { t });
@@ -419,17 +481,22 @@ const tables = {};
   };
 }
 {
+  // sortable: each cell carries a sort value `v` (number, or text for names/years); blanks sort last
   const rows = D.volatility.slice().sort((a, b) => +a.volatility_sd_pct - +b.volatility_sd_pct);
+  const n = (v) => (v === null ? null : +v);
+  const c = (t, v, b) => ({ ...cell(t, b), v });
   tables.vol = {
     caption: 'Enrollment stability by school, 2012-13 to 2026-27',
+    sortable: true, sortedBy: 5,
     columns: ['School', 'Avg. 2012-20', '2025-26', '2025-26 vs. avg.', 'Avg. yearly change', 'Volatility', 'Worst year', 'Which year', 'Years down (of 13)', '2026-27', 'Change at redraw'],
-    rows: rows.map((r) => ({ cells: [cell(r.school), cell(int(+r.avg_2012_2020)), cell(int(+r.y2025_26)), cell(pct1(+r.change_vs_avg_pct), +r.change_vs_avg_pct <= -25),
-      cell(pct1(+r.avg_yearly_change_pct)), cell((+r.volatility_sd_pct).toFixed(1) + '%'), cell(pct1(+r.worst_year_pct)), cell(r.worst_year), cell(r.years_declined),
-      cell(r.y2026_27 === null ? 'closed' : int(+r.y2026_27)), cell(r.boundary_change_2026_27 === null ? '' : pct1(+r.boundary_change_2026_27))] })),
+    rows: rows.map((r) => ({ cells: [c(r.school, r.school), c(int(+r.avg_2012_2020), n(r.avg_2012_2020)), c(int(+r.y2025_26), n(r.y2025_26)),
+      c(pct1(+r.change_vs_avg_pct), n(r.change_vs_avg_pct), +r.change_vs_avg_pct <= -25), c(pct1(+r.avg_yearly_change_pct), n(r.avg_yearly_change_pct)),
+      c((+r.volatility_sd_pct).toFixed(1) + '%', n(r.volatility_sd_pct)), c(pct1(+r.worst_year_pct), n(r.worst_year_pct)), c(r.worst_year, r.worst_year), c(r.years_declined, n(r.years_declined)),
+      c(r.y2026_27 === null ? 'closed' : int(+r.y2026_27), n(r.y2026_27)), c(r.boundary_change_2026_27 === null ? '' : pct1(+r.boundary_change_2026_27), n(r.boundary_change_2026_27))] })),
   };
 }
 {
-  // Kofron vs rerun accuracy (was 'cmp_accuracy')
+  // How close each forecast came (middle series)
   const yr = (r) => +r.year.slice(0, 4), rows = D.bands;
   const calc = (pre, from, k5f, mf) => {
     const sel = rows.filter((r) => yr(r) >= from && yr(r) <= 2026);
@@ -439,12 +506,10 @@ const tables = {};
     const r31 = rows.find((r) => yr(r) === 2031);
     return { cells: [cell(pre), cell(from + '-' + String(from + 1).slice(2) + ' to 2026-27'), cell(avg(ek)), cell(pct1(round1(ek[ek.length - 1]))), cell(avg(em)), cell(pct1(round1(em[em.length - 1]))), cell(int(num(r31[k5f]))), cell(int(num(r31[mf])))] };
   };
-  tables.cmp = {
+  tables.accuracy = {
     caption: 'How close each forecast came (middle series)',
     columns: ['Forecast (middle series)', 'Years checked', 'K-5: average miss', 'K-5: miss in 2026-27', '6-8: average miss', '6-8: miss in 2026-27', 'K-5 in 2031-32', '6-8 in 2031-32'],
-    rows: [calc('Kofron (2022), from fall 2021', 2022, 'kof_mid_k5', 'kof_mid_68'),
-      calc('Thrive65 rerun, from fall 2020 (births falling)', 2021, 't65_mid_falling_k5', 't65_mid_falling_68'),
-      calc('Thrive65 rerun, from fall 2020 (births flat)', 2021, 't65_mid_data_k5', 't65_mid_data_68')],
+    rows: [calc('Kofron (2022), from fall 2021', 2022, 'kof_mid_k5', 'kof_mid_68'), calc('McKibben (2024), from fall 2024', 2025, 'mck_k5', 'mck_68')],
   };
 }
 {
@@ -471,15 +536,27 @@ const tables = {};
     }),
   };
 }
-tables.k5 = {
-  caption: 'Kindergarten and 5th grade at each elementary school, fall 2026',
-  columns: ['School', 'Kindergarten', '5th grade', 'K vs. 5th'],
-  rows: dots.rows.map((r) => ({ cells: [cell(r.label), cell(r.k), cell(r.g5), cell(r.value, r.strong)] })),
+tables.classes = {
+  caption: 'Each grade in fall 2026 and the same class in kindergarten',
+  columns: ['Grade, fall 2026', 'Students now', 'In kindergarten', 'Change'],
+  rows: classesNow.map((r) => ({ cells: [cell(gradeName(r.g)), cell(int(r.now)), cell(int(r.atK)), cell(signedInt(r.now - r.atK))] })),
+};
+tables.eths = {
+  caption: 'First-time ETHS freshmen by where they went to 8th grade',
+  columns: ['Class', 'District 65 8th grade, the fall before'].concat(ETHS_SEGS.map(([, n]) => n)).concat(['First-time freshmen']),
+  rows: D.eths.map((r) => { const tot = ETHS_SEGS.reduce((a, [k]) => a + +r[k], 0);
+    return { cells: [cell(r['class'] + ' (' + r.grade_now.toLowerCase() + ')'), cell(int(+r.d65_8th_prior_year))]
+      .concat(ETHS_SEGS.map(([k]) => cell(int(+r[k]) + ' (' + Math.round((+r[k] / tot) * 100) + '%)'))).concat([cell(int(tot))]) }; }),
+};
+tables.levers = {
+  caption: 'Students each possibility could add, and the empty seats expected by 2031-32',
+  columns: ['Possibility', 'About'],
+  rows: bars.levers.groups[0].rows.map((r) => ({ cells: [cell(r.label + (r.note ? ' (' + r.note.toLowerCase() + ')' : '')), cell(r.value.replace('about ', ''))] })),
 };
 tables.nearby = {
   caption: 'Enrollment change, 2018-19 to 2025-26, nearby and peer districts',
   columns: ['District', 'Group', '2018-19', '2025-26', 'Change', 'Low-income, 2025-26', 'Cited as a peer by District 65'],
-  rows: bars.table.map((c) => ({ cells: c.map((t, i) => cell(t, i === 0 && t === 'District 65')) })),
+  rows: bars.nearby.table.map((c) => ({ cells: c.map((t, i) => cell(t, i === 0 && t === 'District 65')) })),
 };
 {
   const schools = unique(D.schoolTrend.map((r) => r.school)), years = YEARS_ALL.filter((y) => y <= '2026-27');
@@ -522,8 +599,31 @@ const map = (() => {
     }
     return best.map(r1);
   };
-  // hand nudges for crowded labels, in viewBox units: 'map:area' → [dx, dy]
-  const NUDGE = {};
+  /* Label placement: start at the centroid, then try nearby spots until the
+     two-line label (name over value) clears every school dot on that map and
+     its centre stays inside the area. Sizes are in viewBox units at the label
+     cap (11 units, see .choropleth-label), so the check holds at every width. */
+  const FS = 11, insideRing = (pt, ring) => {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const [xi, yi] = ring[i], [xj, yj] = ring[j];
+      if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < ((xj - xi) * (pt[1] - yi)) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  };
+  const largestRing = (g) => polys(g).map((poly) => poly[0].map(proj)).sort((a, b) => b.length - a.length)[0];
+  const placeLabel = (a, dots) => {
+    const [cx, cy] = centroid(a.g), ring = largestRing(a.g);
+    const w = Math.max(a.name.length, 5) * FS * 0.6, h = FS * 2.4, r = FS * 0.45;
+    // label box spans [x - w/2, x + w/2] × [y - 1.1 FS, y + 1.3 FS] around the anchor
+    const clear = (x, y) => dots.every((d) => d.x < x - w / 2 - r || d.x > x + w / 2 + r || d.y < y - FS * 1.1 - r || d.y > y + FS * 1.3 + r);
+    const steps = [[0, 0], [0, -h * 0.6], [0, h * 0.6], [0, -h], [0, h], [-w * 0.4, 0], [w * 0.4, 0], [-w * 0.4, -h * 0.6], [w * 0.4, -h * 0.6], [-w * 0.4, h * 0.6], [w * 0.4, h * 0.6]];
+    for (const [dx, dy] of steps) {
+      const x = cx + dx, y = cy + dy;
+      if (clear(x, y) && insideRing([x, y], ring)) return [x, y];
+    }
+    return [cx, cy];
+  };
 
   const dens = {}; for (const r of D.density) dens[r.level + ':' + r.area] = r;
   const proj31 = {}; for (const r of D.schoolProj) proj31[r.school] = r;
@@ -563,7 +663,8 @@ const map = (() => {
     id: m.id, label: m.label, default: !!m.default, note: m.note || null,
     measures: m.measures.map((k2) => ({ id: k2, label: M[k2].label })),
     areas: m.areas.map((a) => {
-      const [cx, cy] = centroid(a.g), [dx, dy] = NUDGE[m.id + ':' + a.name] || [0, 0];
+      const dots = m.schools.map((sc) => { const [x, y] = proj(sc.g.coordinates); return { x, y }; });
+      const [lx, ly] = placeLabel(a, dots);
       const values = {}, parts = [];
       for (const key of m.measures) {
         const x = value(m, a, key);
@@ -577,7 +678,7 @@ const map = (() => {
       const title = a.name + kind + '. Land: ' + (+a.land_sq_mi).toFixed(2) + ' sq. mi. ' +
         (empty ? 'Most King Arts students come from across the district through the magnet lottery, so density is not shown.' : parts.join('. ') + '.');
       const first = values[m.measures[0]];
-      return { name: a.name, d: pathOf(a.g), x: r1(cx + dx), y: r1(cy + dy), empty, values, t: first ? first.t : 0, label: first ? first.label : 'magnet', title };
+      return { name: a.name, d: pathOf(a.g), x: r1(lx), y: r1(ly), empty, values, t: first ? first.t : 0, label: first ? first.label : 'magnet', title };
     }),
     schools: m.schools.map((s) => { const [x, y] = proj(s.g.coordinates).map(r1); return { name: s.name, x, y }; }),
   }));
@@ -602,8 +703,7 @@ mkdirSync(OUT, { recursive: true });
 const write = (name, obj) => { writeFileSync(join(OUT, name), JSON.stringify(obj, null, 1) + '\n'); console.log('wrote _data/enrollment/' + name); };
 write('summary.json', summary);
 write('charts.json', charts);
+for (const b of Object.values(bars)) delete b.table; // the table copy lives in tables.json
 write('bars.json', bars);
-write('dots.json', dots);
-write('heat.json', heat);
 write('tables.json', tables);
 write('map.json', map);
