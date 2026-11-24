@@ -37,6 +37,12 @@ in-place piece editing, include checkboxes, scenario select, docked result,
 wide tables), implementation notes and a suggested order. `README.md` is the
 condensed version for agents; `audit.html` is the full report.
 
+### `2026-11-24_enrollment-scroll-story_handoff/` — enrollment page as a scroll story
+**Canonical** until it lands. Plan for rebuilding `/analysis/enrollment/` to
+match the approved scroll-story version: chapter order, layout, data changes
+(district capacity replaces the 7,500 figure), approved copy (`copy.md`) and
+drawing code for the new charts (`reference-charts.js`).
+
 ### `hue-archive.css` — retired alternate hue colorsets
 The evergreen / electric-blue / ultraviolet `.hue-*` token blocks (light +
 dark) removed from `assets/css/main.css` when the hue system collapsed to a
