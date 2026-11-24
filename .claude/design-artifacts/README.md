@@ -45,6 +45,13 @@ via `prepare.mjs` → `_data/enrollment/`, a site-wide `chart-*` system
 HTML/table versions of the bar, dot and heatmap charts, three pre-projected
 static density maps, and every accessibility fix from the PR #21 review.
 
+### `2026-11-24_enrollment-scroll-story_handoff/` — enrollment page as a scroll story
+Rebuilds `/analysis/enrollment/` as the approved scroll story. `copy.md` (the
+approved text) and the chapter order are **canonical**. The layout, chart-code and
+file instructions in `README.md` and `reference-charts.js` were written for the
+older d3 page. They were carried out on main's chart system instead, as
+recorded at the end of that README, so treat them as **archived** history.
+
 ### `hue-archive.css` — retired alternate hue colorsets
 The evergreen / electric-blue / ultraviolet `.hue-*` token blocks (light +
 dark) removed from `assets/css/main.css` when the hue system collapsed to a
