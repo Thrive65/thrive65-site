@@ -86,7 +86,7 @@ wide: true
 <p class="note">The studies are described at the <a href="#studies">top of this page</a>. The charts below compare each forecast with what happened.</p>
 
 <h3 id="trend-vs-forecasts">District K-8 enrollment vs. the forecasts</h3>
-<p class="note">Kofron's four forecasts are rescaled to start from the district's official 2021-22 count, because his totals count every resident student, a slightly different group. The district's own projection is from its November 2025 memo. The McKibben line is scaled to start from the district's 2024-25 count because McKibben also counts Park, Rice and separately counted special education students.</p>
+<p class="note">Kofron's four forecasts are rescaled to start from the district's official 2021-22 count, because his totals count every resident student, a slightly different group. The district's own projection is from its November 2025 memo. The McKibben line is scaled to start from the district's 2024-25 count because McKibben also counts Park, Rice and separately counted special education students. The <b>Thrive65 update</b> runs Kofron's method forward from this fall's actual count: each class moves up a grade at the rates of the last five years, and each kindergarten class comes from county birth records, as in the school-by-school projections below. It starts on the fall 2026 count, so it only shows what comes next.</p>
 <div class="card">
   <div class="legend">
     <span><span class="sw" data-draw="lg-actual"></span>Actual</span>
@@ -95,18 +95,13 @@ wide: true
     <span><span class="sw" style="border-top-style: dotted" data-draw="lg-snap"></span>Kofron "snapshot"</span>
     <span><span class="sw" data-draw="lg-d65"></span>District projection (2025)</span>
     <span><span class="sw" style="border-top-style: dashed" data-draw="lg-mck"></span>McKibben forecast (2024)</span>
+    <span><span class="sw" style="border-top-style: dotted" data-draw="lg-t65"></span>Thrive65 update from fall 2026 (shaded: low to high)</span>
   </div>
   <div class="chart" id="trend" data-draw="trend"></div>
 </div>
 
-<h3 id="rerun-from-2020">What Kofron's method would have said starting from fall 2020</h3>
-<p class="note">To test whether the method holds up through the pandemic, Thrive65 reran it on the district's official K-8 counts starting from fall 2020. Each kindergarten class comes from births five years earlier; each later grade comes from the grade below it the year before, using how classes grew or shrank over the previous five years. The high, middle and low series use the best, middle and worst of those five years. Kofron's birth records end with the 2024 kindergarten class, so the left panel follows his straight-line guess after that. The right panel uses Evanston birth records through 2023, as in the births chart above.</p>
-<div class="card">
-  <div id="rerun" data-draw="rerun" style="min-height:360px"></div>
-</div>
-
-<h3 id="kofron-vs-rerun">Kofron, our 2020 rerun and McKibben, K-5 and 6-8</h3>
-<p class="note">Each forecast compared with what happened. <b>Kofron (2022)</b> started from fall 2021; his numbers count every resident student, so they are scaled down to match the district's official count in 2021-22 (by 14% for K-5 and 13% for 6-8). <b>Thrive65's rerun</b> applies his method to the official counts starting one year earlier, from fall 2020. Shaded bands run from each forecast's low series to its high series; dashed lines are the middle series. After 2025, use the buttons to see our rerun with Kofron's straight-line guess at births or with Evanston birth records. Kofron's forecast ends in 2031-32.</p>
+<h3 id="kofron-vs-update">Kofron, McKibben and the Thrive65 update, K-5 and 6-8</h3>
+<p class="note">Each forecast compared with what happened, split into elementary and middle grades. <b>Kofron (2022)</b> started from fall 2021; his numbers count every resident student, so they are scaled down to match the district's official count in 2021-22 (by 14% for K-5 and 13% for 6-8). The <b>Thrive65 update</b> starts from this fall's actual count and runs to 2031-32. Its K-5 line is the total of the school-by-school projections below; its 6-8 line moves today's 1st through 8th graders up a grade each year at the rates of the last five years. Shaded bands run from each forecast's low series to its high series; dashed lines are the middle series. Kofron's forecast ends in 2031-32.</p>
 <div class="card">
   <div id="cmp" data-draw="cmp" style="min-height:420px"></div>
 </div>
