@@ -37,7 +37,9 @@ Several agents work on this repo, often from handoffs written days earlier, and 
 3. **Treat a handoff as a snapshot.** A handoff names files and a branch as they were when it was written. Before following one, diff `main` since the handoff's `Base:` commit for every file it names. If files it tells you to edit no longer exist on `main`, or `main` has rebuilt them, the handoff is stale. Say so and adapt its intent (copy, data, decisions) to `main`, rather than recreating the old files.
 4. **After opening a PR, confirm it is mergeable.** A PR that conflicts with `main` is almost always a stale branch: go back to step 1, don't ask the maintainer to resolve it.
 
-CI enforces step 1 on every pull request (`.github/workflows/branch-freshness.yml` runs the same script): a stale branch fails the check; one that is only behind gets a warning.
+Two things run the check for you:
+- **At session start:** a SessionStart hook (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`) runs it whenever a Claude Code session starts, resumes, clears or compacts. Its verdict is the first thing in your context: up to date, BEHIND (merge main first) or STOP (stale). If the branch has commits of its own, it also reminds you to look up the branch's PR. It never blocks the session. The hook lives in the branch's own files, so a branch cut before it was added doesn't run it. On such a branch, run the check yourself.
+- **On every pull request:** CI (`.github/workflows/branch-freshness.yml`) runs the same script. A stale branch fails the check; one that is only behind gets a warning.
 
 ## Contributing from Claude Code on the web
 

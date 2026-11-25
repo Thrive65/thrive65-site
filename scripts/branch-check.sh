@@ -67,7 +67,7 @@ fi
 echo
 if [ -n "$OVERLAP" ]; then
   echo "STALE: since this branch split off, ${BASE} changed $(printf '%s\n' "$OVERLAP" | wc -l | tr -d ' ') file(s) this branch also changes:"
-  printf '  %s\n' $OVERLAP
+  printf '%s\n' "$OVERLAP" | sed 's/^/  /'
 fi
 if [ -n "$MOVED" ]; then
   echo "STALE: ${BASE} already has $(printf '%s\n' "$MOVED" | wc -l | tr -d ' ') of this branch's files, same content, at a new path (merged, then moved):"
@@ -76,7 +76,7 @@ if [ -n "$MOVED" ]; then
 fi
 if [ -n "$GONE" ]; then
   echo "…and DELETED or MOVED these, which this branch still edits (strong sign the work was superseded):"
-  printf '  %s\n' $GONE
+  printf '%s\n' "$GONE" | sed 's/^/  /'
 fi
 cat <<MSG
 
