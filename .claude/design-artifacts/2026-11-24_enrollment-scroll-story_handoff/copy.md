@@ -2,7 +2,7 @@
 
 Word for word. `{name}` = a value filled by a drawer (see the table at the end). **Bold** inside a paragraph marks a `<b>` around a filled value only; don't add other emphasis. "Source:" lines are the small source line at the end of each chapter's text.
 
-Front matter: keep `layout: page`, `permalink`, `wide: true`. Change:
+Front matter: an Analysis post (`category: "Analysis"`, so it lists itself on `/analysis/`), with `permalink: /analysis/enrollment/` and `wide: true`. Set:
 - `title:` "Why District 65 has fewer students, and what comes next"
 - `description:` "Why District 65 enrollment has fallen since 2016-17, whether it will keep falling, and how much the district can change it."
 
@@ -189,8 +189,8 @@ Keep the site's existing, more detailed list in `analysis/enrollment.md` (summar
 |---|---|---|---|
 | s-now | fall 2026 K-8 actual (5,408) | `district_trend` 2026-27 `actual` | `hl-actual` |
 | s-drop | "about 2,150" | 2016-17 actual − 2026-27 actual, rounded to 10 | `hl-drop` |
-| s-peak | 7,559 | 2016-17 actual | `t-peak` |
-| s-pct | "28.5%" | 1 − 2026-27 / 2016-17 | `hl-peakpct` (check format) |
+| s-peak | 7,558 | 2016-17 actual (`district_trend.csv`) | `t-peak` |
+| s-pct | "28.4%" | 1 − 2026-27 / 2016-17 | `hl-peakpct` |
 | s-us / s-cps / s-d65 | % change fall 2019 → fall 2024 | national calc | `nt-us`, `nt-cps`, `nt-d65` |
 | nb-*, ck-* | peer stats | nearby calcs | same names |
 | s-sincek | about 190 | sum over current classes of (kindergarten size − now) | `cv-sincek` |

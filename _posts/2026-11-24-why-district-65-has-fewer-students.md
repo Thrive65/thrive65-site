@@ -1,9 +1,9 @@
 ---
-layout: page
 title: "Why District 65 has fewer students, and what comes next"
-eyebrow: "Enrollment data"
+date: "2026-11-24"
+category: "Analysis"
+permalink: "/analysis/enrollment/"
 description: "Why District 65 enrollment has fallen since 2016-17, whether it will keep falling, and how much the district can change it."
-permalink: /analysis/enrollment/
 wide: true
 ---
 
