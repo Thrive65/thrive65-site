@@ -1,10 +1,9 @@
 {
   "name": "thrive65-site",
   "private": true,
-  "description": "CSS post-processing for the Jekyll build output (_site), plus the enrollment page data prep (scripts/enrollment).",
+  "description": "CSS post-processing for the Jekyll build output (_site). Run after `bundle exec jekyll build`.",
   "scripts": {
-    "build:css": "postcss _site/assets/css/main.css -o _site/assets/css/main.css --no-map",
-    "data:enrollment": "node scripts/enrollment/prepare.mjs"
+    "build:css": "postcss _site/assets/css/main.css -o _site/assets/css/main.css --no-map"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^7.0.2",
