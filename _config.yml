@@ -80,5 +80,3 @@ exclude:
   - package.json
   - package-lock.json
   - postcss.config.cjs
-  - data-src
-  - scripts

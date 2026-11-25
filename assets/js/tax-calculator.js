@@ -16,7 +16,7 @@
    pass-through rate instead of an EAV or tax bill.
 
    All styling comes from main.css. Classes emitted only from here (step*,
-   total, chart-*) are listed in the PurgeCSS safelist in postcss.config.cjs.
+   total, levy-*) are listed in the PurgeCSS safelist in postcss.config.cjs.
    The chart's --series-N colors are theme tokens on :root. */
 (function () {
   "use strict";
@@ -461,7 +461,7 @@
       var v = max * t / 4, yy = yS(v);
       s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '" style="stroke:var(--line);' +
         'stroke-width:1' + (t ? ';stroke-dasharray:2 3' : '') + '"/>';
-      s += '<text x="' + (L - 6) + '" y="' + (yy + 4) + '" text-anchor="end" class="chart-axis">' + usd(v) + '</text>';
+      s += '<text x="' + (L - 6) + '" y="' + (yy + 4) + '" text-anchor="end" class="levy-axis">' + usd(v) + '</text>';
     }
     var every = n > 24 ? 5 : n > 12 ? 3 : n > 8 ? 2 : 1;
     years.forEach(function (yr, i) {
@@ -479,27 +479,27 @@
       });
       if (i === spot && totals[i] > 0) {
         s += '<text x="' + (x + bw / 2) + '" y="' + (yS(totals[i]) - 6) + '" text-anchor="middle" ' +
-          'class="chart-axis chart-spot">' + usd(totals[i]) + '</text>';
+          'class="levy-axis levy-spot">' + usd(totals[i]) + '</text>';
       }
       if (i % every === 0 || i === spot) {
-        s += '<text x="' + (x + bw / 2) + '" y="' + (H - B + 18) + '" text-anchor="middle" class="chart-axis' +
-          (i === spot ? ' chart-spot' : '') + '">' + yr + '</text>';
+        s += '<text x="' + (x + bw / 2) + '" y="' + (H - B + 18) + '" text-anchor="middle" class="levy-axis' +
+          (i === spot ? ' levy-spot' : '') + '">' + yr + '</text>';
       }
-      s += '<rect class="chart-hit" data-i="' + i + '" x="' + (L + band * i) + '" y="' + T + '" width="' + band +
+      s += '<rect class="levy-hit" data-i="' + i + '" x="' + (L + band * i) + '" y="' + T + '" width="' + band +
         '" height="' + (H - T - B) + '" fill="transparent"/>';
     });
     $("chartSvg").innerHTML = s;
 
     /* legend only when there's more than one series; the title names a single one */
     $("chartLegend").innerHTML = series.length > 1 ? series.map(function (se) {
-      return '<span class="chart-key cluster"><span class="chart-swatch" style="--swatch:var(--series-' + se.idx +
+      return '<span class="levy-key cluster"><span class="levy-swatch" style="--swatch:var(--series-' + se.idx +
         ')"></span>' + se.name + '</span>';
     }).join("") : "";
 
     /* table view: short column heads with the chart's swatch keep six columns inside the
        card; the full piece name stays in the header for screen readers */
     var th = '<tr><th scope="col">Bill paid in</th>' + series.map(function (se) {
-      return '<th scope="col"><span class="chart-key cluster"><span class="chart-swatch" style="--swatch:var(--series-' +
+      return '<th scope="col"><span class="levy-key cluster"><span class="levy-swatch" style="--swatch:var(--series-' +
         se.idx + ')"></span><span aria-hidden="true">' + SHORT[se.key] + '</span><span class="visually-hidden">' +
         se.name + '</span></span></th>';
     }).join("") + (series.length > 1 ? '<th scope="col">Total</th>' : "") + "</tr>";
@@ -516,10 +516,10 @@
     var tip = $("chartTip"), d = chartData, tot = 0, html = "<strong>Bills paid in " + d.years[i] + "</strong>";
     d.series.slice().reverse().forEach(function (se) {
       tot += se.values[i];
-      html += '<span class="chart-tip-row cluster"><span class="chart-swatch" style="--swatch:var(--series-' + se.idx +
+      html += '<span class="levy-tip-row cluster"><span class="levy-swatch" style="--swatch:var(--series-' + se.idx +
         ')"></span>' + se.name + '<b>' + usd(se.values[i]) + '</b></span>';
     });
-    if (d.series.length > 1) html += '<span class="chart-tip-row cluster chart-tip-total">Total<b>' + usd(tot) + '</b></span>';
+    if (d.series.length > 1) html += '<span class="levy-tip-row cluster levy-tip-total">Total<b>' + usd(tot) + '</b></span>';
     tip.innerHTML = html;
     tip.classList.remove("hidden");
     var wrap = $("chartWrap").getBoundingClientRect(), rr = evt.target.getBoundingClientRect();
@@ -527,7 +527,7 @@
     tip.style.left = Math.max(0, Math.min(x - w / 2, wrap.width - w)) + "px";
   }
   $("chartSvg").addEventListener("mouseover", function (e) {
-    if (e.target.classList.contains("chart-hit")) showTip(+e.target.dataset.i, e);
+    if (e.target.classList.contains("levy-hit")) showTip(+e.target.dataset.i, e);
   });
   $("chartSvg").addEventListener("mouseleave", function () { $("chartTip").classList.add("hidden"); });
 
