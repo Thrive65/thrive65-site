@@ -99,6 +99,8 @@
         "building bonds over 20 years at 4.5%, both on the November 2028 ballot. The bonds would replace the " +
         "district's yearly building budget of about $7.97M, so their interest is the added cost of paying for " +
         "routine building work over time. The district hasn't proposed either one. " +
+        "Your total also counts the yearly levy increase and the district's health and life safety bonds, " +
+        "which happen under any plan and aren't part of the community model. " +
         '<a href="#source-v4">Full assumptions</a>',
       op: 17e6, opStart: 2029, cap: { P: 63737800, term: 20, rate: 4.5, start: 2030 }
     }
